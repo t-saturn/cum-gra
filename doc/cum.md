@@ -1,4 +1,4 @@
-```
+```sql
 // Integrated System: Central User Manager + Organic Units with Full Audit Trail
 // Compatible with dbdiagram.io - Public Entity Standards
 
