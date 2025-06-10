@@ -117,6 +117,7 @@ web-app/pnpm-debug.log*
 web-app/pnpm-error.log*
 
 # Bun
+web-app/bun.lock
 web-app/bun.lockb
 web-app/bun-debug.log*
 web-app/bun-error.log*
