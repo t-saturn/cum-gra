@@ -1,3 +1,21 @@
+```
++-------------------+          +------------------------+              +------------------------+
+|                   |          |                         |             |                         |
+| Frontend (Aplicación)  --->  |  Servicio de Control de |             |  Aplicación (Sistema 1, |
+|    (Login)        |          |      Usuarios (Servicio 2)  |         |   Sistema 3, etc.)      |
+|                   |   POST   |   (Genera JWT)          |   JWT -->   |  (Valida el JWT y       |
+|  (User + Pwd)     | -------> |  (Valida credenciales)  |             |   Verifica acceso)      |
++-------------------+          +------------------------+              +------------------------+
+         ↑                                   ↑                               ↑
+         |                                   |                               |
+   JWT -->                           Respuesta con JWT                       |
+    (Almacenar en cookie o                   |                               |
+     almacenamiento local)                   |                               |
+                                             V                               |
+                                            JWT -->    Verificación          |
+                                                (Acceso permitido/denegado)  |
+```
+
 ```sql
 // Integrated System: Central User Manager + Organic Units with Full Audit Trail
 // Compatible with dbdiagram.io - Public Entity Standards
