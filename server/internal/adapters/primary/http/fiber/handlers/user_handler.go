@@ -6,6 +6,7 @@ import (
 	"github.com/t-saturn/central-user-manager/server/internal/adapters/secondary/persistence/postgres/repositories"
 	"github.com/t-saturn/central-user-manager/server/internal/core/domain/entities"
 	"github.com/t-saturn/central-user-manager/server/internal/core/services"
+	"github.com/t-saturn/central-user-manager/server/pkg/utils"
 )
 
 var userService = services.NewUserService(repositories.NewUserRepository())
@@ -16,12 +17,17 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "datos inválidos"})
 	}
 
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "no se pudo encriptar la contraseña"})
+	}
+
 	user := &entities.User{
 		Name:     req.Name,
 		LastName: req.LastName,
 		UserName: req.UserName,
 		Email:    req.Email,
-		Password: req.Password,
+		Password: hashedPassword,
 	}
 
 	if err := userService.CreateUser(user); err != nil {
