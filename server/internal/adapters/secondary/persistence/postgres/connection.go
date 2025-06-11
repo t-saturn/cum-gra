@@ -1,28 +1,32 @@
 package postgres
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
-	_ "github.com/lib/pq"
+	"github.com/t-saturn/central-user-manager/server/internal/adapters/secondary/persistence/postgres/models"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func InitPostgres() error {
-	connStr := os.Getenv("DATABASE_URL")
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		dsn = "host=localhost user=postgres password=legion-commander dbname=cum port=5432 sslmode=disable"
+	}
 
 	var err error
-	DB, err = sql.Open("postgres", connStr)
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("error opening DB: %w", err)
+		return fmt.Errorf("Error al conectar GORM: %w", err)
 	}
 
-	if err := DB.Ping(); err != nil {
-		return fmt.Errorf("error pinging DB: %w", err)
-	}
+	log.Println("Conectado a la base de datos PostgreSQL con GORM")
 
-	fmt.Println("✅ Conectado a la base de datos PostgreSQL")
+	// Al final de InitPostgres
+	DB.AutoMigrate(&models.UserModel{})
 	return nil
 }

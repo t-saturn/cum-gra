@@ -2,33 +2,33 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/t-saturn/central-user-manager/server/internal/adapters/primary/http/fiber/dto"
+	"github.com/t-saturn/central-user-manager/server/internal/adapters/secondary/persistence/postgres/repositories"
 	"github.com/t-saturn/central-user-manager/server/internal/core/domain/entities"
+	"github.com/t-saturn/central-user-manager/server/internal/core/services"
 )
+
+var userService = services.NewUserService(repositories.NewUserRepository())
 
 func CreateUser(c *fiber.Ctx) error {
 	var req dto.CreateUserRequest
-
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "datos inválidos"})
 	}
 
-	user := entities.User{
-		ID:        uuid.New(),
-		Name:      req.Name,
-		LastName:  req.LastName,
-		UserName:  req.UserName,
-		Email:     req.Email,
-		Password:  req.Password, // NOTA: En producción se debe hashear
+	user := &entities.User{
+		Name:     req.Name,
+		LastName: req.LastName,
+		UserName: req.UserName,
+		Email:    req.Email,
+		Password: req.Password,
 	}
 
-	// Aquí iría la llamada a service (omitiendo por simplicidad)
+	if err := userService.CreateUser(user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "no se pudo registrar el usuario"})
+	}
 
-	return c.Status(fiber.StatusCreated).JSON(dto.UserResponse{
-		ID:       user.ID.String(),
-		Name:     user.Name,
-		LastName: user.LastName,
-		Email:    user.Email,
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "usuario creado correctamente",
 	})
 }
