@@ -14,5 +14,4 @@ type UserResponse struct {
 	UserName string `json:"user_name"`
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
-	Password string `json:"password"`
 }
