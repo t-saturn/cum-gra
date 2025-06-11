@@ -9,9 +9,8 @@ import (
 	"github.com/t-saturn/central-user-manager/server/pkg/utils"
 )
 
-var userService = services.NewUserService(repositories.NewUserRepository())
 
-func CreateUser(c *fiber.Ctx) error {
+func CreateUser(c *fiber.Ctx, userService services.UserService) error {
 	var req dto.CreateUserRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "datos inválidos"})
