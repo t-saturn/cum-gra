@@ -12,7 +12,9 @@ import (
 func SetupLogger() fiber.Handler {
 	// Crear carpeta si no existe
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
-		os.Mkdir("logs", 0755)
+		if err := os.Mkdir("logs", 0755); err != nil {
+			log.Fatalf("Failed to create logs directory: %v", err)
+		}
 	}
 
 	// Crear archivo con fecha actual
