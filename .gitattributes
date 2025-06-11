@@ -1,1 +1,2 @@
 * text eol=lf
+secrets.env filter=block

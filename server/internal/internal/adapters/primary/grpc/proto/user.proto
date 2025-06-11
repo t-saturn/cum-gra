@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package user;
+option go_package = "github.com/t-saturn/central-user-manager/server/internal/adapters/primary/grpc/proto/user";
+
+message CreateUserRequest {
+  string name = 1;
+  string last_name = 2;
+  string user_name = 3;
+  string email = 4;
+  string password = 5;
+}
+
+message CreateUserResponse {
+  string id = 1;
+  string message = 2;
+}
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+}
