@@ -17,7 +17,7 @@
 ```
 
 ```sql
-// Integrated System: Central User Manager + Organic Units with Full Audit Trail
+// Integrated System: Central User Manager + Organic Units + Role-Module Access with Full Audit Trail
 // Compatible with dbdiagram.io - Public Entity Standards
 
 // ===== ORGANIC UNITS HIERARCHY =====
@@ -99,9 +99,12 @@ Table organic_units_history {
 // ===== CENTRAL USER MANAGER =====
 Table users {
   user_id bigint [pk, increment]
+  username varchar(50) [unique, not null, note: 'Unique username for login']
   email varchar(255) [not null]
   password_hash varchar(255) [not null]
-  full_name varchar(255) [not null]
+  first_name varchar(50) [not null, note: 'User first name']
+  last_name varchar(50) [not null, note: 'User last name']
+  full_name varchar(255) [not null, note: 'Complete full name']
   phone varchar(20)
   address text
   profile_picture varchar(500)
@@ -120,6 +123,7 @@ Table users {
   deleted_by bigint [ref: > users.user_id, note: 'User who performed logical deletion']
 
   indexes {
+    (username, is_deleted) [unique, note: 'Unique username among non-deleted users']
     (email, is_deleted) [unique, note: 'Unique email among non-deleted users']
     status
     organic_unit_id
@@ -130,6 +134,7 @@ Table users {
   Note: '''
   Users table with organic unit relationship and full audit trail.
   Implements logical deletion to preserve data integrity.
+  Enhanced with username field for the new access control system.
   '''
 }
 
@@ -137,7 +142,10 @@ Table users {
 Table users_history {
   history_id bigint [pk, increment]
   user_id bigint [ref: > users.user_id]
+  username varchar(50) [not null]
   email varchar(255) [not null]
+  first_name varchar(50) [not null]
+  last_name varchar(50) [not null]
   full_name varchar(255) [not null]
   phone varchar(20)
   address text
@@ -168,73 +176,14 @@ Table users_history {
   '''
 }
 
-Table password_history {
-  history_id bigint [pk, increment]
-  user_id bigint [ref: > users.user_id]
-  previous_password_hash varchar(255) [not null]
-  changed_at timestamp [default: `now()`]
-
-  // Logical deletion
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
-  deleted_by bigint [ref: > users.user_id]
-
-  indexes {
-    user_id
-    changed_at
-    is_deleted
-  }
-}
-
-Table active_sessions {
-  session_id varchar(36) [pk]
-  user_id bigint [ref: > users.user_id]
-  session_token varchar(500) [not null]
-  started_at timestamp [default: `now()`]
-  last_accessed_at timestamp [default: `now()`]
-  expires_at timestamp [not null]
-  ip_address varchar(45)
-  user_agent text
-  session_status smallint [default: 1, note: '1=active, 0=closed, 2=expired']
-
-  // Logical deletion
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
-
-  indexes {
-    user_id
-    (session_token, is_deleted) [unique]
-    expires_at
-    session_status
-    is_deleted
-  }
-}
-
-Table session_history {
-  session_history_id bigint [pk, increment]
-  session_id varchar(36) [ref: > active_sessions.session_id]
-  closed_at timestamp [default: `now()`]
-  close_reason varchar(255)
-
-  // Logical deletion
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
-  deleted_by bigint [ref: > users.user_id]
-
-  indexes {
-    session_id
-    closed_at
-    is_deleted
-  }
-}
-
 Table systems {
   system_id bigint [pk, increment]
-  system_name varchar(100) [not null]
-  description text
-  system_code varchar(20)
+  system_name varchar(100) [not null, note: 'System display name']
+  system_code varchar(20) [note: 'Short system code identifier']
+  description text [note: 'System description']
+  url varchar(255) [note: 'System base URL']
   status smallint [default: 1, note: '1=active, 0=inactive']
-  configuration_json json
+  configuration_json json [note: 'System configuration parameters']
 
   // Logical deletion and audit
   deleted_at timestamp [null]
@@ -253,14 +202,20 @@ Table systems {
     status
     is_deleted
   }
+
+  Note: '''
+  Enhanced systems table with URL support for integrated access control.
+  Maintains full audit trail for public entity compliance.
+  '''
 }
 
 Table systems_history {
   history_id bigint [pk, increment]
   system_id bigint [ref: > systems.system_id]
   system_name varchar(100) [not null]
-  description text
   system_code varchar(20)
+  description text
+  url varchar(255)
   status smallint
   configuration_json json
   version int [not null]
@@ -276,6 +231,78 @@ Table systems_history {
   indexes {
     system_id
     version
+    created_at
+  }
+}
+
+// ===== ENHANCED MODULES WITH HIERARCHICAL STRUCTURE =====
+Table modules {
+  module_id bigint [pk, increment]
+  system_id bigint [ref: > systems.system_id, note: 'System this module belongs to']
+  grupo varchar(100) [not null, note: 'Module group: Menu, Actions, Access, etc.']
+  module_name varchar(100) [not null, note: 'Module display name: Dashboard, Users, etc.']
+  module_path varchar(255) [note: 'Module URL path: /dashboard, /dashboard/users, etc.']
+  parent_id bigint [ref: > modules.module_id, note: 'Parent module for hierarchical structure']
+  icon varchar(50) [note: 'Module icon identifier']
+  order_index int [default: 0, note: 'Display order within same level']
+  module_description text [note: 'Module description']
+  module_status smallint [default: 1, note: '1=active, 0=inactive']
+
+  // Logical deletion and audit
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp [null]
+  deleted_by bigint [ref: > users.user_id]
+  version int [not null, default: 1]
+
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  created_by bigint [ref: > users.user_id]
+  updated_by bigint [ref: > users.user_id]
+
+  indexes {
+    (system_id, module_name, is_deleted) [unique]
+    system_id
+    parent_id
+    grupo
+    module_status
+    order_index
+    is_deleted
+  }
+
+  Note: '''
+  Enhanced modules table with hierarchical structure and grouping.
+  Supports complex menu structures and module organization.
+  Full audit trail for public entity compliance.
+  '''
+}
+
+Table modules_history {
+  history_id bigint [pk, increment]
+  module_id bigint [ref: > modules.module_id]
+  system_id bigint
+  grupo varchar(100) [not null]
+  module_name varchar(100) [not null]
+  module_path varchar(255)
+  parent_id bigint
+  icon varchar(50)
+  order_index int
+  module_description text
+  module_status smallint
+  version int [not null]
+
+  // Change tracking
+  change_type varchar(20) [not null]
+  changed_fields json
+  old_values json
+  new_values json
+
+  created_at timestamp [default: `now()`]
+  created_by bigint [ref: > users.user_id]
+
+  indexes {
+    module_id
+    version
+    change_type
     created_at
   }
 }
@@ -307,6 +334,155 @@ Table roles {
   }
 }
 
+Table roles_history {
+  history_id bigint [pk, increment]
+  role_id bigint [ref: > roles.role_id]
+  system_id bigint
+  role_name varchar(100) [not null]
+  role_description text
+  role_status smallint
+  priority_level int
+  version int [not null]
+
+  change_type varchar(20) [not null]
+  changed_fields json
+  old_values json
+  new_values json
+
+  created_at timestamp [default: `now()`]
+  created_by bigint [ref: > users.user_id]
+
+  indexes {
+    role_id
+    version
+    created_at
+  }
+}
+
+// ===== ROLE-MODULE ACCESS CONTROL =====
+Table role_module_access {
+  access_id bigint [pk, increment]
+  role_id bigint [ref: > roles.role_id, note: 'Role with access']
+  module_id bigint [ref: > modules.module_id, note: 'Module being accessed']
+  has_access boolean [default: true, note: 'Access granted/denied flag']
+  access_level varchar(20) [default: 'read', note: 'read, write, admin, etc.']
+  granted_at timestamp [default: `now()`]
+  granted_by bigint [ref: > users.user_id, note: 'User who granted access']
+
+  // Logical deletion and audit
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp [null]
+  deleted_by bigint [ref: > users.user_id]
+
+  indexes {
+    (role_id, module_id, is_deleted) [unique, note: 'One access record per role-module pair']
+    role_id
+    module_id
+    has_access
+    is_deleted
+  }
+
+  Note: '''
+  Controls which modules each role can access.
+  Supports granular access control with access levels.
+  Implements logical deletion for audit compliance.
+  '''
+}
+
+Table role_module_access_history {
+  history_id bigint [pk, increment]
+  access_id bigint [ref: > role_module_access.access_id]
+  role_id bigint
+  module_id bigint
+  has_access boolean
+  access_level varchar(20)
+  granted_at timestamp
+  granted_by bigint
+
+  // Change tracking
+  change_type varchar(20) [not null]
+  changed_fields json
+  old_values json
+  new_values json
+
+  created_at timestamp [default: `now()`]
+  created_by bigint [ref: > users.user_id]
+
+  indexes {
+    access_id
+    role_id
+    module_id
+    created_at
+  }
+}
+
+// ===== USER SYSTEM ROLES =====
+Table user_system_roles {
+  user_role_id bigint [pk, increment]
+  user_id bigint [ref: > users.user_id, note: 'User being assigned']
+  system_id bigint [ref: > systems.system_id, note: 'System for the role']
+  role_id bigint [ref: > roles.role_id, note: 'Role being assigned']
+  assigned_at timestamp [default: `now()`, note: 'When role was assigned']
+  assigned_by bigint [ref: > users.user_id, note: 'User who made the assignment']
+  assignment_status smallint [default: 1, note: '1=active, 0=inactive']
+  effective_from date [note: 'Role effective start date']
+  effective_until date [note: 'Role expiration date (NULL = permanent)']
+
+  // Logical deletion and audit
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp [null]
+  deleted_by bigint [ref: > users.user_id]
+
+  indexes {
+    (user_id, system_id, role_id, is_deleted) [unique]
+    user_id
+    system_id
+    role_id
+    assigned_by
+    assignment_status
+    effective_from
+    effective_until
+    is_deleted
+  }
+
+  Note: '''
+  Enhanced user role assignments with temporal validity.
+  Links users to roles within specific systems.
+  Full audit trail for public entity compliance.
+  '''
+}
+
+Table user_system_roles_history {
+  history_id bigint [pk, increment]
+  user_role_id bigint [ref: > user_system_roles.user_role_id]
+  user_id bigint
+  system_id bigint
+  role_id bigint
+  assigned_at timestamp
+  assigned_by bigint
+  assignment_status smallint
+  effective_from date
+  effective_until date
+
+  // Change tracking
+  change_type varchar(20) [not null]
+  changed_fields json
+  old_values json
+  new_values json
+
+  created_at timestamp [default: `now()`]
+  created_by bigint [ref: > users.user_id]
+
+  indexes {
+    user_role_id
+    user_id
+    system_id
+    role_id
+    created_at
+  }
+}
+
+// ===== PERMISSIONS (LEGACY SUPPORT) =====
 Table permissions {
   permission_id bigint [pk, increment]
   system_id bigint [ref: > systems.system_id]
@@ -357,26 +533,25 @@ Table role_permissions {
   }
 }
 
-Table user_roles {
-  user_role_id bigint [pk, increment]
-  user_id bigint [ref: > users.user_id]
-  role_id bigint [ref: > roles.role_id]
-  system_id bigint [ref: > systems.system_id]
-  assigned_at timestamp [default: `now()`]
-  assigned_by bigint [ref: > users.user_id]
-  assignment_status smallint [default: 1, note: '1=active, 0=inactive']
+Table module_permissions {
+  module_permission_id bigint [pk, increment]
+  module_id bigint [ref: > modules.module_id]
+  permission_id bigint [ref: > permissions.permission_id]
+  detail_description text
+  status smallint [default: 1, note: '1=active, 0=inactive']
 
   // Logical deletion
   is_deleted boolean [not null, default: false]
   deleted_at timestamp [null]
   deleted_by bigint [ref: > users.user_id]
 
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
   indexes {
-    (user_id, role_id, system_id, is_deleted) [unique]
-    user_id
-    role_id
-    system_id
-    assignment_status
+    (module_id, permission_id, is_deleted) [unique]
+    module_id
+    permission_id
     is_deleted
   }
 }
@@ -417,7 +592,6 @@ Table structural_positions {
   '''
 }
 
-// Version history for structural positions
 Table structural_positions_history {
   history_id bigint [pk, increment]
   position_id bigint [ref: > structural_positions.position_id]
@@ -445,11 +619,6 @@ Table structural_positions_history {
     change_type
     created_at
   }
-
-  Note: '''
-  Complete version history of structural positions changes.
-  Critical for organizational audit requirements.
-  '''
 }
 
 Table user_structural_positions {
@@ -514,52 +683,63 @@ Table personnel_movements {
   '''
 }
 
-// ===== REMAINING TABLES WITH LOGICAL DELETION =====
-Table modules {
-  module_id bigint [pk, increment]
-  system_id bigint [ref: > systems.system_id]
-  module_name varchar(100) [not null]
-  module_path varchar(255)
-  module_description text
-  module_status smallint [default: 1, note: '1=active, 0=inactive']
+// ===== REMAINING SECURITY AND AUDIT TABLES =====
+Table password_history {
+  history_id bigint [pk, increment]
+  user_id bigint [ref: > users.user_id]
+  previous_password_hash varchar(255) [not null]
+  changed_at timestamp [default: `now()`]
 
   // Logical deletion
   is_deleted boolean [not null, default: false]
   deleted_at timestamp [null]
   deleted_by bigint [ref: > users.user_id]
 
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-  created_by bigint [ref: > users.user_id]
-  updated_by bigint [ref: > users.user_id]
-
   indexes {
-    (system_id, module_name, is_deleted) [unique]
-    system_id
-    module_status
+    user_id
+    changed_at
     is_deleted
   }
 }
 
-Table module_permissions {
-  module_permission_id bigint [pk, increment]
-  module_id bigint [ref: > modules.module_id]
-  permission_id bigint [ref: > permissions.permission_id]
-  detail_description text
-  status smallint [default: 1, note: '1=active, 0=inactive']
+Table active_sessions {
+  session_id varchar(36) [pk]
+  user_id bigint [ref: > users.user_id]
+  session_token varchar(500) [not null]
+  started_at timestamp [default: `now()`]
+  last_accessed_at timestamp [default: `now()`]
+  expires_at timestamp [not null]
+  ip_address varchar(45)
+  user_agent text
+  session_status smallint [default: 1, note: '1=active, 0=closed, 2=expired']
+
+  // Logical deletion
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp [null]
+
+  indexes {
+    user_id
+    (session_token, is_deleted) [unique]
+    expires_at
+    session_status
+    is_deleted
+  }
+}
+
+Table session_history {
+  session_history_id bigint [pk, increment]
+  session_id varchar(36) [ref: > active_sessions.session_id]
+  closed_at timestamp [default: `now()`]
+  close_reason varchar(255)
 
   // Logical deletion
   is_deleted boolean [not null, default: false]
   deleted_at timestamp [null]
   deleted_by bigint [ref: > users.user_id]
 
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-
   indexes {
-    (module_id, permission_id, is_deleted) [unique]
-    module_id
-    permission_id
+    session_id
+    closed_at
     is_deleted
   }
 }

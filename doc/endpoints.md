@@ -327,7 +327,7 @@ GET    /api/v1/history/systems         # Historial de sistemas
 
 ---
 
-## 🔍 BÚSQUEDA Y FILTROS
+## BÚSQUEDA Y FILTROS
 
 ### Búsquedas Generales
 
@@ -340,7 +340,7 @@ GET    /api/v1/search/global           # Búsqueda global
 
 ---
 
-## ⚙️ ADMINISTRACIÓN
+## ADMINISTRACIÓN
 
 ### Sistema General
 
@@ -362,7 +362,7 @@ GET    /api/v1/config/features         # Features habilitados
 
 ---
 
-## 📋 PARÁMETROS COMUNES
+## PARÁMETROS COMUNES
 
 ### Paginación (Query Parameters)
 
@@ -386,7 +386,7 @@ GET    /api/v1/config/features         # Features habilitados
 
 ---
 
-## 🔐 MIDDLEWARES REQUERIDOS
+## MIDDLEWARES REQUERIDOS
 
 - **Autenticación**: JWT Token validation
 - **Autorización**: Role-based access control (RBAC)
@@ -397,17 +397,3 @@ GET    /api/v1/config/features         # Features habilitados
 - **Error Handling**: Manejo centralizado de errores
 
 ---
-
-## 📝 CÓDIGOS DE RESPUESTA HTTP
-
-- **200**: OK - Operación exitosa
-- **201**: Created - Recurso creado exitosamente
-- **204**: No Content - Eliminación exitosa
-- **400**: Bad Request - Datos de entrada inválidos
-- **401**: Unauthorized - Token inválido/expirado
-- **403**: Forbidden - Sin permisos suficientes
-- **404**: Not Found - Recurso no encontrado
-- **409**: Conflict - Conflicto (ej: email duplicado)
-- **422**: Unprocessable Entity - Errores de validación
-- **429**: Too Many Requests - Rate limit excedido
-- **500**: Internal Server Error - Error del servidor
