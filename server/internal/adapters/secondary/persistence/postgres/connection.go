@@ -15,7 +15,7 @@ var DB *gorm.DB
 func InitPostgres() error {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		dsn = "host=localhost user=postgres password=legion-commander dbname=cum port=5432 sslmode=disable"
+		return fmt.Errorf("DATABASE_URL environment variable is not set")
 	}
 
 	var err error
