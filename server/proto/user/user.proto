@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package user;
+option go_package = "github.com/t-saturn/central-user-manager/server/pb/user";
+
+service UserService {
+  rpc Ping(Empty) returns (Pong);
+}
+
+message Empty {}
+
+message Pong {
+  string message = 1;
+}
