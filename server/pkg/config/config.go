@@ -7,7 +7,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Configura y expone variables de entorno
 type Config struct {
 	DBHost   string
 	DBPort   string
@@ -17,7 +16,6 @@ type Config struct {
 	GRPCPort string
 }
 
-// Carga variables desde .env y devuelve la configuración
 func Load() *Config {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No se encontró .env, cargando variables del entorno del sistema")
