@@ -136,28 +136,38 @@ server/
 │       │               └── health.pb.go
 │       └── secondary/              # Adaptadores Secundarios (Driven)
 │           ├── persistence/
-│           │   ├── postgres/
+│           │   ├── gorm/
 │           │   │   ├── connection.go
 │           │   │   ├── transaction.go
+│           │   │   ├── hooks/
+│           │   │   │   ├── base_hooks.go
+│           │   │   │   ├── audit_hooks.go
+│           │   │   │   └── soft_delete_hooks.go
 │           │   │   ├── migrations/
-│           │   │   │   ├── 001_create_users_table.up.sql
-│           │   │   │   ├── 001_create_users_table.down.sql
-│           │   │   │   ├── 002_create_products_table.up.sql
-│           │   │   │   ├── 002_create_products_table.down.sql
-│           │   │   │   └── 003_create_orders_table.up.sql
+│           │   │   │   ├── auto_migrate.go
+│           │   │   │   ├── manual_migrations.go
+│           │   │   │   └── seeders/
+│           │   │   │       ├── user_seeder.go
+│           │   │   │       └── product_seeder.go
 │           │   │   ├── repositories/
+│           │   │   │   ├── base_repository.go
 │           │   │   │   ├── user_repository.go
 │           │   │   │   ├── product_repository.go
 │           │   │   │   ├── order_repository.go
 │           │   │   │   └── unit_of_work.go
 │           │   │   ├── models/
+│           │   │   │   ├── base_model.go
 │           │   │   │   ├── user_model.go
 │           │   │   │   ├── product_model.go
 │           │   │   │   ├── order_model.go
-│           │   │   │   └── base_model.go
-│           │   │   └── queries/
-│           │   │       ├── user_queries.go
-│           │   │       └── product_queries.go
+│           │   │   │   └── associations.go
+│           │   │   ├── scopes/
+│           │   │   │   ├── common_scopes.go
+│           │   │   │   ├── user_scopes.go
+│           │   │   │   └── product_scopes.go
+│           │   │   └── plugins/
+│           │   │       ├── audit_plugin.go
+│           │   │       └── metrics_plugin.go
 │           │   ├── redis/
 │           │   │   ├── connection.go
 │           │   │   ├── cache_service.go
@@ -269,7 +279,8 @@ server/
 │   │   ├── migrate.sh
 │   │   ├── seed.sh
 │   │   ├── reset.sh
-│   │   └── backup.sh
+│   │   ├── backup.sh
+│   │   └── gorm-gen.sh             # GORM code generation
 │   ├── proto/
 │   │   ├── generate.sh
 │   │   └── validate.sh
@@ -369,13 +380,19 @@ server/
 ### HTTP Request Flow
 
 ```
-HTTP Request → Fiber Middleware → Fiber Handler → UseCase → Domain → Repository → PostgreSQL
+HTTP Request → Fiber Middleware → Fiber Handler → UseCase → Domain → GORM Repository → PostgreSQL
 ```
 
 ### gRPC Request Flow
 
 ```
-gRPC Request → gRPC Interceptor → gRPC Handler → UseCase → Domain → Repository → PostgreSQL
+gRPC Request → gRPC Interceptor → gRPC Handler → UseCase → Domain → GORM Repository → PostgreSQL
+```
+
+### GORM Transaction Flow
+
+```
+UseCase → Unit of Work → GORM Transaction → Multiple Repositories → Commit/Rollback
 ```
 
 ### Event-Driven Flow
@@ -390,11 +407,12 @@ Domain Event → Event Publisher → Message Queue → Event Handler → UseCase
 
 - **Framework HTTP**: Fiber v2
 - **gRPC**: Google gRPC
-- **Database**: PostgreSQL + pgx
+- **ORM**: GORM v2 + PostgreSQL Driver
+- **Database**: PostgreSQL
 - **Cache**: Redis
 - **Logging**: Logrus
 - **Validation**: go-playground/validator
-- **Migration**: golang-migrate
+- **Migration**: GORM AutoMigrate + Manual Migrations
 
 ### Messaging & Events
 
@@ -465,19 +483,38 @@ Domain Event → Event Publisher → Message Queue → Event Handler → UseCase
 - Métricas con Prometheus
 - Health checks implementados
 
-### ✅ **Seguridad**
+### **Seguridad**
 
 - Autenticación JWT
 - Autorización por roles
 - Rate limiting
 - Input validation
 
-### ✅ **DevOps Ready**
+### GORM Integration Benefits
 
-- Docker multi-stage
-- Kubernetes manifests
-- Helm charts
-- Terraform infrastructure
-- CI/CD scripts
+### **ORM Advantages**
+
+- **Code Generation**: GORM Gen para queries type-safe
+- **Auto Migrations**: Esquemas sincronizados automáticamente
+- **Rich Associations**: Relaciones complejas simplificadas
+- **Hooks System**: Callbacks para auditoría y validación
+- **Soft Delete**: Eliminación lógica built-in
+- **Scopes**: Queries reutilizables y composables
+
+### **Performance Features**
+
+- **Eager/Lazy Loading**: Control de carga de relaciones
+- **Batch Operations**: Inserts/Updates masivos
+- **Raw SQL Support**: Queries complejas cuando sea necesario
+- **Connection Pooling**: Gestión automática de conexiones
+- **Prepared Statements**: Queries optimizadas
+
+### **Developer Experience**
+
+- **Auto Migration**: Sincronización automática de esquemas
+- **Model Tagging**: Configuración declarativa
+- **Plugin System**: Extensibilidad avanzada
+- **Debug Mode**: SQL logging para desarrollo
+- **Error Handling**: Manejo robusto de errores DB
 
 Esta estructura está optimizada para proyectos Go modernos, siguiendo las mejores prácticas de la comunidad y preparada para escalar desde un monolito hasta microservicios cuando sea necesario.
