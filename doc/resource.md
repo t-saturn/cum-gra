@@ -1,121 +1,111 @@
-# Estructura Go + Fiber + PostgreSQL + gRPC - Sistema de Gestión Centralizada de Usuarios
+# Sistema de Gestión Centralizada de Usuarios (Go + gRPC + PostgreSQL + GORM)
 
-## Estructura de Directorios Refinada
+## Estructura del Proyecto
 
 ```
 server/
-├── logs/
+├── logs/                                # Archivos de log
 ├── cmd/
 │   └── grpc/
-│       └── main.go               # Arranca el servidor gRPC
+│       └── main.go                      # Punto de entrada del servidor gRPC
 ├── internal/
 │   ├── models/
-│   │   └── user.go               # Entidad User
+│   │   └── user.go                      # Definición de entidades (GORM)
 │   ├── services/
-│   │   └── user_service.go       # Lógica de negocio
+│   │   └── user_service.go              # Lógica de negocio (aplicación)
 │   ├── repositories/
-│   │   └── user_repo.go          # Acceso a datos (GORM)
+│   │   └── user_repo.go                 # Acceso a datos vía GORM
 │   └── grpc/
-│       └── server.go             # Configuración de gRPC (interceptors, handlers)
+│       ├── server.go                    # Configuración del servidor gRPC
+│       └── interceptors.go             # Interceptores (auth, logs, recovery, etc.)
 ├── pkg/
 │   ├── config/
-│   │   └── config.go             # Carga de variables de entorno
+│   │   └── config.go                    # Carga de configuración desde .env
 │   └── database/
-│       └── connection.go         # Conexión a PostgreSQL
+│       └── connection.go               # Conexión a PostgreSQL (GORM)
 ├── proto/
-│   ├── user.proto                # Definición del servicio y mensajes gRPC
-│   └── auth.proto                # Auth (si aplica)
-├── pb/                           # Código generado desde *.proto
-├── migrations/
+│   ├── user.proto                       # Definición del servicio de usuarios
+│   └── auth.proto                       # (Opcional) Definición de servicio de autenticación
+├── pb/                                  # Código generado desde archivos *.proto
+├── migrations/                          # Scripts de migración SQL (si aplica)
 ├── tests/
-│   ├── unit/
-│   └── integration/
+│   ├── unit/                            # Tests unitarios
+│   └── integration/                     # Tests de integración (gRPC, DB)
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml
-│       ├── cd.yml
-│       └── proto-lint.yml                  # Linting de protobuf
-├── .env.example
+│       ├── ci.yml                       # CI: pruebas, linting, etc.
+│       ├── cd.yml                       # CD: despliegue automático
+│       └── proto-lint.yml               # Linter para archivos protobuf
+├── .env.example                         # Variables de entorno de ejemplo
 ├── .env.dev.example
 ├── .env.prod.example
-├── .golangci.yml
-├── buf.yaml                                # Configuración de buf para protobuf
-├── buf.gen.yaml                            # Generación de código protobuf
-├── Makefile
+├── .golangci.yml                        # Configuración de GolangCI-Lint
+├── buf.yaml                             # Configuración de Buf (protobuf)
+├── buf.gen.yaml                         # Generación de código con Buf
+├── Makefile                             # Comandos útiles (build, proto-gen, etc.)
 ├── go.mod
 └── go.sum
 ```
 
-## Cambios Principales y Justificación
+---
 
-### 1. **Organización de Handlers gRPC**
-
-- **Añadido**: `internal/grpc/handlers/` - Separar handlers de servicios para mejor separación de responsabilidades
-- Los handlers implementan las interfaces generadas por protobuf
-- Los servicios contienen la lógica de negocio pura
-
-### 2. **Interceptors Mejorados**
-
-- **Movido**: De raíz a `internal/grpc/server/interceptors/`
-- **Añadido**: Interceptors específicos para validación y métricas
-- Mejor organización de middleware gRPC
-
-### 3. **DTOs (Data Transfer Objects)**
-
-- **Añadido**: `internal/dto/` para objetos de transferencia entre capas
-- Facilita conversión entre protobuf, domain models y database models
-
-### 4. **Mejoras en Repositorios**
-
-- **Añadido**: Organización por dominio dentro de postgresql
-- **Añadido**: Repositorio base común para operaciones CRUD estándar
-- **Añadido**: Interfaces específicas por dominio
-
-### 5. **Utilidades gRPC**
-
-- **Añadido**: Conversores entre protobuf y modelos de dominio
-- **Añadido**: Helpers para respuestas gRPC
-- **Añadido**: Códigos de estado gRPC específicos
-
-### 6. **Configuración Protobuf**
-
-- **Añadido**: `buf.yaml` y `buf.gen.yaml` para mejor gestión de protobuf
-- **Añadido**: Scripts de generación automática
-
-### 7. **Health Check Service**
-
-- **Añadido**: Servicio estándar de health check para gRPC
-- Importante para orquestadores como Kubernetes
-
-### 8. **Observabilidad**
-
-- **Añadido**: Configuración para Jaeger (tracing distribuido)
-- **Mejorado**: Logging específico para gRPC
-- **Añadido**: Métricas específicas
-
-## Flujo de Petición gRPC Actualizado
+## Flujo de una Solicitud gRPC
 
 ```
 Cliente gRPC Request
     ↓
 Interceptors (auth, logging, recovery, validation, metrics)
     ↓
-gRPC Handler (organizational/user_handler.go)
+gRPC Handler (internal/grpc/server.go)
     ↓
-Service (user_management/user_service.go)
+Service (internal/services/user_service.go)
     ↓
-Repository (postgresql/user_management/user.go)
+Repository (internal/repositories/user_repo.go)
     ↓
-Database
+Database (PostgreSQL via GORM)
     ↓
-Response + Audit Log
+Respuesta → Interceptor (log, audit, trace) → Cliente
 ```
 
-Esta estructura proporciona:
+### Componentes del Flujo
 
-- **Mejor separación de responsabilidades**
-- **Escalabilidad** por dominios de negocio
-- **Testabilidad** mejorada
-- **Mantenibilidad** a largo plazo
-- **Observabilidad** completa
-- **Cumplimiento de estándares gRPC**
+| Componente           | Descripción                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| **Cliente gRPC**     | Una app cliente (CLI, frontend, otro servicio) invoca un RPC definido en `proto/`              |
+| **Interceptors**     | Middleware para autenticación, recuperación de pánico, métricas y trazabilidad                 |
+| **gRPC Handler**     | Implementa la interfaz generada desde el `.proto`, recibe la solicitud y la reenvía al service |
+| **Service Layer**    | Contiene la lógica de negocio, validaciones de dominio y coordinación entre componentes        |
+| **Repository Layer** | Abstrae la base de datos usando GORM                                                           |
+| **Base de Datos**    | PostgreSQL como almacén relacional persistente                                                 |
+| **Respuesta**        | La respuesta se propaga de vuelta por las capas, con logs o auditoría opcional                 |
+
+---
+
+## Flujo de una Solicitud gRPC (con Autenticación y Autorización)
+
+```
+Cliente gRPC Request
+    ↓
+Interceptors (auth/jwt | mTLS, logging, recovery, validation, metrics)
+    ↓
+Authz Middleware (verifica permisos, roles, scopes)
+    ↓
+gRPC Handler (internal/grpc/server.go)
+    ↓
+Service (internal/services/user_service.go)
+    ↓
+Repository (internal/repositories/user_repo.go)
+    ↓
+Database (PostgreSQL via GORM)
+    ↓
+Respuesta → Interceptors (log, audit, trace) → Cliente
+```
+
+### 🔐 Seguridad Integrada
+
+| Capa              | Mecanismo         | Descripción                                                                                           |
+| ----------------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| **Autenticación** | `JWT` / `mTLS`    | Se verifica el token (access token OAuth2, JWT), o certificado cliente (mutual TLS) en el interceptor |
+| **Autorización**  | `RBAC` / `Scopes` | Verifica si el usuario tiene los permisos/roles necesarios para invocar el método RPC                 |
+| **Cifrado**       | `TLS`             | Todo el tráfico gRPC está cifrado usando TLS 1.2+                                                     |
+| **Interceptors**  | Middleware        | Logging, recuperación de pánico, validación de entradas, trazabilidad, métricas Prometheus, etc.      |
