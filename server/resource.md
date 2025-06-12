@@ -2,6 +2,7 @@
 
 ```txt
 server/
+├── logs/              # Aquí se guardarán los logs diarios
 ├── cmd/
 │   ├── api/
 │   │   └── main.go                 # HTTP API server
