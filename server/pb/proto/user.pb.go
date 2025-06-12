@@ -190,10 +190,9 @@ const file_proto_user_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\"$\n" +
 	"\x12CreateUserResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2N\n" +
-	"\vUserService\x12?\n" +
-	"\n" +
-	"CreateUser\x12\x17.user.CreateUserRequest\x1a\x18.user.CreateUserResponseB\x17Z\x15server/pb/user;userpbb\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id2P\n" +
+	"\vUserService\x12A\n" +
+	"\fFnCreateUser\x12\x17.user.CreateUserRequest\x1a\x18.user.CreateUserResponseB\x17Z\x15server/pb/user;userpbb\x06proto3"
 
 var (
 	file_proto_user_proto_rawDescOnce sync.Once
@@ -214,8 +213,8 @@ var file_proto_user_proto_goTypes = []any{
 	(*CreateUserResponse)(nil), // 2: user.CreateUserResponse
 }
 var file_proto_user_proto_depIdxs = []int32{
-	1, // 0: user.UserService.CreateUser:input_type -> user.CreateUserRequest
-	2, // 1: user.UserService.CreateUser:output_type -> user.CreateUserResponse
+	1, // 0: user.UserService.FnCreateUser:input_type -> user.CreateUserRequest
+	2, // 1: user.UserService.FnCreateUser:output_type -> user.CreateUserResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

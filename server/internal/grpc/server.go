@@ -23,7 +23,9 @@ func StartGRPCServer(cfg *config.Config) {
 		logger.Log.Fatalf("Failed to start listener in %s: %v", addr, err)
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(LoggingInterceptor),
+	)
 
 	RegisterServices(s)
 
