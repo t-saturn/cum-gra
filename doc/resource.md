@@ -1,33 +1,31 @@
 # Estructura Go + Fiber + PostgreSQL + gRPC - Sistema de Gestión Centralizada de Usuarios
 
-```txt
-central-user-manager/
-├── logs/                          # Logs diarios del sistema
+## Estructura de Directorios Refinada
+
+```
+server/
+├── logs/
 ├── cmd/
-│   ├── api/
-│   │   └── main.go               # Servidor HTTP con Fiber
 │   ├── grpc/
-│   │   └── main.go               # Servidor gRPC
-│   └── migrate/
-│       └── main.go               # Herramienta de migraciones
+│   │   └── main.go
+│   ├── migrate/
+│   │   └── main.go
+│   └── health/                              # [NUEVO] Health check service
+│       └── main.go
 ├── internal/
-│   ├── models/                    # Modelos GORM para todas las entidades
-│   │   ├── base.go               # Modelo base con campos comunes
-│   │   ├── organic_unit.go       # Unidades orgánicas
-│   │   ├── user.go               # Usuarios
-│   │   ├── system.go             # Sistemas
-│   │   ├── module.go             # Módulos de sistemas
-│   │   ├── role.go               # Roles
-│   │   ├── permission.go         # Permisos
-│   │   ├── structural_position.go # Posiciones estructurales
-│   │   ├── personnel_movement.go  # Movimientos de personal
-│   │   ├── session.go            # Sesiones activas
-│   │   ├── audit_log.go          # Logs de auditoría
-│   │   ├── verification_token.go # Tokens de verificación
-│   │   ├── mfa_device.go         # Dispositivos MFA
-│   │   ├── group.go              # Grupos de usuarios
-│   │   ├── api_token.go          # Tokens API
-│   │   └── history/              # Modelos de historial
+│   ├── models/
+│   │   ├── base.go
+│   │   ├── organic_unit.go
+│   │   ├── user.go
+│   │   ├── system.go
+│   │   ├── module.go
+│   │   ├── role.go
+│   │   ├── permission.go
+│   │   ├── structural_position.go
+│   │   ├── personnel_movement.go
+│   │   ├── audit_log.go
+│   │   ├── group.go
+│   │   └── history/
 │   │       ├── organic_unit_history.go
 │   │       ├── user_history.go
 │   │       ├── system_history.go
@@ -36,598 +34,378 @@ central-user-manager/
 │   │       ├── structural_position_history.go
 │   │       ├── role_module_access_history.go
 │   │       └── user_system_role_history.go
-│   ├── repositories/              # Acceso a datos
-│   │   ├── interfaces/           # Interfaces de repositorios
-│   │   │   ├── organic_unit_repository.go
-│   │   │   ├── user_repository.go
-│   │   │   ├── system_repository.go
-│   │   │   ├── module_repository.go
-│   │   │   ├── role_repository.go
-│   │   │   ├── permission_repository.go
-│   │   │   ├── structural_position_repository.go
-│   │   │   ├── personnel_movement_repository.go
-│   │   │   ├── session_repository.go
-│   │   │   ├── audit_log_repository.go
-│   │   │   ├── verification_token_repository.go
-│   │   │   ├── mfa_device_repository.go
-│   │   │   ├── group_repository.go
-│   │   │   └── api_token_repository.go
-│   │   ├── postgresql/           # Implementaciones PostgreSQL
-│   │   │   ├── organic_unit_repository.go
-│   │   │   ├── user_repository.go
-│   │   │   ├── system_repository.go
-│   │   │   ├── module_repository.go
-│   │   │   ├── role_repository.go
-│   │   │   ├── permission_repository.go
-│   │   │   ├── structural_position_repository.go
-│   │   │   ├── personnel_movement_repository.go
-│   │   │   ├── session_repository.go
-│   │   │   ├── audit_log_repository.go
-│   │   │   ├── verification_token_repository.go
-│   │   │   ├── mfa_device_repository.go
-│   │   │   ├── group_repository.go
-│   │   │   └── api_token_repository.go
-│   │   └── factory.go            # Factory de repositorios
-│   ├── services/                  # Lógica de negocio
-│   │   ├── organizational/       # Servicios organizacionales
+│   ├── repositories/
+│   │   ├── interfaces/
+│   │   │   ├── organizational.go           # Interface para repos organizacionales
+│   │   │   ├── user_management.go          # Interface para repos de usuarios
+│   │   │   ├── access_control.go           # Interface para repos de control de acceso
+│   │   │   ├── authentication.go           # Interface para repos de autenticación
+│   │   │   └── audit.go                    # [NUEVO] Interface para auditoría
+│   │   ├── postgresql/
+│   │   │   ├── organizational/
+│   │   │   │   ├── organic_unit.go
+│   │   │   │   ├── structural_position.go
+│   │   │   │   └── personnel_movement.go
+│   │   │   ├── user_management/
+│   │   │   │   ├── user.go
+│   │   │   │   └── group.go
+│   │   │   ├── access_control/
+│   │   │   │   ├── role.go
+│   │   │   │   ├── permission.go
+│   │   │   │   └── module.go
+│   │   │   ├── authentication/
+│   │   │   │   └── session.go              # [NUEVO] Gestión de sesiones
+│   │   │   ├── audit/                      # [NUEVO] Repositorios de auditoría
+│   │   │   │   ├── audit_log.go
+│   │   │   │   └── history.go
+│   │   │   └── base/                       # [NUEVO] Repositorio base común
+│   │   │       └── repository.go
+│   │   └── factory.go
+│   ├── services/
+│   │   ├── organizational/
 │   │   │   ├── organic_unit_service.go
 │   │   │   ├── structural_position_service.go
 │   │   │   └── personnel_movement_service.go
-│   │   ├── user_management/      # Servicios de gestión de usuarios
+│   │   ├── user_management/
 │   │   │   ├── user_service.go
-│   │   │   ├── user_position_service.go
-│   │   │   └── user_profile_service.go
-│   │   ├── access_control/       # Servicios de control de acceso
-│   │   │   ├── system_service.go
-│   │   │   ├── module_service.go
+│   │   │   └── group_service.go
+│   │   ├── access_control/
 │   │   │   ├── role_service.go
 │   │   │   ├── permission_service.go
-│   │   │   ├── role_assignment_service.go
-│   │   │   └── access_validation_service.go
-│   │   ├── authentication/       # Servicios de autenticación
+│   │   │   └── authorization_service.go    # [NUEVO] Lógica de autorización
+│   │   ├── authentication/
 │   │   │   ├── auth_service.go
-│   │   │   ├── session_service.go
-│   │   │   ├── token_service.go
-│   │   │   ├── mfa_service.go
-│   │   │   └── password_service.go
-│   │   ├── security/            # Servicios de seguridad
+│   │   │   └── session_service.go          # [NUEVO] Gestión de sesiones
+│   │   ├── security/
 │   │   │   ├── audit_service.go
-│   │   │   ├── security_policy_service.go
-│   │   │   └── api_token_service.go
-│   │   ├── notification/        # Servicios de notificación
-│   │   │   ├── email_service.go
-│   │   │   ├── sms_service.go
+│   │   │   ├── encryption_service.go       # [NUEVO] Servicios de encriptación
+│   │   │   └── validation_service.go       # [NUEVO] Validaciones de seguridad
+│   │   ├── notification/
 │   │   │   └── notification_service.go
-│   │   └── group/              # Servicios de grupos
+│   │   └── group/
 │   │       └── group_service.go
-│   ├── handlers/                # HTTP handlers (Fiber)
-│   │   ├── api/
-│   │   │   ├── v1/
-│   │   │   │   ├── organizational/
-│   │   │   │   │   ├── organic_unit_handler.go
-│   │   │   │   │   ├── structural_position_handler.go
-│   │   │   │   │   └── personnel_movement_handler.go
-│   │   │   │   ├── user_management/
-│   │   │   │   │   ├── user_handler.go
-│   │   │   │   │   ├── user_position_handler.go
-│   │   │   │   │   └── user_profile_handler.go
-│   │   │   │   ├── access_control/
-│   │   │   │   │   ├── system_handler.go
-│   │   │   │   │   ├── module_handler.go
-│   │   │   │   │   ├── role_handler.go
-│   │   │   │   │   ├── permission_handler.go
-│   │   │   │   │   └── role_assignment_handler.go
-│   │   │   │   ├── authentication/
-│   │   │   │   │   ├── auth_handler.go
-│   │   │   │   │   ├── session_handler.go
-│   │   │   │   │   ├── mfa_handler.go
-│   │   │   │   │   └── password_handler.go
-│   │   │   │   ├── security/
-│   │   │   │   │   ├── audit_handler.go
-│   │   │   │   │   └── api_token_handler.go
-│   │   │   │   └── group/
-│   │   │   │       └── group_handler.go
-│   │   │   └── health_handler.go
-│   │   └── admin/               # Handlers administrativos
-│   │       └── system_admin_handler.go
-│   ├── grpc/                    # gRPC handlers
-│   │   ├── organizational/
-│   │   │   ├── organic_unit_handler.go
-│   │   │   └── structural_position_handler.go
-│   │   ├── user_management/
-│   │   │   └── user_handler.go
-│   │   ├── access_control/
-│   │   │   ├── system_handler.go
-│   │   │   ├── module_handler.go
-│   │   │   ├── role_handler.go
-│   │   │   └── permission_handler.go
-│   │   ├── authentication/
-│   │   │   ├── auth_handler.go
-│   │   │   └── session_handler.go
-│   │   └── security/
-│   │       └── audit_handler.go
-│   ├── middleware/              # HTTP middleware
-│   │   ├── auth/
-│   │   │   ├── jwt_auth.go
-│   │   │   ├── session_auth.go
-│   │   │   ├── api_token_auth.go
-│   │   │   └── mfa_auth.go
-│   │   ├── authorization/
-│   │   │   ├── rbac.go
-│   │   │   ├── system_access.go
-│   │   │   └── module_access.go
-│   │   ├── security/
-│   │   │   ├── rate_limit.go
-│   │   │   ├── audit_log.go
-│   │   │   ├── cors.go
-│   │   │   └── security_headers.go
-│   │   ├── validation/
-│   │   │   ├── request_validator.go
-│   │   │   └── input_sanitizer.go
-│   │   └── logging/
-│   │       └── logger.go
-│   ├── routes/                  # Rutas HTTP
-│   │   ├── api/
-│   │   │   ├── v1/
-│   │   │   │   ├── api_routes.go
-│   │   │   │   ├── organizational_routes.go
-│   │   │   │   ├── user_management_routes.go
-│   │   │   │   ├── access_control_routes.go
-│   │   │   │   ├── authentication_routes.go
-│   │   │   │   ├── security_routes.go
-│   │   │   │   └── group_routes.go
-│   │   │   └── router.go
-│   │   └── admin/
-│   │       └── admin_routes.go
-│   ├── dto/                     # Data Transfer Objects
-│   │   ├── organizational/
-│   │   │   ├── organic_unit_dto.go
-│   │   │   ├── structural_position_dto.go
-│   │   │   └── personnel_movement_dto.go
-│   │   ├── user_management/
-│   │   │   ├── user_dto.go
-│   │   │   ├── user_position_dto.go
-│   │   │   └── user_profile_dto.go
-│   │   ├── access_control/
-│   │   │   ├── system_dto.go
-│   │   │   ├── module_dto.go
-│   │   │   ├── role_dto.go
-│   │   │   ├── permission_dto.go
-│   │   │   └── role_assignment_dto.go
-│   │   ├── authentication/
-│   │   │   ├── auth_dto.go
-│   │   │   ├── session_dto.go
-│   │   │   ├── token_dto.go
-│   │   │   └── mfa_dto.go
-│   │   ├── security/
-│   │   │   ├── audit_dto.go
-│   │   │   └── api_token_dto.go
-│   │   ├── group/
-│   │   │   └── group_dto.go
-│   │   └── common/
-│   │       ├── pagination_dto.go
-│   │       ├── filter_dto.go
-│   │       └── response_dto.go
-│   ├── external/                # Servicios externos
+│   ├── grpc/
+│   │   ├── server/                         # [NUEVO] Configuración del servidor gRPC
+│   │   │   ├── server.go
+│   │   │   └── interceptors/               # [MODIFICADO] Movido aquí
+│   │   │       ├── auth.go
+│   │   │       ├── logging.go
+│   │   │       ├── recovery.go
+│   │   │       ├── validation.go           # [NUEVO] Interceptor de validación
+│   │   │       └── metrics.go              # [NUEVO] Interceptor de métricas
+│   │   ├── handlers/                       # [NUEVO] Handlers gRPC (implementan proto services)
+│   │   │   ├── organizational/
+│   │   │   │   ├── organic_unit_handler.go
+│   │   │   │   ├── structural_position_handler.go
+│   │   │   │   └── personnel_movement_handler.go
+│   │   │   ├── user_management/
+│   │   │   │   ├── user_handler.go
+│   │   │   │   └── group_handler.go
+│   │   │   ├── access_control/
+│   │   │   │   ├── role_handler.go
+│   │   │   │   ├── permission_handler.go
+│   │   │   │   └── authorization_handler.go
+│   │   │   ├── authentication/
+│   │   │   │   └── auth_handler.go
+│   │   │   ├── security/
+│   │   │   │   └── audit_handler.go
+│   │   │   └── health/                     # [NUEVO] Health check handler
+│   │   │       └── health_handler.go
+│   │   └── middleware/                     # [NUEVO] Middleware específico de gRPC
+│   │       ├── context.go                  # Manejo de contexto
+│   │       └── metadata.go                 # Manejo de metadata
+│   ├── external/
 │   │   ├── notification/
 │   │   │   ├── email/
-│   │   │   │   ├── smtp_client.go
-│   │   │   │   └── template_engine.go
+│   │   │   │   └── smtp_client.go
 │   │   │   └── sms/
 │   │   │       └── sms_client.go
 │   │   ├── storage/
-│   │   │   ├── file_storage.go
-│   │   │   └── image_processor.go
+│   │   │   ├── s3/
+│   │   │   │   └── s3_client.go
+│   │   │   └── local/
+│   │   │       └── file_storage.go
 │   │   └── integration/
-│   │       ├── ldap_client.go
-│   │       └── external_system_client.go
-│   └── domain/                  # Lógica de dominio
-│       ├── events/
-│       │   ├── user_events.go
-│       │   ├── role_events.go
-│       │   └── audit_events.go
-│       └── policies/
-│           ├── password_policy.go
-│           ├── session_policy.go
-│           └── access_policy.go
-├── pkg/                         # Utilidades compartidas
+│   │       ├── ldap/                       # [NUEVO] Integración LDAP
+│   │       │   └── ldap_client.go
+│   │       └── third_party/
+│   │           └── api_client.go
+│   ├── domain/
+│   │   ├── events/
+│   │   │   ├── user_events.go
+│   │   │   ├── role_events.go
+│   │   │   └── audit_events.go
+│   │   ├── policies/
+│   │   │   ├── access_policy.go
+│   │   │   ├── password_policy.go          # [NUEVO] Políticas de contraseña
+│   │   │   └── audit_policy.go
+│   │   └── specifications/                 # [NUEVO] Domain specifications
+│   │       ├── user_spec.go
+│   │       └── role_spec.go
+│   └── dto/                                # [NUEVO] Data Transfer Objects
+│       ├── organizational/
+│       ├── user_management/
+│       ├── access_control/
+│       ├── authentication/
+│       └── common/
+├── pkg/
 │   ├── config/
 │   │   ├── config.go
-│   │   ├── database.go
-│   │   ├── redis.go
-│   │   ├── notification.go
-│   │   └── security.go
+│   │   ├── grpc.go                         # [NUEVO] Configuración específica gRPC
+│   │   └── database.go
 │   ├── database/
-│   │   ├── connection.go
-│   │   ├── migration.go
-│   │   ├── seeder.go
-│   │   └── transaction.go
+│   │   ├── postgresql/
+│   │   │   ├── connection.go
+│   │   │   └── migration.go
+│   │   └── transaction/                    # [NUEVO] Manejo de transacciones
+│   │       └── manager.go
 │   ├── cache/
-│   │   ├── redis_client.go
-│   │   ├── cache_manager.go
-│   │   └── session_store.go
+│   │   ├── redis/
+│   │   │   └── client.go
+│   │   └── memory/
+│   │       └── cache.go
 │   ├── logger/
 │   │   ├── logger.go
-│   │   ├── audit_logger.go
-│   │   └── structured_logger.go
+│   │   ├── grpc.go                         # [NUEVO] Logger específico para gRPC
+│   │   └── structured.go
 │   ├── validator/
 │   │   ├── validator.go
-│   │   ├── custom_validators.go
-│   │   └── sanitizer.go
+│   │   └── grpc.go                         # [NUEVO] Validador para protobuf
 │   ├── security/
 │   │   ├── jwt/
-│   │   │   ├── jwt_manager.go
-│   │   │   └── token_validator.go
-│   │   ├── encryption/
-│   │   │   ├── password_hasher.go
-│   │   │   ├── crypto_utils.go
-│   │   │   └── key_manager.go
-│   │   ├── mfa/
-│   │   │   ├── totp_generator.go
-│   │   │   ├── sms_sender.go
-│   │   │   └── backup_codes.go
-│   │   └── rate_limiter/
-│   │       └── rate_limiter.go
+│   │   │   └── jwt.go
+│   │   ├── crypto/
+│   │   │   ├── hash.go
+│   │   │   └── encryption.go
+│   │   └── rbac/                           # [NUEVO] Role-Based Access Control
+│   │       └── rbac.go
 │   ├── utils/
-│   │   ├── response/
-│   │   │   ├── api_response.go
-│   │   │   └── error_response.go
+│   │   ├── converter/                      # [NUEVO] Conversores proto <-> domain
+│   │   │   ├── user.go
+│   │   │   ├── role.go
+│   │   │   └── organizational.go
 │   │   ├── pagination/
-│   │   │   └── paginator.go
-│   │   ├── converter/
-│   │   │   └── type_converter.go
-│   │   ├── time/
-│   │   │   └── time_utils.go
-│   │   └── string/
-│   │       └── string_utils.go
+│   │   │   └── pagination.go
+│   │   └── response/
+│   │       └── grpc_response.go            # [NUEVO] Helpers para respuestas gRPC
 │   ├── constants/
-│   │   ├── status_constants.go
-│   │   ├── role_constants.go
-│   │   ├── permission_constants.go
-│   │   └── error_constants.go
+│   │   ├── errors.go
+│   │   ├── roles.go
+│   │   ├── permissions.go
+│   │   └── grpc_codes.go                   # [NUEVO] Códigos de estado gRPC
 │   └── errors/
-│       ├── custom_errors.go
-│       ├── error_handler.go
-│       └── error_codes.go
-├── proto/                       # Protocol Buffers
+│       ├── domain_errors.go
+│       ├── grpc_errors.go                  # [NUEVO] Errores específicos gRPC
+│       └── handler.go
+├── proto/
 │   ├── organizational/
 │   │   ├── organic_unit.proto
-│   │   └── structural_position.proto
+│   │   ├── structural_position.proto
+│   │   └── personnel_movement.proto
 │   ├── user_management/
-│   │   └── user.proto
+│   │   ├── user.proto
+│   │   └── group.proto
 │   ├── access_control/
-│   │   ├── system.proto
-│   │   ├── module.proto
 │   │   ├── role.proto
-│   │   └── permission.proto
+│   │   ├── permission.proto
+│   │   └── authorization.proto             # [NUEVO] Servicio de autorización
 │   ├── authentication/
-│   │   ├── auth.proto
-│   │   └── session.proto
+│   │   └── auth.proto
 │   ├── security/
 │   │   └── audit.proto
-│   └── common/
-│       ├── common.proto
-│       ├── pagination.proto
-│       └── timestamp.proto
-├── pb/                          # Generated protobuf files
+│   ├── common/
+│   │   ├── types.proto                     # Tipos comunes
+│   │   ├── pagination.proto                # [NUEVO] Paginación
+│   │   ├── timestamp.proto                 # [NUEVO] Timestamps
+│   │   └── error.proto                     # [NUEVO] Errores comunes
+│   └── health/                             # [NUEVO] Health check service
+│       └── health.proto
+├── pb/                                     # Código generado desde proto
 │   ├── organizational/
-│   │   ├── organic_unit.pb.go
-│   │   ├── organic_unit_grpc.pb.go
-│   │   ├── structural_position.pb.go
-│   │   └── structural_position_grpc.pb.go
 │   ├── user_management/
-│   │   ├── user.pb.go
-│   │   └── user_grpc.pb.go
 │   ├── access_control/
-│   │   ├── system.pb.go
-│   │   ├── system_grpc.pb.go
-│   │   ├── module.pb.go
-│   │   ├── module_grpc.pb.go
-│   │   ├── role.pb.go
-│   │   ├── role_grpc.pb.go
-│   │   ├── permission.pb.go
-│   │   └── permission_grpc.pb.go
 │   ├── authentication/
-│   │   ├── auth.pb.go
-│   │   ├── auth_grpc.pb.go
-│   │   ├── session.pb.go
-│   │   └── session_grpc.pb.go
 │   ├── security/
-│   │   ├── audit.pb.go
-│   │   └── audit_grpc.pb.go
-│   └── common/
-│       ├── common.pb.go
-│       ├── pagination.pb.go
-│       └── timestamp.pb.go
-├── migrations/                  # Migraciones de base de datos
-│   ├── 001_create_organic_units_table.sql
-│   ├── 002_create_organic_units_history_table.sql
-│   ├── 003_create_users_table.sql
-│   ├── 004_create_users_history_table.sql
-│   ├── 005_create_systems_table.sql
-│   ├── 006_create_systems_history_table.sql
-│   ├── 007_create_modules_table.sql
-│   ├── 008_create_modules_history_table.sql
-│   ├── 009_create_roles_table.sql
-│   ├── 010_create_roles_history_table.sql
-│   ├── 011_create_role_module_access_table.sql
-│   ├── 012_create_role_module_access_history_table.sql
-│   ├── 013_create_user_system_roles_table.sql
-│   ├── 014_create_user_system_roles_history_table.sql
-│   ├── 015_create_permissions_table.sql
-│   ├── 016_create_role_permissions_table.sql
-│   ├── 017_create_module_permissions_table.sql
-│   ├── 018_create_structural_positions_table.sql
-│   ├── 019_create_structural_positions_history_table.sql
-│   ├── 020_create_user_structural_positions_table.sql
-│   ├── 021_create_personnel_movements_table.sql
-│   ├── 022_create_password_history_table.sql
-│   ├── 023_create_active_sessions_table.sql
-│   ├── 024_create_session_history_table.sql
-│   ├── 025_create_audit_logs_table.sql
-│   ├── 026_create_verification_tokens_table.sql
-│   ├── 027_create_mfa_devices_table.sql
-│   ├── 028_create_groups_table.sql
-│   ├── 029_create_user_groups_table.sql
-│   ├── 030_create_session_expiration_policies_table.sql
-│   ├── 031_create_api_tokens_table.sql
-│   └── 032_create_indexes_and_constraints.sql
-├── seeds/                       # Datos semilla
-│   ├── organic_units_seed.sql
-│   ├── users_seed.sql
-│   ├── systems_seed.sql
-│   ├── modules_seed.sql
-│   ├── roles_seed.sql
-│   ├── permissions_seed.sql
-│   └── admin_user_seed.sql
-├── tests/                       # Tests
+│   ├── common/
+│   └── health/
+├── migrations/
+│   ├── postgresql/
+│   │   ├── 001_initial_schema.up.sql
+│   │   ├── 001_initial_schema.down.sql
+│   │   ├── 002_add_audit_tables.up.sql
+│   │   └── 002_add_audit_tables.down.sql
+│   └── seeds/                              # [MODIFICADO] Movido aquí
+│       ├── development/
+│       │   ├── users.sql
+│       │   └── roles.sql
+│       └── production/
+│           └── initial_admin.sql
+├── tests/
 │   ├── unit/
 │   │   ├── services/
-│   │   │   ├── organizational/
-│   │   │   ├── user_management/
-│   │   │   ├── access_control/
-│   │   │   ├── authentication/
-│   │   │   └── security/
 │   │   ├── repositories/
-│   │   │   └── postgresql/
-│   │   └── utils/
+│   │   └── handlers/                       # [NUEVO] Tests para handlers gRPC
 │   ├── integration/
-│   │   ├── api/
-│   │   │   ├── v1/
-│   │   │   │   ├── organizational_test.go
-│   │   │   │   ├── user_management_test.go
-│   │   │   │   ├── access_control_test.go
-│   │   │   │   ├── authentication_test.go
-│   │   │   │   └── security_test.go
-│   │   │   └── admin_test.go
 │   │   ├── grpc/
+│   │   │   ├── organizational_test.go
+│   │   │   ├── user_management_test.go
+│   │   │   ├── access_control_test.go
+│   │   │   └── authentication_test.go
 │   │   └── database/
 │   ├── e2e/
-│   │   ├── user_management_flow_test.go
-│   │   ├── role_assignment_flow_test.go
-│   │   └── authentication_flow_test.go
+│   │   ├── scenarios/
+│   │   └── grpc_client/                    # [NUEVO] Cliente de prueba gRPC
 │   ├── fixtures/
-│   │   ├── users.json
-│   │   ├── roles.json
-│   │   └── permissions.json
+│   │   ├── database/
+│   │   └── proto/                          # [NUEVO] Fixtures para protobuf
 │   └── mocks/
 │       ├── repositories/
 │       ├── services/
-│       └── external/
-├── scripts/                     # Scripts utilitarios
+│       └── grpc/                           # [NUEVO] Mocks para servicios gRPC
+├── scripts/
 │   ├── build/
 │   │   ├── build.sh
-│   │   ├── build-docker.sh
-│   │   └── cross-compile.sh
+│   │   └── docker.sh
 │   ├── database/
 │   │   ├── migrate.sh
-│   │   ├── rollback.sh
 │   │   ├── seed.sh
 │   │   └── backup.sh
 │   ├── development/
-│   │   ├── dev-setup.sh
-│   │   ├── generate-proto.sh
-│   │   ├── generate-mocks.sh
-│   │   └── lint.sh
+│   │   ├── setup.sh
+│   │   ├── proto_gen.sh                    # [NUEVO] Generación de protobuf
+│   │   └── mock_gen.sh                     # [NUEVO] Generación de mocks
 │   └── deployment/
 │       ├── deploy.sh
-│       ├── health-check.sh
-│       └── log-rotate.sh
+│       └── rollback.sh
 ├── docker/
 │   ├── Dockerfile
 │   ├── Dockerfile.dev
 │   ├── docker-compose.yml
 │   ├── docker-compose.dev.yml
-│   ├── docker-compose.test.yml
-│   └── nginx/
-│       ├── nginx.conf
-│       └── ssl/
+│   └── grpc/                               # [NUEVO] Configuración específica gRPC
+│       └── Dockerfile.grpc
 ├── configs/
 │   ├── config.yaml
 │   ├── config.dev.yaml
-│   ├── config.test.yaml
 │   ├── config.prod.yaml
-│   └── security/
-│       ├── jwt-keys/
-│       │   ├── private.key
-│       │   └── public.key
-│       └── tls/
-│           ├── server.crt
-│           └── server.key
-├── docs/                        # Documentación
-│   ├── api/
-│   │   ├── openapi.yaml
-│   │   └── postman_collection.json
+│   └── grpc/                               # [NUEVO] Configuraciones gRPC
+│       ├── server.yaml
+│       └── interceptors.yaml
+├── docs/
 │   ├── grpc/
-│   │   └── grpc_documentation.md
+│   │   ├── services.md                     # Documentación de servicios
+│   │   ├── interceptors.md                 # Documentación de interceptors
+│   │   └── examples/                       # [NUEVO] Ejemplos de uso
 │   ├── architecture/
-│   │   ├── system_architecture.md
-│   │   ├── database_schema.md
+│   │   ├── overview.md
+│   │   ├── domain_model.md
 │   │   └── security_model.md
 │   ├── deployment/
-│   │   ├── installation_guide.md
-│   │   ├── configuration_guide.md
-│   │   └── troubleshooting.md
+│   │   ├── production.md
+│   │   └── development.md
 │   └── user_guides/
-│       ├── admin_guide.md
-│       ├── user_guide.md
-│       └── api_guide.md
-├── deployments/                 # Configuraciones de despliegue
+│       ├── admin.md
+│       └── developer.md
+├── deployments/
 │   ├── kubernetes/
-│   │   ├── namespace.yaml
-│   │   ├── configmap.yaml
-│   │   ├── secret.yaml
 │   │   ├── deployment.yaml
 │   │   ├── service.yaml
-│   │   └── ingress.yaml
-│   ├── terraform/
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   └── ansible/
-│       ├── playbook.yml
-│       └── inventory/
-├── monitoring/                  # Configuraciones de monitoreo
+│   │   └── configmap.yaml
+│   ├── helm/
+│   └── terraform/
+├── monitoring/
 │   ├── prometheus/
-│   │   └── config.yml
+│   │   └── rules.yaml
 │   ├── grafana/
 │   │   └── dashboards/
-│   └── alertmanager/
-│       └── config.yml
-├── .github/                     # GitHub Actions
+│   └── jaeger/                             # [NUEVO] Tracing distribuido
+│       └── config.yaml
+├── .github/
 │   └── workflows/
 │       ├── ci.yml
 │       ├── cd.yml
-│       └── security-scan.yml
+│       └── proto-lint.yml                  # [NUEVO] Linting de protobuf
 ├── .env.example
 ├── .env.dev.example
 ├── .env.prod.example
-├── .gitignore
 ├── .golangci.yml
+├── buf.yaml                                # [NUEVO] Configuración de buf para protobuf
+├── buf.gen.yaml                            # [NUEVO] Generación de código protobuf
 ├── Makefile
 ├── go.mod
-├── go.sum
-├── LICENSE
-└── README.md
+└── go.sum
 ```
 
-## EXPLICACIÓN DETALLADA DE LA ESTRUCTURA
+## Cambios Principales y Justificación
 
-### **1. Organización por Dominios**
+### 1. **Organización de Handlers gRPC**
 
-La estructura está organizada por dominios funcionales principales:
+- **Añadido**: `internal/grpc/handlers/` - Separar handlers de servicios para mejor separación de responsabilidades
+- Los handlers implementan las interfaces generadas por protobuf
+- Los servicios contienen la lógica de negocio pura
 
-#### **`organizational/`** - Gestión Organizacional
+### 2. **Interceptors Mejorados**
 
-- **Unidades Orgánicas**: Jerarquía organizacional
-- **Posiciones Estructurales**: Cargos dentro de las unidades
-- **Movimientos de Personal**: Cambios y transferencias
+- **Movido**: De raíz a `internal/grpc/server/interceptors/`
+- **Añadido**: Interceptors específicos para validación y métricas
+- Mejor organización de middleware gRPC
 
-#### **`user_management/`** - Gestión de Usuarios
+### 3. **DTOs (Data Transfer Objects)**
 
-- **Usuarios**: CRUD y gestión de perfiles
-- **Posiciones de Usuario**: Asignación de cargos
-- **Perfiles**: Gestión de información personal
+- **Añadido**: `internal/dto/` para objetos de transferencia entre capas
+- Facilita conversión entre protobuf, domain models y database models
 
-#### **`access_control/`** - Control de Acceso
+### 4. **Mejoras en Repositorios**
 
-- **Sistemas**: Gestión de sistemas integrados
-- **Módulos**: Funcionalidades de cada sistema
-- **Roles**: Definición de roles por sistema
-- **Permisos**: Permisos granulares
-- **Asignaciones**: Gestión de roles y accesos
+- **Añadido**: Organización por dominio dentro de postgresql
+- **Añadido**: Repositorio base común para operaciones CRUD estándar
+- **Añadido**: Interfaces específicas por dominio
 
-#### **`authentication/`** - Autenticación
+### 5. **Utilidades gRPC**
 
-- **Autenticación**: Login/logout y validación
-- **Sesiones**: Gestión de sesiones activas
-- **Tokens**: JWT y tokens de API
-- **MFA**: Autenticación multifactor
-- **Contraseñas**: Políticas y gestión
+- **Añadido**: Conversores entre protobuf y modelos de dominio
+- **Añadido**: Helpers para respuestas gRPC
+- **Añadido**: Códigos de estado gRPC específicos
 
-#### **`security/`** - Seguridad
+### 6. **Configuración Protobuf**
 
-- **Auditoría**: Logs y trazabilidad completa
-- **Tokens API**: Gestión de acceso programático
-- **Políticas**: Configuración de seguridad
+- **Añadido**: `buf.yaml` y `buf.gen.yaml` para mejor gestión de protobuf
+- **Añadido**: Scripts de generación automática
 
-#### **`group/`** - Grupos
+### 7. **Health Check Service**
 
-- **Grupos**: Agrupación lógica de usuarios
+- **Añadido**: Servicio estándar de health check para gRPC
+- Importante para orquestadores como Kubernetes
 
-### **2. Características Principales**
+### 8. **Observabilidad**
 
-#### **Auditoría Completa**
+- **Añadido**: Configuración para Jaeger (tracing distribuido)
+- **Mejorado**: Logging específico para gRPC
+- **Añadido**: Métricas específicas
 
-- Todas las tablas principales tienen su tabla `_history`
-- Logs de auditoría para todas las operaciones
-- Trazabilidad completa de cambios
+## Flujo de Petición gRPC Actualizado
 
-#### **Soft Delete**
-
-- Implementación de borrado lógico en todas las entidades
-- Campos `is_deleted`, `deleted_at`, `deleted_by`
-- Preservación de integridad referencial
-
-#### **Versionado**
-
-- Control de versiones para detectar conflictos
-- Campo `version` en entidades principales
-
-#### **Seguridad Robusta**
-
-- Autenticación multifactor
-- Gestión de sesiones con políticas configurables
-- Tokens API con scopes
-- Rate limiting y protección CORS
-
-#### **Escalabilidad**
-
-- Separación clara de responsabilidades
-- Interfaces para fácil testing y mocking
-- Preparado para microservicios
-- Cache con Redis para mejor rendimiento
-
-### **3. Modelos GORM Principales**
-
-#### **Modelo Base**
-
-```go
-// internal/models/base.go
-type BaseModel struct {
-    ID        uint       `json:"id" gorm:"primaryKey"`
-    IsDeleted bool       `json:"-" gorm:"not null;default:false"`
-    DeletedAt *time.Time `json:"-"`
-    DeletedBy *uint      `json:"-"`
-    Version   int        `json:"version" gorm:"not null;default:1"`
-    CreatedAt time.Time  `json:"created_at"`
-    UpdatedAt time.Time  `json:"updated_at"`
-    CreatedBy *uint      `json:"created_by"`
-    UpdatedBy *uint      `json:"updated_by"`
-}
+```
+Cliente gRPC Request
+    ↓
+Interceptors (auth, logging, recovery, validation, metrics)
+    ↓
+gRPC Handler (organizational/user_handler.go)
+    ↓
+Service (user_management/user_service.go)
+    ↓
+Repository (postgresql/user_management/user.go)
+    ↓
+Database
+    ↓
+Response + Audit Log
 ```
 
-#### **Usuario Completo**
+Esta estructura proporciona:
 
-```go
-// internal/models/user.go
-type User struct {
-    BaseModel
-    Username        string         `json:"username" gorm:"uniqueIndex:idx_username_deleted;size:50;not null"`
-    Email           string         `json:"email" gorm:"uniqueIndex:idx_email_deleted;size:255;not null"`
-    PasswordHash    string         `json:"-" gorm:"size:255;not null"`
-    FirstName       string         `json:"first_name" gorm:"size:50;not null"`
-    LastName        string         `json:"last_name" gorm:"size:50;not null"`
-    FullName        string         `json:"full_name" gorm:"size:255;not null"`
-    Phone           string         `json:"phone" gorm:"size:20"`
-    Address         string         `json:"address" gorm:"type:text"`
-    ProfilePicture  string         `json:"profile_picture" gorm:"size:500"`
-    OrganicUnitID   *uint          `json:"organic_unit_id"`
-    Status          int16          `json:"status" gorm:"not null;default:1"`
-
-    // Relaciones
-    OrganicUnit     *OrganicUnit   `json:"organic_unit,omitempty"`
-    SystemRoles     []UserSystemRole `json:"system_roles,omitempty"`
-    Positions       []UserStructuralPosition `json:"positions,omitempty"`
-    Groups          []UserGroup    `json:"groups,omitempty"`
-```
+- **Mejor separación de responsabilidades**
+- **Escalabilidad** por dominios de negocio
+- **Testabilidad** mejorada
+- **Mantenibilidad** a largo plazo
+- **Observabilidad** completa
+- **Cumplimiento de estándares gRPC**
