@@ -15,7 +15,6 @@ func InitLogger() {
 		FullTimestamp: true,
 	})
 
-	// Crear o abrir archivo de log
 	logFile, err := os.OpenFile("logs/server.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		Log.Warn("Could not open log file, using only stdout")
@@ -23,7 +22,6 @@ func InitLogger() {
 		return
 	}
 
-	// Log a archivo + consola
 	multi := io.MultiWriter(os.Stdout, logFile)
 	Log.SetOutput(multi)
 	Log.SetLevel(logrus.DebugLevel)

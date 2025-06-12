@@ -8,9 +8,7 @@ import (
 	userpb "github.com/t-saturn/central-user-manager/server/pb/proto"
 )
 
-// Recibe el servidor y registra todos los servicios gRPC con sus dependencias inyectadas
 func RegisterServices(s *grpc.Server) {
-	// User
 	userRepo := repositories.NewUserRepository()
 	userSvc := services.NewUserService(userRepo)
 	userpb.RegisterUserServiceServer(s, NewUserHandler(userSvc))
