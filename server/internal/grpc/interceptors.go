@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/status"
-
 	"github.com/t-saturn/central-user-manager/server/pkg/logger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/peer"
+	"google.golang.org/grpc/status"
 )
 
 func LoggingInterceptor(
@@ -18,10 +18,13 @@ func LoggingInterceptor(
 ) (resp interface{}, err error) {
 	start := time.Now()
 
-	// Ejecutar el handler
+	var ip string
+	if p, ok := peer.FromContext(ctx); ok {
+		ip = p.Addr.String()
+	}
+
 	resp, err = handler(ctx, req)
 
-	// Log luego de la ejecución
 	duration := time.Since(start)
 	st, _ := status.FromError(err)
 
@@ -29,6 +32,7 @@ func LoggingInterceptor(
 		"method":   info.FullMethod,
 		"duration": duration,
 		"status":   st.Code().String(),
+		"ip":       ip,
 	}).Info("gRPC request")
 
 	return resp, err
