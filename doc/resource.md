@@ -9,6 +9,7 @@ server/
 │   └── grpc/
 │       └── main.go                      # Punto de entrada del servidor gRPC
 ├── internal/
+│   ├── handlers/
 │   ├── models/
 │   │   └── user.go                      # Definición de entidades (GORM)
 │   ├── services/
@@ -19,15 +20,15 @@ server/
 │       ├── server.go                    # Configuración del servidor gRPC
 │       └── interceptors.go             # Interceptores (auth, logs, recovery, etc.)
 ├── pkg/
+│   ├── logger/
 │   ├── config/
 │   │   └── config.go                    # Carga de configuración desde .env
 │   └── database/
 │       └── connection.go               # Conexión a PostgreSQL (GORM)
 ├── proto/
-│   ├── user.proto                       # Definición del servicio de usuarios
-│   └── auth.proto                       # (Opcional) Definición de servicio de autenticación
+│   ├── user/                            # Definición del servicio de usuarios
+│   └── application/                     # (Opcional) Definición de servicio de autenticación
 ├── pb/                                  # Código generado desde archivos *.proto
-├── migrations/                          # Scripts de migración SQL (si aplica)
 ├── tests/
 │   ├── unit/                            # Tests unitarios
 │   └── integration/                     # Tests de integración (gRPC, DB)

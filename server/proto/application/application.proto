@@ -4,6 +4,26 @@ package application;
 
 option go_package = "server/pb/application;applicationpb";
 
+message GetApplicationByIdRequest {
+  string id = 1;
+}
+
+message GetApplicationByIdResponse {
+  string id = 1;
+  string name = 2;
+  string client_id = 3;
+  string client_secret = 4;
+  string domain = 5;
+  string logo = 6;
+  string description = 7;
+  repeated string callback_urls = 8;
+  repeated string scopes = 9;
+  bool is_first_party = 10;
+  string status = 11;
+  string created_at = 12;
+  string updated_at = 13;
+}
+
 
 message CreateApplicationRequest {
   string name = 1;
@@ -23,4 +43,5 @@ message CreateApplicationResponse {
 
 service ApplicationService {
   rpc FnCreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse);
+  rpc FnGetApplicationById(GetApplicationByIdRequest) returns (GetApplicationByIdResponse);
 }
