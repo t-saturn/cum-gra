@@ -59,7 +59,7 @@ server/tmp/
 server/temp/
 
 # Archivos generados
-server/pb/*.pb.go
+server/pb/
 
 # Coverage reports
 server/coverage.txt
