@@ -16,6 +16,7 @@ import (
 func StartGRPCServer(cfg *config.Config) {
 	database.Init(cfg)
 	_ = database.DB.AutoMigrate(&models.User{})
+	_ = database.DB.AutoMigrate(&models.Application{})
 
 	addr := fmt.Sprintf(":%s", cfg.GRPCPort)
 	lis, err := net.Listen("tcp", addr)

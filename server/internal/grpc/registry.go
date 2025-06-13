@@ -5,16 +5,22 @@ import (
 
 	"github.com/t-saturn/central-user-manager/server/internal/repositories"
 	"github.com/t-saturn/central-user-manager/server/internal/services"
-	userpb "github.com/t-saturn/central-user-manager/server/pb/proto"
+
+	applicationpb "github.com/t-saturn/central-user-manager/server/pb/proto/application"
+	userpb "github.com/t-saturn/central-user-manager/server/pb/proto/user"
+
+	applicationhandler "github.com/t-saturn/central-user-manager/server/internal/handlers"
+	userhandler "github.com/t-saturn/central-user-manager/server/internal/handlers"
 )
 
 func RegisterServices(s *grpc.Server) {
+	/* User */
 	userRepo := repositories.NewUserRepository()
 	userSvc := services.NewUserService(userRepo)
-	userpb.RegisterUserServiceServer(s, NewUserHandler(userSvc))
+	userpb.RegisterUserServiceServer(s, userhandler.NewUserHandler(userSvc))
 
-	// Futuro: Role, System, etc.
-	// roleRepo := repositories.NewRoleRepository()
-	// roleSvc := services.NewRoleService(roleRepo)
-	// rolepb.RegisterRoleServiceServer(s, NewRoleHandler(roleSvc))
+	/* Application */
+	appRepo := repositories.NewApplicationRepository()
+	appSvc := services.NewApplicationService(appRepo)
+	applicationpb.RegisterApplicationServiceServer(s, applicationhandler.NewApplicationHandler(appSvc))
 }

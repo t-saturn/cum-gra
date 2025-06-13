@@ -1,10 +1,10 @@
-package grpc
+package handlers
 
 import (
 	"context"
 
 	"github.com/t-saturn/central-user-manager/server/internal/services"
-	userpb "github.com/t-saturn/central-user-manager/server/pb/proto"
+	userpb "github.com/t-saturn/central-user-manager/server/pb/proto/user"
 )
 
 type UserHandler struct {
@@ -21,7 +21,5 @@ func (h *UserHandler) FnCreateUser(ctx context.Context, req *userpb.CreateUserRe
 	if err != nil {
 		return nil, err
 	}
-	return &userpb.CreateUserResponse{
-		Id: user.ID,
-	}, nil
+	return &userpb.CreateUserResponse{Id: user.ID.String()}, nil
 }

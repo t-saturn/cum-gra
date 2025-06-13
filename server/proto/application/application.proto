@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package application;
+
+option go_package = "server/pb/application;applicationpb";
+
+
+message CreateApplicationRequest {
+  string name = 1;
+  string client_id = 2;
+  string client_secret = 3;
+  string domain = 4;
+  string logo = 5;
+  string description = 6;
+  repeated string callback_urls = 7;
+  repeated string scopes = 8;
+  bool is_first_party = 9;
+}
+
+message CreateApplicationResponse {
+  string id = 1;
+}
+
+service ApplicationService {
+  rpc FnCreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse);
+}
