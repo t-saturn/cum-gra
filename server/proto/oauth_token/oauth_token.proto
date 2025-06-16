@@ -1,0 +1,160 @@
+syntax = "proto3";
+package oauth_token;
+option go_package = "server/pb/oauth_token;oauth_tokenpb";
+import "google/protobuf/timestamp.proto";
+
+// OAuthToken model
+message OAuthToken {
+  string id = 1;
+  string user_id = 2;
+  string application_id = 3;
+  string access_token = 4;
+  string refresh_token = 5;
+  string token_type = 6;
+  repeated string scopes = 7;
+  google.protobuf.Timestamp expires_at = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp revoked_at = 10;
+  bool is_deleted = 11;
+  google.protobuf.Timestamp deleted_at = 12;
+  string deleted_by = 13;
+}
+
+// Request messages
+message CreateOAuthTokenRequest {
+  string user_id = 1;
+  string application_id = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+  string token_type = 5;
+  repeated string scopes = 6;
+  google.protobuf.Timestamp expires_at = 7;
+}
+
+message GetOAuthTokenRequest {
+  string id = 1;
+}
+
+message GetOAuthTokenByAccessTokenRequest {
+  string access_token = 1;
+}
+
+message GetOAuthTokenByRefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message UpdateOAuthTokenRequest {
+  string id = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  string token_type = 4;
+  repeated string scopes = 5;
+  google.protobuf.Timestamp expires_at = 6;
+}
+
+message RevokeOAuthTokenRequest {
+  string id = 1;
+  string revoked_by = 2;
+}
+
+message DeleteOAuthTokenRequest {
+  string id = 1;
+  string deleted_by = 2;
+}
+
+message ListOAuthTokensRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string user_id = 3;
+  string application_id = 4;
+  bool include_revoked = 5;
+  bool include_deleted = 6;
+  bool include_expired = 7;
+}
+
+message ValidateOAuthTokenRequest {
+  string access_token = 1;
+}
+
+message RefreshOAuthTokenRequest {
+  string refresh_token = 1;
+  repeated string scopes = 2;
+}
+
+message GetUserTokensRequest {
+  string user_id = 1;
+  string application_id = 2;
+  bool active_only = 3;
+}
+
+message RevokeUserTokensRequest {
+  string user_id = 1;
+  string application_id = 2;
+  string revoked_by = 3;
+}
+
+// Response messages
+message CreateOAuthTokenResponse {
+  OAuthToken token = 1;
+  string message = 2;
+}
+
+message GetOAuthTokenResponse {
+  OAuthToken token = 1;
+}
+
+message UpdateOAuthTokenResponse {
+  OAuthToken token = 1;
+  string message = 2;
+}
+
+message RevokeOAuthTokenResponse {
+  string message = 1;
+}
+
+message DeleteOAuthTokenResponse {
+  string message = 1;
+}
+
+message ListOAuthTokensResponse {
+  repeated OAuthToken tokens = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message ValidateOAuthTokenResponse {
+  bool is_valid = 1;
+  OAuthToken token = 2;
+  string message = 3;
+}
+
+message RefreshOAuthTokenResponse {
+  OAuthToken new_token = 1;
+  string message = 2;
+}
+
+message GetUserTokensResponse {
+  repeated OAuthToken tokens = 1;
+}
+
+message RevokeUserTokensResponse {
+  int32 revoked_count = 1;
+  string message = 2;
+}
+
+// OAuthToken service
+service OAuthTokenService {
+  rpc CreateOAuthToken(CreateOAuthTokenRequest) returns (CreateOAuthTokenResponse);
+  rpc GetOAuthToken(GetOAuthTokenRequest) returns (GetOAuthTokenResponse);
+  rpc GetOAuthTokenByAccessToken(GetOAuthTokenByAccessTokenRequest) returns (GetOAuthTokenResponse);
+  rpc GetOAuthTokenByRefreshToken(GetOAuthTokenByRefreshTokenRequest) returns (GetOAuthTokenResponse);
+  rpc UpdateOAuthToken(UpdateOAuthTokenRequest) returns (UpdateOAuthTokenResponse);
+  rpc RevokeOAuthToken(RevokeOAuthTokenRequest) returns (RevokeOAuthTokenResponse);
+  rpc DeleteOAuthToken(DeleteOAuthTokenRequest) returns (DeleteOAuthTokenResponse);
+  rpc ListOAuthTokens(ListOAuthTokensRequest) returns (ListOAuthTokensResponse);
+  rpc ValidateOAuthToken(ValidateOAuthTokenRequest) returns (ValidateOAuthTokenResponse);
+  rpc RefreshOAuthToken(RefreshOAuthTokenRequest) returns (RefreshOAuthTokenResponse);
+  rpc GetUserTokens(GetUserTokensRequest) returns (GetUserTokensResponse);
+  rpc RevokeUserTokens(RevokeUserTokensRequest) returns (RevokeUserTokensResponse);
+}
