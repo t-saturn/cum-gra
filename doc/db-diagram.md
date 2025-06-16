@@ -130,6 +130,29 @@ Table module_role_permissions {
   Note: "Define permisos específicos de roles sobre módulos"
 }
 
+// NUEVA TABLA: Restricciones específicas de usuario
+Table user_module_restrictions {
+  id uuid [primary key]
+  user_id uuid [ref: > users.id, not null]
+  module_id uuid [ref: > modules.id, not null]
+  application_id uuid [ref: > applications.id, not null]
+  restriction_type enum('block_access', 'limit_permission') [not null]
+  max_permission_level enum('denied', 'read', 'write', 'admin') [note: 'Solo si restriction_type es limit_permission']
+  reason text [note: 'Motivo de la restricción']
+  expires_at timestamp [note: 'Fecha de expiración de la restricción']
+  created_at timestamp [default: `now()`]
+  created_by uuid [ref: > users.id, not null]
+  updated_at timestamp [default: `now()`]
+  updated_by uuid [ref: > users.id]
+
+  // Borrado lógico
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamp [null]
+  deleted_by uuid [ref: > users.id]
+
+  Note: "Restricciones específicas de módulos por usuario que sobrescriben los permisos del rol"
+}
+
 Table oauth_tokens {
   id uuid [primary key]
   user_id uuid [ref: > users.id]
@@ -210,5 +233,4 @@ Table password_resets {
   deleted_at timestamp [null]
   deleted_by uuid [ref: > users.id]
 }
-
 ```
