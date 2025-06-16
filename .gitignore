@@ -24,103 +24,47 @@ desktop.ini
 .sublime-*
 
 # ================================
-# GO (SERVER)
+# GO (BACKEND)
 # ================================
 # Binarios compilados
-server/main
-server/*.exe
-server/*.exe~
-server/*.dll
-server/*.so
-server/*.dylib
+main
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
 # Archivos de test
-server/*.test
+*.test
 
 # Output de go build
-server/dist/
-server/build/
+dist/
+build/
 
 # Archivos de módulos Go
-server/go.sum
-server/vendor/
+go.sum
+vendor/
 
 # Archivos de configuración local
-server/.env
-server/.env.local
-server/.env.*.local
+.env
+.env.local
+.env.*.local
 
 # Logs
-server/*.log
-server/logs/
+*.log
+logs/
 
 # Archivos temporales
-server/tmp/
-server/temp/
+tmp/
+temp/
+
+# Archivos generados
+pb/
 
 # Coverage reports
-server/coverage.txt
-server/coverage.out
-server/*.cover
-
-# ================================
-# NEXT.JS (WEB-APP)
-# ================================
-# Dependencies
-web-app/node_modules/
-web-app/.pnp
-web-app/.pnp.js
-
-# Testing
-web-app/coverage/
-
-# Next.js build output
-web-app/.next/
-web-app/out/
-
-# Production build
-web-app/build/
-web-app/dist/
-
-# Environment variables
-web-app/.env
-web-app/.env*.local
-web-app/.env.local
-web-app/.env.development.local
-web-app/.env.test.local
-web-app/.env.production.local
-
-# Vercel
-web-app/.vercel
-
-# Typescript
-web-app/*.tsbuildinfo
-web-app/next-env.d.ts
-
-# ================================
-# PACKAGE MANAGERS LOCK FILES
-# ================================
-# NPM
-web-app/package-lock.json
-web-app/npm-debug.log*
-web-app/npm-error.log*
-
-# Yarn
-web-app/yarn.lock
-web-app/yarn-debug.log*
-web-app/yarn-error.log*
-web-app/.yarn-integrity
-
-# PNPM
-web-app/pnpm-lock.yaml
-web-app/pnpm-debug.log*
-web-app/pnpm-error.log*
-
-# Bun
-web-app/bun.lock
-web-app/bun.lockb
-web-app/bun-debug.log*
-web-app/bun-error.log*
+coverage.txt
+coverage.out
+*.cover
 
 # ================================
 # LOGS GENERALES
@@ -149,28 +93,7 @@ pids/
 # Cache directories
 .cache/
 .parcel-cache/
-.eslintcache
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
 
 # dotenv environment variables file
 .env
