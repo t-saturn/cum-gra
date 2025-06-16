@@ -48,28 +48,10 @@ type User struct {
 	DeletedBy *uuid.UUID `gorm:"type:uuid"`
 
 	// Relaciones
-	//PreferredAuthMethod *AuthenticationMethod `gorm:"foreignKey:PreferredAuthMethodID"`
-	StructuralPosition *StructuralPosition `gorm:"foreignKey:StructuralPositionID"`
-	OrganicUnit        *OrganicUnit        `gorm:"foreignKey:OrganicUnitID"`
-	DeletedByUser      *User               `gorm:"foreignKey:DeletedBy"`
+	DeletedByUser *User `gorm:"foreignKey:DeletedBy"`
 
 	// Relaciones inversas
-	UserSessions            []UserSession         `gorm:"foreignKey:UserID"`
-	UserApplicationRoles    []UserApplicationRole `gorm:"foreignKey:UserID"`
-	OAuthTokens             []OAuthToken          `gorm:"foreignKey:UserID"`
-	UserPermissions         []UserPermission      `gorm:"foreignKey:UserID"`
-	PasswordHistory         []PasswordHistory     `gorm:"foreignKey:UserID"`
-	PasswordResets          []PasswordReset       `gorm:"foreignKey:UserID"`
-	TwoFactorSecrets        []TwoFactorSecret     `gorm:"foreignKey:UserID"`
-	AuditLogs               []AuditLog            `gorm:"foreignKey:UserID"`
-	UserPreferences         []UserPreference      `gorm:"foreignKey:UserID"`
-	GrantedApplicationRoles []UserApplicationRole `gorm:"foreignKey:GrantedBy"`
-	RevokedApplicationRoles []UserApplicationRole `gorm:"foreignKey:RevokedBy"`
-	GrantedPermissions      []UserPermission      `gorm:"foreignKey:GrantedBy"`
-	RevokedPermissions      []UserPermission      `gorm:"foreignKey:RevokedBy"`
-	ChangedPasswords        []PasswordHistory     `gorm:"foreignKey:ChangedBy"`
-	DeletedPasswordHistory  []PasswordHistory     `gorm:"foreignKey:DeletedBy"`
-	DeletedUsers            []User                `gorm:"foreignKey:DeletedBy"`
+	DeletedUsers []User `gorm:"foreignKey:DeletedBy"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

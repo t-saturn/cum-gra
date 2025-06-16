@@ -29,16 +29,6 @@ type Application struct {
 	Status       ApplicationStatus `gorm:"type:varchar(50);default:'active'"`
 	CreatedAt    time.Time         `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time         `gorm:"autoUpdateTime"`
-
-	// Relaciones
-	ApplicationRoles     []ApplicationRole     `gorm:"foreignKey:ApplicationID"`
-	UserApplicationRoles []UserApplicationRole `gorm:"foreignKey:ApplicationID"`
-	Modules              []Module              `gorm:"foreignKey:ApplicationID"`
-	OAuthTokens          []OAuthToken          `gorm:"foreignKey:ApplicationID"`
-	UserPermissions      []UserPermission      `gorm:"foreignKey:ApplicationID"`
-	AuditLogs            []AuditLog            `gorm:"foreignKey:ApplicationID"`
-	ApplicationSettings  []ApplicationSetting  `gorm:"foreignKey:ApplicationID"`
-	UserPreferences      []UserPreference      `gorm:"foreignKey:ApplicationID"`
 }
 
 func (a *Application) BeforeCreate(tx *gorm.DB) error {

@@ -19,8 +19,8 @@ func NewUserService(repo repositories.UserRepository) UserService {
 
 func (s *userService) CreateUser(name, email string) (*models.User, error) {
 	user := &models.User{
-		Name:  name,
-		Email: email,
+		FirstName: name,
+		Email:     email,
 	}
 	err := s.repo.Create(user)
 	if err != nil {
