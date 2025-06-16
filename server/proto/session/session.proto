@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+// package session.v1;
+package session;
+
+// option go_package = "github.com/t-saturn/central-user-manager/server/proto/session/v1;sessionv1";
+option go_package = "server/pb/session;sessionpb";
+
+import "google/protobuf/timestamp.proto";
+
+// Messages
+message UserSession {
+  string id = 1;
+  string user_id = 2;
+  string session_token = 3;
+  string refresh_token = 4;
+  string device_info = 5;
+  string ip_address = 6;
+  string user_agent = 7;
+  bool is_active = 8;
+  google.protobuf.Timestamp expires_at = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp last_activity_at = 11;
+  bool is_deleted = 12;
+  google.protobuf.Timestamp deleted_at = 13;
+}
+
+message CreateSessionRequest {
+  string user_id = 1;
+  string session_token = 2;
+  string refresh_token = 3;
+  string device_info = 4;
+  string ip_address = 5;
+  string user_agent = 6;
+  google.protobuf.Timestamp expires_at = 7;
+}
+
+message CreateSessionResponse {
+  UserSession session = 1;
+}
+
+message GetSessionRequest {
+  string id = 1;
+}
+
+message GetSessionResponse {
+  UserSession session = 1;
+}
+
+message GetSessionByTokenRequest {
+  string session_token = 1;
+}
+
+message GetSessionByTokenResponse {
+  UserSession session = 1;
+}
+
+message RefreshSessionRequest {
+  string refresh_token = 1;
+  string new_session_token = 2;
+  string new_refresh_token = 3;
+  google.protobuf.Timestamp new_expires_at = 4;
+}
+
+message RefreshSessionResponse {
+  UserSession session = 1;
+}
+
+message UpdateSessionActivityRequest {
+  string id = 1;
+}
+
+message UpdateSessionActivityResponse {
+  bool success = 1;
+}
+
+message RevokeSessionRequest {
+  string id = 1;
+}
+
+message RevokeSessionResponse {
+  bool success = 1;
+}
+
+message RevokeAllUserSessionsRequest {
+  string user_id = 1;
+}
+
+message RevokeAllUserSessionsResponse {
+  int32 revoked_count = 1;
+}
+
+message ListUserSessionsRequest {
+  string user_id = 1;
+  bool active_only = 2;
+}
+
+message ListUserSessionsResponse {
+  repeated UserSession sessions = 1;
+}
+
+message CleanupExpiredSessionsRequest {
+}
+
+message CleanupExpiredSessionsResponse {
+  int32 cleaned_count = 1;
+}
+
+// Service
+service SessionService {
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+  rpc GetSessionByToken(GetSessionByTokenRequest) returns (GetSessionByTokenResponse);
+  rpc RefreshSession(RefreshSessionRequest) returns (RefreshSessionResponse);
+  rpc UpdateSessionActivity(UpdateSessionActivityRequest) returns (UpdateSessionActivityResponse);
+  rpc RevokeSession(RevokeSessionRequest) returns (RevokeSessionResponse);
+  rpc RevokeAllUserSessions(RevokeAllUserSessionsRequest) returns (RevokeAllUserSessionsResponse);
+  rpc ListUserSessions(ListUserSessionsRequest) returns (ListUserSessionsResponse);
+  rpc CleanupExpiredSessions(CleanupExpiredSessionsRequest) returns (CleanupExpiredSessionsResponse);
+}

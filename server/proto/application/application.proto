@@ -1,14 +1,21 @@
 syntax = "proto3";
 
-package application;
+package application.v1;
 
+// option go_package = "github.com/t-saturn/central-user-manager/server/proto/application/v1;applicationv1";
 option go_package = "server/pb/application;applicationpb";
 
-message GetApplicationByIdRequest {
-  string id = 1;
+import "google/protobuf/timestamp.proto";
+
+// Enums
+enum ApplicationStatus {
+  APPLICATION_STATUS_UNSPECIFIED = 0;
+  APPLICATION_STATUS_ACTIVE = 1;
+  APPLICATION_STATUS_SUSPENDED = 2;
 }
 
-message GetApplicationByIdResponse {
+// Messages
+message Application {
   string id = 1;
   string name = 2;
   string client_id = 3;
@@ -19,11 +26,13 @@ message GetApplicationByIdResponse {
   repeated string callback_urls = 8;
   repeated string scopes = 9;
   bool is_first_party = 10;
-  string status = 11;
-  string created_at = 12;
-  string updated_at = 13;
+  ApplicationStatus status = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  bool is_deleted = 14;
+  google.protobuf.Timestamp deleted_at = 15;
+  string deleted_by = 16;
 }
-
 
 message CreateApplicationRequest {
   string name = 1;
@@ -38,10 +47,91 @@ message CreateApplicationRequest {
 }
 
 message CreateApplicationResponse {
+  Application application = 1;
+}
+
+message GetApplicationRequest {
   string id = 1;
 }
 
+message GetApplicationResponse {
+  Application application = 1;
+}
+
+message GetApplicationByClientIdRequest {
+  string client_id = 1;
+}
+
+message GetApplicationByClientIdResponse {
+  Application application = 1;
+}
+
+message UpdateApplicationRequest {
+  string id = 1;
+  string name = 2;
+  string domain = 3;
+  string logo = 4;
+  string description = 5;
+  repeated string callback_urls = 6;
+  repeated string scopes = 7;
+  ApplicationStatus status = 8;
+}
+
+message UpdateApplicationResponse {
+  Application application = 1;
+}
+
+message UpdateApplicationSecretRequest {
+  string id = 1;
+  string new_client_secret = 2;
+}
+
+message UpdateApplicationSecretResponse {
+  bool success = 1;
+}
+
+message DeleteApplicationRequest {
+  string id = 1;
+  string deleted_by = 2;
+}
+
+message DeleteApplicationResponse {
+  bool success = 1;
+}
+
+message ListApplicationsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string search = 3;
+  ApplicationStatus status = 4;
+  bool first_party_only = 5;
+}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message ValidateClientCredentialsRequest {
+  string client_id = 1;
+  string client_secret = 2;
+}
+
+message ValidateClientCredentialsResponse {
+  bool valid = 1;
+  Application application = 2;
+}
+
+// Service
 service ApplicationService {
-  rpc FnCreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse);
-  rpc FnGetApplicationById(GetApplicationByIdRequest) returns (GetApplicationByIdResponse);
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse);
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse);
+  rpc GetApplicationByClientId(GetApplicationByClientIdRequest) returns (GetApplicationByClientIdResponse);
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse);
+  rpc UpdateApplicationSecret(UpdateApplicationSecretRequest) returns (UpdateApplicationSecretResponse);
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse);
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc ValidateClientCredentials(ValidateClientCredentialsRequest) returns (ValidateClientCredentialsResponse);
 }

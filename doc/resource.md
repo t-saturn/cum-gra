@@ -26,8 +26,10 @@ server/
 │   └── database/
 │       └── connection.go               # Conexión a PostgreSQL (GORM)
 ├── proto/
-│   ├── user/                            # Definición del servicio de usuarios
-│   └── application/                     # (Opcional) Definición de servicio de autenticación
+│   ├── user/
+|   │   └── user.proto
+│   └── application/
+|       └── application.proto
 ├── pb/                                  # Código generado desde archivos *.proto
 ├── tests/
 │   ├── unit/                            # Tests unitarios
