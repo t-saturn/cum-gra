@@ -8,12 +8,9 @@ import (
 )
 
 func CreateModulesTables() {
-	err := database.DB.AutoMigrate(
-		&domain.Module{},
-	)
+	err := database.DB.AutoMigrate(&domain.Module{})
 	if err != nil {
 		log.Fatalf("Error al migrar la tabla de módulos: %v", err)
 	}
-
 	log.Println("Migración de tabla de módulos (modules) completada")
 }

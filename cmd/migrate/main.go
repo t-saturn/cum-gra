@@ -3,12 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/joho/godotenv"
-
 	"github.com/central-user-manager/internal/adapters/repositories/postgres/migrations"
 	"github.com/central-user-manager/internal/infrastructure/config"
 	"github.com/central-user-manager/internal/infrastructure/database"
 	"github.com/central-user-manager/pkg/logger"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -24,14 +23,14 @@ func main() {
 	config.LoadConfig()
 	database.Connect()
 
-	// Ejecutar migraciones en orden de dependencias
+	// Ejecutar migraciones en orden de dependencias estricto
 	migrations.CreateEnumsAndExtensions()
 	migrations.CreateIndependentTables()
 	migrations.CreateUsersTables()
 	migrations.CreateApplicationsTables()
+	migrations.CreateUserApplicationRelations() // Nueva función
 	migrations.CreateModulesTables()
 	migrations.CreatePermissionsTables()
 	migrations.CreateRestrictionsTables()
 	migrations.CreateHistoryTables()
-	migrations.CreateIndexes()
 }
