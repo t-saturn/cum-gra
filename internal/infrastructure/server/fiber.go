@@ -1,4 +1,3 @@
-// internal/infrastructure/server/fiber.go
 package server
 
 import (
