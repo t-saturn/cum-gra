@@ -15,3 +15,12 @@ func NewStructuralPositionRepository() repositories.StructuralPositionRepository
 func (r *structuralPositionRepository) Create(position *domain.StructuralPosition) error {
 	return database.DB.Create(position).Error
 }
+
+func (r *structuralPositionRepository) ExistsByNameOrCode(name, code string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("name = ? OR code = ?", name, code).
+		Count(&count).Error
+	return count > 0, err
+}

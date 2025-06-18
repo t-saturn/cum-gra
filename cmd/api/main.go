@@ -5,6 +5,7 @@ import (
 	"github.com/central-user-manager/internal/infrastructure/database"
 	"github.com/central-user-manager/internal/infrastructure/server"
 	"github.com/central-user-manager/pkg/logger"
+	"github.com/central-user-manager/pkg/validator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,8 @@ func main() {
 	config.LoadConfig()
 	database.Connect()
 
+	validator.InitValidator()
+
 	app := fiber.New()
 	server.Setup(app)
 
@@ -28,4 +31,5 @@ func main() {
 	if err := app.Listen(":" + port); err != nil {
 		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
 	}
+
 }

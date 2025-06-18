@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/central-user-manager/internal/core/domain"
@@ -18,6 +19,15 @@ func NewStructuralPositionService(r repositories.StructuralPositionRepository) *
 }
 
 func (s *StructuralPositionService) Create(input dto.CreateStructuralPositionDTO) error {
+	// Validar existencia previa
+	exists, err := s.repo.ExistsByNameOrCode(input.Name, input.Code)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return fmt.Errorf("ya existe un cargo con ese nombre o código")
+	}
+
 	position := &domain.StructuralPosition{
 		ID:          uuid.New(),
 		Name:        input.Name,
