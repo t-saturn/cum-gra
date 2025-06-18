@@ -1,11 +1,37 @@
-// internal/infrastructure/server/middleware/logger.go
 package middleware
 
 import (
+	"time"
+
+	"github.com/central-user-manager/pkg/logger"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/sirupsen/logrus"
 )
 
 func Setup(app *fiber.App) {
-	app.Use(logger.New())
+	app.Use(func(c *fiber.Ctx) error {
+		start := time.Now()
+
+		err := c.Next() // Procesar siguiente middleware/handler
+
+		stop := time.Now()
+		latency := stop.Sub(start)
+
+		entry := logger.Log.WithFields(logrus.Fields{
+			"status":    c.Response().StatusCode(),
+			"method":    c.Method(),
+			"path":      c.OriginalURL(),
+			"latency":   latency,
+			"ip":        c.IP(),
+			"userAgent": c.Get("User-Agent"),
+		})
+
+		if err != nil {
+			entry.Error(err)
+		} else {
+			entry.Info("HTTP request")
+		}
+
+		return err
+	})
 }

@@ -1,4 +1,3 @@
-// internal/infrastructure/server/middleware/cors.go (opcional si vas a usar desde el principio)
 package middleware
 
 import (

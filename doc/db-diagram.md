@@ -6,6 +6,7 @@ Table users {
   first_name varchar(100)
   last_name varchar(100)
   phone varchar(20)
+  dni varchar(8) [unique, not null]
   email_verified boolean [default: false]
   phone_verified boolean [default: false]
   two_factor_enabled boolean [default: false]
@@ -20,24 +21,6 @@ Table users {
   is_deleted boolean [not null, default: false]
   deleted_at timestamp [null]
   deleted_by uuid [ref: > users.id]
-}
-
-Table user_sessions {
-  id uuid [primary key]
-  user_id uuid [ref: > users.id]
-  session_token varchar(512) [unique, not null]
-  refresh_token varchar(512) [unique, not null]
-  device_info text
-  ip_address inet
-  user_agent text
-  is_active boolean [default: true]
-  expires_at timestamp [not null]
-  created_at timestamp [default: `now()`]
-  last_activity_at timestamp [default: `now()`]
-
-  // Borrado lógico
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
 }
 
 Table applications {
@@ -153,24 +136,6 @@ Table user_module_restrictions {
   Note: "Restricciones específicas de módulos por usuario que sobrescriben los permisos del rol"
 }
 
-Table oauth_tokens {
-  id uuid [primary key]
-  user_id uuid [ref: > users.id]
-  application_id uuid [ref: > applications.id]
-  access_token varchar(512) [unique, not null]
-  refresh_token varchar(512) [unique]
-  token_type varchar(50) [default: 'Bearer']
-  scopes text[] [note: 'Granted scopes']
-  expires_at timestamp [not null]
-  created_at timestamp [default: `now()`]
-  revoked_at timestamp [note: 'When token was revoked']
-
-  // Borrado lógico
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
-  deleted_by uuid [ref: > users.id]
-}
-
 Table structural_positions {
   id uuid [primary key]
   name varchar(255) [not null]
@@ -211,22 +176,6 @@ Table password_history {
   previous_password_hash varchar(255) [not null]
   changed_at timestamp [default: `now()`]
   changed_by uuid [ref: > users.id]
-
-  // Borrado lógico
-  is_deleted boolean [not null, default: false]
-  deleted_at timestamp [null]
-  deleted_by uuid [ref: > users.id]
-}
-
-Table password_resets {
-  id uuid [primary key]
-  user_id uuid [ref: > users.id]
-  token varchar(255) [unique, not null]
-  expires_at timestamp [not null]
-  used_at timestamp
-  ip_address inet
-  user_agent text
-  created_at timestamp [default: `now()`]
 
   // Borrado lógico
   is_deleted boolean [not null, default: false]
