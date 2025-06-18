@@ -1,7 +1,7 @@
-// pkg/logger/logger.go
 package logger
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -20,13 +20,17 @@ func InitLogger() {
 		os.Mkdir(logDir, os.ModePerm)
 	}
 
-	// Crear archivo con timestamp
+	// Nombre del archivo: logs/YYYY-MM-DD.log
 	logFile := filepath.Join(logDir, time.Now().Format("2006-01-02")+".log")
 	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err == nil {
-		Log.Out = file
+
+	if err != nil {
+		Log.SetOutput(os.Stdout)
+		Log.Warn("No se pudo abrir el archivo de log, se usará solo salida estándar")
 	} else {
-		Log.Info("No se pudo abrir el archivo de log, se usará salida estándar")
+		// Salida múltiple: archivo + consola
+		multiWriter := io.MultiWriter(os.Stdout, file)
+		Log.SetOutput(multiWriter)
 	}
 
 	Log.SetFormatter(&logrus.TextFormatter{
