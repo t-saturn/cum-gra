@@ -8,7 +8,7 @@ import (
 )
 
 func Ping(c fiber.Ctx) error {
-	return c.SendString("Pong!")
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok"})
 }
 
 func SetupRoutes(app *fiber.App) {

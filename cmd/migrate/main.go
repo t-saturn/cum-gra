@@ -24,6 +24,13 @@ func main() {
 	config.LoadConfig()
 	database.Connect()
 
-	// Ejecutar migraciones
-	migrations.CreateUsersTable()
+	// Ejecutar migraciones en orden de dependencias
+	migrations.CreateEnumsAndExtensions()
+	migrations.CreateBaseEntitiesTables()
+	migrations.CreateApplicationsTables()
+	migrations.CreateModulesTables()
+	migrations.CreatePermissionsTables()
+	migrations.CreateRestrictionsTables()
+	migrations.CreateHistoryTables()
+	migrations.CreateIndexes()
 }
