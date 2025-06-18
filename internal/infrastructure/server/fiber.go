@@ -4,7 +4,7 @@ import (
 	"github.com/central-user-manager/internal/infrastructure/server/middleware"
 	"github.com/central-user-manager/internal/infrastructure/server/routes"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func Setup(app *fiber.App) {

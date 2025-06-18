@@ -5,7 +5,7 @@ import (
 	"github.com/central-user-manager/internal/shared/dto"
 	"github.com/central-user-manager/pkg/logger"
 	validate "github.com/central-user-manager/pkg/validator"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type StructuralPositionHandler struct {
@@ -16,10 +16,10 @@ func NewStructuralPositionHandler(s *services.StructuralPositionService) *Struct
 	return &StructuralPositionHandler{service: s}
 }
 
-func (h *StructuralPositionHandler) Create(c *fiber.Ctx) error {
+func (h *StructuralPositionHandler) Create(c fiber.Ctx) error {
 	var input dto.CreateStructuralPositionDTO
 
-	if err := c.BodyParser(&input); err != nil {
+	if err := c.Bind().Body(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Datos inválidos"})
 	}
 
