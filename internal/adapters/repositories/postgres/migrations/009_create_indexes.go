@@ -56,7 +56,7 @@ func CreateIndexes() {
 		"CREATE INDEX IF NOT EXISTS idx_organic_units_parent_id ON organic_units(parent_id);",
 		"CREATE INDEX IF NOT EXISTS idx_organic_units_is_deleted ON organic_units(is_deleted);",
 
-		// Índices para password_histories
+		// Índices para password_histories (GORM pluraliza automáticamente)
 		"CREATE INDEX IF NOT EXISTS idx_password_histories_user_id ON password_histories(user_id);",
 		"CREATE INDEX IF NOT EXISTS idx_password_histories_is_deleted ON password_histories(is_deleted);",
 	}

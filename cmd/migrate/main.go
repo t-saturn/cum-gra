@@ -26,7 +26,8 @@ func main() {
 
 	// Ejecutar migraciones en orden de dependencias
 	migrations.CreateEnumsAndExtensions()
-	migrations.CreateBaseEntitiesTables()
+	migrations.CreateIndependentTables()
+	migrations.CreateUsersTables()
 	migrations.CreateApplicationsTables()
 	migrations.CreateModulesTables()
 	migrations.CreatePermissionsTables()

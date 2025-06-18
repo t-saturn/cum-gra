@@ -7,13 +7,13 @@ import (
 	"github.com/central-user-manager/internal/infrastructure/database"
 )
 
-func CreatePermissionsTables() {
+func CreateUsersTables() {
 	err := database.DB.AutoMigrate(
-		&domain.ModuleRolePermission{},
+		&domain.User{},
 	)
 	if err != nil {
-		log.Fatalf("Error al migrar la tabla de permisos: %v", err)
+		log.Fatalf("Error al migrar la tabla de usuarios: %v", err)
 	}
 
-	log.Println("Migración de tabla de permisos (module_role_permissions) completada")
+	log.Println("Migración de tabla de usuarios (users) completada")
 }

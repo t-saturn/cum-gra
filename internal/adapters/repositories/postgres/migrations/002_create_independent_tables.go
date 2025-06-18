@@ -7,15 +7,14 @@ import (
 	"github.com/central-user-manager/internal/infrastructure/database"
 )
 
-func CreateBaseEntitiesTables() {
+func CreateIndependentTables() {
 	err := database.DB.AutoMigrate(
 		&domain.StructuralPosition{},
 		&domain.OrganicUnit{},
-		&domain.User{},
 	)
 	if err != nil {
-		log.Fatalf("Error al migrar las tablas base: %v", err)
+		log.Fatalf("Error al migrar las tablas independientes: %v", err)
 	}
 
-	log.Println("Migración de tablas base (users, structural_positions, organic_units) completada")
+	log.Println("Migración de tablas independientes (structural_positions, organic_units) completada")
 }
