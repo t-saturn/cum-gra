@@ -9,6 +9,7 @@ import (
 )
 
 type Config struct {
+	SERVERPort string
 	DBHost     string
 	DBPort     string
 	DBUser     string
@@ -23,6 +24,7 @@ func LoadConfig() {
 	viper.AutomaticEnv()
 
 	cfg = Config{
+		SERVERPort: getEnv("SERVER_PORT", "8000"),
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
 		DBUser:     getEnv("DB_USER", "postgres"),

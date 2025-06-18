@@ -14,7 +14,7 @@ func main() {
 
 	logger.InitLogger()
 
-	logger.Log.Info("🚀 Iniciando servidor...")
+	logger.Log.Info("Iniciando servidor...")
 
 	config.LoadConfig()
 	database.Connect()
@@ -22,13 +22,10 @@ func main() {
 	app := fiber.New()
 	server.Setup(app)
 
-	port := config.GetConfig().DBPort
-	if port == "" {
-		port = "8080"
-	}
+	port := config.GetConfig().SERVERPort
 
-	logger.Log.Infof("🌐 Servidor escuchando en http://localhost:%s", port)
+	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
 	if err := app.Listen(":" + port); err != nil {
-		logger.Log.Fatalf("❌ Error al iniciar el servidor: %v", err)
+		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
 	}
 }
