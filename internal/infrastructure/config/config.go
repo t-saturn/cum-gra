@@ -29,7 +29,7 @@ func LoadConfig() {
 		DBPort:     getEnv("DB_PORT", "5432"),
 		DBUser:     getEnv("DB_USER", "postgres"),
 		DBPassword: getEnv("DB_PASSWORD", "password"),
-		DBName:     getEnv("DB_NAME", "auth_service"),
+		DBName:     getEnv("DB_NAME", "postgres_db"),
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 	}
 }
@@ -42,6 +42,6 @@ func getEnv(key string, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
-	log.Printf("⚠️  %s no definido, usando valor por defecto: %s", key, fallback)
+	log.Printf("%s no definido, usando valor por defecto: %s", key, fallback)
 	return fallback
 }

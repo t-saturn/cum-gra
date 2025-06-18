@@ -22,10 +22,10 @@ func Connect() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		logger.Log.Fatalf("❌ Error al conectar con la base de datos: %v", err)
+		logger.Log.Fatalf("Error al conectar con la base de datos: %v", err)
 	}
 
 	DB = db
 
-	logger.Log.Info("✅ Conexión exitosa a la base de datos PostgreSQL")
+	logger.Log.Info("Conexión exitosa a la base de datos PostgreSQL")
 }
