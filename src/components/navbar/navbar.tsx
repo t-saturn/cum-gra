@@ -1,14 +1,12 @@
-/* eslint-disable @next/next/no-img-element */
-
 import { Fullscreen } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useProfile } from '../../context/ProfileContext';
 import { ThemeToggle } from '../theme/theme-toggle';
+import { UserPopover } from './user-popover';
+import { AppsPopover } from './apps-popover';
 
 function Navbar() {
-  const { profile } = useProfile();
 
   const handleToggleFullscreen = () => {
     if (!document.fullscreenElement)
@@ -31,17 +29,8 @@ function Navbar() {
           <Fullscreen className="h-5 w-5" />
           <span className="sr-only">Fullscreen</span>
         </Button>
-        <div className="flex items-center gap-2">
-          <img
-            src={profile.avatar ? profile.avatar : 'https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png'}
-            alt="Anna Adame"
-            className="rounded-full w-10 h-10 object-cover"
-          />
-          <div className="hidden text-sm md:block">
-            <div className="font-medium text-primary">{profile.name}</div>
-            <div className="text-xs text-muted-foreground">{profile.role}</div>
-          </div>
-        </div>
+        <AppsPopover />
+        <UserPopover />
       </div>
     </header>
   );
