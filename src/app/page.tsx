@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import Image from "next/image";
 
 export default function Home() {
@@ -24,6 +25,8 @@ export default function Home() {
             Save and see your changes instantly.
           </li>
         </ol>
+
+        <ThemeToggle />
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
