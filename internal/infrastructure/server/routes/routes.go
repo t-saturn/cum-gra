@@ -7,17 +7,9 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func Ping(c fiber.Ctx) error {
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok"})
-}
-
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
-	// Api ping
-	api.Get("/ping", Ping)
-
-	// Structural Positions
 	structuralRepo := repo.NewStructuralPositionRepository()
 	structuralService := services.NewStructuralPositionService(structuralRepo)
 	structuralHandler := handlers.NewStructuralPositionHandler(structuralService)
@@ -51,4 +43,14 @@ func SetupRoutes(app *fiber.App) {
 	apps.Put("/:id", appHandler.Update)
 	apps.Delete("/:id", appHandler.Delete)
 
+	modRepo := repo.NewModuleRepository()
+	modService := services.NewModuleService(modRepo)
+	modHandler := handlers.NewModuleHandler(modService)
+
+	modules := api.Group("/modules")
+	modules.Post("/", modHandler.Create)
+	modules.Get("/", modHandler.GetAll)
+	modules.Get("/:id", modHandler.GetByID)
+	modules.Put("/:id", modHandler.Update)
+	modules.Delete("/:id", modHandler.Delete)
 }
