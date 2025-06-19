@@ -22,5 +22,10 @@ func SetupRoutes(app *fiber.App) {
 	structuralService := services.NewStructuralPositionService(structuralRepo)
 	structuralHandler := handlers.NewStructuralPositionHandler(structuralService)
 
-	api.Post("/positions", structuralHandler.Create)
+	positions := api.Group("/positions")
+	positions.Post("/", structuralHandler.Create)
+	positions.Get("/", structuralHandler.GetAll)
+	positions.Get("/:id", structuralHandler.GetByID)
+	positions.Put("/:id", structuralHandler.Update)
+	positions.Delete("/:id", structuralHandler.Delete)
 }

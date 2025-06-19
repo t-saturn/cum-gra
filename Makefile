@@ -65,7 +65,7 @@ run:
 	@go run cmd/api/main.go
 dev:
 	@echo "$(GREEN) Iniciando desarrollo en caliente...$(NC)"
-	@command -v air >/dev/null 2>&1 || { echo "$(RED) Air no está instalado. Instala con: go install github.com/cosmtrek/air@latest$(NC)"; exit 1; }
+	@command -v air >/dev/null 2>&1 || echo "$(RED) Air no está instalado. Instala con: go install github.com/cosmtrek/air@latest$(NC)"; exit 1;
 	@air
 clean:
 	@echo "$(YELLOW) Limpiando artefactos...$(NC)"
