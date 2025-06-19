@@ -1,50 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  User,
-  Shield,
-  Bell,
-  Activity,
-  Key,
-  Smartphone,
-  Calendar,
-  MapPin,
-  Clock,
-  Save,
-  Camera,
-  Download,
-  Trash2,
-  Eye,
-  EyeOff,
-  AlertTriangle,
-  CheckCircle,
-  QrCode,
-} from "lucide-react";
+import { MapPin, Clock, Save, Camera, Download, Trash2, Eye, EyeOff, AlertTriangle, CheckCircle } from "lucide-react";
+import { User, Shield, Bell, Activity, Key, Smartphone, Calendar, QrCode } from "lucide-react";
 
 interface UserProfile {
   personal: {
@@ -169,11 +139,7 @@ export default function AccountManagement() {
     setHasChanges(false);
   };
 
-  const updateProfile = (
-    section: keyof UserProfile,
-    field: string,
-    value: string | boolean | number
-  ) => {
+  const updateProfile = (section: keyof UserProfile, field: string, value: string | boolean | number) => {
     setProfile((prev) => ({
       ...prev,
       [section]: {
@@ -184,11 +150,7 @@ export default function AccountManagement() {
     setHasChanges(true);
   };
 
-  const updateNestedProfile = <
-    T extends keyof UserProfile,
-    K extends keyof UserProfile[T],
-    V extends UserProfile[T][K]
-  >(
+  const updateNestedProfile = <T extends keyof UserProfile, K extends keyof UserProfile[T], V extends UserProfile[T][K]>(
     section: T,
     subsection: K & string,
     field: string,
@@ -212,9 +174,7 @@ export default function AccountManagement() {
       {hasChanges && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Tienes cambios sin guardar. No olvides guardar tu perfil.
-          </AlertDescription>
+          <AlertDescription>Tienes cambios sin guardar. No olvides guardar tu perfil.</AlertDescription>
         </Alert>
       )}
 
@@ -256,27 +216,19 @@ export default function AccountManagement() {
                 <User className="w-5 h-5" />
                 Información Personal
               </CardTitle>
-              <CardDescription>
-                Actualiza tu información personal y datos de contacto
-              </CardDescription>
+              <CardDescription>Actualiza tu información personal y datos de contacto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-6">
                 <div className="relative">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage
-                      src={profile.personal.avatar || "/placeholder.svg"}
-                    />
+                    <AvatarImage src={profile.personal.avatar || "/placeholder.svg"} />
                     <AvatarFallback className="text-2xl bg-gradient-to-r from-blue-500 to-purple-600 text-white">
                       {profile.personal.firstName[0]}
                       {profile.personal.lastName[0]}
                     </AvatarFallback>
                   </Avatar>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                  >
+                  <Button size="sm" variant="outline" className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0">
                     <Camera className="w-4 h-4" />
                   </Button>
                 </div>
@@ -284,12 +236,8 @@ export default function AccountManagement() {
                   <h3 className="text-lg font-semibold">
                     {profile.personal.firstName} {profile.personal.lastName}
                   </h3>
-                  <p className="text-muted-foreground">
-                    {profile.personal.position}
-                  </p>
-                  <Badge variant="secondary">
-                    {profile.personal.department}
-                  </Badge>
+                  <p className="text-muted-foreground">{profile.personal.position}</p>
+                  <Badge variant="secondary">{profile.personal.department}</Badge>
                 </div>
               </div>
 
@@ -298,67 +246,35 @@ export default function AccountManagement() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">Nombre</Label>
-                  <Input
-                    id="firstName"
-                    value={profile.personal.firstName}
-                    onChange={(e) =>
-                      updateProfile("personal", "firstName", e.target.value)
-                    }
-                  />
+                  <Input id="firstName" value={profile.personal.firstName} onChange={(e) => updateProfile("personal", "firstName", e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Apellido</Label>
-                  <Input
-                    id="lastName"
-                    value={profile.personal.lastName}
-                    onChange={(e) =>
-                      updateProfile("personal", "lastName", e.target.value)
-                    }
-                  />
+                  <Input id="lastName" value={profile.personal.lastName} onChange={(e) => updateProfile("personal", "lastName", e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={profile.personal.email}
-                    onChange={(e) =>
-                      updateProfile("personal", "email", e.target.value)
-                    }
-                  />
+                  <Input id="email" type="email" value={profile.personal.email} onChange={(e) => updateProfile("personal", "email", e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Teléfono</Label>
-                  <Input
-                    id="phone"
-                    value={profile.personal.phone}
-                    onChange={(e) =>
-                      updateProfile("personal", "phone", e.target.value)
-                    }
-                  />
+                  <Input id="phone" value={profile.personal.phone} onChange={(e) => updateProfile("personal", "phone", e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="department">Departamento</Label>
-                  <Select
-                    value={profile.personal.department}
-                    onValueChange={(value) =>
-                      updateProfile("personal", "department", value)
-                    }
-                  >
+                  <Select value={profile.personal.department} onValueChange={(value) => updateProfile("personal", "department", value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Tecnología">Tecnología</SelectItem>
-                      <SelectItem value="Recursos Humanos">
-                        Recursos Humanos
-                      </SelectItem>
+                      <SelectItem value="Recursos Humanos">Recursos Humanos</SelectItem>
                       <SelectItem value="Finanzas">Finanzas</SelectItem>
                       <SelectItem value="Operaciones">Operaciones</SelectItem>
                     </SelectContent>
@@ -366,48 +282,25 @@ export default function AccountManagement() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="position">Posición</Label>
-                  <Input
-                    id="position"
-                    value={profile.personal.position}
-                    onChange={(e) =>
-                      updateProfile("personal", "position", e.target.value)
-                    }
-                  />
+                  <Input id="position" value={profile.personal.position} onChange={(e) => updateProfile("personal", "position", e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="location">Ubicación</Label>
-                  <Input
-                    id="location"
-                    value={profile.personal.location}
-                    onChange={(e) =>
-                      updateProfile("personal", "location", e.target.value)
-                    }
-                  />
+                  <Input id="location" value={profile.personal.location} onChange={(e) => updateProfile("personal", "location", e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Zona Horaria</Label>
-                  <Select
-                    value={profile.personal.timezone}
-                    onValueChange={(value) =>
-                      updateProfile("personal", "timezone", value)
-                    }
-                  >
+                  <Select value={profile.personal.timezone} onValueChange={(value) => updateProfile("personal", "timezone", value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="America/Lima">
-                        America/Lima (UTC-5)
-                      </SelectItem>
-                      <SelectItem value="America/New_York">
-                        America/New_York (UTC-5)
-                      </SelectItem>
-                      <SelectItem value="Europe/Madrid">
-                        Europe/Madrid (UTC+1)
-                      </SelectItem>
+                      <SelectItem value="America/Lima">America/Lima (UTC-5)</SelectItem>
+                      <SelectItem value="America/New_York">America/New_York (UTC-5)</SelectItem>
+                      <SelectItem value="Europe/Madrid">Europe/Madrid (UTC+1)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -415,15 +308,7 @@ export default function AccountManagement() {
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Biografía</Label>
-                <Textarea
-                  id="bio"
-                  value={profile.personal.bio}
-                  onChange={(e) =>
-                    updateProfile("personal", "bio", e.target.value)
-                  }
-                  rows={4}
-                  placeholder="Cuéntanos sobre ti..."
-                />
+                <Textarea id="bio" value={profile.personal.bio} onChange={(e) => updateProfile("personal", "bio", e.target.value)} rows={4} placeholder="Cuéntanos sobre ti..." />
               </div>
             </CardContent>
           </Card>
@@ -437,31 +322,19 @@ export default function AccountManagement() {
                   <Shield className="w-5 h-5" />
                   Configuración de Seguridad
                 </CardTitle>
-                <CardDescription>
-                  Gestiona tu contraseña y configuraciones de autenticación
-                </CardDescription>
+                <CardDescription>Gestiona tu contraseña y configuraciones de autenticación</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>Autenticación de Dos Factores</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Protege tu cuenta con un segundo factor de autenticación
-                      </p>
+                      <p className="text-sm text-muted-foreground">Protege tu cuenta con un segundo factor de autenticación</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Switch
-                        checked={profile.security.twoFactorEnabled}
-                        onCheckedChange={(checked) =>
-                          updateProfile("security", "twoFactorEnabled", checked)
-                        }
-                      />
+                      <Switch checked={profile.security.twoFactorEnabled} onCheckedChange={(checked) => updateProfile("security", "twoFactorEnabled", checked)} />
                       {profile.security.twoFactorEnabled && (
-                        <Badge
-                          variant="outline"
-                          className="text-green-600 border-green-600"
-                        >
+                        <Badge variant="outline" className="text-green-600 border-green-600">
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Activo
                         </Badge>
@@ -492,11 +365,7 @@ export default function AccountManagement() {
                     <div className="space-y-2">
                       <Label htmlFor="currentPassword">Contraseña Actual</Label>
                       <div className="relative">
-                        <Input
-                          id="currentPassword"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Ingresa tu contraseña actual"
-                        />
+                        <Input id="currentPassword" type={showPassword ? "text" : "password"} placeholder="Ingresa tu contraseña actual" />
                         <Button
                           type="button"
                           variant="ghost"
@@ -504,11 +373,7 @@ export default function AccountManagement() {
                           className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
                       </div>
                     </div>
@@ -516,21 +381,11 @@ export default function AccountManagement() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="newPassword">Nueva Contraseña</Label>
-                        <Input
-                          id="newPassword"
-                          type="password"
-                          placeholder="Nueva contraseña"
-                        />
+                        <Input id="newPassword" type="password" placeholder="Nueva contraseña" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">
-                          Confirmar Contraseña
-                        </Label>
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          placeholder="Confirma la nueva contraseña"
-                        />
+                        <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+                        <Input id="confirmPassword" type="password" placeholder="Confirma la nueva contraseña" />
                       </div>
                     </div>
 
@@ -549,25 +404,11 @@ export default function AccountManagement() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label>Notificar inicios de sesión</Label>
-                      <Switch
-                        checked={profile.security.loginNotifications}
-                        onCheckedChange={(checked) =>
-                          updateProfile(
-                            "security",
-                            "loginNotifications",
-                            checked
-                          )
-                        }
-                      />
+                      <Switch checked={profile.security.loginNotifications} onCheckedChange={(checked) => updateProfile("security", "loginNotifications", checked)} />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label>Alertas de seguridad</Label>
-                      <Switch
-                        checked={profile.security.securityAlerts}
-                        onCheckedChange={(checked) =>
-                          updateProfile("security", "securityAlerts", checked)
-                        }
-                      />
+                      <Switch checked={profile.security.securityAlerts} onCheckedChange={(checked) => updateProfile("security", "securityAlerts", checked)} />
                     </div>
                   </div>
                 </div>
@@ -577,46 +418,32 @@ export default function AccountManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>Estado de Seguridad</CardTitle>
-                <CardDescription>
-                  Información sobre tu actividad de seguridad actual
-                </CardDescription>
+                <CardDescription>Información sobre tu actividad de seguridad actual</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        Última actualización de contraseña
-                      </span>
+                      <span className="text-sm text-muted-foreground">Última actualización de contraseña</span>
                     </div>
-                    <p className="font-medium">
-                      {profile.security.passwordLastChanged}
-                    </p>
+                    <p className="font-medium">{profile.security.passwordLastChanged}</p>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Smartphone className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        Dispositivos de confianza
-                      </span>
+                      <span className="text-sm text-muted-foreground">Dispositivos de confianza</span>
                     </div>
-                    <p className="font-medium">
-                      {profile.security.trustedDevices} dispositivos
-                    </p>
+                    <p className="font-medium">{profile.security.trustedDevices} dispositivos</p>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        Sesiones activas
-                      </span>
+                      <span className="text-sm text-muted-foreground">Sesiones activas</span>
                     </div>
-                    <p className="font-medium">
-                      {profile.security.activeSessions} sesiones
-                    </p>
+                    <p className="font-medium">{profile.security.activeSessions} sesiones</p>
                   </div>
 
                   <div className="space-y-2">
@@ -639,9 +466,7 @@ export default function AccountManagement() {
                   <Bell className="w-5 h-5" />
                   Preferencias de Notificaciones
                 </CardTitle>
-                <CardDescription>
-                  Configura cómo y cuándo recibir notificaciones
-                </CardDescription>
+                <CardDescription>Configura cómo y cuándo recibir notificaciones</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -651,23 +476,16 @@ export default function AccountManagement() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label>Notificaciones por Email</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Recibir notificaciones en tu correo
-                        </p>
+                        <p className="text-sm text-muted-foreground">Recibir notificaciones en tu correo</p>
                       </div>
                       <Switch
                         checked={profile.preferences.notifications.email}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "notifications",
-                            "email",
-                            {
-                              email: checked,
-                              push: profile.preferences.notifications.push,
-                              sms: profile.preferences.notifications.sms,
-                            }
-                          )
+                          updateNestedProfile("preferences", "notifications", "email", {
+                            email: checked,
+                            push: profile.preferences.notifications.push,
+                            sms: profile.preferences.notifications.sms,
+                          })
                         }
                       />
                     </div>
@@ -675,23 +493,16 @@ export default function AccountManagement() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label>Notificaciones Push</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Notificaciones en el navegador
-                        </p>
+                        <p className="text-sm text-muted-foreground">Notificaciones en el navegador</p>
                       </div>
                       <Switch
                         checked={profile.preferences.notifications.push}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "notifications",
-                            "push",
-                            {
-                              email: profile.preferences.notifications.email,
-                              push: checked,
-                              sms: profile.preferences.notifications.sms,
-                            }
-                          )
+                          updateNestedProfile("preferences", "notifications", "push", {
+                            email: profile.preferences.notifications.email,
+                            push: checked,
+                            sms: profile.preferences.notifications.sms,
+                          })
                         }
                       />
                     </div>
@@ -699,23 +510,16 @@ export default function AccountManagement() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label>Notificaciones SMS</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Mensajes de texto a tu teléfono
-                        </p>
+                        <p className="text-sm text-muted-foreground">Mensajes de texto a tu teléfono</p>
                       </div>
                       <Switch
                         checked={profile.preferences.notifications.sms}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "notifications",
-                            "sms",
-                            {
-                              email: profile.preferences.notifications.email,
-                              push: profile.preferences.notifications.push,
-                              sms: checked,
-                            }
-                          )
+                          updateNestedProfile("preferences", "notifications", "sms", {
+                            email: profile.preferences.notifications.email,
+                            push: profile.preferences.notifications.push,
+                            sms: checked,
+                          })
                         }
                       />
                     </div>
@@ -733,18 +537,11 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.profileVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "privacy",
-                            "profileVisible",
-                            {
-                              profileVisible: checked,
-                              activityVisible:
-                                profile.preferences.privacy.activityVisible,
-                              contactVisible:
-                                profile.preferences.privacy.contactVisible,
-                            }
-                          )
+                          updateNestedProfile("preferences", "privacy", "profileVisible", {
+                            profileVisible: checked,
+                            activityVisible: profile.preferences.privacy.activityVisible,
+                            contactVisible: profile.preferences.privacy.contactVisible,
+                          })
                         }
                       />
                     </div>
@@ -753,18 +550,11 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.activityVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "privacy",
-                            "activityVisible",
-                            {
-                              profileVisible:
-                                profile.preferences.privacy.profileVisible,
-                              activityVisible: checked,
-                              contactVisible:
-                                profile.preferences.privacy.contactVisible,
-                            }
-                          )
+                          updateNestedProfile("preferences", "privacy", "activityVisible", {
+                            profileVisible: profile.preferences.privacy.profileVisible,
+                            activityVisible: checked,
+                            contactVisible: profile.preferences.privacy.contactVisible,
+                          })
                         }
                       />
                     </div>
@@ -773,18 +563,11 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.contactVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile(
-                            "preferences",
-                            "privacy",
-                            "contactVisible",
-                            {
-                              profileVisible:
-                                profile.preferences.privacy.profileVisible,
-                              activityVisible:
-                                profile.preferences.privacy.activityVisible,
-                              contactVisible: checked,
-                            }
-                          )
+                          updateNestedProfile("preferences", "privacy", "contactVisible", {
+                            profileVisible: profile.preferences.privacy.profileVisible,
+                            activityVisible: profile.preferences.privacy.activityVisible,
+                            contactVisible: checked,
+                          })
                         }
                       />
                     </div>
@@ -796,19 +579,12 @@ export default function AccountManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>Preferencias de Interfaz</CardTitle>
-                <CardDescription>
-                  Personaliza la apariencia y comportamiento de la interfaz
-                </CardDescription>
+                <CardDescription>Personaliza la apariencia y comportamiento de la interfaz</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="theme">Tema</Label>
-                  <Select
-                    value={profile.preferences.theme}
-                    onValueChange={(value) =>
-                      updateProfile("preferences", "theme", value)
-                    }
-                  >
+                  <Select value={profile.preferences.theme} onValueChange={(value) => updateProfile("preferences", "theme", value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -822,12 +598,7 @@ export default function AccountManagement() {
 
                 <div className="space-y-2">
                   <Label htmlFor="language">Idioma</Label>
-                  <Select
-                    value={profile.personal.language}
-                    onValueChange={(value) =>
-                      updateProfile("personal", "language", value)
-                    }
-                  >
+                  <Select value={profile.personal.language} onValueChange={(value) => updateProfile("personal", "language", value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -850,27 +621,14 @@ export default function AccountManagement() {
                 <Activity className="w-5 h-5" />
                 Actividad Reciente
               </CardTitle>
-              <CardDescription>
-                Historial de tu actividad y accesos al sistema
-              </CardDescription>
+              <CardDescription>Historial de tu actividad y accesos al sistema</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
+                  <div key={activity.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          activity.status === "success"
-                            ? "bg-green-500"
-                            : activity.status === "warning"
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                        }`}
-                      />
+                      <div className={`w-2 h-2 rounded-full ${activity.status === "success" ? "bg-green-500" : activity.status === "warning" ? "bg-yellow-500" : "bg-red-500"}`} />
                       <div>
                         <p className="font-medium">{activity.action}</p>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -889,15 +647,7 @@ export default function AccountManagement() {
                         </div>
                       </div>
                     </div>
-                    <Badge
-                      variant={
-                        activity.status === "success"
-                          ? "default"
-                          : "destructive"
-                      }
-                    >
-                      {activity.status === "success" ? "Exitoso" : "Alerta"}
-                    </Badge>
+                    <Badge variant={activity.status === "success" ? "default" : "destructive"}>{activity.status === "success" ? "Exitoso" : "Alerta"}</Badge>
                   </div>
                 ))}
               </div>
@@ -911,9 +661,7 @@ export default function AccountManagement() {
           <Card>
             <CardHeader>
               <CardTitle>Gestión de Datos</CardTitle>
-              <CardDescription>
-                Opciones para gestionar tus datos personales
-              </CardDescription>
+              <CardDescription>Opciones para gestionar tus datos personales</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-4">
@@ -921,18 +669,13 @@ export default function AccountManagement() {
                   <Download className="w-4 h-4 mr-2" />
                   Descargar Mis Datos
                 </Button>
-                <Button
-                  variant="outline"
-                  className="text-destructive hover:text-destructive"
-                >
+                <Button variant="outline" className="text-destructive hover:text-destructive">
                   <Trash2 className="w-4 h-4 mr-2" />
                   Eliminar Cuenta
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Puedes descargar una copia de todos tus datos o solicitar la
-                eliminación de tu cuenta. La eliminación de cuenta es
-                irreversible.
+                Puedes descargar una copia de todos tus datos o solicitar la eliminación de tu cuenta. La eliminación de cuenta es irreversible.
               </p>
             </CardContent>
           </Card>
