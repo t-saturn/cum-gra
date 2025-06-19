@@ -6,14 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserStatus string
-
-const (
-	UserStatusActive    UserStatus = "active"
-	UserStatusSuspended UserStatus = "suspended"
-	UserStatusDeleted   UserStatus = "deleted"
-)
-
 type User struct {
 	ID                   uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
 	Email                string     `gorm:"type:varchar(255);unique;not null" json:"email"`
@@ -25,7 +17,7 @@ type User struct {
 	EmailVerified        bool       `gorm:"default:false" json:"email_verified"`
 	PhoneVerified        bool       `gorm:"default:false" json:"phone_verified"`
 	TwoFactorEnabled     bool       `gorm:"default:false" json:"two_factor_enabled"`
-	Status               UserStatus `gorm:"type:status_enum;default:'active'" json:"status"`
+	Status               string     `gorm:"type:status_enum;default:'active'" json:"status"`
 	StructuralPositionID *uuid.UUID `gorm:"type:uuid" json:"structural_position_id"`
 	OrganicUnitID        *uuid.UUID `gorm:"type:uuid" json:"organic_unit_id"`
 	CreatedAt            time.Time  `gorm:"default:now()" json:"created_at"`
