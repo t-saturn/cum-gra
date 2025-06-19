@@ -18,7 +18,7 @@ export default async function DashboardLayout({
   return (
       <ProfileProvider>
         <SidebarProvider>
-          <LayoutClient session={session}>{children}</LayoutClient>
+          <LayoutClient>{children}</LayoutClient>
         </SidebarProvider>
       </ProfileProvider>
   );

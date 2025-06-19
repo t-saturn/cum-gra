@@ -78,7 +78,10 @@ export default function AppSidebar({
           {!isCollapsed ? (
             <div className="flex items-center gap-4 font-semibold p-6">
               <Image src="/img/logo.png" alt="logo" width={40} height={20} />
-              <span className="text-xl font-bold">CUM</span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold">CUM</span>
+                <span className="text-sm font-light text-muted-foreground">Central User Manager</span>
+              </div>
             </div>
           ) : (
             <div className="p-2">
@@ -158,7 +161,7 @@ export default function AppSidebar({
                                         }`}
                                         onClick={() => {
                                           if (isMobile) {
-                                            setOpenMobile(false)
+                                            setOpenMobile(false);
                                           }
                                         }}
                                       >
@@ -188,7 +191,7 @@ export default function AppSidebar({
                             onMouseLeave={handleMouseLeave}
                             onClick={() => {
                               if (isMobile) {
-                                setOpenMobile(false)
+                                setOpenMobile(false);
                               }
                             }}
                             tooltip={item.items ? undefined : item.label}

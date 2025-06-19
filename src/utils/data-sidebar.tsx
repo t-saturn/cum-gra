@@ -82,7 +82,7 @@ export const baseMenus: SidebarMenuGroup[] = [
       {
         label: "Reportes",
         icon: BarChart3,
-        url: "/dashboard",
+        url: "/dashboard/reports",
         roles: ["admin"],
         items: [
           {
