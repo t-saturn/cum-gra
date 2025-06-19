@@ -3,7 +3,6 @@ package main
 
 import (
 	"flag"
-	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -17,13 +16,13 @@ import (
 )
 
 func main() {
-	// Cargar archivo .env manualmente
-	if err := godotenv.Load(); err != nil {
-		log.Println("No se pudo cargar el archivo .env, se usará el entorno actual")
-	}
-
 	// Inicializar el logger antes de usarlo
 	logger.InitLogger()
+
+	// Cargar archivo .env manualmente
+	if err := godotenv.Load(); err != nil {
+		logger.Log.Println("No se pudo cargar el archivo .env, se usará el entorno actual")
+	}
 
 	// Cargar configuración y conectar a la BD
 	config.LoadConfig()
@@ -42,13 +41,13 @@ func main() {
 	db := database.DB
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("Error getting underlying sql.DB:", err)
+		logger.Log.Fatal("Error getting underlying sql.DB:", err)
 	}
 
 	// Configurar driver de migración
 	driver, err := postgres.WithInstance(sqlDB, &postgres.Config{})
 	if err != nil {
-		log.Fatal("Error creating postgres driver:", err)
+		logger.Log.Fatal("Error creating postgres driver:", err)
 	}
 
 	// Crear instancia de migrate
@@ -58,7 +57,7 @@ func main() {
 		driver,
 	)
 	if err != nil {
-		log.Fatal("Error creating migrate instance:", err)
+		logger.Log.Fatal("Error creating migrate instance:", err)
 	}
 
 	// Ejecutar comando de migración
@@ -70,9 +69,9 @@ func main() {
 			err = m.Up()
 		}
 		if err != nil && err != migrate.ErrNoChange {
-			log.Fatal("Error running up migration:", err)
+			logger.Log.Fatal("Error running up migration:", err)
 		}
-		log.Println("Migration up completed successfully")
+		logger.Log.Info("Migration up completed successfully")
 
 	case "down":
 		if *steps > 0 {
@@ -81,35 +80,35 @@ func main() {
 			err = m.Down()
 		}
 		if err != nil && err != migrate.ErrNoChange {
-			log.Fatal("Error running down migration:", err)
+			logger.Log.Fatal("Error running down migration:", err)
 		}
-		log.Println("Migration down completed successfully")
+		logger.Log.Info("Migration down completed successfully")
 
 	case "force":
 		if *version == 0 {
-			log.Fatal("Version is required for force command")
+			logger.Log.Fatal("Version is required for force command")
 		}
 		err = m.Force(*version)
 		if err != nil {
-			log.Fatal("Error forcing migration:", err)
+			logger.Log.Fatal("Error forcing migration:", err)
 		}
-		log.Printf("Migration forced to version %d successfully", *version)
+		logger.Log.Infof("Migration forced to version %d successfully", *version)
 
 	case "version":
 		version, dirty, e := m.Version()
 		if err != nil {
-			log.Fatal("Error getting migration version:", e)
+			logger.Log.Fatal("Error getting migration version:", e)
 		}
-		log.Printf("Current migration version: %d, dirty: %t", version, dirty)
+		logger.Log.Infof("Current migration version: %d, dirty: %t", version, dirty)
 
 	case "drop":
 		err = m.Drop()
 		if err != nil {
-			log.Fatal("Error dropping database:", err)
+			logger.Log.Fatal("Error dropping database:", err)
 		}
-		log.Println("Database dropped successfully")
+		logger.Log.Info("Database dropped successfully")
 
 	default:
-		log.Fatal("Invalid command. Use: up, down, force, version, drop")
+		logger.Log.Fatal("Invalid command. Use: up, down, force, version, drop")
 	}
 }
