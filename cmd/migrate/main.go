@@ -23,14 +23,21 @@ func main() {
 	config.LoadConfig()
 	database.Connect()
 
-	// Ejecutar migraciones en orden de dependencias estricto
+	// Deshabilitar claves foráneas temporalmente
+	migrations.DisableForeignKeyConstraints()
+
+	// Ejecutar migraciones
 	migrations.CreateEnumsAndExtensions()
 	migrations.CreateIndependentTables()
 	migrations.CreateUsersTables()
 	migrations.CreateApplicationsTables()
-	migrations.CreateUserApplicationRelations() // Nueva función
 	migrations.CreateModulesTables()
 	migrations.CreatePermissionsTables()
 	migrations.CreateRestrictionsTables()
 	migrations.CreateHistoryTables()
+
+	// Rehabilitar claves foráneas
+	migrations.EnableForeignKeyConstraints()
+
+	log.Println("Todas las migraciones completadas exitosamente")
 }
