@@ -28,4 +28,15 @@ func SetupRoutes(app *fiber.App) {
 	positions.Get("/:id", structuralHandler.GetByID)
 	positions.Put("/:id", structuralHandler.Update)
 	positions.Delete("/:id", structuralHandler.Delete)
+
+	unitRepo := repo.NewOrganicUnitRepository()
+	unitService := services.NewOrganicUnitService(unitRepo)
+	unitHandler := handlers.NewOrganicUnitHandler(unitService)
+
+	units := api.Group("/units")
+	units.Post("/", unitHandler.Create)
+	units.Get("/", unitHandler.GetAll)
+	units.Get("/:id", unitHandler.GetByID)
+	units.Put("/:id", unitHandler.Update)
+	units.Delete("/:id", unitHandler.Delete)
 }
