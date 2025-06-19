@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/central-user-manager/pkg/logger"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/sirupsen/logrus"
 )
 
 func Setup(app *fiber.App) {
-	app.Use(func(c *fiber.Ctx) error {
+	app.Use(func(c fiber.Ctx) error {
 		start := time.Now()
 
 		err := c.Next() // Procesar siguiente middleware/handler

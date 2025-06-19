@@ -6,7 +6,7 @@ import (
 	"github.com/central-user-manager/internal/infrastructure/server"
 	"github.com/central-user-manager/pkg/logger"
 	"github.com/central-user-manager/pkg/validator"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
 )
 
