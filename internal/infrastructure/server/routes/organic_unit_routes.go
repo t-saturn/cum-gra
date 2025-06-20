@@ -8,8 +8,8 @@ import (
 )
 
 func RegisterOrganicUnitRoutes(api fiber.Router) {
-	repo := repo.NewOrganicUnitRepository()
-	service := services.NewOrganicUnitService(repo)
+	repository := repo.NewOrganicUnitRepository()
+	service := services.NewOrganicUnitService(repository)
 	handler := handlers.NewOrganicUnitHandler(service)
 
 	route := api.Group("/organic_units")

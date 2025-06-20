@@ -50,13 +50,19 @@ func (s *UserService) Create(input dto.CreateUserDTO) error {
 	}
 
 	if input.StructuralPositionID != "" {
-		parsed := uuid.MustParse(input.StructuralPositionID)
+		parsed, err := uuid.Parse(input.StructuralPositionID)
+		if err != nil {
+			return fmt.Errorf("invalid StructuralPositionID: %v", err)
+		}
 		user.StructuralPositionID = &parsed
 	} else {
 		user.StructuralPositionID = nil
 	}
 	if input.OrganicUnitID != "" {
-		parsed := uuid.MustParse(input.OrganicUnitID)
+		parsed, err := uuid.Parse(input.OrganicUnitID)
+		if err != nil {
+			return fmt.Errorf("invalid OrganicUnitID: %v", err)
+		}
 		user.OrganicUnitID = &parsed
 	} else {
 		user.OrganicUnitID = nil
