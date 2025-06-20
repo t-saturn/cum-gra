@@ -32,7 +32,7 @@ func (s *StructuralPositionService) Create(input dto.CreateStructuralPositionDTO
 		ID:          uuid.New(),
 		Name:        input.Name,
 		Code:        input.Code,
-		Level:       &input.Level,
+		Level:       input.Level,
 		Description: &input.Description,
 		IsActive:    true,
 		CreatedAt:   time.Now(),
@@ -59,7 +59,7 @@ func (s *StructuralPositionService) Update(id uuid.UUID, input dto.UpdateStructu
 
 	position.Name = input.Name
 	position.Code = input.Code
-	position.Level = &input.Level
+	position.Level = input.Level
 	position.Description = &input.Description
 	position.UpdatedAt = time.Now()
 

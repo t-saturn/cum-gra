@@ -5,7 +5,7 @@ CREATE TABLE structural_positions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     code VARCHAR(50) UNIQUE NOT NULL,
-    level VARCHAR(50),
+    level INTEGER UNIQUE DEFAULT 2,
     description TEXT,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW(),
