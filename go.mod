@@ -2,7 +2,10 @@ module github.com/t-saturn/auth-service-server
 
 go 1.24.4
 
-require github.com/gofiber/fiber/v3 v3.0.0-beta.4
+require (
+	github.com/gofiber/fiber/v3 v3.0.0-beta.4
+	github.com/sirupsen/logrus v1.9.3
+)
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
