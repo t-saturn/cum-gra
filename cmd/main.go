@@ -8,8 +8,12 @@ import (
 )
 
 func main() {
+	config.LoadEnv()
 	config.InitLogger()
 	config.Logger.Info("Starting Auth Service...")
+
+	port := config.GetEnv("PORT", "3000")
+	config.Logger.Infof("Starting Auth Service on port %s...", port)
 
 	app := fiber.New()
 
@@ -17,12 +21,12 @@ func main() {
 		config.Logger.WithFields(map[string]interface{}{
 			"path": c.Path(),
 			"ip":   c.IP(),
-		}).Info("Solicitud recibida en /")
+		}).Info("Application received in /")
 
 		return c.SendString("Auth Service Running")
 	})
 
-	if err := app.Listen(":3000"); err != nil {
+	if err := app.Listen(":" + port); err != nil {
 		config.Logger.WithError(err).Fatal("Error starting server")
 		log.Fatal(err)
 	}
