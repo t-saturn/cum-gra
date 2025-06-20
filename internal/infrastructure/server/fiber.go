@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/central-user-manager/internal/infrastructure/server/middleware"
-	"github.com/central-user-manager/internal/infrastructure/server/routes"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/server/middleware"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/server/routes"
 
 	"github.com/gofiber/fiber/v3"
 )

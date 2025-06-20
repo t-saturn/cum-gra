@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/central-user-manager/internal/core/domain"
 	"github.com/google/uuid"
+	"github.com/t-saturn/central-user-manager/internal/core/domain"
 )
 
 type ApplicationRoleRepository interface {

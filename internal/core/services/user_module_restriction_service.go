@@ -5,10 +5,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/central-user-manager/internal/core/domain"
-	"github.com/central-user-manager/internal/core/ports/repositories"
-	"github.com/central-user-manager/internal/shared/dto"
 	"github.com/google/uuid"
+	"github.com/t-saturn/central-user-manager/internal/core/domain"
+	"github.com/t-saturn/central-user-manager/internal/core/ports/repositories"
+	"github.com/t-saturn/central-user-manager/internal/shared/dto"
 )
 
 type UserModuleRestrictionService struct {

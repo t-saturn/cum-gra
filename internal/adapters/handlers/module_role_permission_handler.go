@@ -4,9 +4,9 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 
-	"github.com/central-user-manager/internal/core/services"
-	"github.com/central-user-manager/internal/shared/dto"
-	"github.com/central-user-manager/pkg/validator"
+	"github.com/t-saturn/central-user-manager/internal/core/services"
+	"github.com/t-saturn/central-user-manager/internal/shared/dto"
+	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
 type ModulePermissionHandler struct {

@@ -10,9 +10,9 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
-	"github.com/central-user-manager/internal/infrastructure/config"
-	"github.com/central-user-manager/internal/infrastructure/database"
-	"github.com/central-user-manager/pkg/logger"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/config"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/database"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 func main() {

@@ -1,12 +1,12 @@
 package routes
 
 import (
-	crypto "github.com/central-user-manager/internal/adapters/external/crypto"
+	crypto "github.com/t-saturn/central-user-manager/internal/adapters/external/crypto"
 
-	"github.com/central-user-manager/internal/adapters/handlers"
-	repo "github.com/central-user-manager/internal/adapters/repositories/postgres"
-	"github.com/central-user-manager/internal/core/services"
 	"github.com/gofiber/fiber/v3"
+	"github.com/t-saturn/central-user-manager/internal/adapters/handlers"
+	repo "github.com/t-saturn/central-user-manager/internal/adapters/repositories/postgres"
+	"github.com/t-saturn/central-user-manager/internal/core/services"
 )
 
 func RegisterUserRoutes(api fiber.Router) {
