@@ -1,7 +1,7 @@
 import CardCustom from "@/components/custom/card/card-custom";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Clock } from "lucide-react";
+import { Clock, Clock1 } from "lucide-react";
 
 const pendingTasks = [
   {
@@ -33,6 +33,7 @@ const PendingTasks = () => {
       title="Tareas Pendientes"
       description="Acciones que requieren tu atención"
       order="col"
+      Icon={Clock1}
     >
       {pendingTasks.map((task) => (
         <div key={task.id} className="p-4 bg-accent/30 rounded-lg">

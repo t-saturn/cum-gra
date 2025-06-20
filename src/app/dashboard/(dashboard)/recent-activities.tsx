@@ -1,5 +1,5 @@
 import CardCustom from "@/components/custom/card/card-custom";
-import { AlertTriangle, Building2, CheckCircle, Shield } from "lucide-react";
+import { AlertTriangle, Building2, CheckCircle, ClipboardList, Shield } from "lucide-react";
 
 const recentActivities = [
   {
@@ -43,39 +43,40 @@ const recentActivities = [
 const RecentActivities = () => {
   return (
     <CardCustom
-          title="Actividad Reciente"
-          description="Últimas acciones realizadas en el sistema"
-          order="col"
+      title="Actividad Reciente"
+      description="Últimas acciones realizadas en el sistema"
+      order="col"
+      Icon={ClipboardList}
+    >
+      {recentActivities.map((activity) => (
+        <div
+          key={activity.id}
+          className="flex items-start gap-4 p-3 rounded-lg bg-accent/50 transition-colors"
         >
-          {recentActivities.map((activity) => (
-            <div
-              key={activity.id}
-              className="flex items-start gap-4 p-3 rounded-lg bg-accent/50 transition-colors"
-            >
-              <div
-                className={`p-2 rounded-full ${
-                  activity.status === "success"
-                    ? "bg-chart-4/20 text-chart-4"
-                    : activity.status === "warning"
-                    ? "bg-chart-5/20 text-chart-5"
-                    : "bg-chart-2/20 text-chart-2"
-                }`}
-              >
-                <activity.icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">
-                  {activity.message}
-                </p>
-                <p className="text-sm text-muted-foreground">{activity.user}</p>
-                <p className="text-xs text-muted-foreground/80 mt-1">
-                  {activity.time}
-                </p>
-              </div>
-            </div>
-          ))}
-        </CardCustom>
-  )
-}
+          <div
+            className={`p-2 rounded-full ${
+              activity.status === "success"
+                ? "bg-chart-4/20 text-chart-4"
+                : activity.status === "warning"
+                ? "bg-chart-5/20 text-chart-5"
+                : "bg-chart-2/20 text-chart-2"
+            }`}
+          >
+            <activity.icon className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground">
+              {activity.message}
+            </p>
+            <p className="text-sm text-muted-foreground">{activity.user}</p>
+            <p className="text-xs text-muted-foreground/80 mt-1">
+              {activity.time}
+            </p>
+          </div>
+        </div>
+      ))}
+    </CardCustom>
+  );
+};
 
-export default RecentActivities
+export default RecentActivities;

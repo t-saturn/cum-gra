@@ -1,6 +1,6 @@
 import CardCustom from "@/components/custom/card/card-custom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building2, Shield, Users } from "lucide-react";
+import { ActivityIcon, Building2, Shield, Users } from "lucide-react";
 import Link from "next/link";
 
 const quickActions = [
@@ -30,6 +30,7 @@ const QuickActions = () => {
         title="Acciones Rápidas"
         description="Accesos directos a las funciones más utilizadas"
         order="auto"
+        Icon={ActivityIcon}
       >
         {quickActions.map((action) => (
           <Link key={action.title} href={action.href}>
