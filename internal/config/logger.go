@@ -19,26 +19,27 @@ func InitLogger() {
 		os.Mkdir(logDir, os.ModePerm)
 	}
 
-	// Archivo con fecha como nombre
-	fileName := time.Now().Format("2006-01-02") + ".log"
-	logFilePath := filepath.Join(logDir, fileName)
-	file, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	// Archivo de log con fecha
+	logFileName := time.Now().Format("2006-01-02") + ".log"
+	logPath := filepath.Join(logDir, logFileName)
+
+	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		Logger.Out = os.Stdout
-		Logger.Warn("No se pudo abrir archivo de log, usando stdout")
+		Logger.Warn("Could not write log file, using stdout")
 	} else {
 		Logger.SetOutput(file)
 	}
 
-	// Formato JSON para mejor integrabilidad (puede cambiarse a TextFormatter si prefieres)
+	// Formato JSON
 	Logger.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: time.RFC3339,
 		PrettyPrint:     false,
 	})
 
-	// Nivel de log mínimo
+	// Nivel mínimo
 	Logger.SetLevel(logrus.DebugLevel)
 
-	// Incluir nombre de archivo y línea
+	// Incluir archivo y línea
 	Logger.SetReportCaller(true)
 }

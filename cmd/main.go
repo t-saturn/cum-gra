@@ -9,7 +9,7 @@ import (
 
 func main() {
 	config.InitLogger()
-	config.Logger.Info("Iniciando servicio de autenticación...")
+	config.Logger.Info("Starting Auth Service...")
 
 	app := fiber.New()
 
@@ -17,13 +17,13 @@ func main() {
 		config.Logger.WithFields(map[string]interface{}{
 			"path": c.Path(),
 			"ip":   c.IP(),
-		}).Info("Solicitud recibida")
+		}).Info("Solicitud recibida en /")
 
-		return c.SendString("Auth Service Running 🚀")
+		return c.SendString("Auth Service Running")
 	})
 
 	if err := app.Listen(":3000"); err != nil {
-		config.Logger.WithError(err).Fatal("Fallo al iniciar el servidor")
+		config.Logger.WithError(err).Fatal("Error starting server")
 		log.Fatal(err)
 	}
 }
