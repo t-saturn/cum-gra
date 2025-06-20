@@ -8,8 +8,8 @@ import (
 
 type OrganicUnit struct {
 	ID          uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
-	Name        string     `gorm:"type:varchar(255);not null" json:"name"`
-	Acronym     *string    `gorm:"type:varchar(20)" json:"acronym"`
+	Name        string     `gorm:"type:varchar(255);not null;uniqueIndex" validate:"required" json:"name"`
+	Acronym     string     `gorm:"type:varchar(20);uniqueIndex" validate:"required" json:"acronym"`
 	Brand       *string    `gorm:"type:varchar(100)" json:"brand"`
 	Level       *string    `gorm:"type:varchar(50)" json:"level"`
 	Description *string    `gorm:"type:text" json:"description"`

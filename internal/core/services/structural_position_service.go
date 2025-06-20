@@ -42,3 +42,38 @@ func (s *StructuralPositionService) Create(input dto.CreateStructuralPositionDTO
 
 	return s.repo.Create(position)
 }
+
+func (s *StructuralPositionService) GetAll() ([]domain.StructuralPosition, error) {
+	return s.repo.GetAll()
+}
+
+func (s *StructuralPositionService) GetByID(id uuid.UUID) (*domain.StructuralPosition, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *StructuralPositionService) Update(id uuid.UUID, input dto.UpdateStructuralPositionDTO) error {
+	position, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	position.Name = input.Name
+	position.Code = input.Code
+	position.Level = &input.Level
+	position.Description = &input.Description
+	position.UpdatedAt = time.Now()
+
+	return s.repo.Update(position)
+}
+
+func (s *StructuralPositionService) Delete(id uuid.UUID) error {
+	position, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	position.IsDeleted = true
+	position.UpdatedAt = time.Now()
+
+	return s.repo.Update(position)
+}
