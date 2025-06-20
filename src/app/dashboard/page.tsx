@@ -1,68 +1,29 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   Users,
   Shield,
   Building2,
-  Activity,
-  TrendingUp,
-  TrendingDown,
   Clock,
-  Plus,
   ArrowUpRight,
   AlertTriangle,
   CheckCircle,
   Eye,
   MoreHorizontal,
-} from "lucide-react"
-import Link from "next/link"
-
-const stats = [
-  {
-    title: "Usuarios Totales",
-    value: "2,847",
-    change: "+12%",
-    trend: "up",
-    icon: Users,
-    color: "from-chart-2 to-chart-3",
-    bgColor: "bg-chart-2/10",
-    textColor: "text-chart-2",
-  },
-  {
-    title: "Aplicaciones Activas",
-    value: "24",
-    change: "+2",
-    trend: "up",
-    icon: Building2,
-    color: "from-chart-4 to-chart-5",
-    bgColor: "bg-chart-4/10",
-    textColor: "text-chart-4",
-  },
-  {
-    title: "Roles Configurados",
-    value: "156",
-    change: "+8",
-    trend: "up",
-    icon: Shield,
-    color: "from-primary to-chart-1",
-    bgColor: "bg-primary/10",
-    textColor: "text-primary",
-  },
-  {
-    title: "Sesiones Activas",
-    value: "1,234",
-    change: "-5%",
-    trend: "down",
-    icon: Activity,
-    color: "from-destructive to-chart-1",
-    bgColor: "bg-destructive/10",
-    textColor: "text-destructive",
-  },
-]
+} from "lucide-react";
+import Link from "next/link";
+import CardStatsContain from "@/components/custom/card/card-stats-contain";
+import { statsDashboard } from "@/mocks/stats-mocks";
 
 const recentActivities = [
   {
@@ -101,7 +62,7 @@ const recentActivities = [
     status: "success",
     icon: Building2,
   },
-]
+];
 
 const pendingTasks = [
   {
@@ -125,10 +86,15 @@ const pendingTasks = [
     priority: "low",
     progress: 80,
   },
-]
+];
 
 const quickActions = [
-  { title: "Crear Usuario", icon: Users, href: "/dashboard/users/new", color: "from-chart-2 to-chart-3" },
+  {
+    title: "Crear Usuario",
+    icon: Users,
+    href: "/dashboard/users/new",
+    color: "from-chart-2 to-chart-3",
+  },
   {
     title: "Nueva Aplicación",
     icon: Building2,
@@ -141,66 +107,42 @@ const quickActions = [
     href: "/dashboard/roles/application-roles/new",
     color: "from-primary to-chart-1",
   },
-]
+];
 
 export default function DashboardOverview() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
             Dashboard
           </h1>
-          <p className="text-muted-foreground mt-2 text-lg">Resumen general del sistema de gestión de usuarios</p>
+          <p className="text-muted-foreground mt-2 text-lg">
+            Resumen general del sistema de gestión de usuarios
+          </p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="hover:bg-accent">
             <Eye className="w-4 h-4 mr-2" />
             Ver Reportes
           </Button>
-          <Button className="bg-gradient-to-r from-primary to-chart-1 hover:from-primary/90 hover:to-chart-1/90 shadow-lg shadow-primary/25">
-            <Plus className="w-4 h-4 mr-2" />
-            Nuevo Usuario
-          </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <Card
-            key={stat.title}
-            className="border-border bg-card/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-          >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <stat.icon className={`h-4 w-4 ${stat.textColor}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground mb-2">{stat.value}</div>
-              <div className="flex items-center text-sm">
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-4 w-4 text-chart-4 mr-1" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-destructive mr-1" />
-                )}
-                <span className={stat.trend === "up" ? "text-chart-4" : "text-destructive"}>{stat.change}</span>
-                <span className="text-muted-foreground ml-1">desde el mes pasado</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <CardStatsContain stats={statsDashboard} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activities */}
         <Card className="border-border bg-card/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-foreground">Actividad Reciente</CardTitle>
-              <CardDescription>Últimas acciones realizadas en el sistema</CardDescription>
+              <CardTitle className="text-foreground">
+                Actividad Reciente
+              </CardTitle>
+              <CardDescription>
+                Últimas acciones realizadas en el sistema
+              </CardDescription>
             </div>
             <Button variant="ghost" size="sm">
               <MoreHorizontal className="h-4 w-4" />
@@ -217,16 +159,22 @@ export default function DashboardOverview() {
                     activity.status === "success"
                       ? "bg-chart-4/20 text-chart-4"
                       : activity.status === "warning"
-                        ? "bg-chart-5/20 text-chart-5"
-                        : "bg-chart-2/20 text-chart-2"
+                      ? "bg-chart-5/20 text-chart-5"
+                      : "bg-chart-2/20 text-chart-2"
                   }`}
                 >
                   <activity.icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{activity.message}</p>
-                  <p className="text-sm text-muted-foreground">{activity.user}</p>
-                  <p className="text-xs text-muted-foreground/80 mt-1">{activity.time}</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {activity.message}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {activity.user}
+                  </p>
+                  <p className="text-xs text-muted-foreground/80 mt-1">
+                    {activity.time}
+                  </p>
                 </div>
                 <Button variant="ghost" size="sm">
                   <ArrowUpRight className="h-4 w-4" />
@@ -240,8 +188,12 @@ export default function DashboardOverview() {
         <Card className="border-border bg-card/50 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-foreground">Tareas Pendientes</CardTitle>
-              <CardDescription>Acciones que requieren tu atención</CardDescription>
+              <CardTitle className="text-foreground">
+                Tareas Pendientes
+              </CardTitle>
+              <CardDescription>
+                Acciones que requieren tu atención
+              </CardDescription>
             </div>
             <Button variant="ghost" size="sm">
               <MoreHorizontal className="h-4 w-4" />
@@ -254,16 +206,28 @@ export default function DashboardOverview() {
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">{task.title}</p>
-                      <p className="text-xs text-muted-foreground">{task.count} elementos</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {task.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {task.count} elementos
+                      </p>
                     </div>
                   </div>
                   <Badge
                     variant={
-                      task.priority === "high" ? "destructive" : task.priority === "medium" ? "default" : "secondary"
+                      task.priority === "high"
+                        ? "destructive"
+                        : task.priority === "medium"
+                        ? "default"
+                        : "secondary"
                     }
                   >
-                    {task.priority === "high" ? "Alta" : task.priority === "medium" ? "Media" : "Baja"}
+                    {task.priority === "high"
+                      ? "Alta"
+                      : task.priority === "medium"
+                      ? "Media"
+                      : "Baja"}
                   </Badge>
                 </div>
                 <div className="space-y-2">
@@ -283,7 +247,9 @@ export default function DashboardOverview() {
       <Card className="border-border bg-card/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-foreground">Acciones Rápidas</CardTitle>
-          <CardDescription>Accesos directos a las funciones más utilizadas</CardDescription>
+          <CardDescription>
+            Accesos directos a las funciones más utilizadas
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -307,5 +273,5 @@ export default function DashboardOverview() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

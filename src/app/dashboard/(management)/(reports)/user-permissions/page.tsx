@@ -14,10 +14,8 @@ import {
   Search,
   Download,
   Shield,
-  Users,
   Lock,
   Unlock,
-  Eye,
   ChevronDown,
   ChevronRight,
   AlertTriangle,
@@ -28,6 +26,8 @@ import {
   Award,
   RefreshCw,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsPermissionsForUsers } from "@/mocks/stats-mocks"
 
 // Mock data
 const userPermissionsData = [
@@ -209,15 +209,6 @@ const userPermissionsData = [
   },
 ]
 
-const permissionStats = {
-  totalUsers: 2847,
-  usersWithRoles: 2654,
-  highRiskUsers: 45,
-  pendingReviews: 156,
-  totalRoles: 89,
-  totalPermissions: 234,
-}
-
 export default function UserPermissionsReport() {
   const [searchTerm, setSearchTerm] = useState("")
   const [departmentFilter, setDepartmentFilter] = useState("all")
@@ -364,68 +355,7 @@ export default function UserPermissionsReport() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios con Roles</p>
-                <p className="text-2xl font-bold text-foreground">{permissionStats.usersWithRoles.toLocaleString()}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <Users className="h-4 w-4 text-chart-2 mr-1" />
-                  <span className="text-muted-foreground">de {permissionStats.totalUsers.toLocaleString()}</span>
-                </div>
-              </div>
-              <Users className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios Alto Riesgo</p>
-                <p className="text-2xl font-bold text-destructive">{permissionStats.highRiskUsers}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <AlertTriangle className="h-4 w-4 text-destructive mr-1" />
-                  <span className="text-muted-foreground">Requieren atención</span>
-                </div>
-              </div>
-              <AlertTriangle className="w-8 h-8 text-destructive" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Revisiones Pendientes</p>
-                <p className="text-2xl font-bold text-chart-5">{permissionStats.pendingReviews}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <Eye className="h-4 w-4 text-chart-5 mr-1" />
-                  <span className="text-muted-foreground">Por revisar</span>
-                </div>
-              </div>
-              <Eye className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Roles</p>
-                <p className="text-2xl font-bold text-primary">{permissionStats.totalRoles}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <Shield className="h-4 w-4 text-primary mr-1" />
-                  <span className="text-muted-foreground">{permissionStats.totalPermissions} permisos</span>
-                </div>
-              </div>
-              <Shield className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsPermissionsForUsers} />
 
       <Tabs defaultValue="users" className="w-full">
         <TabsList className="grid w-full grid-cols-3">

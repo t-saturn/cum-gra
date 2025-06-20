@@ -9,7 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, Download, TrendingUp, Users, Clock, Activity, Eye, BarChart3, RefreshCw } from 'lucide-react'
+import { Search, Download, TrendingUp, Clock, Eye, RefreshCw } from 'lucide-react'
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsActiveUsers } from "@/mocks/stats-mocks"
 // Mock data
 const activeUsersData = [
   {
@@ -271,70 +273,7 @@ export default function ActiveUsersReport() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios Activos</p>
-                <p className="text-2xl font-bold text-foreground">{activityStats.totalActiveUsers.toLocaleString()}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <TrendingUp className="h-4 w-4 text-chart-4 mr-1" />
-                  <span className="text-chart-4">+{activityStats.dailyGrowth}%</span>
-                  <span className="text-muted-foreground ml-1">hoy</span>
-                </div>
-              </div>
-              <Users className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">En Línea Ahora</p>
-                <p className="text-2xl font-bold text-chart-4">{activityStats.onlineNow}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <div className="w-2 h-2 bg-chart-4 rounded-full mr-2 animate-pulse" />
-                  <span className="text-muted-foreground">Tiempo real</span>
-                </div>
-              </div>
-              <Activity className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Hora Pico</p>
-                <p className="text-2xl font-bold text-primary">{activityStats.peakHour}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <Clock className="h-4 w-4 text-muted-foreground mr-1" />
-                  <span className="text-muted-foreground">Mayor actividad</span>
-                </div>
-              </div>
-              <BarChart3 className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Sesión Promedio</p>
-                <p className="text-2xl font-bold text-chart-5">{activityStats.averageSessionTime}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <TrendingUp className="h-4 w-4 text-chart-4 mr-1" />
-                  <span className="text-chart-4">+{activityStats.weeklyGrowth}%</span>
-                  <span className="text-muted-foreground ml-1">semanal</span>
-                </div>
-              </div>
-              <Clock className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsActiveUsers} />
 
       <Tabs defaultValue="users" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
