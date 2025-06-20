@@ -1,6 +1,7 @@
 package config
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -26,9 +27,11 @@ func InitLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		Logger.Out = os.Stdout
-		Logger.Warn("Could not write log file, using stdout")
+		Logger.Warn("Could not write log file, using stdout only")
 	} else {
-		Logger.SetOutput(file)
+		// Salida dual: archivo + consola
+		multiWriter := io.MultiWriter(os.Stdout, file)
+		Logger.SetOutput(multiWriter)
 	}
 
 	// Formato JSON
