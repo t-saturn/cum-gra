@@ -32,7 +32,6 @@ func (s *OrganicUnitService) Create(input dto.CreateOrganicUnitDTO) error {
 		Name:        input.Name,
 		Acronym:     input.Acronym,
 		Brand:       &input.Brand,
-		Level:       &input.Level,
 		Description: &input.Description,
 		IsActive:    true,
 		CreatedAt:   time.Now(),
@@ -66,7 +65,6 @@ func (s *OrganicUnitService) Update(id uuid.UUID, input dto.UpdateOrganicUnitDTO
 	unit.Name = input.Name
 	unit.Acronym = input.Acronym
 	unit.Brand = &input.Brand
-	unit.Level = &input.Level
 	unit.Description = &input.Description
 	unit.UpdatedAt = time.Now()
 

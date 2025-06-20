@@ -21,7 +21,6 @@ CREATE TABLE organic_units (
     name VARCHAR(255) NOT NULL,
     acronym VARCHAR(20),
     brand VARCHAR(100),
-    level VARCHAR(50),
     description TEXT,
     parent_id UUID,
     is_active BOOLEAN DEFAULT true,
