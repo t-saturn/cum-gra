@@ -24,7 +24,7 @@ func InitMongoDB() {
 
 	client, err := mongo.Connect(ctx, clientOpts)
 	if err != nil {
-		Logger.WithError(err).Fatal("Error al conectar a MongoDB")
+		Logger.WithError(err).Fatal("Error connecting to MongoDB")
 	}
 
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
