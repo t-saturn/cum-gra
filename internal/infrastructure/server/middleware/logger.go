@@ -3,9 +3,9 @@ package middleware
 import (
 	"time"
 
-	"github.com/central-user-manager/pkg/logger"
 	"github.com/gofiber/fiber/v3"
 	"github.com/sirupsen/logrus"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 func Setup(app *fiber.App) {

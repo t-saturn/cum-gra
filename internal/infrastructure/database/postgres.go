@@ -3,8 +3,8 @@ package database
 import (
 	"fmt"
 
-	"github.com/central-user-manager/internal/infrastructure/config"
-	"github.com/central-user-manager/pkg/logger"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/config"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

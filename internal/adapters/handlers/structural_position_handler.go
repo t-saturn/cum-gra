@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"github.com/central-user-manager/internal/core/services"
-	"github.com/central-user-manager/internal/shared/dto"
-	"github.com/central-user-manager/pkg/logger"
-	"github.com/central-user-manager/pkg/validator"
-	validate "github.com/central-user-manager/pkg/validator"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/t-saturn/central-user-manager/internal/core/services"
+	"github.com/t-saturn/central-user-manager/internal/shared/dto"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
+	"github.com/t-saturn/central-user-manager/pkg/validator"
+	validate "github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
 type StructuralPositionHandler struct {

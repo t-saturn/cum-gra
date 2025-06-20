@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"github.com/central-user-manager/internal/adapters/handlers"
-	"github.com/central-user-manager/internal/adapters/repositories/postgres"
-	"github.com/central-user-manager/internal/core/services"
 	"github.com/gofiber/fiber/v3"
+	"github.com/t-saturn/central-user-manager/internal/adapters/handlers"
+	"github.com/t-saturn/central-user-manager/internal/adapters/repositories/postgres"
+	"github.com/t-saturn/central-user-manager/internal/core/services"
 )
 
 func RegisterStructuralPositionRoutes(api fiber.Router) {

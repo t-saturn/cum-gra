@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/central-user-manager/internal/infrastructure/config"
-	"github.com/central-user-manager/internal/infrastructure/database"
-	"github.com/central-user-manager/internal/infrastructure/server"
-	"github.com/central-user-manager/pkg/logger"
-	"github.com/central-user-manager/pkg/validator"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/config"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/database"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/server"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
+	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
 func main() {

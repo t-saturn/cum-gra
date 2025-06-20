@@ -5,9 +5,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/central-user-manager/internal/core/domain"
-	"github.com/central-user-manager/internal/core/ports/repositories"
-	"github.com/central-user-manager/internal/infrastructure/database"
+	"github.com/t-saturn/central-user-manager/internal/core/domain"
+	"github.com/t-saturn/central-user-manager/internal/core/ports/repositories"
+	"github.com/t-saturn/central-user-manager/internal/infrastructure/database"
 )
 
 type moduleRepository struct{}
