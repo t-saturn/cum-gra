@@ -10,6 +10,8 @@ import (
 func main() {
 	config.LoadEnv()
 	config.InitLogger()
+	config.InitMongoDB()
+
 	config.Logger.Info("Starting Auth Service...")
 
 	port := config.GetEnv("PORT", "3000")
