@@ -50,12 +50,12 @@ const PendingTasks = () => {
               </div>
             </div>
             <Badge
-              variant={
+              className={
                 task.priority === "high"
-                  ? "destructive"
+                 ? "bg-destructive"
                   : task.priority === "medium"
-                  ? "default"
-                  : "secondary"
+                 ? "bg-destructive/70"
+                  : "bg-destructive/50"
               }
             >
               {task.priority === "high"

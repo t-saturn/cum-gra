@@ -74,13 +74,15 @@ export default function AppSidebar({
         className="rounded-lg border border-border shadow-sm relative h-full overflow-hidden"
         collapsible="icon"
       >
-        <SidebarHeader className="flex items-center border-b rounded-t-lg">
+        <SidebarHeader className="bg-card flex items-center border-b rounded-t-lg">
           {!isCollapsed ? (
             <div className="flex items-center gap-4 font-semibold p-6">
               <Image src="/img/logo.png" alt="logo" width={40} height={20} />
               <div className="flex flex-col">
                 <span className="text-xl font-bold">CUM</span>
-                <span className="text-sm font-light text-muted-foreground">Central User Manager</span>
+                <span className="text-sm font-light text-muted-foreground">
+                  Central User Manager
+                </span>
               </div>
             </div>
           ) : (
@@ -208,10 +210,10 @@ export default function AppSidebar({
             </SidebarGroup>
           ))}
         </SidebarContent>
-        <SidebarFooter>
+        <SidebarFooter className="bg-card">
           <SidebarMenuButton
             tooltip="Cerrar sesión"
-            className="bg-destructive text-white hover:bg-destructive/90 hover:text-white flex items-center gap-2 justify-center hover:cursor-pointer"
+            className="w-full justify-center bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive rounded-lg h-11 font-medium hover:cursor-pointer"
             onClick={handleCloseSession}
           >
             <LogOut
