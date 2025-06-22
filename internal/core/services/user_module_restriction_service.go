@@ -1,4 +1,3 @@
-// internal/core/services/user_module_restriction_service.go
 package services
 
 import (
@@ -22,7 +21,7 @@ func NewUserModuleRestrictionService(r repositories.UserModuleRestrictionReposit
 func (s *UserModuleRestrictionService) Create(input dto.CreateUserModuleRestrictionDTO) error {
 	// Condición: si restriction_type es limit_permission, max_permission_level es obligatorio
 	if input.RestrictionType == "limit_permission" && input.MaxPermissionLevel == "" {
-		return errors.New("max_permission_level es obligatorio cuando restriction_type es limit_permission")
+		return errors.New("max_permission_level is required when restriction_type is limit_permission")
 	}
 
 	userID := uuid.MustParse(input.UserID)
@@ -34,7 +33,7 @@ func (s *UserModuleRestrictionService) Create(input dto.CreateUserModuleRestrict
 		return err
 	}
 	if exists {
-		return errors.New("ya existe una restricción para ese usuario, módulo y aplicación")
+		return errors.New("There is already a restriction for that user, module and application")
 	}
 
 	restriction := &domain.UserModuleRestriction{
@@ -79,7 +78,7 @@ func (s *UserModuleRestrictionService) Update(id uuid.UUID, input dto.UpdateUser
 		return err
 	}
 	if input.RestrictionType == "limit_permission" && input.MaxPermissionLevel == "" {
-		return errors.New("max_permission_level es obligatorio cuando restriction_type es limit_permission")
+		return errors.New("max_permission_level is required when restriction_type is limit_permission")
 	}
 
 	if input.UpdatedBy != "" {

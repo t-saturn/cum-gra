@@ -28,7 +28,7 @@ func (s *UserService) Create(input dto.CreateUserDTO) error {
 	}
 
 	if exists {
-		return fmt.Errorf("ya existe un usuario con ese email o DNI")
+		return fmt.Errorf("There is already a user with that email or ID")
 	}
 
 	hashedPassword, err := s.hashService.HashPassword(input.PasswordHash)

@@ -25,7 +25,7 @@ func (s *StructuralPositionService) Create(input dto.CreateStructuralPositionDTO
 		return err
 	}
 	if exists {
-		return fmt.Errorf("ya existe un cargo con ese nombre o código")
+		return fmt.Errorf("There is already a position with that name or code")
 	}
 
 	position := &domain.StructuralPosition{

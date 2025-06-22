@@ -20,7 +20,7 @@ func NewApplicationRoleHandler(s *services.ApplicationRoleService) *ApplicationR
 func (h *ApplicationRoleHandler) Create(c fiber.Ctx) error {
 	var input dto.CreateApplicationRoleDTO
 	if err := c.Bind().Body(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Datos inválidos"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid data"})
 	}
 	if err := validator.Validate.Struct(input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
@@ -28,13 +28,13 @@ func (h *ApplicationRoleHandler) Create(c fiber.Ctx) error {
 	if err := h.service.Create(input); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Rol creado"})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Role created"})
 }
 
 func (h *ApplicationRoleHandler) GetAll(c fiber.Ctx) error {
 	roles, err := h.service.GetAll()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error al listar roles"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error listing roles"})
 	}
 	return c.JSON(roles)
 }
@@ -46,7 +46,7 @@ func (h *ApplicationRoleHandler) GetByID(c fiber.Ctx) error {
 	}
 	role, err := h.service.GetByID(id)
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Rol no encontrado"})
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Role not found"})
 	}
 	return c.JSON(role)
 }
@@ -58,7 +58,7 @@ func (h *ApplicationRoleHandler) Update(c fiber.Ctx) error {
 	}
 	var input dto.UpdateApplicationRoleDTO
 	if err := c.Bind().Body(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Datos inválidos"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid data"})
 	}
 	if err := validator.Validate.Struct(input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
@@ -66,7 +66,7 @@ func (h *ApplicationRoleHandler) Update(c fiber.Ctx) error {
 	if err := h.service.Update(id, input); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.JSON(fiber.Map{"message": "Rol actualizado"})
+	return c.JSON(fiber.Map{"message": "Updated role"})
 }
 
 func (h *ApplicationRoleHandler) Delete(c fiber.Ctx) error {
