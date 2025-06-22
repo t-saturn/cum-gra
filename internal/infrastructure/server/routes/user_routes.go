@@ -1,18 +1,17 @@
 package routes
 
 import (
-	crypto "github.com/t-saturn/central-user-manager/internal/adapters/external/crypto"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/central-user-manager/internal/adapters/handlers"
 	repo "github.com/t-saturn/central-user-manager/internal/adapters/repositories/postgres"
 	"github.com/t-saturn/central-user-manager/internal/core/services"
+	"github.com/t-saturn/central-user-manager/internal/shared/security"
 )
 
 func RegisterUserRoutes(api fiber.Router) {
-	hashService := crypto.NewBcryptService()
+	hasher := security.NewArgon2Service()
 	repo := repo.NewUserRepository()
-	service := services.NewUserService(repo, hashService)
+	service := services.NewUserService(repo, hasher)
 	handler := handlers.NewUserHandler(service)
 
 	route := api.Group("/users")
