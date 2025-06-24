@@ -16,19 +16,15 @@ import (
 )
 
 func main() {
-	// Inicializar el logger antes de usarlo
 	logger.InitLogger()
 
-	// Cargar archivo .env manualmente
 	if err := godotenv.Load(); err != nil {
 		logger.Log.Println("No se pudo cargar el archivo .env, se usará el entorno actual")
 	}
 
-	// Cargar configuración y conectar a la BD
 	config.LoadConfig()
 	database.Connect()
 
-	// Flags para comandos
 	var (
 		migrationsPath = flag.String("path", "internal/adapters/repositories/postgres/migrations", "Path to migrations directory")
 		command        = flag.String("cmd", "up", "Migration command: up, down, force, version, drop")

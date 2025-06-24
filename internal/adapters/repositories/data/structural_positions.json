@@ -1,0 +1,20 @@
+[
+  {
+    "name": "DIRECTOR",
+    "code": "DIR-001",
+    "level": 1,
+    "description": "Responsable de la gestión tecnológica institucional."
+  },
+  {
+    "name": "ANALISTA DE DATOS",
+    "code": "DAT-002",
+    "level": 2,
+    "description": "Encargado del análisis y modelado de datos empresariales."
+  },
+  {
+    "name": "SOPORTE TECNICO",
+    "code": "SUP-003",
+    "level": 2,
+    "description": "Brinda soporte a usuarios finales sobre hardware y software."
+  }
+]
