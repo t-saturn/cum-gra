@@ -36,7 +36,6 @@ func (s *ApplicationService) Create(input dto.CreateApplicationDTO) error {
 		Logo:         &input.Logo,
 		Description:  &input.Description,
 		CallbackUrls: input.CallbackUrls,
-		Scopes:       input.Scopes,
 		IsFirstParty: input.IsFirstParty,
 		Status:       input.Status,
 		CreatedAt:    time.Now(),
@@ -67,7 +66,6 @@ func (s *ApplicationService) Update(id uuid.UUID, input dto.UpdateApplicationDTO
 	app.Logo = &input.Logo
 	app.Description = &input.Description
 	app.CallbackUrls = input.CallbackUrls
-	app.Scopes = input.Scopes
 	app.IsFirstParty = input.IsFirstParty
 	app.Status = input.Status
 	app.UpdatedAt = time.Now()

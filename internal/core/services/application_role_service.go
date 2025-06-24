@@ -23,7 +23,6 @@ func (s *ApplicationRoleService) Create(input dto.CreateApplicationRoleDTO) erro
 		Name:          input.Name,
 		Description:   &input.Description,
 		ApplicationID: uuid.MustParse(input.ApplicationID),
-		Permissions:   input.Permissions,
 		CreatedAt:     time.Now(),
 		UpdatedAt:     time.Now(),
 		IsDeleted:     false,
@@ -47,7 +46,6 @@ func (s *ApplicationRoleService) Update(id uuid.UUID, input dto.UpdateApplicatio
 
 	role.Name = input.Name
 	role.Description = &input.Description
-	role.Permissions = input.Permissions
 	role.UpdatedAt = time.Now()
 
 	return s.repo.Update(role)

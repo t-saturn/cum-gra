@@ -32,7 +32,6 @@ Table applications {
   logo varchar(255)
   description text
   callback_urls text[] [note: 'Array of allowed callback URLs']
-  scopes text[] [note: 'Array of available scopes']
   is_first_party boolean [default: false, note: 'True for internal applications']
   status enum('active', 'suspended') [default: 'active']
   created_at timestamp [default: `now()`]

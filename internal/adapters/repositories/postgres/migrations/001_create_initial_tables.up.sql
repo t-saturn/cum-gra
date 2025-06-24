@@ -48,7 +48,6 @@ CREATE TABLE users (
     organic_unit_id UUID,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    last_login_at TIMESTAMP,
     is_deleted BOOLEAN NOT NULL DEFAULT false,
     deleted_at TIMESTAMP,
     deleted_by UUID
@@ -64,7 +63,6 @@ CREATE TABLE applications (
     logo VARCHAR(255),
     description TEXT,
     callback_urls TEXT[],
-    scopes TEXT[],
     is_first_party BOOLEAN DEFAULT false,
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT NOW(),
@@ -80,7 +78,6 @@ CREATE TABLE application_roles (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     application_id UUID NOT NULL,
-    permissions TEXT[],
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     is_deleted BOOLEAN NOT NULL DEFAULT false,

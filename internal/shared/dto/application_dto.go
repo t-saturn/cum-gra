@@ -8,7 +8,6 @@ type CreateApplicationDTO struct {
 	Logo         string   `json:"logo"`
 	Description  string   `json:"description"`
 	CallbackUrls []string `json:"callback_urls"`
-	Scopes       []string `json:"scopes"`
 	IsFirstParty bool     `json:"is_first_party"`
 	Status       string   `json:"status" validate:"required,oneof=active suspended"`
 }
@@ -20,7 +19,6 @@ type UpdateApplicationDTO struct {
 	Logo         string   `json:"logo"`
 	Description  string   `json:"description"`
 	CallbackUrls []string `json:"callback_urls"`
-	Scopes       []string `json:"scopes"`
 	IsFirstParty bool     `json:"is_first_party"`
 	Status       string   `json:"status" validate:"required,oneof=active suspended"`
 }

@@ -22,7 +22,6 @@ type User struct {
 	OrganicUnitID        *uuid.UUID `gorm:"type:uuid" json:"organic_unit_id"`
 	CreatedAt            time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt            time.Time  `gorm:"default:now()" json:"updated_at"`
-	LastLoginAt          *time.Time `json:"last_login_at"`
 	IsDeleted            bool       `gorm:"not null;default:false" json:"is_deleted"`
 	DeletedAt            *time.Time `json:"deleted_at"`
 	DeletedBy            *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`

@@ -19,7 +19,6 @@ func NewStructuralPositionService(r repositories.StructuralPositionRepository) *
 }
 
 func (s *StructuralPositionService) Create(input dto.CreateStructuralPositionDTO) error {
-	// Validar existencia previa
 	exists, err := s.repo.ExistsByNameOrCode(input.Name, input.Code)
 	if err != nil {
 		return err
@@ -59,7 +58,7 @@ func (s *StructuralPositionService) Update(id uuid.UUID, input dto.UpdateStructu
 
 	position.Name = input.Name
 	position.Code = input.Code
-	position.Level = input.Level
+	position.Level = &input.Level
 	position.Description = &input.Description
 	position.UpdatedAt = time.Now()
 
