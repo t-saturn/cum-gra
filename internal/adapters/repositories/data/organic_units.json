@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Dirección de Sistemas",
+    "acronym": "DSI",
+    "brand": "TI-Gestión",
+    "description": "Unidad responsable de la gestión de sistemas institucionales."
+  },
+  {
+    "name": "Dirección de Recursos Humanos",
+    "acronym": "DRH",
+    "brand": "RRHH",
+    "description": "Encargada de la gestión del personal institucional."
+  },
+  {
+    "name": "Dirección de Administración",
+    "acronym": "DAF",
+    "brand": "ADM",
+    "description": "Responsable de la gestión administrativa y financiera."
+  }
+]

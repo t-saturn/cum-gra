@@ -5,5 +5,9 @@ func Run() error {
 		return err
 	}
 
+	if err := SeedOrganicUnits(); err != nil {
+		return err
+	}
+
 	return nil
 }
