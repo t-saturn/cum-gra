@@ -23,7 +23,6 @@ func (s *ModuleService) Create(input dto.CreateModuleDTO) error {
 		ID:         uuid.New(),
 		Item:       &input.Item,
 		Name:       input.Name,
-		Label:      &input.Label,
 		Route:      &input.Route,
 		Icon:       &input.Icon,
 		SortOrder:  input.SortOrder,
@@ -31,7 +30,6 @@ func (s *ModuleService) Create(input dto.CreateModuleDTO) error {
 		Status:     input.Status,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
-		IsDeleted:  false,
 	}
 
 	if input.ApplicationID != "" {
@@ -74,7 +72,6 @@ func (s *ModuleService) Update(id uuid.UUID, input dto.UpdateModuleDTO) error {
 
 	mod.Item = &input.Item
 	mod.Name = input.Name
-	mod.Label = &input.Label
 	mod.Route = &input.Route
 	mod.Icon = &input.Icon
 	mod.SortOrder = input.SortOrder

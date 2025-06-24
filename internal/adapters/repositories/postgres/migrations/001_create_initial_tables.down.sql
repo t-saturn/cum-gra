@@ -2,7 +2,6 @@
 
 -- Eliminar índices
 DROP INDEX IF EXISTS idx_organic_units_parent_id;
-DROP INDEX IF EXISTS idx_modules_is_menu_item;
 DROP INDEX IF EXISTS idx_modules_application_id;
 DROP INDEX IF EXISTS idx_modules_parent_id;
 DROP INDEX IF EXISTS idx_applications_is_deleted;

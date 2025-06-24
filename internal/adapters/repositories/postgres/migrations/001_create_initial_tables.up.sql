@@ -5,7 +5,7 @@ CREATE TABLE structural_positions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     code VARCHAR(50) UNIQUE NOT NULL,
-    level INTEGER UNIQUE DEFAULT 2,
+    level INTEGER DEFAULT 2,
     description TEXT,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -104,14 +104,12 @@ CREATE TABLE user_application_roles (
 CREATE TABLE modules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     item VARCHAR(100),
-    name VARCHAR(100) NOT NULL,
-    label VARCHAR(100),
+    name VARCHAR(100) UNIQUE NOT NULL,
     route VARCHAR(255),
     icon VARCHAR(100),
     parent_id UUID,
     application_id UUID,
     sort_order INTEGER DEFAULT 0,
-    is_menu_item BOOLEAN DEFAULT true,
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -173,5 +171,4 @@ CREATE INDEX idx_applications_status ON applications(status);
 CREATE INDEX idx_applications_is_deleted ON applications(is_deleted);
 CREATE INDEX idx_modules_parent_id ON modules(parent_id);
 CREATE INDEX idx_modules_application_id ON modules(application_id);
-CREATE INDEX idx_modules_is_menu_item ON modules(is_menu_item);
 CREATE INDEX idx_organic_units_parent_id ON organic_units(parent_id);

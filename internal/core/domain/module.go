@@ -9,8 +9,7 @@ import (
 type Module struct {
 	ID            uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
 	Item          *string    `gorm:"type:varchar(100)" json:"item"`
-	Name          string     `gorm:"type:varchar(100);not null" json:"name"`
-	Label         *string    `gorm:"type:varchar(100)" json:"label"`
+	Name          string     `gorm:"type:varchar(100);not null; unique" json:"name"`
 	Route         *string    `gorm:"type:varchar(255)" json:"route"`
 	Icon          *string    `gorm:"type:varchar(100)" json:"icon"`
 	ParentID      *uuid.UUID `gorm:"type:uuid" json:"parent_id"`
@@ -20,7 +19,6 @@ type Module struct {
 	Status        string     `gorm:"type:module_status_enum;default:'active'" json:"status"`
 	CreatedAt     time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `gorm:"default:now()" json:"updated_at"`
-	IsDeleted     bool       `gorm:"not null;default:false" json:"is_deleted"`
 	DeletedAt     *time.Time `json:"deleted_at"`
 	DeletedBy     *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
