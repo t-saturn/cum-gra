@@ -31,6 +31,18 @@ func SeedOrganicUnits() error {
 	}
 
 	for _, u := range units {
+		var count int64
+		err := database.DB.Model(&domain.OrganicUnit{}).
+			Where("name = ? OR acronym = ?", u.Name, u.Acronym).
+			Count(&count).Error
+		if err != nil {
+			return fmt.Errorf("error al verificar existencia de '%s': %w", u.Name, err)
+		}
+
+		if count > 0 {
+			continue
+		}
+
 		unit := domain.OrganicUnit{
 			ID:          uuid.New(),
 			Name:        u.Name,
@@ -38,9 +50,9 @@ func SeedOrganicUnits() error {
 			Brand:       &u.Brand,
 			Description: &u.Description,
 			IsActive:    true,
+			IsDeleted:   false,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
-			IsDeleted:   false,
 		}
 
 		if err := database.DB.Create(&unit).Error; err != nil {
