@@ -20,16 +20,15 @@ func NewModuleService(r repositories.ModuleRepository) *ModuleService {
 
 func (s *ModuleService) Create(input dto.CreateModuleDTO) error {
 	mod := &domain.Module{
-		ID:         uuid.New(),
-		Item:       &input.Item,
-		Name:       input.Name,
-		Route:      &input.Route,
-		Icon:       &input.Icon,
-		SortOrder:  input.SortOrder,
-		IsMenuItem: input.IsMenuItem,
-		Status:     input.Status,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		ID:        uuid.New(),
+		Item:      &input.Item,
+		Name:      input.Name,
+		Route:     &input.Route,
+		Icon:      &input.Icon,
+		SortOrder: input.SortOrder,
+		Status:    input.Status,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	if input.ApplicationID != "" {
@@ -75,7 +74,6 @@ func (s *ModuleService) Update(id uuid.UUID, input dto.UpdateModuleDTO) error {
 	mod.Route = &input.Route
 	mod.Icon = &input.Icon
 	mod.SortOrder = input.SortOrder
-	mod.IsMenuItem = input.IsMenuItem
 	mod.Status = input.Status
 	mod.UpdatedAt = time.Now()
 

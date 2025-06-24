@@ -15,7 +15,6 @@ type Module struct {
 	ParentID      *uuid.UUID `gorm:"type:uuid" json:"parent_id"`
 	ApplicationID *uuid.UUID `gorm:"type:uuid" json:"application_id"`
 	SortOrder     int        `gorm:"default:0" json:"sort_order"`
-	IsMenuItem    bool       `gorm:"default:true" json:"is_menu_item"`
 	Status        string     `gorm:"type:module_status_enum;default:'active'" json:"status"`
 	CreatedAt     time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `gorm:"default:now()" json:"updated_at"`

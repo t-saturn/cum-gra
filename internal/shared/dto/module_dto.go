@@ -9,7 +9,6 @@ type CreateModuleDTO struct {
 	ParentID      string `json:"parent_id"`
 	ApplicationID string `json:"application_id" validate:"required"`
 	SortOrder     int    `json:"sort_order"`
-	IsMenuItem    bool   `json:"is_menu_item"`
 	Status        string `json:"status" validate:"required,oneof=active inactive"`
 }
 
@@ -22,6 +21,5 @@ type UpdateModuleDTO struct {
 	ParentID      string `json:"parent_id"`
 	ApplicationID string `json:"application_id" validate:"required"`
 	SortOrder     int    `json:"sort_order"`
-	IsMenuItem    bool   `json:"is_menu_item"`
 	Status        string `json:"status" validate:"required,oneof=active inactive"`
 }
