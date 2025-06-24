@@ -54,8 +54,8 @@ func (s *UserModuleRestrictionService) Create(input dto.CreateUserModuleRestrict
 		IsDeleted: false,
 	}
 
-	if input.UpdatedBy != "" {
-		parsed := uuid.MustParse(input.UpdatedBy)
+	if input.UpdatedBy != nil {
+		parsed := uuid.MustParse(*input.UpdatedBy)
 		restriction.UpdatedBy = &parsed
 	} else {
 		restriction.UpdatedBy = nil
