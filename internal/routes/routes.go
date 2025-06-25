@@ -8,4 +8,6 @@ func RegisterAllRoutes(app *fiber.App) {
 	api := app.Group("/api") // puedes ajustar el prefijo según tu versión
 
 	RegisterUserCredentialRoutes(api)
+	RegisterTokenRoutes(api)
+	RegisterActiveTokenRoutes(api)
 }
