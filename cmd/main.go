@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/config"
+	"github.com/t-saturn/auth-service-server/internal/routes"
 )
 
 func main() {
@@ -27,6 +28,8 @@ func main() {
 
 		return c.SendString("Auth Service Running")
 	})
+
+	routes.RegisterAllRoutes(app)
 
 	if err := app.Listen(":" + port); err != nil {
 		config.Logger.WithError(err).Fatal("Error starting server")
