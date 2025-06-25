@@ -11,7 +11,7 @@ type CreateUserModuleRestrictionDTO struct {
 	Reason             string     `json:"reason"`
 	ExpiresAt          *time.Time `json:"expires_at"`
 	CreatedBy          string     `json:"created_by" validate:"required,uuid"`
-	UpdatedBy          string     `json:"updated_by" validate:"required,uuid"`
+	UpdatedBy          *string    `json:"updated_by" validate:"omitempty,uuid"`
 }
 
 type UpdateUserModuleRestrictionDTO struct {

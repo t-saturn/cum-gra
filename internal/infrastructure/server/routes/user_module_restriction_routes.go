@@ -12,7 +12,7 @@ func RegisterUserModuleRestrictionRoutes(api fiber.Router) {
 	s := services.NewUserModuleRestrictionService(r)
 	h := handlers.NewUserModuleRestrictionHandler(s)
 
-	group := api.Group("/user_module_restrictions")
+	group := api.Group("/user-module-restrictions")
 	group.Post("/", h.Create)
 	group.Get("/", h.GetAll)
 	group.Get("/:id", h.GetByID)

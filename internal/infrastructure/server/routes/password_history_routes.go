@@ -12,7 +12,7 @@ func RegisterPasswordHistoryRoutes(api fiber.Router) {
 	s := services.NewPasswordHistoryService(r)
 	h := handlers.NewPasswordHistoryHandler(s)
 
-	group := api.Group("/password_history")
+	group := api.Group("/password-history")
 	group.Post("/", h.Create)
 	group.Get("/", h.GetAll)
 	group.Get("/:id", h.GetByID)

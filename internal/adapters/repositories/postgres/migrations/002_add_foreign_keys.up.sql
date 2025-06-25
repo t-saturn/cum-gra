@@ -117,17 +117,17 @@ ALTER TABLE user_module_restrictions
 ADD CONSTRAINT fk_user_module_restrictions_deleted_by
 FOREIGN KEY (deleted_by) REFERENCES users(id) ON DELETE SET NULL;
 
--- Agregar foreign keys para password_history
-ALTER TABLE password_history
-ADD CONSTRAINT fk_password_history_user_id
+-- Agregar foreign keys para password_histories
+ALTER TABLE password_histories
+ADD CONSTRAINT fk_password_histories_user_id
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE password_history
-ADD CONSTRAINT fk_password_history_changed_by
+ALTER TABLE password_histories
+ADD CONSTRAINT fk_password_histories_changed_by
 FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE password_history
-ADD CONSTRAINT fk_password_history_deleted_by
+ALTER TABLE password_histories
+ADD CONSTRAINT fk_password_histories_deleted_by
 FOREIGN KEY (deleted_by) REFERENCES users(id) ON DELETE SET NULL;
 
 -- Crear índices adicionales para foreign keys para mejorar el rendimiento
@@ -147,4 +147,4 @@ CREATE INDEX idx_module_role_permissions_application_role_id ON module_role_perm
 CREATE INDEX idx_user_module_restrictions_user_id ON user_module_restrictions(user_id);
 CREATE INDEX idx_user_module_restrictions_module_id ON user_module_restrictions(module_id);
 CREATE INDEX idx_user_module_restrictions_application_id ON user_module_restrictions(application_id);
-CREATE INDEX idx_password_history_user_id ON password_history(user_id);
+CREATE INDEX idx_password_histories_user_id ON password_histories(user_id);

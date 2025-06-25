@@ -18,8 +18,8 @@ CREATE TABLE structural_positions (
 -- Crear tabla organic_units
 CREATE TABLE organic_units (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
-    acronym VARCHAR(20),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    acronym VARCHAR(20) UNIQUE,
     brand VARCHAR(100),
     description TEXT,
     parent_id UUID,
@@ -149,8 +149,8 @@ CREATE TABLE user_module_restrictions (
     deleted_by UUID
 );
 
--- Crear tabla password_history
-CREATE TABLE password_history (
+-- Crear tabla password_histories
+CREATE TABLE password_histories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     previous_password_hash VARCHAR(255) NOT NULL,

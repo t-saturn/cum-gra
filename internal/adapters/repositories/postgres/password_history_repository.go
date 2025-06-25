@@ -1,4 +1,3 @@
-// internal/adapters/repositories/postgres/password_history_repository.go
 package postgres
 
 import (

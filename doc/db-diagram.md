@@ -169,7 +169,7 @@ Table organic_units {
   deleted_by uuid [ref: > users.id]
 }
 
-Table password_history {
+Table password_histories {
   id uuid [primary key]
   user_id uuid [ref: > users.id]
   previous_password_hash varchar(255) [not null]
