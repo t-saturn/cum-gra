@@ -14,12 +14,12 @@ type ActiveToken struct {
 	TokenHash       string              `bson:"tokenHash"`
 	TokenType       string              `bson:"tokenType"` // access or refresh
 	ApplicationID   string              `bson:"applicationId"`
-	ApplicationURL  string              `bson:"applicationUrl,omitempty"`
-	DeviceInfo      map[string]string   `bson:"deviceInfo,omitempty"` // simplificado
-	IssuedAt        time.Time           `bson:"issuedAt"`
-	ExpiresAt       time.Time           `bson:"expiresAt"`
-	LastUsed        time.Time           `bson:"lastUsed,omitempty"`
-	CreatedAt       time.Time           `bson:"createdAt"`
-	RefreshCount    int                 `bson:"refreshCount,omitempty"`
-	MaxRefreshCount int                 `bson:"maxRefreshCount,omitempty"`
+	ApplicationURL  string              `bson:"application_url,omitempty"`
+	DeviceInfo      map[string]string   `bson:"device_info,omitempty"` // simplificado
+	IssuedAt        time.Time           `bson:"issued_at"`
+	ExpiresAt       time.Time           `bson:"expires_at"`
+	LastUsed        time.Time           `bson:"last_used,omitempty"`
+	CreatedAt       time.Time           `bson:"created_at"`
+	RefreshCount    int                 `bson:"refresh_count,omitempty"`
+	MaxRefreshCount int                 `bson:"max_refresh_count,omitempty"`
 }

@@ -8,11 +8,11 @@ import (
 
 type InvalidToken struct {
 	ID                 primitive.ObjectID `bson:"_id,omitempty"`
-	TokenID            string             `bson:"tokenId"`
-	TokenHash          string             `bson:"tokenHash"`
-	UserID             primitive.ObjectID `bson:"userId"`
-	ApplicationID      string             `bson:"applicationId"`
-	InvalidatedAt      time.Time          `bson:"invalidatedAt"`
-	InvalidationReason string             `bson:"invalidationReason"` // user_logout, invalid_token, etc.
-	InvalidatedBy      string             `bson:"invalidatedBy"`      // user, admin, system
+	TokenID            string             `bson:"token_id"`
+	TokenHash          string             `bson:"token_hash"`
+	UserID             primitive.ObjectID `bson:"user_id"`
+	ApplicationID      string             `bson:"application_id"`
+	InvalidatedAt      time.Time          `bson:"invalidated_at"`
+	InvalidationReason string             `bson:"invalidation_reason"` // user_logout, invalid_token, etc.
+	InvalidatedBy      string             `bson:"invalidated_by"`      // user, admin, system
 }

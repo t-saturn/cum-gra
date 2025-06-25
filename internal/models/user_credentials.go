@@ -18,35 +18,35 @@ type Location struct {
 
 // Información del dispositivo
 type DeviceInfo struct {
-	UserAgent      string    `bson:"userAgent,omitempty"`
+	UserAgent      string    `bson:"user_agent,omitempty"`
 	IP             string    `bson:"ip,omitempty"`
-	DeviceID       string    `bson:"deviceId,omitempty"`
-	BrowserName    string    `bson:"browserName,omitempty"`
-	BrowserVersion string    `bson:"browserVersion,omitempty"`
+	DeviceID       string    `bson:"device_id,omitempty"`
+	BrowserName    string    `bson:"browser_name,omitempty"`
+	BrowserVersion string    `bson:"browser_version,omitempty"`
 	OS             string    `bson:"os,omitempty"`
 	Location       *Location `bson:"location,omitempty"`
 }
 
 // Respuesta de validación
 type ValidationResponse struct {
-	UserID          primitive.ObjectID `bson:"userId,omitempty"`
-	ServiceResponse string             `bson:"serviceResponse,omitempty"`
-	ValidatedBy     string             `bson:"validatedBy,omitempty"`
+	UserID          primitive.ObjectID `bson:"user_id,omitempty"`
+	ServiceResponse string             `bson:"service_response,omitempty"`
+	ValidatedBy     string             `bson:"validated_by,omitempty"`
 }
 
 // Modelo principal
 type UserCredential struct {
 	ID                 primitive.ObjectID  `bson:"_id,omitempty"`
 	Email              string              `bson:"email"`
-	PasswordHash       string              `bson:"passwordHash"`
+	PasswordHash       string              `bson:"password_hash"`
 	Status             string              `bson:"status"` // pending, correct, invalid, expired
-	ApplicationID      string              `bson:"applicationId"`
-	ApplicationURL     string              `bson:"applicationUrl"`
-	DeviceInfo         DeviceInfo          `bson:"deviceInfo"`
-	CreatedAt          time.Time           `bson:"createdAt"`
-	ExpiresAt          time.Time           `bson:"expiresAt"`
-	ValidatedAt        *time.Time          `bson:"validatedAt,omitempty"`
-	ValidationResponse *ValidationResponse `bson:"validationResponse,omitempty"`
+	ApplicationID      string              `bson:"application_id"`
+	ApplicationURL     string              `bson:"application_url"`
+	DeviceInfo         DeviceInfo          `bson:"device_info"`
+	CreatedAt          time.Time           `bson:"created_at"`
+	ExpiresAt          time.Time           `bson:"expires_at"`
+	ValidatedAt        *time.Time          `bson:"validated_at,omitempty"`
+	ValidationResponse *ValidationResponse `bson:"validation_response,omitempty"`
 }
 
 // NewUserCredential crea una instancia con tiempo de expiración a 5 minutos
