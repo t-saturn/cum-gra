@@ -8,4 +8,5 @@ import (
 func RegisterTokenRoutes(router fiber.Router) {
 	group := router.Group("/tokens")
 	group.Get("/generate", handlers.GenerateTokenHandler)
+	group.Get("/validate", handlers.ValidateTokenHandler)
 }
