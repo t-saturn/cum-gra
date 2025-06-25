@@ -149,8 +149,8 @@ CREATE TABLE user_module_restrictions (
     deleted_by UUID
 );
 
--- Crear tabla password_history
-CREATE TABLE password_history (
+-- Crear tabla password_histories
+CREATE TABLE password_histories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     previous_password_hash VARCHAR(255) NOT NULL,

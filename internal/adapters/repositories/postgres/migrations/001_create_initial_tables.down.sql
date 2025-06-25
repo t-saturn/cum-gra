@@ -13,7 +13,7 @@ DROP INDEX IF EXISTS idx_users_dni;
 DROP INDEX IF EXISTS idx_users_email;
 
 -- Eliminar tablas en orden inverso de dependencias
-DROP TABLE IF EXISTS password_history;
+DROP TABLE IF EXISTS password_histories;
 DROP TABLE IF EXISTS user_module_restrictions;
 DROP TABLE IF EXISTS module_role_permissions;
 DROP TABLE IF EXISTS modules;

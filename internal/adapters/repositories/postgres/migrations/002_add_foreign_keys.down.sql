@@ -1,7 +1,7 @@
 -- 002_add_foreign_keys.down.sql
 
 -- Eliminar índices adicionales
-DROP INDEX IF EXISTS idx_password_history_user_id;
+DROP INDEX IF EXISTS idx_password_histories_user_id;
 DROP INDEX IF EXISTS idx_user_module_restrictions_application_id;
 DROP INDEX IF EXISTS idx_user_module_restrictions_module_id;
 DROP INDEX IF EXISTS idx_user_module_restrictions_user_id;
@@ -19,10 +19,10 @@ DROP INDEX IF EXISTS idx_users_deleted_by;
 DROP INDEX IF EXISTS idx_users_organic_unit_id;
 DROP INDEX IF EXISTS idx_users_structural_position_id;
 
--- Eliminar foreign keys de password_history
-ALTER TABLE password_history DROP CONSTRAINT IF EXISTS fk_password_history_deleted_by;
-ALTER TABLE password_history DROP CONSTRAINT IF EXISTS fk_password_history_changed_by;
-ALTER TABLE password_history DROP CONSTRAINT IF EXISTS fk_password_history_user_id;
+-- Eliminar foreign keys de password_histories
+ALTER TABLE password_histories DROP CONSTRAINT IF EXISTS fk_password_histories_deleted_by;
+ALTER TABLE password_histories DROP CONSTRAINT IF EXISTS fk_password_histories_changed_by;
+ALTER TABLE password_histories DROP CONSTRAINT IF EXISTS fk_password_histories_user_id;
 
 -- Eliminar foreign keys de user_module_restrictions
 ALTER TABLE user_module_restrictions DROP CONSTRAINT IF EXISTS fk_user_module_restrictions_deleted_by;

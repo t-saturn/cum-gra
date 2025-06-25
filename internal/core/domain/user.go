@@ -32,5 +32,5 @@ type User struct {
 	DeletedByUser          *User                   `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	UserApplicationRoles   []UserApplicationRole   `gorm:"foreignKey:UserID" json:"user_application_roles,omitempty"`
 	UserModuleRestrictions []UserModuleRestriction `gorm:"foreignKey:UserID" json:"user_module_restrictions,omitempty"`
-	PasswordHistory        []PasswordHistory       `gorm:"foreignKey:UserID" json:"password_history,omitempty"`
+	PasswordHistory        []PasswordHistory       `gorm:"foreignKey:UserID" json:"password_histories,omitempty"`
 }
