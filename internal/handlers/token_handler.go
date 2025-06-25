@@ -67,7 +67,7 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "token and app_id are required"})
 	}
 
-	// Verificar firma JWT
+	// Verificar firma del JWT
 	parsed, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.GetEnv("JWT_SECRET", "")), nil
 	})
@@ -75,54 +75,57 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token signature"})
 	}
 
+	// Extraer claims
 	claims, ok := parsed.Claims.(jwt.MapClaims)
-	if !ok {
+	if !ok || claims["jti"] == nil || claims["sub"] == nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
 	}
 
 	jti := claims["jti"].(string)
 	sub := claims["sub"].(string)
+
 	userID, err := primitive.ObjectIDFromHex(sub)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user_id in token"})
 	}
 
 	// Buscar el token en la colección tokens_activos
-	hash := sha256.Sum256([]byte(tokenStr))
-	tokenHash := hex.EncodeToString(hash[:])
+	tokenHash := sha256.Sum256([]byte(tokenStr))
+	hashHex := hex.EncodeToString(tokenHash[:])
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	collection := config.MongoDatabase.Collection("tokens_activos")
-	var activeToken models.ActiveToken
-	err = collection.FindOne(ctx, bson.M{
+	var found models.ActiveToken
+	err = config.MongoDatabase.Collection("tokens_activos").FindOne(ctx, bson.M{
 		"tokenId":       jti,
-		"tokenHash":     tokenHash,
+		"tokenHash":     hashHex,
 		"userId":        userID,
 		"applicationId": appID,
-	}).Decode(&activeToken)
+	}).Decode(&found)
 
 	if err != nil {
-		// Registrar como token inválido
+		// Registro automático en tokens_invalid
 		invalid := &models.InvalidToken{
 			TokenID:            jti,
-			TokenHash:          tokenHash,
+			TokenHash:          hashHex,
 			UserID:             userID,
 			ApplicationID:      appID,
 			InvalidatedAt:      time.Now(),
 			InvalidationReason: "invalid_token",
 			InvalidatedBy:      "system",
 		}
-		repository.InsertInvalidToken(ctx, invalid)
+		_ = repository.CreateInvalidToken(ctx, invalid)
 
+		config.Logger.WithField("tokenId", jti).Warn("Token inválido registrado en tokens_invalid")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token not found or revoked"})
 	}
 
-	// Retornar token válido
+	// Token válido
 	return c.JSON(fiber.Map{
 		"message": "Token is valid",
-		"token":   tokenStr,
-		"exp":     activeToken.ExpiresAt,
+		"tokenId": jti,
+		"userId":  userID.Hex(),
+		"exp":     found.ExpiresAt,
 	})
 }
