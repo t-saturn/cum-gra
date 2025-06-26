@@ -19,6 +19,10 @@ type TokenRequest struct {
 	DeviceInfo     models.DeviceInfo `json:"deviceInfo"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
 func GenerateTokenHandler(c fiber.Ctx) error {
 	var body TokenRequest
 	if err := c.Bind().Body(&body); err != nil || body.UserID == "" {
@@ -107,5 +111,21 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 		"jti": claims["jti"],
 		"iat": formatTime(claims["iat"]),
 		"exp": formatTime(claims["exp"]),
+	})
+}
+
+func RefreshTokenHandler(c fiber.Ctx) error {
+	var body RefreshTokenRequest
+	if err := c.Bind().Body(&body); err != nil || body.RefreshToken == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "refresh_token is required"})
+	}
+
+	newAccessToken, err := services.RefreshAccessToken(body.RefreshToken)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"access_token": newAccessToken,
 	})
 }

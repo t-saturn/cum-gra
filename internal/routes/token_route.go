@@ -9,4 +9,5 @@ func RegisterTokenRoutes(r fiber.Router) {
 	tokens := r.Group("/tokens")
 	tokens.Post("/generate", handlers.GenerateTokenHandler)
 	tokens.Get("/validate", handlers.ValidateTokenHandler)
+	tokens.Post("/refresh", handlers.RefreshTokenHandler)
 }

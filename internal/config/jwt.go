@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -19,22 +18,26 @@ func InitJWT() {
 	jwtSecret = []byte(secret)
 }
 
-func GenerateJWT(userID string) (string, string, time.Time, error) {
-	expMinStr := GetEnv("JWT_EXP_MINUTES", "15")
-	expMin, err := strconv.Atoi(expMinStr)
-	if err != nil {
-		expMin = 15
+// tokenType: "access" o "refresh"
+func GenerateJWT(userID string, tokenType string) (string, string, time.Time, error) {
+	jti := uuid.New().String()
+	iat := time.Now()
+
+	// Definir duración según tipo
+	var exp time.Time
+	switch tokenType {
+	case "refresh":
+		exp = iat.Add(7 * 24 * time.Hour) // 7 días
+	default: // "access"
+		exp = iat.Add(3 * time.Hour) // 3 horas
 	}
 
-	expirationTime := time.Now().Add(time.Duration(expMin) * time.Minute)
-	jti := uuid.New().String()
-
+	// Construir claims estándar
 	claims := jwt.MapClaims{
-		"sub": userID,
-		//		"user_id": userID,
-		"jti": jti,
-		"exp": expirationTime.Unix(),
-		"iat": time.Now().Unix(),
+		"sub": userID,     // subject (ID del usuario)
+		"jti": jti,        // ID único del token
+		"exp": exp.Unix(), // expiración
+		"iat": iat.Unix(), // emisión
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -43,5 +46,5 @@ func GenerateJWT(userID string) (string, string, time.Time, error) {
 		return "", "", time.Time{}, err
 	}
 
-	return signedToken, jti, expirationTime, nil
+	return signedToken, jti, exp, nil
 }
