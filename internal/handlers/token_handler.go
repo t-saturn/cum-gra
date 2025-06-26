@@ -1,14 +1,16 @@
 package handlers
 
 import (
-	"time"
-
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/auth-service-server/internal/config"
+	"github.com/t-saturn/auth-service-server/internal/models"
+	"github.com/t-saturn/auth-service-server/internal/services"
 )
 
 type TokenRequest struct {
-	UserID string `json:"user_id"`
+	UserID         string            `json:"user_id"`
+	ApplicationID  string            `json:"application_id"`
+	ApplicationURL string            `json:"application_url"`
+	DeviceInfo     models.DeviceInfo `json:"deviceInfo"`
 }
 
 func GenerateTokenHandler(c fiber.Ctx) error {
@@ -17,16 +19,16 @@ func GenerateTokenHandler(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "user_id is required"})
 	}
 
-	token, jti, exp, err := config.GenerateJWT(body.UserID)
+	tokenStr, err := services.GenerateAndStoreToken(
+		body.UserID,
+		body.ApplicationID,
+		body.ApplicationURL,
+		body.DeviceInfo,
+	)
+
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Token generation failed"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to generate token"})
 	}
 
-	// Puedes guardar en base de datos aquí si lo deseas.
-
-	return c.JSON(fiber.Map{
-		"token": token,
-		"jti":   jti,
-		"exp":   exp.Format(time.RFC3339),
-	})
+	return c.JSON(fiber.Map{"token": tokenStr})
 }
