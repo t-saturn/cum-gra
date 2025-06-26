@@ -12,6 +12,7 @@ func main() {
 	config.LoadEnv()
 	config.InitLogger()
 	config.InitMongoDB()
+	config.InitJWT()
 
 	config.Logger.Info("Starting Auth Service...")
 
