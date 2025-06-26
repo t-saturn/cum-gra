@@ -10,13 +10,13 @@ type Location struct {
 	Coordinates Coordinates `bson:"coordinates,omitempty"`
 }
 
-// Información del dispositivoauth_attempt.go
+// Información del dispositivo
 type DeviceInfo struct {
-	UserAgent      string    `bson:"userAgent,omitempty"`
+	UserAgent      string    `bson:"user_agent,omitempty"`
 	IP             string    `bson:"ip,omitempty"`
-	DeviceID       string    `bson:"deviceId,omitempty"`
-	BrowserName    string    `bson:"browserName,omitempty"`
-	BrowserVersion string    `bson:"browserVersion,omitempty"`
+	DeviceID       string    `bson:"device_id,omitempty"`
+	BrowserName    string    `bson:"browser_name,omitempty"`
+	BrowserVersion string    `bson:"browser_version,omitempty"`
 	OS             string    `bson:"os,omitempty"`
 	Location       *Location `bson:"location,omitempty"`
 }

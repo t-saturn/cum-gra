@@ -9,7 +9,7 @@ import (
 // Información de geolocalización
 type LocationDetail struct {
 	Country      string      `bson:"country,omitempty"`
-	CountryCode  string      `bson:"countryCode,omitempty"`
+	CountryCode  string      `bson:"country_code,omitempty"`
 	Region       string      `bson:"region,omitempty"`
 	City         string      `bson:"city,omitempty"`
 	Coordinates  Coordinates `bson:"coordinates,omitempty"`
@@ -19,15 +19,15 @@ type LocationDetail struct {
 
 // Información extendida del dispositivo
 type SessionDeviceInfo struct {
-	UserAgent        string          `bson:"userAgent,omitempty"`
+	UserAgent        string          `bson:"user_agent,omitempty"`
 	IP               string          `bson:"ip,omitempty"`
-	DeviceID         string          `bson:"deviceId,omitempty"`
-	BrowserName      string          `bson:"browserName,omitempty"`
-	BrowserVersion   string          `bson:"browserVersion,omitempty"`
+	DeviceID         string          `bson:"device_id,omitempty"`
+	BrowserName      string          `bson:"browser_name,omitempty"`
+	BrowserVersion   string          `bson:"browser_version,omitempty"`
 	OS               string          `bson:"os,omitempty"`
-	OSVersion        string          `bson:"osVersion,omitempty"`
-	DeviceType       string          `bson:"deviceType,omitempty"` // desktop, mobile, tablet
-	ScreenResolution string          `bson:"screenResolution,omitempty"`
+	OSVersion        string          `bson:"os_version,omitempty"`
+	DeviceType       string          `bson:"device_type,omitempty"` // desktop, mobile, tablet
+	ScreenResolution string          `bson:"screen_resolution,omitempty"`
 	Timezone         string          `bson:"timezone,omitempty"`
 	Language         string          `bson:"language,omitempty"`
 	Location         *LocationDetail `bson:"location,omitempty"`
@@ -35,23 +35,23 @@ type SessionDeviceInfo struct {
 
 // Métricas de la sesión
 type SessionMetrics struct {
-	TotalRequests        int    `bson:"totalRequests"`
-	TotalTokenRefreshes  int    `bson:"totalTokenRefreshes"`
-	ApplicationsAccessed int    `bson:"applicationsAccessed"`
-	LastApplicationUsed  string `bson:"lastApplicationUsed,omitempty"`
-	SessionDuration      int64  `bson:"sessionDuration"` // en segundos
+	TotalRequests        int    `bson:"total_requests"`
+	TotalTokenRefreshes  int    `bson:"total_token_refreshes"`
+	ApplicationsAccessed int    `bson:"applications_accessed"`
+	LastApplicationUsed  string `bson:"last_application_used,omitempty"`
+	SessionDuration      int64  `bson:"session_duration"` // en segundos
 }
 
 // Modelo de sesión
 type Session struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
-	SessionID    string             `bson:"sessionId"`
-	UserID       primitive.ObjectID `bson:"userId"`
-	IsActive     bool               `bson:"isActive"`
-	CreatedAt    time.Time          `bson:"createdAt"`
-	LastActivity time.Time          `bson:"lastActivity"`
-	ExpiresAt    time.Time          `bson:"expiresAt"`
+	SessionID    string             `bson:"session_id"`
+	UserID       primitive.ObjectID `bson:"user_id"`
+	IsActive     bool               `bson:"is_active"`
+	CreatedAt    time.Time          `bson:"created_at"`
+	LastActivity time.Time          `bson:"last_activity"`
+	ExpiresAt    time.Time          `bson:"expires_at"`
 
-	DeviceInfo SessionDeviceInfo `bson:"deviceInfo,omitempty"`
+	DeviceInfo SessionDeviceInfo `bson:"device_info,omitempty"`
 	Metrics    SessionMetrics    `bson:"metrics,omitempty"`
 }

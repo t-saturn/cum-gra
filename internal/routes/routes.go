@@ -7,7 +7,7 @@ import (
 func RegisterAllRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
-	api.Get("/auth/logs", func(c fiber.Ctx) error {
+	api.Get("/", func(c fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
 }

@@ -9,25 +9,25 @@ import (
 // Modelo de token unificado
 type Token struct {
 	ID        primitive.ObjectID  `bson:"_id,omitempty"`
-	TokenID   string              `bson:"tokenId"` // jti
-	TokenHash string              `bson:"tokenHash"`
-	UserID    primitive.ObjectID  `bson:"userId"`
-	SessionID *primitive.ObjectID `bson:"sessionId,omitempty"`
+	TokenID   string              `bson:"token_id"` // jti
+	TokenHash string              `bson:"token_hash"`
+	UserID    primitive.ObjectID  `bson:"user_id"`
+	SessionID *primitive.ObjectID `bson:"session_id,omitempty"`
 
 	Status    string    `bson:"status"`           // active, invalid, expired, revoked
 	Reason    string    `bson:"reason,omitempty"` // user_logout, invalid_token, etc.
-	UpdatedAt time.Time `bson:"updatedAt"`        // último cambio de estado
+	UpdatedAt time.Time `bson:"updated_at"`       // último cambio de estado
 
-	TokenType string     `bson:"tokenType"` // access, refresh
-	IssuedAt  time.Time  `bson:"issuedAt"`
-	ExpiresAt time.Time  `bson:"expiresAt"`
-	LastUsed  *time.Time `bson:"lastUsed,omitempty"`
-	CreatedAt time.Time  `bson:"createdAt"`
+	TokenType string     `bson:"token_type"` // access, refresh
+	IssuedAt  time.Time  `bson:"issued_at"`
+	ExpiresAt time.Time  `bson:"expires_at"`
+	LastUsed  *time.Time `bson:"last_used,omitempty"`
+	CreatedAt time.Time  `bson:"created_at"`
 
-	ApplicationID  string     `bson:"applicationId"`
-	ApplicationURL string     `bson:"applicationUrl,omitempty"`
-	DeviceInfo     DeviceInfo `bson:"deviceInfo,omitempty"`
+	ApplicationID  string     `bson:"application_id"`
+	ApplicationURL string     `bson:"application_url,omitempty"`
+	DeviceInfo     DeviceInfo `bson:"device_info,omitempty"`
 
-	RefreshCount    int `bson:"refreshCount,omitempty"`
-	MaxRefreshCount int `bson:"maxRefreshCount,omitempty"`
+	RefreshCount    int `bson:"refresh_count,omitempty"`
+	MaxRefreshCount int `bson:"max_refresh_count,omitempty"`
 }
