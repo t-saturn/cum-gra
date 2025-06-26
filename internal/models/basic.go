@@ -18,5 +18,7 @@ type DeviceInfo struct {
 	BrowserName    string    `bson:"browser_name,omitempty"`
 	BrowserVersion string    `bson:"browser_version,omitempty"`
 	OS             string    `bson:"os,omitempty"`
+	OSVersion      string    `bson:"os_version,omitempty"`
+	DeviceType     string    `bson:"device_type,omitempty"`
 	Location       *Location `bson:"location,omitempty"`
 }

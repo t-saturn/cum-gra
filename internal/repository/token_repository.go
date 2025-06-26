@@ -9,5 +9,9 @@ import (
 
 func InsertToken(ctx context.Context, token *models.Token) error {
 	_, err := config.MongoDatabase.Collection("tokens").InsertOne(ctx, token)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,7 +1,13 @@
 package handlers
 
 import (
+	"errors"
+	"strings"
+	"time"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/services"
 )
@@ -31,4 +37,75 @@ func GenerateTokenHandler(c fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"token": tokenStr})
+}
+
+func ValidateTokenHandler(c fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Falta o mal formato en Authorization header"})
+	}
+
+	tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+
+	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fiber.NewError(fiber.StatusUnauthorized, "Método de firma no permitido")
+		}
+		return []byte(config.GetEnv("JWT_SECRET", "")), nil
+	})
+
+	/* --- */
+	var tokenErrorResponses = []struct {
+		match  error
+		status int
+		msg    string
+	}{
+		{jwt.ErrTokenExpired, fiber.StatusUnauthorized, "Token expirado"},
+		{jwt.ErrTokenSignatureInvalid, fiber.StatusUnauthorized, "Firma inválida del token"},
+		{jwt.ErrTokenMalformed, fiber.StatusBadRequest, "Token mal formado"},
+	}
+
+	if err != nil {
+		for _, te := range tokenErrorResponses {
+			if errors.Is(err, te.match) {
+				return c.Status(te.status).JSON(fiber.Map{"error": te.msg})
+			}
+		}
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+	/* if err != nil {
+		switch {
+		case errors.Is(err, jwt.ErrTokenExpired):
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token expirado"})
+		case errors.Is(err, jwt.ErrTokenSignatureInvalid):
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Firma inválida del token"})
+		case errors.Is(err, jwt.ErrTokenMalformed):
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Token mal formado"})
+		default:
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		}
+	} */
+
+	if !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token inválido"})
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No se pudo extraer claims del token"})
+	}
+
+	formatTime := func(ts interface{}) string {
+		if v, ok := ts.(float64); ok {
+			return time.Unix(int64(v), 0).Format(time.RFC3339)
+		}
+		return ""
+	}
+
+	return c.JSON(fiber.Map{
+		"sub": claims["sub"],
+		"jti": claims["jti"],
+		"iat": formatTime(claims["iat"]),
+		"exp": formatTime(claims["exp"]),
+	})
 }
