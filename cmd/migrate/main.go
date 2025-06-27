@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -64,7 +65,7 @@ func main() {
 		} else {
 			err = m.Up()
 		}
-		if err != nil && err != migrate.ErrNoChange {
+		if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			logger.Log.Fatal("Error running up migration:", err)
 		}
 		logger.Log.Info("Migration up completed successfully")
@@ -75,7 +76,7 @@ func main() {
 		} else {
 			err = m.Down()
 		}
-		if err != nil && err != migrate.ErrNoChange {
+		if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			logger.Log.Fatal("Error running down migration:", err)
 		}
 		logger.Log.Info("Migration down completed successfully")

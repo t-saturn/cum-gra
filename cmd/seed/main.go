@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		logger.Log.Warn("No se pudo cargar el archivo .env, usando entorno actual")
+		logger.Log.Warn("The .env file could not be loaded, using current environment")
 	}
 
 	logger.InitLogger()
@@ -19,11 +19,11 @@ func main() {
 	config.LoadConfig()
 	database.Connect()
 
-	logger.Log.Info("Ejecutando seeders...")
+	logger.Log.Info("executing-seeders")
 
 	if err := seeds.Run(); err != nil {
-		logger.Log.Fatalf("Error al ejecutar seeders: %v", err)
+		logger.Log.Fatalf("error-when-running-seeders: %v", err)
 	}
 
-	logger.Log.Info("Seeders ejecutados correctamente")
+	logger.Log.Info("seeders-executed-correctly")
 }
