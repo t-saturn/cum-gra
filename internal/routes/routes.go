@@ -11,6 +11,4 @@ func RegisterAllRoutes(app *fiber.App) {
 		return c.SendString("Hello, World!")
 	})
 
-	RegisterTokenRoutes(api)
-	RegisterAuthRoutes(api)
 }
