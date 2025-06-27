@@ -16,7 +16,10 @@ func InitLogger() {
 
 	logDir := "logs"
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		os.Mkdir(logDir, os.ModePerm)
+		err := os.Mkdir(logDir, os.ModePerm)
+		if err != nil {
+			return
+		}
 	}
 
 	logFileName := time.Now().Format("2006-01-02") + ".log"

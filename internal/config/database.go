@@ -13,6 +13,11 @@ import (
 var MongoClient *mongo.Client
 var MongoDatabase *mongo.Database
 
+// DatabaseConfig representa las conexiones compartidas con la base de datos
+type DatabaseConfig struct {
+	Mongo *mongo.Database
+}
+
 func InitMongoDB() {
 	uri := GetEnv("MONGO_URI", "mongodb://localhost:27017")
 	dbName := GetEnv("MONGO_DB_NAME", "mongo_db")
@@ -38,4 +43,10 @@ func InitMongoDB() {
 
 	MongoClient = client
 	MongoDatabase = client.Database(dbName)
+}
+
+func GetDatabaseConfig() DatabaseConfig {
+	return DatabaseConfig{
+		Mongo: MongoDatabase,
+	}
 }
