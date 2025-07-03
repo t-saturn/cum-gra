@@ -6,7 +6,6 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
-
 	RegisterStructuralPositionRoutes(api)
 	RegisterOrganicUnitRoutes(api)
 	RegisterApplicationRoutes(api)
@@ -17,5 +16,7 @@ func SetupRoutes(app *fiber.App) {
 	RegisterModuleRolePermissionRoutes(api)
 	RegisterPasswordHistoryRoutes(api)
 	RegisterUserModuleRestrictionRoutes(api)
-	RegisterAuthRoutes(api)
+
+	authRoute := app.Group("/auth")
+	RegisterAuthRoutes(authRoute)
 }

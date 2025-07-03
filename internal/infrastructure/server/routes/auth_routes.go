@@ -14,6 +14,6 @@ func RegisterAuthRoutes(api fiber.Router) {
 	authService := services.NewAuthService(authRepo, hasher)
 	handler := handlers.NewAuthHandler(authService)
 
-	auth := api.Group("/auth")
-	auth.Post("/verify", handler.Login)
+	auth := api.Group("/")
+	auth.Post("/validate-credentials", handler.Login)
 }
