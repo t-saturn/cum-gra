@@ -104,7 +104,7 @@ CREATE TABLE user_application_roles (
 CREATE TABLE modules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     item VARCHAR(100),
-    name VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
     route VARCHAR(255),
     icon VARCHAR(100),
     parent_id UUID,
