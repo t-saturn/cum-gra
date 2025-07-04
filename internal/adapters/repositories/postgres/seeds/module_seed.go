@@ -1,12 +1,15 @@
+// module_seed.go
 package seeds
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/t-saturn/central-user-manager/internal/core/domain"
 	"github.com/t-saturn/central-user-manager/internal/infrastructure/database"
 )
@@ -23,59 +26,82 @@ type SeedModule struct {
 }
 
 func SeedModules() error {
+	logrus.Info("Seeding módulos desde JSON...")
+
 	file, err := os.Open("internal/adapters/repositories/data/modules.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
 	defer file.Close()
 
-	var modules []SeedModule
-	if err := json.NewDecoder(file).Decode(&modules); err != nil {
+	var seedData []SeedModule
+	if err := json.NewDecoder(file).Decode(&seedData); err != nil {
 		return fmt.Errorf("error al decodificar JSON: %w", err)
 	}
 
-	for _, m := range modules {
-		// Buscar la aplicación por nombre
+	db := database.DB
+
+	// Indexar módulos insertados por nombre para posterior asignación de ParentID
+	inserted := make(map[string]uuid.UUID)
+
+	for _, sm := range seedData {
 		var app domain.Application
-		err := database.DB.Where("name = ?", m.ApplicationName).First(&app).Error
+		err := db.Where("LOWER(name) = ?", strings.ToLower(sm.ApplicationName)).First(&app).Error
 		if err != nil {
-			return fmt.Errorf("no se encontró la aplicación '%s': %w", m.ApplicationName, err)
+			return fmt.Errorf("no se encontró la aplicación '%s': %w", sm.ApplicationName, err)
 		}
 
-		// Obtener ID del módulo padre si existe
-		var parentID *uuid.UUID
-		if m.ParentName != nil {
-			var parent domain.Module
-			err := database.DB.Where("name = ?", *m.ParentName).First(&parent).Error
-			if err != nil {
-				return fmt.Errorf("no se encontró el módulo padre '%s': %w", *m.ParentName, err)
+		var parentID *uuid.UUID = nil
+		if sm.ParentName != nil {
+			if pid, ok := inserted[*sm.ParentName]; ok {
+				parentID = &pid
+			} else {
+				var parent domain.Module
+				err := db.Where("name = ? AND application_id = ?", *sm.ParentName, app.ID).First(&parent).Error
+				if err != nil {
+					return fmt.Errorf("no se encontró el módulo padre '%s': %w", *sm.ParentName, err)
+				}
+				parentID = &parent.ID
+				inserted[parent.Name] = parent.ID
 			}
-			parentID = &parent.ID
 		}
 
-		// Evitar duplicados por nombre
-		var existing domain.Module
-		if err := database.DB.Where("name = ?", m.Name).First(&existing).Error; err == nil {
-			continue // ya existe
+		// Verificar existencia correctamente
+		var count int64
+		query := db.Model(&domain.Module{}).Where("name = ? AND application_id = ?", sm.Name, app.ID)
+		if parentID == nil {
+			query = query.Where("parent_id IS NULL")
+		} else {
+			query = query.Where("parent_id = ?", *parentID)
+		}
+		if err := query.Count(&count).Error; err != nil {
+			return fmt.Errorf("error verificando existencia del módulo '%s': %w", sm.Name, err)
+		}
+		if count > 0 {
+			logrus.Warnf("Módulo ya existe: %s", sm.Name)
+			continue
 		}
 
 		module := domain.Module{
 			ID:            uuid.New(),
-			Item:          m.Item,
-			Name:          m.Name,
-			Route:         m.Route,
-			Icon:          m.Icon,
+			Item:          sm.Item,
+			Name:          sm.Name,
+			Route:         sm.Route,
+			Icon:          sm.Icon,
 			ParentID:      parentID,
 			ApplicationID: &app.ID,
-			SortOrder:     m.SortOrder,
-			Status:        m.Status,
+			SortOrder:     sm.SortOrder,
+			Status:        sm.Status,
 			CreatedAt:     time.Now(),
 			UpdatedAt:     time.Now(),
 		}
 
-		if err := database.DB.Create(&module).Error; err != nil {
-			return fmt.Errorf("error al insertar módulo '%s': %w", m.Name, err)
+		if err := db.Create(&module).Error; err != nil {
+			return fmt.Errorf("error al insertar módulo '%s': %w", sm.Name, err)
 		}
+
+		inserted[module.Name] = module.ID
+		logrus.Infof("Módulo insertado: %s", sm.Name)
 	}
 
 	return nil

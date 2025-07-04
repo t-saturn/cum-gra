@@ -20,7 +20,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Manejar Usuarios",
     "route": "/dashboard/users",
     "icon": "UserCheck",
@@ -30,7 +30,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Posiciones Estructurales",
     "route": "/dashboard/structural-positions",
     "icon": "Briefcase",
@@ -40,7 +40,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Unidades Orgánicas",
     "route": "/dashboard/organic-units",
     "icon": "Building",
@@ -60,7 +60,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Apps",
     "route": "/dashboard/applications",
     "icon": "Layers",
@@ -70,7 +70,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Módulos",
     "route": "/dashboard/modules",
     "icon": "Grid3X3",
@@ -84,13 +84,13 @@
     "name": "Reportes",
     "route": "/dashboard/reports",
     "icon": "BarChart3",
-    "parent_name": "Gestión",
+    "parent_name": null,
     "application_name": "central user manager",
     "sort_order": 9,
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Usuarios Activos",
     "route": "/dashboard/active-users",
     "icon": "TrendingUp",
@@ -100,7 +100,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Accesos por Aplicación",
     "route": "/dashboard/app-access",
     "icon": "Eye",
@@ -110,7 +110,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Gestión",
     "name": "Permisos por Usuario",
     "route": "/dashboard/user-permissions",
     "icon": "UserX",
@@ -130,7 +130,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Sesiones Activas",
     "route": "/dashboard/security/active-sessions",
     "icon": "Activity",
@@ -140,7 +140,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Logs de Auditoría",
     "route": "/dashboard/security/audit-logs",
     "icon": "ScrollText",
@@ -160,7 +160,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Roles de Aplicación",
     "route": "/dashboard/security/application-roles",
     "icon": "Shield",
@@ -170,7 +170,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Asignación de Roles",
     "route": "/dashboard/security/user-roles",
     "icon": "UserCog",
@@ -180,7 +180,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Permisos de Módulos",
     "route": "/dashboard/security/module-permissions",
     "icon": "Lock",
@@ -190,7 +190,7 @@
     "status": "active"
   },
   {
-    "item": null,
+    "item": "Seguridad",
     "name": "Restricción de Usuario",
     "route": "/dashboard/security/user-restrictions",
     "icon": "Ban",
@@ -204,7 +204,7 @@
     "name": "Ajustes",
     "route": "/dashboard/settings",
     "icon": "Settings2",
-    "parent_name": "Configuración",
+    "parent_name": null,
     "application_name": "central user manager",
     "sort_order": 21,
     "status": "active"
@@ -214,7 +214,7 @@
     "name": "Cuenta",
     "route": "/dashboard/account",
     "icon": "UserCircle",
-    "parent_name": "Configuración",
+    "parent_name": null,
     "application_name": "central user manager",
     "sort_order": 22,
     "status": "active"
