@@ -58,11 +58,11 @@ help:
 # COMPILACIÓN Y EJECUCIÓN
 build:
 	@echo "$(GREEN) Compilando aplicación...$(NC)"
-	@go build -o bin/$(APP_NAME) cmd/api/main.go
+	@go build -o bin/$(APP_NAME) cmd/server/main.go
 	@echo "$(GREEN) Compilación completada: bin/$(APP_NAME)$(NC)"
 run:
 	@echo "$(GREEN) Ejecutando aplicación...$(NC)"
-	@go run cmd/api/main.go
+	@go run cmd/server/main.go
 dev:
 	@echo "$(GREEN) Iniciando desarrollo en caliente...$(NC)"
 	@command -v air >/dev/null 2>&1 || echo "$(RED) Air no está instalado. Instala con: go install github.com/cosmtrek/air@latest$(NC)"; exit 1;
