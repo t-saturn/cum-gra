@@ -13,17 +13,17 @@ import {
   Download,
   TrendingUp,
   TrendingDown,
-  Building2,
   Users,
   Clock,
   Activity,
   Eye,
-  BarChart3,
   Globe,
   Smartphone,
   Monitor,
   RefreshCw,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsAppAccess } from "@/mocks/stats-mocks"
 
 // Mock data
 const appAccessData = [
@@ -259,10 +259,6 @@ export default function AppAccessReport() {
     return new Date(dateString).toLocaleString("es-ES")
   }
 
-  const totalAccesses = appAccessData.reduce((sum, app) => sum + app.statistics.totalAccesses, 0)
-  const totalUsers = appAccessData.reduce((sum, app) => sum + app.statistics.uniqueUsers, 0)
-  const averageGrowth = appAccessData.reduce((sum, app) => sum + app.statistics.dailyGrowth, 0) / appAccessData.length
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -283,79 +279,7 @@ export default function AppAccessReport() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Accesos</p>
-                <p className="text-2xl font-bold text-foreground">{totalAccesses.toLocaleString()}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <TrendingUp className="h-4 w-4 text-chart-4 mr-1" />
-                  <span className="text-chart-4">+{averageGrowth.toFixed(1)}%</span>
-                  <span className="text-muted-foreground ml-1">promedio</span>
-                </div>
-              </div>
-              <BarChart3 className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Aplicaciones Activas</p>
-                <p className="text-2xl font-bold text-chart-4">
-                  {appAccessData.filter((app) => app.status === "active").length}
-                </p>
-                <div className="flex items-center text-sm mt-1">
-                  <Activity className="h-4 w-4 text-chart-4 mr-1" />
-                  <span className="text-muted-foreground">de {appAccessData.length} total</span>
-                </div>
-              </div>
-              <Building2 className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios Únicos</p>
-                <p className="text-2xl font-bold text-primary">{totalUsers}</p>
-                <div className="flex items-center text-sm mt-1">
-                  <Users className="h-4 w-4 text-primary mr-1" />
-                  <span className="text-muted-foreground">Across all apps</span>
-                </div>
-              </div>
-              <Users className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">App Más Usada</p>
-                <p className="text-2xl font-bold text-chart-5">
-                  {
-                    appAccessData.reduce((max, app) =>
-                      app.statistics.totalAccesses > max.statistics.totalAccesses ? app : max,
-                    ).application.icon
-                  }
-                </p>
-                <div className="flex items-center text-sm mt-1">
-                  <TrendingUp className="h-4 w-4 text-chart-5 mr-1" />
-                  <span className="text-muted-foreground">
-                    {Math.max(...appAccessData.map((app) => app.statistics.totalAccesses)).toLocaleString()} accesos
-                  </span>
-                </div>
-              </div>
-              <Eye className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsAppAccess} />
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-3">

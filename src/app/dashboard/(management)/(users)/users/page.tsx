@@ -25,9 +25,9 @@ import {
   Trash2,
   Shield,
   Eye,
-  UserCheck,
-  UserX,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsUsers } from "@/mocks/stats-mocks"
 
 // Mock data
 const users = [
@@ -125,52 +125,7 @@ export default function UsersManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Usuarios</p>
-                <p className="text-2xl font-bold text-foreground">2,847</p>
-              </div>
-              <UserCheck className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios Activos</p>
-                <p className="text-2xl font-bold text-chart-4">2,654</p>
-              </div>
-              <UserCheck className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Suspendidos</p>
-                <p className="text-2xl font-bold text-chart-5">156</p>
-              </div>
-              <UserX className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Nuevos (30d)</p>
-                <p className="text-2xl font-bold text-primary">37</p>
-              </div>
-              <Plus className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsUsers}/>
 
       {/* Filters and Search */}
       <Card className="border-border bg-card/50">

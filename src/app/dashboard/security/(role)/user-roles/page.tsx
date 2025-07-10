@@ -37,6 +37,8 @@ import {
   UserCheck,
   Settings,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsUsersAndRoles } from "@/mocks/stats-mocks"
 
 // Datos simulados de usuarios con roles
 const userRoles = [
@@ -386,48 +388,7 @@ export default function UserRolesManagement() {
   return (
     <div className="space-y-6">
       {/* Estadísticas */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{roleStats.totalUsers}</div>
-            <p className="text-xs text-muted-foreground">{roleStats.activeUsers} activos</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Administradores</CardTitle>
-            <Crown className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{roleStats.byLevel.admin}</div>
-            <p className="text-xs text-muted-foreground">Acceso privilegiado</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Roles Asignados</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{roleStats.totalRoles}</div>
-            <p className="text-xs text-muted-foreground">Across all users</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alto Riesgo</CardTitle>
-            <Shield className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{roleStats.byRisk.high}</div>
-            <p className="text-xs text-muted-foreground">Requieren supervisión</p>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsUsersAndRoles} />
 
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList>

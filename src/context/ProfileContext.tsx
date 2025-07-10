@@ -34,7 +34,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     try {
       const result = {
         userId,
-        name: 'Nombre de usuario',
+        name: 'Miguel Ramirez',
         role: 'admin',
         avatar: 'https://i.pravatar.cc/150?img=7',
       };

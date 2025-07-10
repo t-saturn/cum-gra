@@ -5,7 +5,7 @@ import React from 'react';
 import AppSidebar from './sidebar';
 
 import { SidebarInset } from '@/components/ui/sidebar';
-import Navbar from './navbar';
+import Navbar from '../navbar/navbar';
 
 interface LayoutProps {
   children: React.ReactNode;

@@ -57,11 +57,12 @@ import {
   Briefcase,
   Users,
   Award,
-  DollarSign,
   Building,
   Crown,
   Star,
 } from "lucide-react";
+import CardStatsContain from "@/components/custom/card/card-stats-contain";
+import { statsStructuralPositions } from "@/mocks/stats-mocks";
 
 // Mock data
 const structuralPositions = [
@@ -519,60 +520,7 @@ export default function StructuralPositionsManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Total Posiciones
-                </p>
-                <p className="text-2xl font-bold text-foreground">45</p>
-              </div>
-              <Briefcase className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Posiciones Activas
-                </p>
-                <p className="text-2xl font-bold text-chart-4">42</p>
-              </div>
-              <Briefcase className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Empleados Asignados
-                </p>
-                <p className="text-2xl font-bold text-primary">18</p>
-              </div>
-              <Users className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Salario Promedio
-                </p>
-                <p className="text-2xl font-bold text-chart-5">7.2K</p>
-              </div>
-              <DollarSign className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsStructuralPositions} />
 
       {/* Filters and Search */}
       <Card className="border-border bg-card/50">

@@ -70,6 +70,8 @@ import {
   Copy,
   RefreshCw,
 } from "lucide-react";
+import CardStatsContain from "@/components/custom/card/card-stats-contain";
+import { statsApplications } from "@/mocks/stats-mocks";
 
 // Mock data
 const applications = [
@@ -508,60 +510,10 @@ export default function ApplicationsManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Total Aplicaciones
-                </p>
-                <p className="text-2xl font-bold text-foreground">24</p>
-              </div>
-              <Building2 className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Aplicaciones Activas
-                </p>
-                <p className="text-2xl font-bold text-chart-4">18</p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Usuarios Totales
-                </p>
-                <p className="text-2xl font-bold text-primary">205</p>
-              </div>
-              <Users className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Logins Totales</p>
-                <p className="text-2xl font-bold text-chart-5">7.7K</p>
-              </div>
-              <Activity className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsApplications} />
 
       {/* Applications Table */}
+      
       <Card className="border-border bg-card/50">
         <CardHeader>
           <div className="flex items-center justify-between">

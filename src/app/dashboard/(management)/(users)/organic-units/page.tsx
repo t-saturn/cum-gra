@@ -35,14 +35,14 @@ import {
   Edit,
   Trash2,
   Eye,
-  Building,
   Users,
-  Calendar,
   MapPin,
   Phone,
   Mail,
   User,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsOrganicUnits } from "@/mocks/stats-mocks"
 
 // Mock data
 const organicUnits = [
@@ -287,52 +287,7 @@ export default function OrganicUnitsManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Unidades</p>
-                <p className="text-2xl font-bold text-foreground">12</p>
-              </div>
-              <Building className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Unidades Activas</p>
-                <p className="text-2xl font-bold text-chart-4">11</p>
-              </div>
-              <Building className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Empleados</p>
-                <p className="text-2xl font-bold text-primary">63</p>
-              </div>
-              <Users className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Presupuesto Total</p>
-                <p className="text-2xl font-bold text-chart-5">4.4M</p>
-              </div>
-              <Calendar className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsOrganicUnits} />
 
       {/* Filters and Search */}
       <Card className="border-border bg-card/50">

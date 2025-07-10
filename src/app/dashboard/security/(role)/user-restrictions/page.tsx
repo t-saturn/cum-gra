@@ -38,6 +38,8 @@ import {
   Lock,
   Unlock,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsRestrictions } from "@/mocks/stats-mocks"
 
 // Datos simulados de restricciones de usuario
 const userRestrictions = [
@@ -311,50 +313,7 @@ export default function UserRestrictionsManagement() {
   return (
     <div className="space-y-6">
       {/* Estadísticas */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Restricciones</CardTitle>
-            <Ban className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{restrictionStats.total}</div>
-            <p className="text-xs text-muted-foreground">En {userRestrictions.length} usuarios</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Restricciones Activas</CardTitle>
-            <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{restrictionStats.active}</div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round((restrictionStats.active / restrictionStats.total) * 100)}% del total
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alta Severidad</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{restrictionStats.bySeverity.high}</div>
-            <p className="text-xs text-muted-foreground">Requieren supervisión</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Violaciones Hoy</CardTitle>
-            <Shield className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{restrictionStats.violations.today}</div>
-            <p className="text-xs text-muted-foreground">+{restrictionStats.violations.thisWeek} esta semana</p>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsRestrictions} />
 
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList>

@@ -52,6 +52,8 @@ import {
   Lock,
   Unlock,
 } from "lucide-react"
+import CardStatsContain from "@/components/custom/card/card-stats-contain"
+import { statsModules } from "@/mocks/stats-mocks"
 
 // Mock data
 const modules = [
@@ -501,52 +503,7 @@ export default function ModulesManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Módulos</p>
-                <p className="text-2xl font-bold text-foreground">156</p>
-              </div>
-              <Grid3X3 className="w-8 h-8 text-chart-2" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Módulos Activos</p>
-                <p className="text-2xl font-bold text-chart-4">142</p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-chart-4" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Usuarios Totales</p>
-                <p className="text-2xl font-bold text-primary">120</p>
-              </div>
-              <Users className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-card/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Requests Totales</p>
-                <p className="text-2xl font-bold text-chart-5">67.9K</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsModules}/>
 
       {/* Modules Table */}
       <Card className="border-border bg-card/50">

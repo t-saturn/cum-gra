@@ -51,13 +51,13 @@ import {
   Edit,
   Trash2,
   Users,
-  Shield,
-  Settings,
   ChevronDown,
   ChevronRight,
   Eye,
   Copy,
 } from "lucide-react";
+import CardStatsContain from "@/components/custom/card/card-stats-contain";
+import { statsRoleManagement } from "@/mocks/stats-mocks";
 
 // Datos simulados de roles de aplicación
 const applicationRoles = [
@@ -466,61 +466,8 @@ export default function ApplicationRolesManagement() {
   return (
     <div className="space-y-6">
       {/* Estadísticas */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Roles</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{roleStats.total}</div>
-            <p className="text-xs text-muted-foreground">+8 este mes</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Roles Activos</CardTitle>
-            <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {roleStats.active}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round((roleStats.active / roleStats.total) * 100)}% del
-              total
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Roles Admin</CardTitle>
-            <Settings className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              {roleStats.byLevel.admin}
-            </div>
-            <p className="text-xs text-muted-foreground">Acceso privilegiado</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Usuarios Asignados
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {applicationRoles.reduce((sum, role) => sum + role.userCount, 0)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Total de asignaciones
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <CardStatsContain stats={statsRoleManagement} />
+
 
       <Tabs defaultValue="roles" className="space-y-4">
         <TabsList>
