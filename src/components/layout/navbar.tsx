@@ -22,7 +22,7 @@ function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card/40 p-6 rounded-t-lg backdrop-blur-sm">
+    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card/70 p-6 rounded-t-lg backdrop-blur-sm">
       <SidebarTrigger className="hover:cursor-pointer" />
 
       <div className="ml-auto flex items-center gap-4 text-muted-foreground">

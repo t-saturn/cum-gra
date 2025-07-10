@@ -4,7 +4,7 @@
   <a href="https://github.com/t-saturn/central-user-manager-client">
     <img src="https://img.shields.io/github/stars/t-saturn/central-user-manager-client?style=social" alt="GitHub stars" />
   </a>
-  <a href="https://github.com/t-saturn/central-user-manager-client/blob/mainLICENSE">
+  <a href="https://github.com/t-saturn/central-user-manager-client/LICENSE">
     <img src="https://img.shields.io/github/license/t-saturn/central-user-manager-client?color=blue" alt="License" />
   </a>
   <br /><br />

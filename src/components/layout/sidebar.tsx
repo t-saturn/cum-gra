@@ -6,36 +6,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef } from "react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarRail,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarRail, useSidebar } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader } from "@/components/ui/sidebar";
 import { fn_get_sidebar_menu } from "@/helpers/sidebar-helper";
 import { useProfile } from "@/context/ProfileContext";
 import { SidebarItem, SidebarSubItem } from "@/types/sidebar-types";
 
-export default function AppSidebar({
-  hoveredItem,
-  setHoveredItem,
-}: {
-  hoveredItem: string | null;
-  setHoveredItem: (item: string | null) => void;
-}) {
+export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredItem: string | null; setHoveredItem: (item: string | null) => void }) {
   const { profile } = useProfile();
   const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -51,14 +29,7 @@ export default function AppSidebar({
   };
 
   const handleMouseEnter = (item: string, event: React.MouseEvent) => {
-    if (
-      isCollapsed &&
-      sidebarMenus.some((group) =>
-        group.menu.some(
-          (menuItem: SidebarItem) => menuItem.label === item && menuItem.items
-        )
-      )
-    ) {
+    if (isCollapsed && sidebarMenus.some((group) => group.menu.some((menuItem: SidebarItem) => menuItem.label === item && menuItem.items))) {
       setHoveredItem(item);
       const target = event.currentTarget as HTMLDivElement;
       const rect = target.getBoundingClientRect();
@@ -70,15 +41,15 @@ export default function AppSidebar({
 
   return (
     <>
-      <Sidebar
-        className="rounded-lg border border-border shadow-sm relative h-full overflow-hidden"
-        collapsible="icon"
-      >
+      <Sidebar className="rounded-lg border border-border shadow-sm relative h-full overflow-hidden" collapsible="icon">
         <SidebarHeader className="flex items-center border-b rounded-t-lg">
           {!isCollapsed ? (
             <div className="flex items-center gap-4 font-semibold p-6">
               <Image src="/img/logo.png" alt="logo" width={40} height={20} />
-              <span className="text-xl font-bold">CUM</span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold">CUM</span>
+                <span className="text-sm font-light text-muted-foreground">Central User Manager</span>
+              </div>
             </div>
           ) : (
             <div className="p-2">
@@ -89,33 +60,17 @@ export default function AppSidebar({
         <SidebarContent className="bg-card rounded-b-lg">
           {sidebarMenus.map((menubar, index) => (
             <SidebarGroup key={index}>
-              {!isCollapsed && (
-                <SidebarGroupLabel className="px-6 text-xs font-semibold uppercase text-muted-foreground">
-                  {menubar.title}
-                </SidebarGroupLabel>
-              )}
+              {!isCollapsed && <SidebarGroupLabel className="px-6 text-xs font-semibold uppercase text-muted-foreground">{menubar.title}</SidebarGroupLabel>}
               <SidebarMenu>
                 {menubar.menu.map((item: SidebarItem, i: number) => {
-                  const isActive =
-                    item.url === pathname ||
-                    (item.items &&
-                      item.items.some(
-                        (subitem: SidebarSubItem) => subitem.url === pathname
-                      ));
+                  const isActive = item.url === pathname || (item.items && item.items.some((subitem: SidebarSubItem) => subitem.url === pathname));
 
-                  const isSubItemActive =
-                    item.items &&
-                    item.items.some(
-                      (subitem: SidebarSubItem) => subitem.url === pathname
-                    );
+                  const isSubItemActive = item.items && item.items.some((subitem: SidebarSubItem) => subitem.url === pathname);
 
                   return (
                     <SidebarMenuItem key={i}>
                       {item.items ? (
-                        <Collapsible
-                          asChild
-                          className="group/collapsible hover:cursor-pointer"
-                        >
+                        <Collapsible asChild className="group/collapsible hover:cursor-pointer">
                           <div
                             ref={(el) => {
                               if (el) menuRefs.current.set(item.label, el);
@@ -131,9 +86,7 @@ export default function AppSidebar({
                                       : "bg-primary text-[#eff1f5]"
                                     : "data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]"
                                 } hover:cursor-pointer`}
-                                onMouseEnter={(e) =>
-                                  handleMouseEnter(item.label, e)
-                                }
+                                onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                                 onMouseLeave={handleMouseLeave}
                               >
                                 {item.icon && <item.icon width={16} />}
@@ -143,33 +96,26 @@ export default function AppSidebar({
                             </CollapsibleTrigger>
                             <CollapsibleContent>
                               <SidebarMenuSub>
-                                {item.items.map(
-                                  (subitem: SidebarSubItem, j: number) => {
-                                    const isSubItemActive =
-                                      subitem.url === pathname;
-                                    return (
-                                      <Link
-                                        href={subitem.url}
-                                        key={j}
-                                        className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${
-                                          isSubItemActive
-                                            ? "bg-primary text-[#eff1f5]"
-                                            : "hover:bg-primary hover:text-[#eff1f5]"
-                                        }`}
-                                        onClick={() => {
-                                          if (isMobile) {
-                                            setOpenMobile(false)
-                                          }
-                                        }}
-                                      >
-                                        {subitem.icon && (
-                                          <subitem.icon width={16} />
-                                        )}
-                                        <span>{subitem.label}</span>
-                                      </Link>
-                                    );
-                                  }
-                                )}
+                                {item.items.map((subitem: SidebarSubItem, j: number) => {
+                                  const isSubItemActive = subitem.url === pathname;
+                                  return (
+                                    <Link
+                                      href={subitem.url}
+                                      key={j}
+                                      className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${
+                                        isSubItemActive ? "bg-primary text-[#eff1f5]" : "hover:bg-primary hover:text-[#eff1f5]"
+                                      }`}
+                                      onClick={() => {
+                                        if (isMobile) {
+                                          setOpenMobile(false);
+                                        }
+                                      }}
+                                    >
+                                      {subitem.icon && <subitem.icon width={16} />}
+                                      <span>{subitem.label}</span>
+                                    </Link>
+                                  );
+                                })}
                               </SidebarMenuSub>
                             </CollapsibleContent>
                           </div>
@@ -178,17 +124,13 @@ export default function AppSidebar({
                         <Link href={item.url}>
                           <SidebarMenuButton
                             className={`hover:bg-primary hover:text-[#eff1f5] ${
-                              isActive
-                                ? "bg-primary text-[#eff1f5]"
-                                : "data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]"
+                              isActive ? "bg-primary text-[#eff1f5]" : "data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]"
                             } hover:cursor-pointer`}
-                            onMouseEnter={(e) =>
-                              handleMouseEnter(item.label, e)
-                            }
+                            onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                             onMouseLeave={handleMouseLeave}
                             onClick={() => {
                               if (isMobile) {
-                                setOpenMobile(false)
+                                setOpenMobile(false);
                               }
                             }}
                             tooltip={item.items ? undefined : item.label}
@@ -211,62 +153,141 @@ export default function AppSidebar({
             className="bg-destructive text-white hover:bg-destructive/90 hover:text-white flex items-center gap-2 justify-center hover:cursor-pointer"
             onClick={handleCloseSession}
           >
-            <LogOut
-              width={16}
-              className={`transition-all duration-150 ${
-                isCollapsed ? "rotate-180" : ""
-              }`}
-            />
+            <LogOut width={16} className={`transition-all duration-150 ${isCollapsed ? "rotate-180" : ""}`} />
             {!isCollapsed && <span>Cerrar sesión</span>}
           </SidebarMenuButton>
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
 
-      {hoveredItem &&
-        isCollapsed &&
-        sidebarMenus.some((group) =>
-          group.menu.some(
-            (item: SidebarItem) => item.label === hoveredItem && item.items
-          )
-        ) && (
-          <div
-            className="absolute left-11 z-50 w-48 rounded-md border bg-card py-1 shadow-lg"
-            style={{ top: `${hoverPosition}px` }}
-            onMouseEnter={() => {
-              const item = sidebarMenus
-                .flatMap((group) => group.menu)
-                .find((i) => i.label === hoveredItem);
-              if (item?.items) setHoveredItem(hoveredItem);
-            }}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <div className="px-3 py-2 text-sm font-medium text-muted-foreground">
-              {hoveredItem}
-            </div>
-            <div className="border-t"></div>
-            {sidebarMenus
-              .flatMap((group) => group.menu)
-              .find((item) => item.label === hoveredItem)
-              ?.items?.map((subitem: SidebarSubItem, index: number) => {
-                const isSubItemActive = subitem.url === pathname;
-                return (
-                  <Link
-                    href={subitem.url}
-                    key={index}
-                    className={`flex items-center gap-2 m-2 px-3 py-2 text-sm rounded-lg ${
-                      isSubItemActive
-                        ? "bg-primary text-white"
-                        : "hover:bg-primary hover:text-white"
-                    }`}
-                  >
-                    {subitem.icon && <subitem.icon className="h-4 w-4" />}
-                    <span>{subitem.label}</span>
-                  </Link>
-                );
-              })}
-          </div>
-        )}
+      {hoveredItem && isCollapsed && sidebarMenus.some((group) => group.menu.some((item: SidebarItem) => item.label === hoveredItem && item.items)) && (
+        <div
+          className="absolute left-11 z-50 w-48 rounded-md border bg-card py-1 shadow-lg"
+          style={{ top: `${hoverPosition}px` }}
+          onMouseEnter={() => {
+            const item = sidebarMenus.flatMap((group) => group.menu).find((i) => i.label === hoveredItem);
+            if (item?.items) setHoveredItem(hoveredItem);
+          }}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          <div className="px-3 py-2 text-sm font-medium text-muted-foreground">{hoveredItem}</div>
+          <div className="border-t"></div>
+          {sidebarMenus
+            .flatMap((group) => group.menu)
+            .find((item) => item.label === hoveredItem)
+            ?.items?.map((subitem: SidebarSubItem, index: number) => {
+              const isSubItemActive = subitem.url === pathname;
+              return (
+                <Link
+                  href={subitem.url}
+                  key={index}
+                  className={`flex items-center gap-2 m-2 px-3 py-2 text-sm rounded-lg ${isSubItemActive ? "bg-primary text-white" : "hover:bg-primary hover:text-white"}`}
+                >
+                  {subitem.icon && <subitem.icon className="h-4 w-4" />}
+                  <span>{subitem.label}</span>
+                </Link>
+              );
+            })}
+        </div>
+      )}
     </>
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const xd = [
+  {
+    id: "11111111-1111-1111-1111-111111111111",
+    item: "mod-1",
+    name: "Modulo 1",
+    label: "Gestión 1",
+    route: "/modulo1",
+    icon: "dashboard",
+    parent_id: null,
+    application_id: null,
+    sort_order: 1,
+    is_menu_item: true,
+    status: "active",
+    is_deleted: false,
+    deleted_at: null,
+    deleted_by: null,
+    children: [
+      {
+        id: "11111111-1111-1111-1111-111111111112",
+        item: "mod-1-sub-1",
+        name: "Submódulo 1.1",
+        label: "Vista 1.1",
+        route: "/modulo1/sub1",
+        icon: "file",
+        parent_id: "11111111-1111-1111-1111-111111111111",
+        application_id: null,
+        sort_order: 1,
+        is_menu_item: true,
+        status: "active",
+        is_deleted: false,
+        children: [],
+      },
+      {
+        id: "11111111-1111-1111-1111-111111111113",
+        item: "mod-1-sub-2",
+        name: "Submódulo 1.2",
+        label: "Vista 1.2",
+        route: "/modulo1/sub2",
+        icon: "settings",
+        parent_id: "11111111-1111-1111-1111-111111111111",
+        application_id: null,
+        sort_order: 2,
+        is_menu_item: true,
+        status: "active",
+        is_deleted: false,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: "22222222-2222-2222-2222-222222222222",
+    item: "mod-2",
+    name: "Modulo 2",
+    label: "Gestión 2",
+    route: "/modulo2",
+    icon: "user",
+    parent_id: null,
+    application_id: null,
+    sort_order: 2,
+    is_menu_item: true,
+    status: "active",
+    is_deleted: false,
+    children: [
+      {
+        id: "22222222-2222-2222-2222-222222222223",
+        item: "mod-2-sub-1",
+        name: "Submódulo 2.1",
+        label: "Vista 2.1",
+        route: "/modulo2/sub1",
+        icon: "users",
+        parent_id: "22222222-2222-2222-2222-222222222222",
+        application_id: null,
+        sort_order: 1,
+        is_menu_item: true,
+        status: "active",
+        is_deleted: false,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: "33333333-3333-3333-3333-333333333333",
+    item: "mod-3",
+    name: "Modulo 3",
+    label: "Gestión 3",
+    route: "/modulo3",
+    icon: "report",
+    parent_id: null,
+    application_id: null,
+    sort_order: 3,
+    is_menu_item: true,
+    status: "active",
+    is_deleted: false,
+    children: [],
+  },
+];
