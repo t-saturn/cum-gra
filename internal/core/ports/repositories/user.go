@@ -12,4 +12,6 @@ type StructuralPositionRepository interface {
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.StructuralPosition, error)
 	Update(ctx context.Context, id uuid.UUID, sp *domain.StructuralPosition) (*domain.StructuralPosition, error)
 	Delete(ctx context.Context, id uuid.UUID, deletedBy uuid.UUID) error
+	ExistsByName(name string) (bool, error)
+	ExistsByCode(code string) (bool, error)
 }

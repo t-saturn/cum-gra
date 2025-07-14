@@ -3,7 +3,7 @@
 -- Crear tabla structural_positions
 CREATE TABLE structural_positions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     code VARCHAR(50) UNIQUE NOT NULL,
     level INTEGER DEFAULT 2,
     description TEXT,

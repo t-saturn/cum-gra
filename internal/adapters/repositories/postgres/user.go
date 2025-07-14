@@ -19,6 +19,32 @@ func NewStructuralPositionRepository() repositories.StructuralPositionRepository
 	return &structuralPositionRepository{}
 }
 
+func (r *structuralPositionRepository) ExistsByName(name string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("name = ? AND is_deleted = false", name).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *structuralPositionRepository) ExistsByCode(code string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("code = ? AND is_deleted = false", code).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
 func (r *structuralPositionRepository) Create(ctx context.Context, sp *domain.StructuralPosition) (*domain.StructuralPosition, error) {
 	sp.ID = uuid.New()
 	sp.CreatedAt = time.Now()
@@ -29,6 +55,7 @@ func (r *structuralPositionRepository) Create(ctx context.Context, sp *domain.St
 	if err := database.DB.WithContext(ctx).Create(sp).Error; err != nil {
 		return nil, err
 	}
+
 	return sp, nil
 }
 
@@ -37,12 +64,15 @@ func (r *structuralPositionRepository) GetByID(ctx context.Context, id uuid.UUID
 	err := database.DB.WithContext(ctx).
 		Where("id = ? AND is_deleted = false", id).
 		First(&sp).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &sp, nil
 }
 
@@ -52,9 +82,11 @@ func (r *structuralPositionRepository) Update(ctx context.Context, id uuid.UUID,
 		Model(&domain.StructuralPosition{}).
 		Where("id = ? AND is_deleted = false", id).
 		Updates(sp).Error
+
 	if err != nil {
 		return nil, err
 	}
+
 	return r.GetByID(ctx, id)
 }
 

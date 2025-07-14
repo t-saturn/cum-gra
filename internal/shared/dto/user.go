@@ -45,12 +45,11 @@ type UserResponseDTO struct {
 }
 
 type CreateStructuralPositionDTO struct {
-	Name        string  `json:"name" validate:"required"`
-	Code        string  `json:"code" validate:"required"`
-	Level       *int    `json:"level" validate:"required"`
-	Description *string `json:"description,omitempty"`
+	Name        string  `json:"name" validate:"required,min=3,max=100"`
+	Code        string  `json:"code" validate:"required,min=3,max=10"`
+	Level       *int    `json:"level" validate:"required,min=1"`
+	Description *string `json:"description,omitempty" validate:"omitempty,max=255"`
 }
-
 type UpdateStructuralPositionDTO struct {
 	Name        *string `json:"name,omitempty"`
 	Code        *string `json:"code,omitempty"`

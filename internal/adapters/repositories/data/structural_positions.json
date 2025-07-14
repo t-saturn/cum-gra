@@ -1,13 +1,7 @@
 [
   {
-    "name": "ABOGADA",
-    "code": "ABO-001",
-    "level": 2,
-    "description": "Profesional en derecho encargada de asuntos legales."
-  },
-  {
     "name": "ABOGADO",
-    "code": "ABO-002",
+    "code": "ABO-001",
     "level": 2,
     "description": "Profesional en derecho encargado de asuntos legales."
   },

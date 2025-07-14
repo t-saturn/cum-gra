@@ -58,7 +58,7 @@ type OrganicUnit struct {
 
 type StructuralPosition struct {
 	ID          uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
-	Name        string     `gorm:"type:varchar(255);not null" json:"name"`
+	Name        string     `gorm:"type:varchar(255);unique;not null" json:"name"`
 	Code        string     `gorm:"type:varchar(50);unique;not null" json:"code"`
 	Level       *int       `gorm:"type:integer; not null" json:"level"`
 	Description *string    `gorm:"type:text" json:"description"`

@@ -21,25 +21,51 @@ func (h *StructuralPositionHandler) Create() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		var input dto.CreateStructuralPositionDTO
 
+		// Parsear el body
 		if err := c.Bind().Body(&input); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": "invalid request body",
+				"error": "cuerpo de la solicitud inválido",
 			})
 		}
 
+		// Validar el DTO
 		if err := validator.Validate.Struct(input); err != nil {
+			translated := validator.FormatValidationError(err)
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": err.Error(),
+				"errors": translated,
 			})
 		}
 
-		result, err := h.service.Create(c.Context(), &input)
+		if exists, err := h.service.IsNameTaken(input.Name); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al verificar nombre",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Ya existe una posición estructural con este nombre",
+			})
+		}
+
+		if exists, err := h.service.IsCodeTaken(input.Code); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al verificar código",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Ya existe una posición estructural con este código",
+			})
+		}
+
+		// Llamar a servicio y retornar
+		_, err := h.service.Create(c.Context(), &input)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": err.Error(),
 			})
 		}
 
-		return c.Status(fiber.StatusCreated).JSON(result)
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+			"message": "Posición estructural creada exitosamente",
+		})
 	}
 }

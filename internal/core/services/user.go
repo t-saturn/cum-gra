@@ -19,6 +19,13 @@ func NewStructuralPositionService(repo repositories.StructuralPositionRepository
 	}
 }
 
+func (s *StructuralPositionService) IsNameTaken(name string) (bool, error) {
+	return s.repo.ExistsByName(name)
+}
+func (s *StructuralPositionService) IsCodeTaken(code string) (bool, error) {
+	return s.repo.ExistsByCode(code)
+}
+
 func (s *StructuralPositionService) Create(ctx context.Context, input *dto.CreateStructuralPositionDTO) (*dto.StructuralPositionResponseDTO, error) {
 	entity := &domain.StructuralPosition{
 		Name:        input.Name,
