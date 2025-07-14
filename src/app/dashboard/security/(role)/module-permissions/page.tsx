@@ -1,246 +1,209 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Search,
-  Filter,
-  Shield,
-  Eye,
-  Edit,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  Settings,
-  Users,
-  Database,
-  BarChart3,
-  Download,
-} from "lucide-react";
-import CardStatsContain from "@/components/custom/card/card-stats-contain";
-import { statsPermissions } from "@/mocks/stats-mocks";
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Search, Filter, Shield, Eye, Edit, Trash2, ChevronDown, ChevronRight, Settings, Users, Database, BarChart3, Download } from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsPermissions } from '@/mocks/stats-mocks';
 
 // Datos simulados de permisos de módulos
 const modulePermissions = [
   {
-    id: "perm_001",
-    moduleId: "mod_001",
-    moduleName: "Gestión de Usuarios",
-    applicationName: "CRM System",
+    id: 'perm_001',
+    moduleId: 'mod_001',
+    moduleName: 'Gestión de Usuarios',
+    applicationName: 'CRM System',
     permissions: [
       {
-        id: "users.read",
-        name: "Ver usuarios",
-        description: "Permite visualizar la lista de usuarios",
-        category: "Lectura",
+        id: 'users.read',
+        name: 'Ver usuarios',
+        description: 'Permite visualizar la lista de usuarios',
+        category: 'Lectura',
         isActive: true,
-        riskLevel: "low",
-        assignedRoles: ["Admin", "Manager", "HR"],
+        riskLevel: 'low',
+        assignedRoles: ['Admin', 'Manager', 'HR'],
         assignedUsers: 45,
       },
       {
-        id: "users.write",
-        name: "Editar usuarios",
-        description: "Permite modificar información de usuarios",
-        category: "Escritura",
+        id: 'users.write',
+        name: 'Editar usuarios',
+        description: 'Permite modificar información de usuarios',
+        category: 'Escritura',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "HR"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'HR'],
         assignedUsers: 12,
       },
       {
-        id: "users.delete",
-        name: "Eliminar usuarios",
-        description: "Permite eliminar usuarios del sistema",
-        category: "Eliminación",
+        id: 'users.delete',
+        name: 'Eliminar usuarios',
+        description: 'Permite eliminar usuarios del sistema',
+        category: 'Eliminación',
         isActive: true,
-        riskLevel: "high",
-        assignedRoles: ["Admin"],
+        riskLevel: 'high',
+        assignedRoles: ['Admin'],
         assignedUsers: 3,
       },
       {
-        id: "users.export",
-        name: "Exportar usuarios",
-        description: "Permite exportar datos de usuarios",
-        category: "Exportación",
+        id: 'users.export',
+        name: 'Exportar usuarios',
+        description: 'Permite exportar datos de usuarios',
+        category: 'Exportación',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Manager"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Manager'],
         assignedUsers: 8,
       },
     ],
   },
   {
-    id: "perm_002",
-    moduleId: "mod_002",
-    moduleName: "Gestión de Leads",
-    applicationName: "CRM System",
+    id: 'perm_002',
+    moduleId: 'mod_002',
+    moduleName: 'Gestión de Leads',
+    applicationName: 'CRM System',
     permissions: [
       {
-        id: "leads.read",
-        name: "Ver leads",
-        description: "Permite visualizar leads y oportunidades",
-        category: "Lectura",
+        id: 'leads.read',
+        name: 'Ver leads',
+        description: 'Permite visualizar leads y oportunidades',
+        category: 'Lectura',
         isActive: true,
-        riskLevel: "low",
-        assignedRoles: ["Admin", "Sales", "Manager"],
+        riskLevel: 'low',
+        assignedRoles: ['Admin', 'Sales', 'Manager'],
         assignedUsers: 67,
       },
       {
-        id: "leads.write",
-        name: "Editar leads",
-        description: "Permite crear y modificar leads",
-        category: "Escritura",
+        id: 'leads.write',
+        name: 'Editar leads',
+        description: 'Permite crear y modificar leads',
+        category: 'Escritura',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Sales"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Sales'],
         assignedUsers: 34,
       },
       {
-        id: "leads.assign",
-        name: "Asignar leads",
-        description: "Permite asignar leads a vendedores",
-        category: "Asignación",
+        id: 'leads.assign',
+        name: 'Asignar leads',
+        description: 'Permite asignar leads a vendedores',
+        category: 'Asignación',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Manager"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Manager'],
         assignedUsers: 15,
       },
       {
-        id: "leads.convert",
-        name: "Convertir leads",
-        description: "Permite convertir leads en oportunidades",
-        category: "Conversión",
+        id: 'leads.convert',
+        name: 'Convertir leads',
+        description: 'Permite convertir leads en oportunidades',
+        category: 'Conversión',
         isActive: true,
-        riskLevel: "high",
-        assignedRoles: ["Admin", "Sales"],
+        riskLevel: 'high',
+        assignedRoles: ['Admin', 'Sales'],
         assignedUsers: 28,
       },
     ],
   },
   {
-    id: "perm_003",
-    moduleId: "mod_003",
-    moduleName: "Módulo Financiero",
-    applicationName: "ERP System",
+    id: 'perm_003',
+    moduleId: 'mod_003',
+    moduleName: 'Módulo Financiero',
+    applicationName: 'ERP System',
     permissions: [
       {
-        id: "finance.read",
-        name: "Ver finanzas",
-        description: "Permite visualizar información financiera",
-        category: "Lectura",
+        id: 'finance.read',
+        name: 'Ver finanzas',
+        description: 'Permite visualizar información financiera',
+        category: 'Lectura',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Finance", "Manager"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Finance', 'Manager'],
         assignedUsers: 23,
       },
       {
-        id: "finance.write",
-        name: "Editar finanzas",
-        description: "Permite modificar registros financieros",
-        category: "Escritura",
+        id: 'finance.write',
+        name: 'Editar finanzas',
+        description: 'Permite modificar registros financieros',
+        category: 'Escritura',
         isActive: true,
-        riskLevel: "high",
-        assignedRoles: ["Admin", "Finance"],
+        riskLevel: 'high',
+        assignedRoles: ['Admin', 'Finance'],
         assignedUsers: 8,
       },
       {
-        id: "finance.approve",
-        name: "Aprobar transacciones",
-        description: "Permite aprobar transacciones financieras",
-        category: "Aprobación",
+        id: 'finance.approve',
+        name: 'Aprobar transacciones',
+        description: 'Permite aprobar transacciones financieras',
+        category: 'Aprobación',
         isActive: true,
-        riskLevel: "high",
-        assignedRoles: ["Admin", "Finance Manager"],
+        riskLevel: 'high',
+        assignedRoles: ['Admin', 'Finance Manager'],
         assignedUsers: 5,
       },
       {
-        id: "finance.reports",
-        name: "Reportes financieros",
-        description: "Permite generar reportes financieros",
-        category: "Reportes",
+        id: 'finance.reports',
+        name: 'Reportes financieros',
+        description: 'Permite generar reportes financieros',
+        category: 'Reportes',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Finance", "Manager"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Finance', 'Manager'],
         assignedUsers: 18,
       },
     ],
   },
   {
-    id: "perm_004",
-    moduleId: "mod_004",
-    moduleName: "Inventario",
-    applicationName: "ERP System",
+    id: 'perm_004',
+    moduleId: 'mod_004',
+    moduleName: 'Inventario',
+    applicationName: 'ERP System',
     permissions: [
       {
-        id: "inventory.read",
-        name: "Ver inventario",
-        description: "Permite visualizar stock y productos",
-        category: "Lectura",
+        id: 'inventory.read',
+        name: 'Ver inventario',
+        description: 'Permite visualizar stock y productos',
+        category: 'Lectura',
         isActive: true,
-        riskLevel: "low",
-        assignedRoles: ["Admin", "Warehouse", "Sales"],
+        riskLevel: 'low',
+        assignedRoles: ['Admin', 'Warehouse', 'Sales'],
         assignedUsers: 56,
       },
       {
-        id: "inventory.write",
-        name: "Editar inventario",
-        description: "Permite modificar stock y productos",
-        category: "Escritura",
+        id: 'inventory.write',
+        name: 'Editar inventario',
+        description: 'Permite modificar stock y productos',
+        category: 'Escritura',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Warehouse"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Warehouse'],
         assignedUsers: 23,
       },
       {
-        id: "inventory.transfer",
-        name: "Transferir stock",
-        description: "Permite transferir productos entre almacenes",
-        category: "Transferencia",
+        id: 'inventory.transfer',
+        name: 'Transferir stock',
+        description: 'Permite transferir productos entre almacenes',
+        category: 'Transferencia',
         isActive: true,
-        riskLevel: "medium",
-        assignedRoles: ["Admin", "Warehouse"],
+        riskLevel: 'medium',
+        assignedRoles: ['Admin', 'Warehouse'],
         assignedUsers: 15,
       },
       {
-        id: "inventory.adjust",
-        name: "Ajustar inventario",
-        description: "Permite realizar ajustes de inventario",
-        category: "Ajuste",
+        id: 'inventory.adjust',
+        name: 'Ajustar inventario',
+        description: 'Permite realizar ajustes de inventario',
+        category: 'Ajuste',
         isActive: true,
-        riskLevel: "high",
-        assignedRoles: ["Admin", "Warehouse Manager"],
+        riskLevel: 'high',
+        assignedRoles: ['Admin', 'Warehouse Manager'],
         assignedUsers: 7,
       },
     ],
@@ -267,34 +230,34 @@ const permissionStats = {
 };
 
 export default function ModulePermissionsManagement() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [moduleFilter, setModuleFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [riskFilter, setRiskFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [moduleFilter, setModuleFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [riskFilter, setRiskFilter] = useState('all');
   const [expandedModules, setExpandedModules] = useState<string[]>([]);
 
   const getRiskBadge = (risk: string) => {
     const colors = {
-      low: "bg-green-100 text-green-800",
-      medium: "bg-yellow-100 text-yellow-800",
-      high: "bg-red-100 text-red-800",
+      low: 'bg-green-100 text-green-800',
+      medium: 'bg-yellow-100 text-yellow-800',
+      high: 'bg-red-100 text-red-800',
     };
-    return colors[risk as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[risk as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category.toLowerCase()) {
-      case "lectura":
+      case 'lectura':
         return <Eye className="h-4 w-4" />;
-      case "escritura":
+      case 'escritura':
         return <Edit className="h-4 w-4" />;
-      case "eliminación":
+      case 'eliminación':
         return <Trash2 className="h-4 w-4" />;
-      case "exportación":
+      case 'exportación':
         return <Download className="h-4 w-4" />;
-      case "aprobación":
+      case 'aprobación':
         return <Shield className="h-4 w-4" />;
-      case "reportes":
+      case 'reportes':
         return <BarChart3 className="h-4 w-4" />;
       default:
         return <Settings className="h-4 w-4" />;
@@ -302,19 +265,12 @@ export default function ModulePermissionsManagement() {
   };
 
   const toggleModuleExpansion = (moduleId: string) => {
-    setExpandedModules((prev) =>
-      prev.includes(moduleId)
-        ? prev.filter((id) => id !== moduleId)
-        : [...prev, moduleId]
-    );
+    setExpandedModules((prev) => (prev.includes(moduleId) ? prev.filter((id) => id !== moduleId) : [...prev, moduleId]));
   };
 
   const filteredModules = modulePermissions.filter((module) => {
-    const matchesSearch =
-      module.moduleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      module.applicationName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesModule =
-      moduleFilter === "all" || module.moduleName === moduleFilter;
+    const matchesSearch = module.moduleName.toLowerCase().includes(searchTerm.toLowerCase()) || module.applicationName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesModule = moduleFilter === 'all' || module.moduleName === moduleFilter;
 
     return matchesSearch && matchesModule;
   });
@@ -325,18 +281,14 @@ export default function ModulePermissionsManagement() {
         ...perm,
         moduleName: module.moduleName,
         applicationName: module.applicationName,
-      }))
+      })),
     );
   };
 
   const filteredPermissions = getAllPermissions().filter((permission) => {
-    const matchesSearch =
-      permission.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      permission.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      categoryFilter === "all" || permission.category === categoryFilter;
-    const matchesRisk =
-      riskFilter === "all" || permission.riskLevel === riskFilter;
+    const matchesSearch = permission.name.toLowerCase().includes(searchTerm.toLowerCase()) || permission.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || permission.category === categoryFilter;
+    const matchesRisk = riskFilter === 'all' || permission.riskLevel === riskFilter;
 
     return matchesSearch && matchesCategory && matchesRisk;
   });
@@ -358,21 +310,14 @@ export default function ModulePermissionsManagement() {
           <Card>
             <CardHeader>
               <CardTitle>Permisos por Módulo</CardTitle>
-              <CardDescription>
-                Vista organizada de permisos agrupados por módulo del sistema
-              </CardDescription>
+              <CardDescription>Vista organizada de permisos agrupados por módulo del sistema</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filtros */}
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
                 <div className="flex flex-1 items-center space-x-2">
                   <Search className="h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar módulos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="max-w-sm"
-                  />
+                  <Input placeholder="Buscar módulos..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="max-w-sm" />
                 </div>
                 <div className="flex items-center space-x-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
@@ -382,15 +327,9 @@ export default function ModulePermissionsManagement() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos los módulos</SelectItem>
-                      <SelectItem value="Gestión de Usuarios">
-                        Gestión de Usuarios
-                      </SelectItem>
-                      <SelectItem value="Gestión de Leads">
-                        Gestión de Leads
-                      </SelectItem>
-                      <SelectItem value="Módulo Financiero">
-                        Módulo Financiero
-                      </SelectItem>
+                      <SelectItem value="Gestión de Usuarios">Gestión de Usuarios</SelectItem>
+                      <SelectItem value="Gestión de Leads">Gestión de Leads</SelectItem>
+                      <SelectItem value="Módulo Financiero">Módulo Financiero</SelectItem>
                       <SelectItem value="Inventario">Inventario</SelectItem>
                     </SelectContent>
                   </Select>
@@ -410,30 +349,16 @@ export default function ModulePermissionsManagement() {
                         <div className="flex items-center space-x-3">
                           <Database className="h-5 w-5 text-muted-foreground" />
                           <div>
-                            <CardTitle className="text-lg">
-                              {module.moduleName}
-                            </CardTitle>
-                            <CardDescription>
-                              {module.applicationName}
-                            </CardDescription>
+                            <CardTitle className="text-lg">{module.moduleName}</CardTitle>
+                            <CardDescription>{module.applicationName}</CardDescription>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Badge variant="outline">
-                            {module.permissions.length} permisos
-                          </Badge>
+                          <Badge variant="outline">{module.permissions.length} permisos</Badge>
                           <Collapsible>
                             <CollapsibleTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleModuleExpansion(module.id)}
-                              >
-                                {expandedModules.includes(module.id) ? (
-                                  <ChevronDown className="h-4 w-4" />
-                                ) : (
-                                  <ChevronRight className="h-4 w-4" />
-                                )}
+                              <Button variant="ghost" size="sm" onClick={() => toggleModuleExpansion(module.id)}>
+                                {expandedModules.includes(module.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                               </Button>
                             </CollapsibleTrigger>
                           </Collapsible>
@@ -445,41 +370,22 @@ export default function ModulePermissionsManagement() {
                         <CardContent>
                           <div className="grid gap-4">
                             {module.permissions.map((permission) => (
-                              <div
-                                key={permission.id}
-                                className="flex items-center justify-between p-4 border rounded-lg"
-                              >
+                              <div key={permission.id} className="flex items-center justify-between p-4 border rounded-lg">
                                 <div className="flex items-center space-x-3">
                                   {getCategoryIcon(permission.category)}
                                   <div>
-                                    <div className="font-medium">
-                                      {permission.name}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">
-                                      {permission.description}
-                                    </div>
+                                    <div className="font-medium">{permission.name}</div>
+                                    <div className="text-sm text-muted-foreground">{permission.description}</div>
                                   </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
-                                  <Badge
-                                    className={getRiskBadge(
-                                      permission.riskLevel
-                                    )}
-                                  >
-                                    {permission.riskLevel === "low"
-                                      ? "Bajo"
-                                      : permission.riskLevel === "medium"
-                                      ? "Medio"
-                                      : "Alto"}
+                                  <Badge className={getRiskBadge(permission.riskLevel)}>
+                                    {permission.riskLevel === 'low' ? 'Bajo' : permission.riskLevel === 'medium' ? 'Medio' : 'Alto'}
                                   </Badge>
-                                  <Badge variant="outline">
-                                    {permission.category}
-                                  </Badge>
+                                  <Badge variant="outline">{permission.category}</Badge>
                                   <div className="flex items-center space-x-2">
                                     <Users className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm">
-                                      {permission.assignedUsers}
-                                    </span>
+                                    <span className="text-sm">{permission.assignedUsers}</span>
                                   </div>
                                   <Switch checked={permission.isActive} />
                                 </div>
@@ -500,28 +406,18 @@ export default function ModulePermissionsManagement() {
           <Card>
             <CardHeader>
               <CardTitle>Todos los Permisos</CardTitle>
-              <CardDescription>
-                Lista completa de todos los permisos del sistema
-              </CardDescription>
+              <CardDescription>Lista completa de todos los permisos del sistema</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filtros */}
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
                 <div className="flex flex-1 items-center space-x-2">
                   <Search className="h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar permisos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="max-w-sm"
-                  />
+                  <Input placeholder="Buscar permisos..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="max-w-sm" />
                 </div>
                 <div className="flex items-center space-x-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
-                  <Select
-                    value={categoryFilter}
-                    onValueChange={setCategoryFilter}
-                  >
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                     <SelectTrigger className="w-[140px]">
                       <SelectValue placeholder="Categoría" />
                     </SelectTrigger>
@@ -571,23 +467,15 @@ export default function ModulePermissionsManagement() {
                           <div className="flex items-center space-x-2">
                             {getCategoryIcon(permission.category)}
                             <div>
-                              <div className="font-medium">
-                                {permission.name}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                {permission.description}
-                              </div>
+                              <div className="font-medium">{permission.name}</div>
+                              <div className="text-sm text-muted-foreground">{permission.description}</div>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div>
-                            <div className="font-medium">
-                              {permission.moduleName}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {permission.applicationName}
-                            </div>
+                            <div className="font-medium">{permission.moduleName}</div>
+                            <div className="text-sm text-muted-foreground">{permission.applicationName}</div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -595,26 +483,16 @@ export default function ModulePermissionsManagement() {
                         </TableCell>
                         <TableCell>
                           <Badge className={getRiskBadge(permission.riskLevel)}>
-                            {permission.riskLevel === "low"
-                              ? "Bajo"
-                              : permission.riskLevel === "medium"
-                              ? "Medio"
-                              : "Alto"}
+                            {permission.riskLevel === 'low' ? 'Bajo' : permission.riskLevel === 'medium' ? 'Medio' : 'Alto'}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {permission.assignedRoles
-                              .slice(0, 2)
-                              .map((role, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="secondary"
-                                  className="text-xs"
-                                >
-                                  {role}
-                                </Badge>
-                              ))}
+                            {permission.assignedRoles.slice(0, 2).map((role, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {role}
+                              </Badge>
+                            ))}
                             {permission.assignedRoles.length > 2 && (
                               <Badge variant="secondary" className="text-xs">
                                 +{permission.assignedRoles.length - 2}
@@ -625,9 +503,7 @@ export default function ModulePermissionsManagement() {
                         <TableCell>
                           <div className="flex items-center space-x-2">
                             <Users className="h-4 w-4 text-muted-foreground" />
-                            <span className="font-medium">
-                              {permission.assignedUsers}
-                            </span>
+                            <span className="font-medium">{permission.assignedUsers}</span>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -656,65 +532,47 @@ export default function ModulePermissionsManagement() {
           <Card>
             <CardHeader>
               <CardTitle>Matriz de Permisos</CardTitle>
-              <CardDescription>
-                Vista consolidada de permisos por categoría y nivel de riesgo
-              </CardDescription>
+              <CardDescription>Vista consolidada de permisos por categoría y nivel de riesgo</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {Object.entries(permissionStats.byCategory).map(
-                  ([category, count]) => (
-                    <div key={category} className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold flex items-center space-x-2">
-                          {getCategoryIcon(category)}
-                          <span>{category}</span>
-                        </h3>
-                        <Badge variant="outline">{count} permisos</Badge>
-                      </div>
-                      <div className="grid gap-2">
-                        {filteredPermissions
-                          .filter((perm) => perm.category === category)
-                          .map((permission) => (
-                            <div
-                              key={permission.id}
-                              className="flex items-center justify-between p-3 border rounded"
-                            >
-                              <div className="flex items-center space-x-3">
-                                <div>
-                                  <div className="font-medium">
-                                    {permission.name}
-                                  </div>
-                                  <div className="text-sm text-muted-foreground">
-                                    {permission.moduleName} -{" "}
-                                    {permission.applicationName}
-                                  </div>
+                {Object.entries(permissionStats.byCategory).map(([category, count]) => (
+                  <div key={category} className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold flex items-center space-x-2">
+                        {getCategoryIcon(category)}
+                        <span>{category}</span>
+                      </h3>
+                      <Badge variant="outline">{count} permisos</Badge>
+                    </div>
+                    <div className="grid gap-2">
+                      {filteredPermissions
+                        .filter((perm) => perm.category === category)
+                        .map((permission) => (
+                          <div key={permission.id} className="flex items-center justify-between p-3 border rounded">
+                            <div className="flex items-center space-x-3">
+                              <div>
+                                <div className="font-medium">{permission.name}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {permission.moduleName} - {permission.applicationName}
                                 </div>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <Badge
-                                  className={getRiskBadge(permission.riskLevel)}
-                                >
-                                  {permission.riskLevel === "low"
-                                    ? "Bajo"
-                                    : permission.riskLevel === "medium"
-                                    ? "Medio"
-                                    : "Alto"}
-                                </Badge>
-                                <div className="flex items-center space-x-1">
-                                  <Users className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-sm">
-                                    {permission.assignedUsers}
-                                  </span>
-                                </div>
-                                <Switch checked={permission.isActive} />
                               </div>
                             </div>
-                          ))}
-                      </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge className={getRiskBadge(permission.riskLevel)}>
+                                {permission.riskLevel === 'low' ? 'Bajo' : permission.riskLevel === 'medium' ? 'Medio' : 'Alto'}
+                              </Badge>
+                              <div className="flex items-center space-x-1">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm">{permission.assignedUsers}</span>
+                              </div>
+                              <Switch checked={permission.isActive} />
+                            </div>
+                          </div>
+                        ))}
                     </div>
-                  )
-                )}
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -728,53 +586,25 @@ export default function ModulePermissionsManagement() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(permissionStats.byRisk).map(
-                    ([risk, count]) => (
-                      <div
-                        key={risk}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <div
-                            className={`w-3 h-3 rounded-full ${
-                              risk === "low"
-                                ? "bg-green-500"
-                                : risk === "medium"
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
-                            }`}
-                          ></div>
-                          <span className="capitalize">
-                            Riesgo{" "}
-                            {risk === "low"
-                              ? "Bajo"
-                              : risk === "medium"
-                              ? "Medio"
-                              : "Alto"}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full ${
-                                risk === "low"
-                                  ? "bg-green-500"
-                                  : risk === "medium"
-                                  ? "bg-yellow-500"
-                                  : "bg-red-500"
-                              }`}
-                              style={{
-                                width: `${
-                                  (count / permissionStats.total) * 100
-                                }%`,
-                              }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-medium">{count}</span>
-                        </div>
+                  {Object.entries(permissionStats.byRisk).map(([risk, count]) => (
+                    <div key={risk} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-3 h-3 rounded-full ${risk === 'low' ? 'bg-green-500' : risk === 'medium' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
+                        <span className="capitalize">Riesgo {risk === 'low' ? 'Bajo' : risk === 'medium' ? 'Medio' : 'Alto'}</span>
                       </div>
-                    )
-                  )}
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full ${risk === 'low' ? 'bg-green-500' : risk === 'medium' ? 'bg-yellow-500' : 'bg-red-500'}`}
+                            style={{
+                              width: `${(count / permissionStats.total) * 100}%`,
+                            }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{count}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -785,32 +615,25 @@ export default function ModulePermissionsManagement() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(permissionStats.byCategory).map(
-                    ([category, count]) => (
-                      <div
-                        key={category}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center space-x-2">
-                          {getCategoryIcon(category)}
-                          <span>{category}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-blue-600 h-2 rounded-full"
-                              style={{
-                                width: `${
-                                  (count / permissionStats.total) * 100
-                                }%`,
-                              }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-medium">{count}</span>
-                        </div>
+                  {Object.entries(permissionStats.byCategory).map(([category, count]) => (
+                    <div key={category} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        {getCategoryIcon(category)}
+                        <span>{category}</span>
                       </div>
-                    )
-                  )}
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
+                            style={{
+                              width: `${(count / permissionStats.total) * 100}%`,
+                            }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{count}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>

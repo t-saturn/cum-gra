@@ -44,16 +44,16 @@
 
 ## 🛠 Stack Tecnológico
 
-| 🧰 Herramienta         | 📌 Versión | 📝 Descripción                              |
-|------------------------|------------|---------------------------------------------|
-| **Next.js**            | 15.3       | Framework React con App Router              |
-| **TypeScript**         | 5.x        | Tipado estático para código robusto         |
-| **shadcn/ui**          | Latest     | Componentes UI accesibles y personalizables |
-| **Tailwind CSS**       | 4.x        | Estilizado utility-first                    |
-| **Bun**                | 1.2.x        | Gestor de paquetes y runtime ultrarrápido   |
-| **React Query**        | 5.x        | Gestión de datos asíncronos                 |
-| **Axios**              | 1.x        | Cliente HTTP para consumir la API           |
-| **ESLint + Prettier**  | Latest     | Linting y formateo de código                |
+| 🧰 Herramienta        | 📌 Versión | 📝 Descripción                              |
+| --------------------- | ---------- | ------------------------------------------- |
+| **Next.js**           | 15.3       | Framework React con App Router              |
+| **TypeScript**        | 5.x        | Tipado estático para código robusto         |
+| **shadcn/ui**         | Latest     | Componentes UI accesibles y personalizables |
+| **Tailwind CSS**      | 4.x        | Estilizado utility-first                    |
+| **Bun**               | 1.2.x      | Gestor de paquetes y runtime ultrarrápido   |
+| **React Query**       | 5.x        | Gestión de datos asíncronos                 |
+| **Axios**             | 1.x        | Cliente HTTP para consumir la API           |
+| **ESLint + Prettier** | Latest     | Linting y formateo de código                |
 
 ---
 
@@ -73,18 +73,21 @@ Asegúrate de tener instalados:
 ## ⚙️ Instalación
 
 1. **Clona el repositorio**:
+
    ```bash
    git clone https://github.com/t-saturn/central-user-manager-client.git
    cd central-user-manager-client
    ```
 
 2. **Instala las dependencias** con Bun:
+
    ```bash
    bun install
    ```
 
 3. **Configura las variables de entorno**:
    Crea un archivo `.env.local` en la raíz del proyecto:
+
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:8080/api
    NEXT_PUBLIC_SSO_AUTH_URL=https://sso.example.com

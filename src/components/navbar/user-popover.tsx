@@ -1,46 +1,41 @@
-"use client"
+'use client';
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Settings, LogOut, User, Shield, Clock, MapPin, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { useProfile } from "@/context/ProfileContext"
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Settings, LogOut, User, Shield, Clock, MapPin, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { useProfile } from '@/context/ProfileContext';
 
 export function UserPopover() {
-  const { profile } = useProfile()
+  const { profile } = useProfile();
 
   // Función para obtener las iniciales del nombre
   const getInitials = (name: string) => {
     return name
-      .split(" ")
+      .split(' ')
       .map((word) => word.charAt(0))
-      .join("")
+      .join('')
       .toUpperCase()
-      .slice(0, 2)
-  }
+      .slice(0, 2);
+  };
 
   // Datos simulados adicionales para el perfil
   const userStats = {
-    lastLogin: "Hace 2 horas",
-    location: "Ayacucho, Perú",
+    lastLogin: 'Hace 2 horas',
+    location: 'Ayacucho, Perú',
     sessionsActive: 2,
-    role: profile.role || "Administrador",
-  }
+    role: profile.role || 'Administrador',
+  };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex items-center gap-3 hover:bg-accent/50 px-3 py-2 h-auto rounded-xl transition-all duration-200 hover:scale-[1.02]"
-        >
+        <Button variant="ghost" className="flex items-center gap-3 hover:bg-accent/50 px-3 py-2 h-auto rounded-xl transition-all duration-200 hover:scale-[1.02]">
           <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
-            <AvatarImage src={profile.avatar || "/placeholder.svg?height=40&width=40"} alt={profile.name} />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-semibold">
-              {getInitials(profile.name)}
-            </AvatarFallback>
+            <AvatarImage src={profile.avatar || '/placeholder.svg?height=40&width=40'} alt={profile.name} />
+            <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-semibold">{getInitials(profile.name)}</AvatarFallback>
           </Avatar>
           <div className="hidden text-left md:block">
             <div className="font-medium text-sm text-foreground truncate max-w-32">{profile.name}</div>
@@ -48,19 +43,14 @@ export function UserPopover() {
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-80 bg-popover backdrop-blur-xl border-border/50 shadow-2xl shadow-black/10 mr-2"
-        align="end"
-      >
+      <PopoverContent className="w-80 bg-popover backdrop-blur-xl border-border/50 shadow-2xl shadow-black/10 mr-2" align="end">
         <div className="space-y-6">
           {/* User Profile Header */}
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="relative">
               <Avatar className="h-20 w-20 ring-4 ring-primary/20 ring-offset-4 ring-offset-background">
-                <AvatarImage src={profile.avatar || "/placeholder.svg?height=80&width=80"} alt={profile.name} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl">
-                  {getInitials(profile.name)}
-                </AvatarFallback>
+                <AvatarImage src={profile.avatar || '/placeholder.svg?height=80&width=80'} alt={profile.name} />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl">{getInitials(profile.name)}</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -129,10 +119,7 @@ export function UserPopover() {
 
           {/* Logout Button */}
           <div className="pt-2 border-t border-border/50">
-            <Button
-              variant="ghost"
-              className="w-full justify-center bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive rounded-lg h-11 font-medium"
-            >
+            <Button variant="ghost" className="w-full justify-center bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive rounded-lg h-11 font-medium">
               <LogOut className="h-4 w-4 mr-2" />
               Cerrar Sesión
             </Button>
@@ -150,5 +137,5 @@ export function UserPopover() {
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

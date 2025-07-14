@@ -1,257 +1,253 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, Download, TrendingUp, Clock, Eye, RefreshCw } from 'lucide-react'
-import CardStatsContain from "@/components/custom/card/card-stats-contain"
-import { statsActiveUsers } from "@/mocks/stats-mocks"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Download, TrendingUp, Clock, Eye, RefreshCw } from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsActiveUsers } from '@/mocks/stats-mocks';
 // Mock data
 const activeUsersData = [
   {
-    id: "1",
+    id: '1',
     user: {
-      name: "Juan Carlos Pérez",
-      email: "jperez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Gerente General",
-      department: "Gerencia",
+      name: 'Juan Carlos Pérez',
+      email: 'jperez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Gerente General',
+      department: 'Gerencia',
     },
-    lastActivity: "2024-01-15 16:45:00",
+    lastActivity: '2024-01-15 16:45:00',
     sessionsToday: 3,
     totalSessions: 245,
     applicationsUsed: [
-      { name: "Sistema de Inventario", lastAccess: "2024-01-15 16:30:00", sessions: 2 },
-      { name: "Portal RRHH", lastAccess: "2024-01-15 14:20:00", sessions: 1 },
+      { name: 'Sistema de Inventario', lastAccess: '2024-01-15 16:30:00', sessions: 2 },
+      { name: 'Portal RRHH', lastAccess: '2024-01-15 14:20:00', sessions: 1 },
     ],
     deviceInfo: {
-      type: "Desktop",
-      browser: "Chrome 120.0",
-      os: "Windows 11",
-      ip: "192.168.1.100",
+      type: 'Desktop',
+      browser: 'Chrome 120.0',
+      os: 'Windows 11',
+      ip: '192.168.1.100',
     },
     activityScore: 95,
-    status: "online",
+    status: 'online',
   },
   {
-    id: "2",
+    id: '2',
     user: {
-      name: "María García López",
-      email: "mgarcia@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Analista Senior",
-      department: "Sistemas",
+      name: 'María García López',
+      email: 'mgarcia@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Analista Senior',
+      department: 'Sistemas',
     },
-    lastActivity: "2024-01-15 16:20:00",
+    lastActivity: '2024-01-15 16:20:00',
     sessionsToday: 2,
     totalSessions: 189,
     applicationsUsed: [
-      { name: "Sistema de Inventario", lastAccess: "2024-01-15 16:20:00", sessions: 1 },
-      { name: "App Móvil Ventas", lastAccess: "2024-01-15 15:10:00", sessions: 1 },
+      { name: 'Sistema de Inventario', lastAccess: '2024-01-15 16:20:00', sessions: 1 },
+      { name: 'App Móvil Ventas', lastAccess: '2024-01-15 15:10:00', sessions: 1 },
     ],
     deviceInfo: {
-      type: "Mobile",
-      browser: "Safari 17.2",
-      os: "iOS 17.2",
-      ip: "192.168.1.105",
+      type: 'Mobile',
+      browser: 'Safari 17.2',
+      os: 'iOS 17.2',
+      ip: '192.168.1.105',
     },
     activityScore: 88,
-    status: "online",
+    status: 'online',
   },
   {
-    id: "3",
+    id: '3',
     user: {
-      name: "Carlos López Ruiz",
-      email: "clopez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Desarrollador",
-      department: "Sistemas",
+      name: 'Carlos López Ruiz',
+      email: 'clopez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Desarrollador',
+      department: 'Sistemas',
     },
-    lastActivity: "2024-01-15 15:45:00",
+    lastActivity: '2024-01-15 15:45:00',
     sessionsToday: 4,
     totalSessions: 312,
     applicationsUsed: [
-      { name: "Sistema de Inventario", lastAccess: "2024-01-15 15:45:00", sessions: 2 },
-      { name: "Portal RRHH", lastAccess: "2024-01-15 13:30:00", sessions: 1 },
-      { name: "Sistema Financiero", lastAccess: "2024-01-15 11:15:00", sessions: 1 },
+      { name: 'Sistema de Inventario', lastAccess: '2024-01-15 15:45:00', sessions: 2 },
+      { name: 'Portal RRHH', lastAccess: '2024-01-15 13:30:00', sessions: 1 },
+      { name: 'Sistema Financiero', lastAccess: '2024-01-15 11:15:00', sessions: 1 },
     ],
     deviceInfo: {
-      type: "Desktop",
-      browser: "Firefox 121.0",
-      os: "Ubuntu 22.04",
-      ip: "192.168.1.110",
+      type: 'Desktop',
+      browser: 'Firefox 121.0',
+      os: 'Ubuntu 22.04',
+      ip: '192.168.1.110',
     },
     activityScore: 92,
-    status: "away",
+    status: 'away',
   },
   {
-    id: "4",
+    id: '4',
     user: {
-      name: "Ana Martínez Silva",
-      email: "amartinez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Especialista TI",
-      department: "Infraestructura",
+      name: 'Ana Martínez Silva',
+      email: 'amartinez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Especialista TI',
+      department: 'Infraestructura',
     },
-    lastActivity: "2024-01-15 14:30:00",
+    lastActivity: '2024-01-15 14:30:00',
     sessionsToday: 1,
     totalSessions: 156,
-    applicationsUsed: [
-      { name: "Portal RRHH", lastAccess: "2024-01-15 14:30:00", sessions: 1 },
-    ],
+    applicationsUsed: [{ name: 'Portal RRHH', lastAccess: '2024-01-15 14:30:00', sessions: 1 }],
     deviceInfo: {
-      type: "Desktop",
-      browser: "Edge 120.0",
-      os: "Windows 10",
-      ip: "192.168.1.115",
+      type: 'Desktop',
+      browser: 'Edge 120.0',
+      os: 'Windows 10',
+      ip: '192.168.1.115',
     },
     activityScore: 75,
-    status: "idle",
+    status: 'idle',
   },
   {
-    id: "5",
+    id: '5',
     user: {
-      name: "Luis Fernando Torres",
-      email: "ltorres@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Gerente RRHH",
-      department: "Recursos Humanos",
+      name: 'Luis Fernando Torres',
+      email: 'ltorres@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Gerente RRHH',
+      department: 'Recursos Humanos',
     },
-    lastActivity: "2024-01-15 12:15:00",
+    lastActivity: '2024-01-15 12:15:00',
     sessionsToday: 2,
     totalSessions: 203,
-    applicationsUsed: [
-      { name: "Portal RRHH", lastAccess: "2024-01-15 12:15:00", sessions: 2 },
-    ],
+    applicationsUsed: [{ name: 'Portal RRHH', lastAccess: '2024-01-15 12:15:00', sessions: 2 }],
     deviceInfo: {
-      type: "Tablet",
-      browser: "Safari 17.1",
-      os: "iPadOS 17.1",
-      ip: "192.168.1.120",
+      type: 'Tablet',
+      browser: 'Safari 17.1',
+      os: 'iPadOS 17.1',
+      ip: '192.168.1.120',
     },
     activityScore: 82,
-    status: "offline",
+    status: 'offline',
   },
-]
+];
 
 const activityStats = {
   totalActiveUsers: 1234,
   onlineNow: 89,
-  peakHour: "14:00 - 15:00",
-  averageSessionTime: "2h 45m",
+  peakHour: '14:00 - 15:00',
+  averageSessionTime: '2h 45m',
   dailyGrowth: 5.2,
   weeklyGrowth: 12.8,
   monthlyGrowth: 23.4,
-}
+};
 
 const hourlyActivity = [
-  { hour: "00:00", users: 12 },
-  { hour: "01:00", users: 8 },
-  { hour: "02:00", users: 5 },
-  { hour: "03:00", users: 3 },
-  { hour: "04:00", users: 2 },
-  { hour: "05:00", users: 4 },
-  { hour: "06:00", users: 15 },
-  { hour: "07:00", users: 35 },
-  { hour: "08:00", users: 68 },
-  { hour: "09:00", users: 89 },
-  { hour: "10:00", users: 95 },
-  { hour: "11:00", users: 102 },
-  { hour: "12:00", users: 78 },
-  { hour: "13:00", users: 85 },
-  { hour: "14:00", users: 112 },
-  { hour: "15:00", users: 98 },
-  { hour: "16:00", users: 89 },
-  { hour: "17:00", users: 65 },
-  { hour: "18:00", users: 45 },
-  { hour: "19:00", users: 32 },
-  { hour: "20:00", users: 25 },
-  { hour: "21:00", users: 18 },
-  { hour: "22:00", users: 15 },
-  { hour: "23:00", users: 12 },
-]
+  { hour: '00:00', users: 12 },
+  { hour: '01:00', users: 8 },
+  { hour: '02:00', users: 5 },
+  { hour: '03:00', users: 3 },
+  { hour: '04:00', users: 2 },
+  { hour: '05:00', users: 4 },
+  { hour: '06:00', users: 15 },
+  { hour: '07:00', users: 35 },
+  { hour: '08:00', users: 68 },
+  { hour: '09:00', users: 89 },
+  { hour: '10:00', users: 95 },
+  { hour: '11:00', users: 102 },
+  { hour: '12:00', users: 78 },
+  { hour: '13:00', users: 85 },
+  { hour: '14:00', users: 112 },
+  { hour: '15:00', users: 98 },
+  { hour: '16:00', users: 89 },
+  { hour: '17:00', users: 65 },
+  { hour: '18:00', users: 45 },
+  { hour: '19:00', users: 32 },
+  { hour: '20:00', users: 25 },
+  { hour: '21:00', users: 18 },
+  { hour: '22:00', users: 15 },
+  { hour: '23:00', users: 12 },
+];
 
 export default function ActiveUsersReport() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [departmentFilter, setDepartmentFilter] = useState("all")
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
 
   const filteredUsers = activeUsersData.filter((user) => {
     const matchesSearch =
       user.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.user.department.toLowerCase().includes(searchTerm.toLowerCase())
+      user.user.department.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
-    const matchesDepartment = departmentFilter === "all" || user.user.department === departmentFilter
+    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+    const matchesDepartment = departmentFilter === 'all' || user.user.department === departmentFilter;
 
-    return matchesSearch && matchesStatus && matchesDepartment
-  })
+    return matchesSearch && matchesStatus && matchesDepartment;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "online":
+      case 'online':
         return (
           <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">
             <div className="w-2 h-2 bg-chart-4 rounded-full mr-1 animate-pulse" />
             En línea
           </Badge>
-        )
-      case "away":
+        );
+      case 'away':
         return (
           <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">
             <div className="w-2 h-2 bg-chart-5 rounded-full mr-1" />
             Ausente
           </Badge>
-        )
-      case "idle":
+        );
+      case 'idle':
         return (
           <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
             <div className="w-2 h-2 bg-chart-3 rounded-full mr-1" />
             Inactivo
           </Badge>
-        )
-      case "offline":
+        );
+      case 'offline':
         return (
           <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">
             <div className="w-2 h-2 bg-muted-foreground rounded-full mr-1" />
             Desconectado
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   const getActivityScoreColor = (score: number) => {
-    if (score >= 90) return "text-chart-4"
-    if (score >= 75) return "text-chart-5"
-    if (score >= 60) return "text-chart-3"
-    return "text-muted-foreground"
-  }
+    if (score >= 90) return 'text-chart-4';
+    if (score >= 75) return 'text-chart-5';
+    if (score >= 60) return 'text-chart-3';
+    return 'text-muted-foreground';
+  };
 
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString("es-ES")
-  }
+    return new Date(dateString).toLocaleString('es-ES');
+  };
 
   const getDeviceIcon = (type: string) => {
     switch (type.toLowerCase()) {
-      case "desktop":
-        return "🖥️"
-      case "mobile":
-        return "📱"
-      case "tablet":
-        return "📱"
+      case 'desktop':
+        return '🖥️';
+      case 'mobile':
+        return '📱';
+      case 'tablet':
+        return '📱';
       default:
-        return "💻"
+        return '💻';
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -351,12 +347,12 @@ export default function ActiveUsersReport() {
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="w-10 h-10">
-                              <AvatarImage src={user.user.avatar || "/placeholder.svg"} />
+                              <AvatarImage src={user.user.avatar || '/placeholder.svg'} />
                               <AvatarFallback className="bg-gradient-to-r from-primary to-chart-1 text-primary-foreground font-semibold">
                                 {user.user.name
-                                  .split(" ")
+                                  .split(' ')
                                   .map((n) => n[0])
-                                  .join("")}
+                                  .join('')}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -395,11 +391,7 @@ export default function ActiveUsersReport() {
                                 </Badge>
                               </div>
                             ))}
-                            {user.applicationsUsed.length > 2 && (
-                              <p className="text-xs text-muted-foreground">
-                                +{user.applicationsUsed.length - 2} más
-                              </p>
-                            )}
+                            {user.applicationsUsed.length > 2 && <p className="text-xs text-muted-foreground">+{user.applicationsUsed.length - 2} más</p>}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -414,14 +406,9 @@ export default function ActiveUsersReport() {
                         </TableCell>
                         <TableCell>
                           <div className="text-center">
-                            <p className={`text-lg font-bold ${getActivityScoreColor(user.activityScore)}`}>
-                              {user.activityScore}
-                            </p>
+                            <p className={`text-lg font-bold ${getActivityScoreColor(user.activityScore)}`}>{user.activityScore}</p>
                             <div className="w-full bg-muted rounded-full h-2 mt-1">
-                              <div
-                                className="bg-gradient-to-r from-primary to-chart-1 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${user.activityScore}%` }}
-                              />
+                              <div className="bg-gradient-to-r from-primary to-chart-1 h-2 rounded-full transition-all duration-300" style={{ width: `${user.activityScore}%` }} />
                             </div>
                           </div>
                         </TableCell>
@@ -455,12 +442,10 @@ export default function ActiveUsersReport() {
                           className="bg-gradient-to-t from-primary to-chart-1 rounded-sm w-full transition-all duration-300 hover:from-primary/80 hover:to-chart-1/80"
                           style={{
                             height: `${(data.users / Math.max(...hourlyActivity.map((h) => h.users))) * 100}%`,
-                            minHeight: "4px",
+                            minHeight: '4px',
                           }}
                         />
-                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-foreground">
-                          {data.users}
-                        </div>
+                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-foreground">{data.users}</div>
                       </div>
                       <p className="text-xs text-muted-foreground mt-2">{data.hour}</p>
                     </div>
@@ -532,7 +517,7 @@ export default function ActiveUsersReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-primary h-2 rounded-full" style={{ width: "65%" }} />
+                          <div className="bg-primary h-2 rounded-full" style={{ width: '65%' }} />
                         </div>
                         <span className="text-sm font-medium">65%</span>
                       </div>
@@ -544,7 +529,7 @@ export default function ActiveUsersReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-chart-2 h-2 rounded-full" style={{ width: "25%" }} />
+                          <div className="bg-chart-2 h-2 rounded-full" style={{ width: '25%' }} />
                         </div>
                         <span className="text-sm font-medium">25%</span>
                       </div>
@@ -556,7 +541,7 @@ export default function ActiveUsersReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-chart-3 h-2 rounded-full" style={{ width: "10%" }} />
+                          <div className="bg-chart-3 h-2 rounded-full" style={{ width: '10%' }} />
                         </div>
                         <span className="text-sm font-medium">10%</span>
                       </div>
@@ -569,5 +554,5 @@ export default function ActiveUsersReport() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

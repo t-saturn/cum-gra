@@ -1,5 +1,5 @@
-import { CardStatType } from "@/types/card-types/card-stats-types";
-import CardStat from "./card-stats";
+import { CardStatType } from '@/types/card-types/card-stats-types';
+import CardStat from './card-stats';
 
 interface CardStatsContainProps {
   stats: CardStatType[];

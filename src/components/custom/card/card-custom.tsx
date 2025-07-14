@@ -1,14 +1,8 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
-import { ReactNode } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { LucideIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 
-type Order = "auto" | "col" | "row";
+type Order = 'auto' | 'col' | 'row';
 
 interface CardCustomProps {
   Icon?: LucideIcon;
@@ -18,13 +12,7 @@ interface CardCustomProps {
   children: ReactNode;
 }
 
-const CardCustom = ({
-  title,
-  description,
-  order = "auto",
-  children,
-  Icon,
-}: CardCustomProps) => {
+const CardCustom = ({ title, description, order = 'auto', children, Icon }: CardCustomProps) => {
   return (
     <Card className="border-border bg-card/50 backdrop-blur-sm">
       <CardHeader>
@@ -35,13 +23,7 @@ const CardCustom = ({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div
-          className={`grid gap-6 ${
-            order === "col" ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
-          }`}
-        >
-          {children}
-        </div>
+        <div className={`grid gap-6 ${order === 'col' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-3'}`}>{children}</div>
       </CardContent>
     </Card>
   );

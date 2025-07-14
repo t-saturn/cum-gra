@@ -1,33 +1,18 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Search,
   Plus,
@@ -51,35 +36,35 @@ import {
   BarChart3,
   Lock,
   Unlock,
-} from "lucide-react"
-import CardStatsContain from "@/components/custom/card/card-stats-contain"
-import { statsModules } from "@/mocks/stats-mocks"
+} from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsModules } from '@/mocks/stats-mocks';
 
 // Mock data
 const modules = [
   {
-    id: "inv_products",
-    name: "Gestión de Productos",
-    description: "Módulo para administrar el catálogo de productos, precios y categorías",
+    id: 'inv_products',
+    name: 'Gestión de Productos',
+    description: 'Módulo para administrar el catálogo de productos, precios y categorías',
     application: {
-      id: "1",
-      name: "Sistema de Inventario",
-      clientId: "inv_client_12345",
+      id: '1',
+      name: 'Sistema de Inventario',
+      clientId: 'inv_client_12345',
     },
-    version: "2.1.4",
-    status: "active",
-    category: "inventory",
+    version: '2.1.4',
+    status: 'active',
+    category: 'inventory',
     permissions: [
-      { id: "products.read", name: "Leer Productos", enabled: true },
-      { id: "products.write", name: "Escribir Productos", enabled: true },
-      { id: "products.delete", name: "Eliminar Productos", enabled: false },
-      { id: "categories.manage", name: "Gestionar Categorías", enabled: true },
+      { id: 'products.read', name: 'Leer Productos', enabled: true },
+      { id: 'products.write', name: 'Escribir Productos', enabled: true },
+      { id: 'products.delete', name: 'Eliminar Productos', enabled: false },
+      { id: 'categories.manage', name: 'Gestionar Categorías', enabled: true },
     ],
     endpoints: [
-      { method: "GET", path: "/api/products", description: "Listar productos" },
-      { method: "POST", path: "/api/products", description: "Crear producto" },
-      { method: "PUT", path: "/api/products/{id}", description: "Actualizar producto" },
-      { method: "DELETE", path: "/api/products/{id}", description: "Eliminar producto" },
+      { method: 'GET', path: '/api/products', description: 'Listar productos' },
+      { method: 'POST', path: '/api/products', description: 'Crear producto' },
+      { method: 'PUT', path: '/api/products/{id}', description: 'Actualizar producto' },
+      { method: 'DELETE', path: '/api/products/{id}', description: 'Eliminar producto' },
     ],
     statistics: {
       totalUsers: 25,
@@ -87,31 +72,31 @@ const modules = [
       totalRequests: 15420,
       errorRate: 0.02,
     },
-    lastUpdated: "2024-01-15",
-    createdAt: "2024-01-01",
+    lastUpdated: '2024-01-15',
+    createdAt: '2024-01-01',
   },
   {
-    id: "inv_warehouse",
-    name: "Control de Almacén",
-    description: "Gestión de inventarios, movimientos de stock y ubicaciones de almacén",
+    id: 'inv_warehouse',
+    name: 'Control de Almacén',
+    description: 'Gestión de inventarios, movimientos de stock y ubicaciones de almacén',
     application: {
-      id: "1",
-      name: "Sistema de Inventario",
-      clientId: "inv_client_12345",
+      id: '1',
+      name: 'Sistema de Inventario',
+      clientId: 'inv_client_12345',
     },
-    version: "1.8.2",
-    status: "active",
-    category: "inventory",
+    version: '1.8.2',
+    status: 'active',
+    category: 'inventory',
     permissions: [
-      { id: "warehouse.read", name: "Leer Almacén", enabled: true },
-      { id: "warehouse.write", name: "Escribir Almacén", enabled: true },
-      { id: "stock.manage", name: "Gestionar Stock", enabled: true },
-      { id: "movements.track", name: "Rastrear Movimientos", enabled: true },
+      { id: 'warehouse.read', name: 'Leer Almacén', enabled: true },
+      { id: 'warehouse.write', name: 'Escribir Almacén', enabled: true },
+      { id: 'stock.manage', name: 'Gestionar Stock', enabled: true },
+      { id: 'movements.track', name: 'Rastrear Movimientos', enabled: true },
     ],
     endpoints: [
-      { method: "GET", path: "/api/warehouse/stock", description: "Consultar stock" },
-      { method: "POST", path: "/api/warehouse/movements", description: "Registrar movimiento" },
-      { method: "GET", path: "/api/warehouse/locations", description: "Listar ubicaciones" },
+      { method: 'GET', path: '/api/warehouse/stock', description: 'Consultar stock' },
+      { method: 'POST', path: '/api/warehouse/movements', description: 'Registrar movimiento' },
+      { method: 'GET', path: '/api/warehouse/locations', description: 'Listar ubicaciones' },
     ],
     statistics: {
       totalUsers: 15,
@@ -119,33 +104,33 @@ const modules = [
       totalRequests: 8750,
       errorRate: 0.01,
     },
-    lastUpdated: "2024-01-14",
-    createdAt: "2024-01-02",
+    lastUpdated: '2024-01-14',
+    createdAt: '2024-01-02',
   },
   {
-    id: "hr_employees",
-    name: "Gestión de Empleados",
-    description: "Administración completa de información de empleados y expedientes",
+    id: 'hr_employees',
+    name: 'Gestión de Empleados',
+    description: 'Administración completa de información de empleados y expedientes',
     application: {
-      id: "2",
-      name: "Portal de Recursos Humanos",
-      clientId: "hr_client_67890",
+      id: '2',
+      name: 'Portal de Recursos Humanos',
+      clientId: 'hr_client_67890',
     },
-    version: "3.2.1",
-    status: "active",
-    category: "hr",
+    version: '3.2.1',
+    status: 'active',
+    category: 'hr',
     permissions: [
-      { id: "employees.read", name: "Leer Empleados", enabled: true },
-      { id: "employees.write", name: "Escribir Empleados", enabled: true },
-      { id: "employees.delete", name: "Eliminar Empleados", enabled: false },
-      { id: "personal.data", name: "Datos Personales", enabled: true },
-      { id: "salary.info", name: "Información Salarial", enabled: false },
+      { id: 'employees.read', name: 'Leer Empleados', enabled: true },
+      { id: 'employees.write', name: 'Escribir Empleados', enabled: true },
+      { id: 'employees.delete', name: 'Eliminar Empleados', enabled: false },
+      { id: 'personal.data', name: 'Datos Personales', enabled: true },
+      { id: 'salary.info', name: 'Información Salarial', enabled: false },
     ],
     endpoints: [
-      { method: "GET", path: "/api/employees", description: "Listar empleados" },
-      { method: "POST", path: "/api/employees", description: "Crear empleado" },
-      { method: "PUT", path: "/api/employees/{id}", description: "Actualizar empleado" },
-      { method: "GET", path: "/api/employees/{id}/profile", description: "Perfil del empleado" },
+      { method: 'GET', path: '/api/employees', description: 'Listar empleados' },
+      { method: 'POST', path: '/api/employees', description: 'Crear empleado' },
+      { method: 'PUT', path: '/api/employees/{id}', description: 'Actualizar empleado' },
+      { method: 'GET', path: '/api/employees/{id}/profile', description: 'Perfil del empleado' },
     ],
     statistics: {
       totalUsers: 45,
@@ -153,31 +138,31 @@ const modules = [
       totalRequests: 22100,
       errorRate: 0.005,
     },
-    lastUpdated: "2024-01-13",
-    createdAt: "2024-01-02",
+    lastUpdated: '2024-01-13',
+    createdAt: '2024-01-02',
   },
   {
-    id: "hr_payroll",
-    name: "Nómina",
-    description: "Sistema de cálculo y gestión de nóminas, beneficios y deducciones",
+    id: 'hr_payroll',
+    name: 'Nómina',
+    description: 'Sistema de cálculo y gestión de nóminas, beneficios y deducciones',
     application: {
-      id: "2",
-      name: "Portal de Recursos Humanos",
-      clientId: "hr_client_67890",
+      id: '2',
+      name: 'Portal de Recursos Humanos',
+      clientId: 'hr_client_67890',
     },
-    version: "2.5.0",
-    status: "maintenance",
-    category: "hr",
+    version: '2.5.0',
+    status: 'maintenance',
+    category: 'hr',
     permissions: [
-      { id: "payroll.read", name: "Leer Nómina", enabled: true },
-      { id: "payroll.write", name: "Escribir Nómina", enabled: true },
-      { id: "payroll.process", name: "Procesar Nómina", enabled: true },
-      { id: "benefits.manage", name: "Gestionar Beneficios", enabled: true },
+      { id: 'payroll.read', name: 'Leer Nómina', enabled: true },
+      { id: 'payroll.write', name: 'Escribir Nómina', enabled: true },
+      { id: 'payroll.process', name: 'Procesar Nómina', enabled: true },
+      { id: 'benefits.manage', name: 'Gestionar Beneficios', enabled: true },
     ],
     endpoints: [
-      { method: "GET", path: "/api/payroll", description: "Consultar nómina" },
-      { method: "POST", path: "/api/payroll/process", description: "Procesar nómina" },
-      { method: "GET", path: "/api/payroll/reports", description: "Reportes de nómina" },
+      { method: 'GET', path: '/api/payroll', description: 'Consultar nómina' },
+      { method: 'POST', path: '/api/payroll/process', description: 'Procesar nómina' },
+      { method: 'GET', path: '/api/payroll/reports', description: 'Reportes de nómina' },
     ],
     statistics: {
       totalUsers: 8,
@@ -185,31 +170,31 @@ const modules = [
       totalRequests: 3200,
       errorRate: 0.03,
     },
-    lastUpdated: "2024-01-12",
-    createdAt: "2024-01-03",
+    lastUpdated: '2024-01-12',
+    createdAt: '2024-01-03',
   },
   {
-    id: "sales_clients",
-    name: "Gestión de Clientes",
-    description: "CRM para gestión de clientes, contactos y oportunidades de venta",
+    id: 'sales_clients',
+    name: 'Gestión de Clientes',
+    description: 'CRM para gestión de clientes, contactos y oportunidades de venta',
     application: {
-      id: "3",
-      name: "App Móvil Ventas",
-      clientId: "mobile_sales_11111",
+      id: '3',
+      name: 'App Móvil Ventas',
+      clientId: 'mobile_sales_11111',
     },
-    version: "1.4.3",
-    status: "active",
-    category: "sales",
+    version: '1.4.3',
+    status: 'active',
+    category: 'sales',
     permissions: [
-      { id: "clients.read", name: "Leer Clientes", enabled: true },
-      { id: "clients.write", name: "Escribir Clientes", enabled: true },
-      { id: "contacts.manage", name: "Gestionar Contactos", enabled: true },
-      { id: "opportunities.track", name: "Rastrear Oportunidades", enabled: true },
+      { id: 'clients.read', name: 'Leer Clientes', enabled: true },
+      { id: 'clients.write', name: 'Escribir Clientes', enabled: true },
+      { id: 'contacts.manage', name: 'Gestionar Contactos', enabled: true },
+      { id: 'opportunities.track', name: 'Rastrear Oportunidades', enabled: true },
     ],
     endpoints: [
-      { method: "GET", path: "/api/clients", description: "Listar clientes" },
-      { method: "POST", path: "/api/clients", description: "Crear cliente" },
-      { method: "GET", path: "/api/clients/{id}/opportunities", description: "Oportunidades del cliente" },
+      { method: 'GET', path: '/api/clients', description: 'Listar clientes' },
+      { method: 'POST', path: '/api/clients', description: 'Crear cliente' },
+      { method: 'GET', path: '/api/clients/{id}/opportunities', description: 'Oportunidades del cliente' },
     ],
     statistics: {
       totalUsers: 20,
@@ -217,31 +202,31 @@ const modules = [
       totalRequests: 12800,
       errorRate: 0.015,
     },
-    lastUpdated: "2024-01-11",
-    createdAt: "2024-01-04",
+    lastUpdated: '2024-01-11',
+    createdAt: '2024-01-04',
   },
   {
-    id: "fin_accounting",
-    name: "Contabilidad",
-    description: "Sistema contable con plan de cuentas, asientos y estados financieros",
+    id: 'fin_accounting',
+    name: 'Contabilidad',
+    description: 'Sistema contable con plan de cuentas, asientos y estados financieros',
     application: {
-      id: "4",
-      name: "Sistema Financiero",
-      clientId: "finance_client_22222",
+      id: '4',
+      name: 'Sistema Financiero',
+      clientId: 'finance_client_22222',
     },
-    version: "4.1.0",
-    status: "suspended",
-    category: "finance",
+    version: '4.1.0',
+    status: 'suspended',
+    category: 'finance',
     permissions: [
-      { id: "accounting.read", name: "Leer Contabilidad", enabled: true },
-      { id: "accounting.write", name: "Escribir Contabilidad", enabled: false },
-      { id: "entries.manage", name: "Gestionar Asientos", enabled: false },
-      { id: "reports.generate", name: "Generar Reportes", enabled: true },
+      { id: 'accounting.read', name: 'Leer Contabilidad', enabled: true },
+      { id: 'accounting.write', name: 'Escribir Contabilidad', enabled: false },
+      { id: 'entries.manage', name: 'Gestionar Asientos', enabled: false },
+      { id: 'reports.generate', name: 'Generar Reportes', enabled: true },
     ],
     endpoints: [
-      { method: "GET", path: "/api/accounting/entries", description: "Consultar asientos" },
-      { method: "POST", path: "/api/accounting/entries", description: "Crear asiento" },
-      { method: "GET", path: "/api/accounting/reports", description: "Reportes contables" },
+      { method: 'GET', path: '/api/accounting/entries', description: 'Consultar asientos' },
+      { method: 'POST', path: '/api/accounting/entries', description: 'Crear asiento' },
+      { method: 'GET', path: '/api/accounting/reports', description: 'Reportes contables' },
     ],
     statistics: {
       totalUsers: 12,
@@ -249,101 +234,101 @@ const modules = [
       totalRequests: 5600,
       errorRate: 0.008,
     },
-    lastUpdated: "2024-01-10",
-    createdAt: "2024-01-05",
+    lastUpdated: '2024-01-10',
+    createdAt: '2024-01-05',
   },
-]
+];
 
 export default function ModulesManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [selectedModule, setSelectedModule] = useState<(typeof modules)[0]>()
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<(typeof modules)[0]>();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   const filteredModules = modules.filter(
     (module) =>
       module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       module.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       module.application.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "active":
+      case 'active':
         return (
           <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Activo
           </Badge>
-        )
-      case "maintenance":
+        );
+      case 'maintenance':
         return (
           <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">
             <AlertTriangle className="w-3 h-3 mr-1" />
             Mantenimiento
           </Badge>
-        )
-      case "suspended":
+        );
+      case 'suspended':
         return (
           <Badge className="bg-destructive/20 text-destructive border-destructive/30">
             <XCircle className="w-3 h-3 mr-1" />
             Suspendido
           </Badge>
-        )
-      case "inactive":
+        );
+      case 'inactive':
         return (
           <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">
             <XCircle className="w-3 h-3 mr-1" />
             Inactivo
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   const getCategoryBadge = (category: string) => {
     const configs = {
-      inventory: { color: "bg-primary/20 text-primary border-primary/30", icon: Database },
-      hr: { color: "bg-chart-2/20 text-chart-2 border-chart-2/30", icon: Users },
-      sales: { color: "bg-chart-3/20 text-chart-3 border-chart-3/30", icon: BarChart3 },
-      finance: { color: "bg-chart-4/20 text-chart-4 border-chart-4/30", icon: FileText },
-      system: { color: "bg-chart-5/20 text-chart-5 border-chart-5/30", icon: Settings },
-    }
-    const config = configs[category as keyof typeof configs] || configs.system
-    const Icon = config.icon
+      inventory: { color: 'bg-primary/20 text-primary border-primary/30', icon: Database },
+      hr: { color: 'bg-chart-2/20 text-chart-2 border-chart-2/30', icon: Users },
+      sales: { color: 'bg-chart-3/20 text-chart-3 border-chart-3/30', icon: BarChart3 },
+      finance: { color: 'bg-chart-4/20 text-chart-4 border-chart-4/30', icon: FileText },
+      system: { color: 'bg-chart-5/20 text-chart-5 border-chart-5/30', icon: Settings },
+    };
+    const config = configs[category as keyof typeof configs] || configs.system;
+    const Icon = config.icon;
     return (
       <Badge className={config.color}>
         <Icon className="w-3 h-3 mr-1" />
         {category.charAt(0).toUpperCase() + category.slice(1)}
       </Badge>
-    )
-  }
+    );
+  };
 
   const getMethodBadge = (method: string) => {
     const configs = {
-      GET: "bg-chart-4/20 text-chart-4 border-chart-4/30",
-      POST: "bg-primary/20 text-primary border-primary/30",
-      PUT: "bg-chart-5/20 text-chart-5 border-chart-5/30",
-      DELETE: "bg-destructive/20 text-destructive border-destructive/30",
-    }
-    return <Badge className={configs[method as keyof typeof configs] || "bg-muted"}>{method}</Badge>
-  }
+      GET: 'bg-chart-4/20 text-chart-4 border-chart-4/30',
+      POST: 'bg-primary/20 text-primary border-primary/30',
+      PUT: 'bg-chart-5/20 text-chart-5 border-chart-5/30',
+      DELETE: 'bg-destructive/20 text-destructive border-destructive/30',
+    };
+    return <Badge className={configs[method as keyof typeof configs] || 'bg-muted'}>{method}</Badge>;
+  };
 
   const handleEdit = (module: (typeof modules)[0]) => {
-    setSelectedModule(module)
-    setIsEditDialogOpen(true)
-  }
+    setSelectedModule(module);
+    setIsEditDialogOpen(true);
+  };
 
   const handleViewDetails = (module: (typeof modules)[0]) => {
-    setSelectedModule(module)
-    setIsDetailDialogOpen(true)
-  }
+    setSelectedModule(module);
+    setIsDetailDialogOpen(true);
+  };
 
   const formatErrorRate = (rate: number) => {
-    return `${(rate * 100).toFixed(2)}%`
-  }
+    return `${(rate * 100).toFixed(2)}%`;
+  };
 
   return (
     <div className="space-y-6">
@@ -430,9 +415,7 @@ export default function ModulesManagement() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Permisos del Módulo</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Define los permisos específicos que este módulo puede otorgar.
-                      </p>
+                      <p className="text-sm text-muted-foreground">Define los permisos específicos que este módulo puede otorgar.</p>
                     </div>
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-4">
@@ -503,7 +486,7 @@ export default function ModulesManagement() {
       </div>
 
       {/* Stats Cards */}
-      <CardStatsContain stats={statsModules}/>
+      <CardStatsContain stats={statsModules} />
 
       {/* Modules Table */}
       <Card className="border-border bg-card/50">
@@ -590,9 +573,7 @@ export default function ModulesManagement() {
                     <TableCell>
                       <div className="space-y-1">
                         <p className="font-medium text-sm">{module.statistics.totalRequests.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Error: {formatErrorRate(module.statistics.errorRate)}
-                        </p>
+                        <p className="text-xs text-muted-foreground">Error: {formatErrorRate(module.statistics.errorRate)}</p>
                       </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(module.status)}</TableCell>
@@ -682,7 +663,7 @@ export default function ModulesManagement() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Última Actualización:</span>
-                          <span>{new Date(selectedModule.lastUpdated).toLocaleDateString("es-ES")}</span>
+                          <span>{new Date(selectedModule.lastUpdated).toLocaleDateString('es-ES')}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -709,25 +690,16 @@ export default function ModulesManagement() {
                   <CardContent className="p-4">
                     <h4 className="font-semibold mb-3">Permisos del Módulo</h4>
                     <div className="space-y-3">
-                      {selectedModule.permissions.map((permission: (typeof modules)[0]["permissions"][0]) => (
-                        <div
-                          key={permission.id}
-                          className="flex items-center justify-between p-3 bg-background/50 rounded-lg"
-                        >
+                      {selectedModule.permissions.map((permission: (typeof modules)[0]['permissions'][0]) => (
+                        <div key={permission.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                           <div className="flex items-center gap-3">
-                            {permission.enabled ? (
-                              <Lock className="w-4 h-4 text-chart-4" />
-                            ) : (
-                              <Unlock className="w-4 h-4 text-muted-foreground" />
-                            )}
+                            {permission.enabled ? <Lock className="w-4 h-4 text-chart-4" /> : <Unlock className="w-4 h-4 text-muted-foreground" />}
                             <div>
                               <p className="font-medium text-sm">{permission.name}</p>
                               <p className="text-xs text-muted-foreground font-mono">{permission.id}</p>
                             </div>
                           </div>
-                          <Badge variant={permission.enabled ? "default" : "secondary"}>
-                            {permission.enabled ? "Habilitado" : "Deshabilitado"}
-                          </Badge>
+                          <Badge variant={permission.enabled ? 'default' : 'secondary'}>{permission.enabled ? 'Habilitado' : 'Deshabilitado'}</Badge>
                         </div>
                       ))}
                     </div>
@@ -739,7 +711,7 @@ export default function ModulesManagement() {
                   <CardContent className="p-4">
                     <h4 className="font-semibold mb-3">Endpoints de la API</h4>
                     <div className="space-y-3">
-                      {selectedModule.endpoints.map((endpoint: (typeof modules)[0]["endpoints"][0], index: number) => (
+                      {selectedModule.endpoints.map((endpoint: (typeof modules)[0]['endpoints'][0], index: number) => (
                         <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                           <div className="flex items-center gap-3">
                             {getMethodBadge(endpoint.method)}
@@ -770,9 +742,7 @@ export default function ModulesManagement() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Total Requests:</span>
-                          <span className="font-medium">
-                            {selectedModule.statistics.totalRequests.toLocaleString()}
-                          </span>
+                          <span className="font-medium">{selectedModule.statistics.totalRequests.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Tasa de Error:</span>
@@ -799,7 +769,7 @@ export default function ModulesManagement() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Creado:</span>
-                          <span>{new Date(selectedModule.createdAt).toLocaleDateString("es-ES")}</span>
+                          <span>{new Date(selectedModule.createdAt).toLocaleDateString('es-ES')}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -815,9 +785,9 @@ export default function ModulesManagement() {
             <Button
               className="bg-gradient-to-r from-primary to-chart-1"
               onClick={() => {
-                setIsDetailDialogOpen(false)
+                setIsDetailDialogOpen(false);
                 if (selectedModule) {
-                  handleEdit(selectedModule)
+                  handleEdit(selectedModule);
                 }
               }}
             >
@@ -891,16 +861,11 @@ export default function ModulesManagement() {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>Gestión de Permisos</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Habilita o deshabilita los permisos específicos de este módulo.
-                    </p>
+                    <p className="text-sm text-muted-foreground">Habilita o deshabilita los permisos específicos de este módulo.</p>
                   </div>
                   <div className="space-y-3">
-                    {selectedModule.permissions.map((permission: (typeof modules)[0]["permissions"][0]) => (
-                      <div
-                        key={permission.id}
-                        className="flex items-center justify-between p-3 bg-accent/20 rounded-lg"
-                      >
+                    {selectedModule.permissions.map((permission: (typeof modules)[0]['permissions'][0]) => (
+                      <div key={permission.id} className="flex items-center justify-between p-3 bg-accent/20 rounded-lg">
                         <div>
                           <p className="font-medium text-sm">{permission.name}</p>
                           <p className="text-xs text-muted-foreground font-mono">{permission.id}</p>
@@ -922,5 +887,5 @@ export default function ModulesManagement() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
