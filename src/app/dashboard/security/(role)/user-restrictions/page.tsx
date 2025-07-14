@@ -558,18 +558,18 @@ export default function UserRestrictionsManagement() {
                             {restriction.type === 'time'
                               ? 'Horario'
                               : restriction.type === 'ip'
-                                ? 'IP/Red'
-                                : restriction.type === 'location'
-                                  ? 'Ubicación'
-                                  : restriction.type === 'device'
-                                    ? 'Dispositivo'
-                                    : restriction.type === 'session'
-                                      ? 'Sesión'
-                                      : restriction.type === 'application'
-                                        ? 'Aplicación'
-                                        : restriction.type === 'temporary'
-                                          ? 'Temporal'
-                                          : restriction.type}
+                              ? 'IP/Red'
+                              : restriction.type === 'location'
+                              ? 'Ubicación'
+                              : restriction.type === 'device'
+                              ? 'Dispositivo'
+                              : restriction.type === 'session'
+                              ? 'Sesión'
+                              : restriction.type === 'application'
+                              ? 'Aplicación'
+                              : restriction.type === 'temporary'
+                              ? 'Temporal'
+                              : restriction.type}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -678,18 +678,18 @@ export default function UserRestrictionsManagement() {
                           {type === 'time'
                             ? 'Horario'
                             : type === 'ip'
-                              ? 'IP/Red'
-                              : type === 'location'
-                                ? 'Ubicación'
-                                : type === 'device'
-                                  ? 'Dispositivo'
-                                  : type === 'session'
-                                    ? 'Sesión'
-                                    : type === 'application'
-                                      ? 'Aplicación'
-                                      : type === 'temporary'
-                                        ? 'Temporal'
-                                        : type}
+                            ? 'IP/Red'
+                            : type === 'location'
+                            ? 'Ubicación'
+                            : type === 'device'
+                            ? 'Dispositivo'
+                            : type === 'session'
+                            ? 'Sesión'
+                            : type === 'application'
+                            ? 'Aplicación'
+                            : type === 'temporary'
+                            ? 'Temporal'
+                            : type}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2">
