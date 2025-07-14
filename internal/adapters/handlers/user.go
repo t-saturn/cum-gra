@@ -23,49 +23,49 @@ func (h *StructuralPositionHandler) Create() fiber.Handler {
 
 		// Parsear el body
 		if err := c.Bind().Body(&input); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": "cuerpo de la solicitud inválido",
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "cuerpo de la solicitud inválido",
 			})
 		}
 
 		// Validar el DTO
 		if err := validator.Validate.Struct(input); err != nil {
 			translated := validator.FormatValidationError(err)
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"errors": translated,
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
 			})
 		}
 
 		if exists, err := h.service.IsNameTaken(input.Name); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Error al verificar nombre",
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Error al verificar nombre",
 			})
 		} else if exists {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": "Ya existe una posición estructural con este nombre",
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe una posición estructural con este nombre",
 			})
 		}
 
 		if exists, err := h.service.IsCodeTaken(input.Code); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Error al verificar código",
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Error al verificar código",
 			})
 		} else if exists {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": "Ya existe una posición estructural con este código",
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe una posición estructural con este código",
 			})
 		}
 
 		// Llamar a servicio y retornar
 		_, err := h.service.Create(c.Context(), &input)
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: err.Error(),
 			})
 		}
 
-		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-			"message": "Posición estructural creada exitosamente",
+		return c.Status(fiber.StatusCreated).JSON(dto.MessageResponse{
+			Message: "Posición estructural creada exitosamente",
 		})
 	}
 }
