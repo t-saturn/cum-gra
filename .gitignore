@@ -40,5 +40,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# others changes
+.qodo
 bun.lock
+package-lock.json
+pnpm-lock.yaml
+./vscode
+.vscode
 
+#prisma
+/prisma/migrations
+/prisma/app
+/prisma/dev.db
+
+#docker
+docker-compose.yml

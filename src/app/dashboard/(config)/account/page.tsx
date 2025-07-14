@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { MapPin, Clock, Save, Camera, Download, Trash2, Eye, EyeOff, AlertTriangle, CheckCircle } from "lucide-react";
-import { User, Shield, Bell, Activity, Key, Smartphone, Calendar, QrCode } from "lucide-react";
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MapPin, Clock, Save, Camera, Download, Trash2, Eye, EyeOff, AlertTriangle, CheckCircle } from 'lucide-react';
+import { User, Shield, Bell, Activity, Key, Smartphone, Calendar, QrCode } from 'lucide-react';
 
 interface UserProfile {
   personal: {
@@ -55,28 +55,28 @@ interface UserProfile {
 
 const initialProfile: UserProfile = {
   personal: {
-    firstName: "Admin",
-    lastName: "Usuario",
-    email: "admin@empresa.com",
-    phone: "+51 999 123 456",
-    avatar: "/placeholder.svg?height=100&width=100",
-    department: "Tecnología",
-    position: "Administrador del Sistema",
-    location: "Lima, Perú",
-    timezone: "America/Lima",
-    language: "es",
-    bio: "Administrador principal del sistema CUM con más de 5 años de experiencia en gestión de usuarios y seguridad.",
+    firstName: 'Admin',
+    lastName: 'Usuario',
+    email: 'admin@empresa.com',
+    phone: '+51 999 123 456',
+    avatar: '/placeholder.svg?height=100&width=100',
+    department: 'Tecnología',
+    position: 'Administrador del Sistema',
+    location: 'Lima, Perú',
+    timezone: 'America/Lima',
+    language: 'es',
+    bio: 'Administrador principal del sistema CUM con más de 5 años de experiencia en gestión de usuarios y seguridad.',
   },
   security: {
     twoFactorEnabled: true,
-    passwordLastChanged: "2024-01-15",
+    passwordLastChanged: '2024-01-15',
     trustedDevices: 3,
     activeSessions: 2,
     loginNotifications: true,
     securityAlerts: true,
   },
   preferences: {
-    theme: "system",
+    theme: 'system',
     notifications: {
       email: true,
       push: true,
@@ -93,35 +93,35 @@ const initialProfile: UserProfile = {
 const recentActivity = [
   {
     id: 1,
-    action: "Inicio de sesión",
-    device: "Chrome en Windows",
-    location: "Lima, Perú",
-    timestamp: "2024-01-20 09:15:00",
-    status: "success",
+    action: 'Inicio de sesión',
+    device: 'Chrome en Windows',
+    location: 'Lima, Perú',
+    timestamp: '2024-01-20 09:15:00',
+    status: 'success',
   },
   {
     id: 2,
-    action: "Cambio de configuración",
-    device: "Sistema Web",
-    location: "Lima, Perú",
-    timestamp: "2024-01-19 16:30:00",
-    status: "success",
+    action: 'Cambio de configuración',
+    device: 'Sistema Web',
+    location: 'Lima, Perú',
+    timestamp: '2024-01-19 16:30:00',
+    status: 'success',
   },
   {
     id: 3,
-    action: "Intento de acceso fallido",
-    device: "Mobile App",
-    location: "IP desconocida",
-    timestamp: "2024-01-18 22:45:00",
-    status: "warning",
+    action: 'Intento de acceso fallido',
+    device: 'Mobile App',
+    location: 'IP desconocida',
+    timestamp: '2024-01-18 22:45:00',
+    status: 'warning',
   },
   {
     id: 4,
-    action: "Actualización de perfil",
-    device: "Chrome en Windows",
-    location: "Lima, Perú",
-    timestamp: "2024-01-17 14:20:00",
-    status: "success",
+    action: 'Actualización de perfil',
+    device: 'Chrome en Windows',
+    location: 'Lima, Perú',
+    timestamp: '2024-01-17 14:20:00',
+    status: 'success',
   },
 ];
 
@@ -154,7 +154,7 @@ export default function AccountManagement() {
     section: T,
     subsection: K & string,
     field: string,
-    value: V
+    value: V,
   ) => {
     setProfile((prev) => ({
       ...prev,
@@ -181,7 +181,7 @@ export default function AccountManagement() {
       <div className="flex gap-4">
         <Button onClick={handleSave} disabled={!hasChanges || saving}>
           <Save className="w-4 h-4 mr-2" />
-          {saving ? "Guardando..." : "Guardar Cambios"}
+          {saving ? 'Guardando...' : 'Guardar Cambios'}
         </Button>
         <Button variant="outline">
           <Download className="w-4 h-4 mr-2" />
@@ -222,7 +222,7 @@ export default function AccountManagement() {
               <div className="flex items-center gap-6">
                 <div className="relative">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage src={profile.personal.avatar || "/placeholder.svg"} />
+                    <AvatarImage src={profile.personal.avatar || '/placeholder.svg'} />
                     <AvatarFallback className="text-2xl bg-gradient-to-r from-blue-500 to-purple-600 text-white">
                       {profile.personal.firstName[0]}
                       {profile.personal.lastName[0]}
@@ -246,29 +246,29 @@ export default function AccountManagement() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">Nombre</Label>
-                  <Input id="firstName" value={profile.personal.firstName} onChange={(e) => updateProfile("personal", "firstName", e.target.value)} />
+                  <Input id="firstName" value={profile.personal.firstName} onChange={(e) => updateProfile('personal', 'firstName', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Apellido</Label>
-                  <Input id="lastName" value={profile.personal.lastName} onChange={(e) => updateProfile("personal", "lastName", e.target.value)} />
+                  <Input id="lastName" value={profile.personal.lastName} onChange={(e) => updateProfile('personal', 'lastName', e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={profile.personal.email} onChange={(e) => updateProfile("personal", "email", e.target.value)} />
+                  <Input id="email" type="email" value={profile.personal.email} onChange={(e) => updateProfile('personal', 'email', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Teléfono</Label>
-                  <Input id="phone" value={profile.personal.phone} onChange={(e) => updateProfile("personal", "phone", e.target.value)} />
+                  <Input id="phone" value={profile.personal.phone} onChange={(e) => updateProfile('personal', 'phone', e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="department">Departamento</Label>
-                  <Select value={profile.personal.department} onValueChange={(value) => updateProfile("personal", "department", value)}>
+                  <Select value={profile.personal.department} onValueChange={(value) => updateProfile('personal', 'department', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -282,18 +282,18 @@ export default function AccountManagement() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="position">Posición</Label>
-                  <Input id="position" value={profile.personal.position} onChange={(e) => updateProfile("personal", "position", e.target.value)} />
+                  <Input id="position" value={profile.personal.position} onChange={(e) => updateProfile('personal', 'position', e.target.value)} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="location">Ubicación</Label>
-                  <Input id="location" value={profile.personal.location} onChange={(e) => updateProfile("personal", "location", e.target.value)} />
+                  <Input id="location" value={profile.personal.location} onChange={(e) => updateProfile('personal', 'location', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Zona Horaria</Label>
-                  <Select value={profile.personal.timezone} onValueChange={(value) => updateProfile("personal", "timezone", value)}>
+                  <Select value={profile.personal.timezone} onValueChange={(value) => updateProfile('personal', 'timezone', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -308,7 +308,7 @@ export default function AccountManagement() {
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Biografía</Label>
-                <Textarea id="bio" value={profile.personal.bio} onChange={(e) => updateProfile("personal", "bio", e.target.value)} rows={4} placeholder="Cuéntanos sobre ti..." />
+                <Textarea id="bio" value={profile.personal.bio} onChange={(e) => updateProfile('personal', 'bio', e.target.value)} rows={4} placeholder="Cuéntanos sobre ti..." />
               </div>
             </CardContent>
           </Card>
@@ -332,7 +332,7 @@ export default function AccountManagement() {
                       <p className="text-sm text-muted-foreground">Protege tu cuenta con un segundo factor de autenticación</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Switch checked={profile.security.twoFactorEnabled} onCheckedChange={(checked) => updateProfile("security", "twoFactorEnabled", checked)} />
+                      <Switch checked={profile.security.twoFactorEnabled} onCheckedChange={(checked) => updateProfile('security', 'twoFactorEnabled', checked)} />
                       {profile.security.twoFactorEnabled && (
                         <Badge variant="outline" className="text-green-600 border-green-600">
                           <CheckCircle className="w-3 h-3 mr-1" />
@@ -365,7 +365,7 @@ export default function AccountManagement() {
                     <div className="space-y-2">
                       <Label htmlFor="currentPassword">Contraseña Actual</Label>
                       <div className="relative">
-                        <Input id="currentPassword" type={showPassword ? "text" : "password"} placeholder="Ingresa tu contraseña actual" />
+                        <Input id="currentPassword" type={showPassword ? 'text' : 'password'} placeholder="Ingresa tu contraseña actual" />
                         <Button
                           type="button"
                           variant="ghost"
@@ -404,11 +404,11 @@ export default function AccountManagement() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <Label>Notificar inicios de sesión</Label>
-                      <Switch checked={profile.security.loginNotifications} onCheckedChange={(checked) => updateProfile("security", "loginNotifications", checked)} />
+                      <Switch checked={profile.security.loginNotifications} onCheckedChange={(checked) => updateProfile('security', 'loginNotifications', checked)} />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label>Alertas de seguridad</Label>
-                      <Switch checked={profile.security.securityAlerts} onCheckedChange={(checked) => updateProfile("security", "securityAlerts", checked)} />
+                      <Switch checked={profile.security.securityAlerts} onCheckedChange={(checked) => updateProfile('security', 'securityAlerts', checked)} />
                     </div>
                   </div>
                 </div>
@@ -481,7 +481,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.notifications.email}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "notifications", "email", {
+                          updateNestedProfile('preferences', 'notifications', 'email', {
                             email: checked,
                             push: profile.preferences.notifications.push,
                             sms: profile.preferences.notifications.sms,
@@ -498,7 +498,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.notifications.push}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "notifications", "push", {
+                          updateNestedProfile('preferences', 'notifications', 'push', {
                             email: profile.preferences.notifications.email,
                             push: checked,
                             sms: profile.preferences.notifications.sms,
@@ -515,7 +515,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.notifications.sms}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "notifications", "sms", {
+                          updateNestedProfile('preferences', 'notifications', 'sms', {
                             email: profile.preferences.notifications.email,
                             push: profile.preferences.notifications.push,
                             sms: checked,
@@ -537,7 +537,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.profileVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "privacy", "profileVisible", {
+                          updateNestedProfile('preferences', 'privacy', 'profileVisible', {
                             profileVisible: checked,
                             activityVisible: profile.preferences.privacy.activityVisible,
                             contactVisible: profile.preferences.privacy.contactVisible,
@@ -550,7 +550,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.activityVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "privacy", "activityVisible", {
+                          updateNestedProfile('preferences', 'privacy', 'activityVisible', {
                             profileVisible: profile.preferences.privacy.profileVisible,
                             activityVisible: checked,
                             contactVisible: profile.preferences.privacy.contactVisible,
@@ -563,7 +563,7 @@ export default function AccountManagement() {
                       <Switch
                         checked={profile.preferences.privacy.contactVisible}
                         onCheckedChange={(checked) =>
-                          updateNestedProfile("preferences", "privacy", "contactVisible", {
+                          updateNestedProfile('preferences', 'privacy', 'contactVisible', {
                             profileVisible: profile.preferences.privacy.profileVisible,
                             activityVisible: profile.preferences.privacy.activityVisible,
                             contactVisible: checked,
@@ -584,7 +584,7 @@ export default function AccountManagement() {
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="theme">Tema</Label>
-                  <Select value={profile.preferences.theme} onValueChange={(value) => updateProfile("preferences", "theme", value)}>
+                  <Select value={profile.preferences.theme} onValueChange={(value) => updateProfile('preferences', 'theme', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -598,7 +598,7 @@ export default function AccountManagement() {
 
                 <div className="space-y-2">
                   <Label htmlFor="language">Idioma</Label>
-                  <Select value={profile.personal.language} onValueChange={(value) => updateProfile("personal", "language", value)}>
+                  <Select value={profile.personal.language} onValueChange={(value) => updateProfile('personal', 'language', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -628,7 +628,7 @@ export default function AccountManagement() {
                 {recentActivity.map((activity) => (
                   <div key={activity.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className={`w-2 h-2 rounded-full ${activity.status === "success" ? "bg-green-500" : activity.status === "warning" ? "bg-yellow-500" : "bg-red-500"}`} />
+                      <div className={`w-2 h-2 rounded-full ${activity.status === 'success' ? 'bg-green-500' : activity.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`} />
                       <div>
                         <p className="font-medium">{activity.action}</p>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -647,7 +647,7 @@ export default function AccountManagement() {
                         </div>
                       </div>
                     </div>
-                    <Badge variant={activity.status === "success" ? "default" : "destructive"}>{activity.status === "success" ? "Exitoso" : "Alerta"}</Badge>
+                    <Badge variant={activity.status === 'success' ? 'default' : 'destructive'}>{activity.status === 'success' ? 'Exitoso' : 'Alerta'}</Badge>
                   </div>
                 ))}
               </div>

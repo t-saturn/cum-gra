@@ -1,190 +1,146 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Search,
-  Plus,
-  Filter,
-  Download,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Users,
-  MapPin,
-  Phone,
-  Mail,
-  User,
-} from "lucide-react"
-import CardStatsContain from "@/components/custom/card/card-stats-contain"
-import { statsOrganicUnits } from "@/mocks/stats-mocks"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Users, MapPin, Phone, Mail, User } from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsOrganicUnits } from '@/mocks/stats-mocks';
 
 // Mock data
 const organicUnits = [
   {
-    id: "1",
-    name: "Gerencia General",
-    description: "Unidad orgánica principal encargada de la dirección estratégica de la empresa",
+    id: '1',
+    name: 'Gerencia General',
+    description: 'Unidad orgánica principal encargada de la dirección estratégica de la empresa',
     parentUnit: null,
-    level: 1,
     manager: {
-      name: "Juan Carlos Pérez",
-      email: "jperez@empresa.com",
-      phone: "+51 999 888 777",
+      name: 'Juan Carlos Pérez',
+      email: 'jperez@empresa.com',
+      phone: '+51 999 888 777',
     },
-    location: "Piso 10 - Torre Principal",
-    status: "active",
+    location: 'Piso 10 - Torre Principal',
+    status: 'active',
     employeeCount: 5,
     budget: 2500000,
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-15",
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-15',
   },
   {
-    id: "2",
-    name: "Gerencia de Sistemas",
-    description: "Responsable de la gestión y desarrollo de sistemas tecnológicos",
-    parentUnit: "Gerencia General",
-    level: 2,
+    id: '2',
+    name: 'Gerencia de Sistemas',
+    description: 'Responsable de la gestión y desarrollo de sistemas tecnológicos',
+    parentUnit: 'Gerencia General',
     manager: {
-      name: "María García López",
-      email: "mgarcia@empresa.com",
-      phone: "+51 888 777 666",
+      name: 'María García López',
+      email: 'mgarcia@empresa.com',
+      phone: '+51 888 777 666',
     },
-    location: "Piso 8 - Torre Principal",
-    status: "active",
+    location: 'Piso 8 - Torre Principal',
+    status: 'active',
     employeeCount: 25,
     budget: 800000,
-    createdAt: "2024-01-02",
-    updatedAt: "2024-01-14",
+    createdAt: '2024-01-02',
+    updatedAt: '2024-01-14',
   },
   {
-    id: "3",
-    name: "Desarrollo de Software",
-    description: "Equipo encargado del desarrollo y mantenimiento de aplicaciones",
-    parentUnit: "Gerencia de Sistemas",
-    level: 3,
+    id: '3',
+    name: 'Desarrollo de Software',
+    description: 'Equipo encargado del desarrollo y mantenimiento de aplicaciones',
+    parentUnit: 'Gerencia de Sistemas',
     manager: {
-      name: "Carlos López Ruiz",
-      email: "clopez@empresa.com",
-      phone: "+51 777 666 555",
+      name: 'Carlos López Ruiz',
+      email: 'clopez@empresa.com',
+      phone: '+51 777 666 555',
     },
-    location: "Piso 7 - Torre Principal",
-    status: "active",
+    location: 'Piso 7 - Torre Principal',
+    status: 'active',
     employeeCount: 15,
     budget: 450000,
-    createdAt: "2024-01-03",
-    updatedAt: "2024-01-13",
+    createdAt: '2024-01-03',
+    updatedAt: '2024-01-13',
   },
   {
-    id: "4",
-    name: "Infraestructura TI",
-    description: "Gestión de infraestructura tecnológica y redes",
-    parentUnit: "Gerencia de Sistemas",
-    level: 3,
+    id: '4',
+    name: 'Infraestructura TI',
+    description: 'Gestión de infraestructura tecnológica y redes',
+    parentUnit: 'Gerencia de Sistemas',
     manager: {
-      name: "Ana Martínez Silva",
-      email: "amartinez@empresa.com",
-      phone: "+51 666 555 444",
+      name: 'Ana Martínez Silva',
+      email: 'amartinez@empresa.com',
+      phone: '+51 666 555 444',
     },
-    location: "Piso 6 - Torre Principal",
-    status: "active",
+    location: 'Piso 6 - Torre Principal',
+    status: 'active',
     employeeCount: 10,
     budget: 350000,
-    createdAt: "2024-01-04",
-    updatedAt: "2024-01-12",
+    createdAt: '2024-01-04',
+    updatedAt: '2024-01-12',
   },
   {
-    id: "5",
-    name: "Gerencia de Recursos Humanos",
-    description: "Gestión del talento humano y desarrollo organizacional",
-    parentUnit: "Gerencia General",
-    level: 2,
+    id: '5',
+    name: 'Gerencia de Recursos Humanos',
+    description: 'Gestión del talento humano y desarrollo organizacional',
+    parentUnit: 'Gerencia General',
     manager: {
-      name: "Luis Fernando Torres",
-      email: "ltorres@empresa.com",
-      phone: "+51 555 444 333",
+      name: 'Luis Fernando Torres',
+      email: 'ltorres@empresa.com',
+      phone: '+51 555 444 333',
     },
-    location: "Piso 9 - Torre Principal",
-    status: "suspended",
+    location: 'Piso 9 - Torre Principal',
+    status: 'suspended',
     employeeCount: 8,
     budget: 300000,
-    createdAt: "2024-01-05",
-    updatedAt: "2024-01-11",
+    createdAt: '2024-01-05',
+    updatedAt: '2024-01-11',
   },
-]
+];
 
 export default function OrganicUnitsManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [selectedUnit, setSelectedUnit] = useState<(typeof organicUnits)[0] | null>(null)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState<(typeof organicUnits)[0] | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const filteredUnits = organicUnits.filter(
     (unit) =>
       unit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       unit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       unit.manager.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "active":
-        return <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">Activa</Badge>
-      case "suspended":
-        return <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">Suspendida</Badge>
-      case "inactive":
-        return <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">Inactiva</Badge>
+      case 'active':
+        return <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">Activa</Badge>;
+      case 'suspended':
+        return <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">Suspendida</Badge>;
+      case 'inactive':
+        return <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">Inactiva</Badge>;
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
-
-  const getLevelBadge = (level: number) => {
-    const colors = [
-      "bg-primary/20 text-primary border-primary/30",
-      "bg-chart-2/20 text-chart-2 border-chart-2/30",
-      "bg-chart-3/20 text-chart-3 border-chart-3/30",
-      "bg-chart-4/20 text-chart-4 border-chart-4/30",
-    ]
-    return <Badge className={colors[level - 1] || colors[3]}>Nivel {level}</Badge>
-  }
+  };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("es-PE", {
-      style: "currency",
-      currency: "PEN",
-    }).format(amount)
-  }
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN',
+    }).format(amount);
+  };
 
   const handleEdit = (unit: (typeof organicUnits)[0]) => {
-    setSelectedUnit(unit)
-    setIsEditDialogOpen(true)
-  }
+    setSelectedUnit(unit);
+    setIsEditDialogOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -208,9 +164,7 @@ export default function OrganicUnitsManagement() {
             <DialogContent className="sm:max-w-[600px] bg-card/80 backdrop-blur-xl border-border">
               <DialogHeader>
                 <DialogTitle>Crear Nueva Unidad Orgánica</DialogTitle>
-                <DialogDescription>
-                  Completa la información para crear una nueva unidad orgánica en el sistema.
-                </DialogDescription>
+                <DialogDescription>Completa la información para crear una nueva unidad orgánica en el sistema.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -322,7 +276,6 @@ export default function OrganicUnitsManagement() {
               <TableHeader>
                 <TableRow className="bg-accent/50">
                   <TableHead>Unidad Orgánica</TableHead>
-                  <TableHead>Nivel</TableHead>
                   <TableHead>Responsable</TableHead>
                   <TableHead>Ubicación</TableHead>
                   <TableHead>Empleados</TableHead>
@@ -338,12 +291,9 @@ export default function OrganicUnitsManagement() {
                       <div className="space-y-1">
                         <p className="font-medium text-foreground">{unit.name}</p>
                         <p className="text-sm text-muted-foreground line-clamp-2">{unit.description}</p>
-                        {unit.parentUnit && (
-                          <p className="text-xs text-muted-foreground/80">Depende de: {unit.parentUnit}</p>
-                        )}
+                        {unit.parentUnit && <p className="text-xs text-muted-foreground/80">Depende de: {unit.parentUnit}</p>}
                       </div>
                     </TableCell>
-                    <TableCell>{getLevelBadge(unit.level)}</TableCell>
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -428,7 +378,7 @@ export default function OrganicUnitsManagement() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="edit-parent">Unidad Padre</Label>
-                  <Select defaultValue={selectedUnit.parentUnit || "none"}>
+                  <Select defaultValue={selectedUnit.parentUnit || 'none'}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -478,5 +428,5 @@ export default function OrganicUnitsManagement() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

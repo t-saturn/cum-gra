@@ -1,94 +1,78 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import {
-  Settings,
-  Shield,
-  Bell,
-  Database,
-  Mail,
-  Globe,
-  Key,
-  Server,
-  AlertTriangle,
-  CheckCircle,
-  Save,
-  RotateCcw,
-  Download,
-  Upload,
-  Trash2,
-} from "lucide-react"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Settings, Shield, Bell, Database, Mail, Globe, Key, Server, AlertTriangle, CheckCircle, Save, RotateCcw, Download, Upload, Trash2 } from 'lucide-react';
 
 interface SystemConfig {
   general: {
-    systemName: string
-    systemDescription: string
-    defaultLanguage: string
-    timezone: string
-    dateFormat: string
-    sessionTimeout: number
-    maxLoginAttempts: number
-    maintenanceMode: boolean
-  }
+    systemName: string;
+    systemDescription: string;
+    defaultLanguage: string;
+    timezone: string;
+    dateFormat: string;
+    sessionTimeout: number;
+    maxLoginAttempts: number;
+    maintenanceMode: boolean;
+  };
   security: {
-    passwordMinLength: number
-    passwordRequireSpecial: boolean
-    passwordRequireNumbers: boolean
-    passwordRequireUppercase: boolean
-    passwordExpiration: number
-    twoFactorRequired: boolean
-    ipWhitelist: string[]
-    allowedDomains: string[]
-    encryptionLevel: string
-  }
+    passwordMinLength: number;
+    passwordRequireSpecial: boolean;
+    passwordRequireNumbers: boolean;
+    passwordRequireUppercase: boolean;
+    passwordExpiration: number;
+    twoFactorRequired: boolean;
+    ipWhitelist: string[];
+    allowedDomains: string[];
+    encryptionLevel: string;
+  };
   notifications: {
-    emailEnabled: boolean
-    smsEnabled: boolean
-    pushEnabled: boolean
-    securityAlerts: boolean
-    systemAlerts: boolean
-    userAlerts: boolean
-    emailServer: string
-    emailPort: number
-    emailUsername: string
-  }
+    emailEnabled: boolean;
+    smsEnabled: boolean;
+    pushEnabled: boolean;
+    securityAlerts: boolean;
+    systemAlerts: boolean;
+    userAlerts: boolean;
+    emailServer: string;
+    emailPort: number;
+    emailUsername: string;
+  };
   database: {
-    backupEnabled: boolean
-    backupFrequency: string
-    retentionDays: number
-    compressionEnabled: boolean
-    encryptionEnabled: boolean
-    maxConnections: number
-    queryTimeout: number
-  }
+    backupEnabled: boolean;
+    backupFrequency: string;
+    retentionDays: number;
+    compressionEnabled: boolean;
+    encryptionEnabled: boolean;
+    maxConnections: number;
+    queryTimeout: number;
+  };
   integrations: {
-    ldapEnabled: boolean
-    ldapServer: string
-    ldapPort: number
-    samlEnabled: boolean
-    oauthEnabled: boolean
-    apiRateLimit: number
-    webhooksEnabled: boolean
-  }
+    ldapEnabled: boolean;
+    ldapServer: string;
+    ldapPort: number;
+    samlEnabled: boolean;
+    oauthEnabled: boolean;
+    apiRateLimit: number;
+    webhooksEnabled: boolean;
+  };
 }
 
 const initialConfig: SystemConfig = {
   general: {
-    systemName: "Central User Manager",
-    systemDescription: "Sistema centralizado de gestión de usuarios y permisos",
-    defaultLanguage: "es",
-    timezone: "America/Lima",
-    dateFormat: "DD/MM/YYYY",
+    systemName: 'Central User Manager',
+    systemDescription: 'Sistema centralizado de gestión de usuarios y permisos',
+    defaultLanguage: 'es',
+    timezone: 'America/Lima',
+    dateFormat: 'DD/MM/YYYY',
     sessionTimeout: 30,
     maxLoginAttempts: 5,
     maintenanceMode: false,
@@ -100,9 +84,9 @@ const initialConfig: SystemConfig = {
     passwordRequireUppercase: true,
     passwordExpiration: 90,
     twoFactorRequired: false,
-    ipWhitelist: ["192.168.1.0/24", "10.0.0.0/8"],
-    allowedDomains: ["empresa.com", "subsidiaria.com"],
-    encryptionLevel: "AES-256",
+    ipWhitelist: ['192.168.1.0/24', '10.0.0.0/8'],
+    allowedDomains: ['empresa.com', 'subsidiaria.com'],
+    encryptionLevel: 'AES-256',
   },
   notifications: {
     emailEnabled: true,
@@ -111,13 +95,13 @@ const initialConfig: SystemConfig = {
     securityAlerts: true,
     systemAlerts: true,
     userAlerts: true,
-    emailServer: "smtp.empresa.com",
+    emailServer: 'smtp.empresa.com',
     emailPort: 587,
-    emailUsername: "noreply@empresa.com",
+    emailUsername: 'noreply@empresa.com',
   },
   database: {
     backupEnabled: true,
-    backupFrequency: "daily",
+    backupFrequency: 'daily',
     retentionDays: 30,
     compressionEnabled: true,
     encryptionEnabled: true,
@@ -126,51 +110,46 @@ const initialConfig: SystemConfig = {
   },
   integrations: {
     ldapEnabled: false,
-    ldapServer: "ldap.empresa.com",
+    ldapServer: 'ldap.empresa.com',
     ldapPort: 389,
     samlEnabled: false,
     oauthEnabled: true,
     apiRateLimit: 1000,
     webhooksEnabled: true,
   },
-}
+};
 
 export default function SettingsManagement() {
-  const [config, setConfig] = useState<SystemConfig>(initialConfig)
-  const [hasChanges, setHasChanges] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [config, setConfig] = useState<SystemConfig>(initialConfig);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    setSaving(true)
+    setSaving(true);
     // Simular guardado
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setSaving(false)
-    setHasChanges(false)
-  }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setSaving(false);
+    setHasChanges(false);
+  };
 
   const handleReset = () => {
-    setConfig(initialConfig)
-    setHasChanges(false)
-  }
+    setConfig(initialConfig);
+    setHasChanges(false);
+  };
 
-  const updateConfig = <T extends keyof SystemConfig, K extends keyof SystemConfig[T]>(
-    section: T,
-    field: K & string,
-    value: SystemConfig[T][K]
-  ) => {
+  const updateConfig = <T extends keyof SystemConfig, K extends keyof SystemConfig[T]>(section: T, field: K & string, value: SystemConfig[T][K]) => {
     setConfig((prev) => ({
       ...prev,
       [section]: {
         ...prev[section],
         [field]: value,
       },
-    }))
-    setHasChanges(true)
-  }
+    }));
+    setHasChanges(true);
+  };
 
   return (
     <div className="space-y-6">
-
       {hasChanges && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
@@ -181,7 +160,7 @@ export default function SettingsManagement() {
       <div className="flex gap-4">
         <Button onClick={handleSave} disabled={!hasChanges || saving}>
           <Save className="w-4 h-4 mr-2" />
-          {saving ? "Guardando..." : "Guardar Cambios"}
+          {saving ? 'Guardando...' : 'Guardar Cambios'}
         </Button>
         <Button variant="outline" onClick={handleReset} disabled={!hasChanges}>
           <RotateCcw className="w-4 h-4 mr-2" />
@@ -234,18 +213,11 @@ export default function SettingsManagement() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="systemName">Nombre del Sistema</Label>
-                  <Input
-                    id="systemName"
-                    value={config.general.systemName}
-                    onChange={(e) => updateConfig("general", "systemName", e.target.value)}
-                  />
+                  <Input id="systemName" value={config.general.systemName} onChange={(e) => updateConfig('general', 'systemName', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="defaultLanguage">Idioma por Defecto</Label>
-                  <Select
-                    value={config.general.defaultLanguage}
-                    onValueChange={(value) => updateConfig("general", "defaultLanguage", value)}
-                  >
+                  <Select value={config.general.defaultLanguage} onValueChange={(value) => updateConfig('general', 'defaultLanguage', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -260,21 +232,13 @@ export default function SettingsManagement() {
 
               <div className="space-y-2">
                 <Label htmlFor="systemDescription">Descripción del Sistema</Label>
-                <Textarea
-                  id="systemDescription"
-                  value={config.general.systemDescription}
-                  onChange={(e) => updateConfig("general", "systemDescription", e.target.value)}
-                  rows={3}
-                />
+                <Textarea id="systemDescription" value={config.general.systemDescription} onChange={(e) => updateConfig('general', 'systemDescription', e.target.value)} rows={3} />
               </div>
 
               <div className="grid grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Zona Horaria</Label>
-                  <Select
-                    value={config.general.timezone}
-                    onValueChange={(value) => updateConfig("general", "timezone", value)}
-                  >
+                  <Select value={config.general.timezone} onValueChange={(value) => updateConfig('general', 'timezone', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -291,7 +255,7 @@ export default function SettingsManagement() {
                     id="sessionTimeout"
                     type="number"
                     value={config.general.sessionTimeout}
-                    onChange={(e) => updateConfig("general", "sessionTimeout", Number.parseInt(e.target.value))}
+                    onChange={(e) => updateConfig('general', 'sessionTimeout', Number.parseInt(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -300,7 +264,7 @@ export default function SettingsManagement() {
                     id="maxLoginAttempts"
                     type="number"
                     value={config.general.maxLoginAttempts}
-                    onChange={(e) => updateConfig("general", "maxLoginAttempts", Number.parseInt(e.target.value))}
+                    onChange={(e) => updateConfig('general', 'maxLoginAttempts', Number.parseInt(e.target.value))}
                   />
                 </div>
               </div>
@@ -310,14 +274,9 @@ export default function SettingsManagement() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label>Modo Mantenimiento</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Activa el modo mantenimiento para bloquear el acceso al sistema
-                  </p>
+                  <p className="text-sm text-muted-foreground">Activa el modo mantenimiento para bloquear el acceso al sistema</p>
                 </div>
-                <Switch
-                  checked={config.general.maintenanceMode}
-                  onCheckedChange={(checked) => updateConfig("general", "maintenanceMode", checked)}
-                />
+                <Switch checked={config.general.maintenanceMode} onCheckedChange={(checked) => updateConfig('general', 'maintenanceMode', checked)} />
               </div>
             </CardContent>
           </Card>
@@ -346,7 +305,7 @@ export default function SettingsManagement() {
                       id="passwordMinLength"
                       type="number"
                       value={config.security.passwordMinLength}
-                      onChange={(e) => updateConfig("security", "passwordMinLength", Number.parseInt(e.target.value))}
+                      onChange={(e) => updateConfig('security', 'passwordMinLength', Number.parseInt(e.target.value))}
                     />
                   </div>
                   <div className="space-y-2">
@@ -355,7 +314,7 @@ export default function SettingsManagement() {
                       id="passwordExpiration"
                       type="number"
                       value={config.security.passwordExpiration}
-                      onChange={(e) => updateConfig("security", "passwordExpiration", Number.parseInt(e.target.value))}
+                      onChange={(e) => updateConfig('security', 'passwordExpiration', Number.parseInt(e.target.value))}
                     />
                   </div>
                 </div>
@@ -363,31 +322,19 @@ export default function SettingsManagement() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label>Requerir Caracteres Especiales</Label>
-                    <Switch
-                      checked={config.security.passwordRequireSpecial}
-                      onCheckedChange={(checked) => updateConfig("security", "passwordRequireSpecial", checked)}
-                    />
+                    <Switch checked={config.security.passwordRequireSpecial} onCheckedChange={(checked) => updateConfig('security', 'passwordRequireSpecial', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Requerir Números</Label>
-                    <Switch
-                      checked={config.security.passwordRequireNumbers}
-                      onCheckedChange={(checked) => updateConfig("security", "passwordRequireNumbers", checked)}
-                    />
+                    <Switch checked={config.security.passwordRequireNumbers} onCheckedChange={(checked) => updateConfig('security', 'passwordRequireNumbers', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Requerir Mayúsculas</Label>
-                    <Switch
-                      checked={config.security.passwordRequireUppercase}
-                      onCheckedChange={(checked) => updateConfig("security", "passwordRequireUppercase", checked)}
-                    />
+                    <Switch checked={config.security.passwordRequireUppercase} onCheckedChange={(checked) => updateConfig('security', 'passwordRequireUppercase', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Autenticación de Dos Factores Obligatoria</Label>
-                    <Switch
-                      checked={config.security.twoFactorRequired}
-                      onCheckedChange={(checked) => updateConfig("security", "twoFactorRequired", checked)}
-                    />
+                    <Switch checked={config.security.twoFactorRequired} onCheckedChange={(checked) => updateConfig('security', 'twoFactorRequired', checked)} />
                   </div>
                 </div>
               </div>
@@ -400,12 +347,12 @@ export default function SettingsManagement() {
                 <div className="space-y-2">
                   <Label>IPs Permitidas (una por línea)</Label>
                   <Textarea
-                    value={config.security.ipWhitelist.join("\n")}
+                    value={config.security.ipWhitelist.join('\n')}
                     onChange={(e) =>
                       updateConfig(
-                        "security",
-                        "ipWhitelist",
-                        e.target.value.split("\n").filter((ip) => ip.trim()),
+                        'security',
+                        'ipWhitelist',
+                        e.target.value.split('\n').filter((ip) => ip.trim()),
                       )
                     }
                     rows={4}
@@ -416,12 +363,12 @@ export default function SettingsManagement() {
                 <div className="space-y-2">
                   <Label>Dominios Permitidos</Label>
                   <Textarea
-                    value={config.security.allowedDomains.join("\n")}
+                    value={config.security.allowedDomains.join('\n')}
                     onChange={(e) =>
                       updateConfig(
-                        "security",
-                        "allowedDomains",
-                        e.target.value.split("\n").filter((domain) => domain.trim()),
+                        'security',
+                        'allowedDomains',
+                        e.target.value.split('\n').filter((domain) => domain.trim()),
                       )
                     }
                     rows={3}
@@ -431,10 +378,7 @@ export default function SettingsManagement() {
 
                 <div className="space-y-2">
                   <Label htmlFor="encryptionLevel">Nivel de Encriptación</Label>
-                  <Select
-                    value={config.security.encryptionLevel}
-                    onValueChange={(value) => updateConfig("security", "encryptionLevel", value)}
-                  >
+                  <Select value={config.security.encryptionLevel} onValueChange={(value) => updateConfig('security', 'encryptionLevel', value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -469,10 +413,7 @@ export default function SettingsManagement() {
                       <Label>Notificaciones por Email</Label>
                       <p className="text-sm text-muted-foreground">Enviar notificaciones vía correo electrónico</p>
                     </div>
-                    <Switch
-                      checked={config.notifications.emailEnabled}
-                      onCheckedChange={(checked) => updateConfig("notifications", "emailEnabled", checked)}
-                    />
+                    <Switch checked={config.notifications.emailEnabled} onCheckedChange={(checked) => updateConfig('notifications', 'emailEnabled', checked)} />
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -480,10 +421,7 @@ export default function SettingsManagement() {
                       <Label>Notificaciones SMS</Label>
                       <p className="text-sm text-muted-foreground">Enviar notificaciones vía SMS</p>
                     </div>
-                    <Switch
-                      checked={config.notifications.smsEnabled}
-                      onCheckedChange={(checked) => updateConfig("notifications", "smsEnabled", checked)}
-                    />
+                    <Switch checked={config.notifications.smsEnabled} onCheckedChange={(checked) => updateConfig('notifications', 'smsEnabled', checked)} />
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -491,10 +429,7 @@ export default function SettingsManagement() {
                       <Label>Notificaciones Push</Label>
                       <p className="text-sm text-muted-foreground">Enviar notificaciones push en navegador</p>
                     </div>
-                    <Switch
-                      checked={config.notifications.pushEnabled}
-                      onCheckedChange={(checked) => updateConfig("notifications", "pushEnabled", checked)}
-                    />
+                    <Switch checked={config.notifications.pushEnabled} onCheckedChange={(checked) => updateConfig('notifications', 'pushEnabled', checked)} />
                   </div>
                 </div>
               </div>
@@ -507,24 +442,15 @@ export default function SettingsManagement() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label>Alertas de Seguridad</Label>
-                    <Switch
-                      checked={config.notifications.securityAlerts}
-                      onCheckedChange={(checked) => updateConfig("notifications", "securityAlerts", checked)}
-                    />
+                    <Switch checked={config.notifications.securityAlerts} onCheckedChange={(checked) => updateConfig('notifications', 'securityAlerts', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Alertas del Sistema</Label>
-                    <Switch
-                      checked={config.notifications.systemAlerts}
-                      onCheckedChange={(checked) => updateConfig("notifications", "systemAlerts", checked)}
-                    />
+                    <Switch checked={config.notifications.systemAlerts} onCheckedChange={(checked) => updateConfig('notifications', 'systemAlerts', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Alertas de Usuario</Label>
-                    <Switch
-                      checked={config.notifications.userAlerts}
-                      onCheckedChange={(checked) => updateConfig("notifications", "userAlerts", checked)}
-                    />
+                    <Switch checked={config.notifications.userAlerts} onCheckedChange={(checked) => updateConfig('notifications', 'userAlerts', checked)} />
                   </div>
                 </div>
               </div>
@@ -541,11 +467,7 @@ export default function SettingsManagement() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="emailServer">Servidor SMTP</Label>
-                        <Input
-                          id="emailServer"
-                          value={config.notifications.emailServer}
-                          onChange={(e) => updateConfig("notifications", "emailServer", e.target.value)}
-                        />
+                        <Input id="emailServer" value={config.notifications.emailServer} onChange={(e) => updateConfig('notifications', 'emailServer', e.target.value)} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="emailPort">Puerto</Label>
@@ -553,18 +475,14 @@ export default function SettingsManagement() {
                           id="emailPort"
                           type="number"
                           value={config.notifications.emailPort}
-                          onChange={(e) => updateConfig("notifications", "emailPort", Number.parseInt(e.target.value))}
+                          onChange={(e) => updateConfig('notifications', 'emailPort', Number.parseInt(e.target.value))}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="emailUsername">Usuario/Email</Label>
-                      <Input
-                        id="emailUsername"
-                        value={config.notifications.emailUsername}
-                        onChange={(e) => updateConfig("notifications", "emailUsername", e.target.value)}
-                      />
+                      <Input id="emailUsername" value={config.notifications.emailUsername} onChange={(e) => updateConfig('notifications', 'emailUsername', e.target.value)} />
                     </div>
                   </div>
                 </>
@@ -580,9 +498,7 @@ export default function SettingsManagement() {
                 <Database className="w-5 h-5" />
                 Configuraciones de Base de Datos
               </CardTitle>
-              <CardDescription>
-                Configuración de respaldos, rendimiento y mantenimiento de la base de datos
-              </CardDescription>
+              <CardDescription>Configuración de respaldos, rendimiento y mantenimiento de la base de datos</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -593,20 +509,14 @@ export default function SettingsManagement() {
                     <Label>Habilitar Respaldos</Label>
                     <p className="text-sm text-muted-foreground">Crear respaldos automáticos de la base de datos</p>
                   </div>
-                  <Switch
-                    checked={config.database.backupEnabled}
-                    onCheckedChange={(checked) => updateConfig("database", "backupEnabled", checked)}
-                  />
+                  <Switch checked={config.database.backupEnabled} onCheckedChange={(checked) => updateConfig('database', 'backupEnabled', checked)} />
                 </div>
 
                 {config.database.backupEnabled && (
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="backupFrequency">Frecuencia de Respaldo</Label>
-                      <Select
-                        value={config.database.backupFrequency}
-                        onValueChange={(value) => updateConfig("database", "backupFrequency", value)}
-                      >
+                      <Select value={config.database.backupFrequency} onValueChange={(value) => updateConfig('database', 'backupFrequency', value)}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -624,7 +534,7 @@ export default function SettingsManagement() {
                         id="retentionDays"
                         type="number"
                         value={config.database.retentionDays}
-                        onChange={(e) => updateConfig("database", "retentionDays", Number.parseInt(e.target.value))}
+                        onChange={(e) => updateConfig('database', 'retentionDays', Number.parseInt(e.target.value))}
                       />
                     </div>
                   </div>
@@ -633,17 +543,11 @@ export default function SettingsManagement() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label>Compresión de Respaldos</Label>
-                    <Switch
-                      checked={config.database.compressionEnabled}
-                      onCheckedChange={(checked) => updateConfig("database", "compressionEnabled", checked)}
-                    />
+                    <Switch checked={config.database.compressionEnabled} onCheckedChange={(checked) => updateConfig('database', 'compressionEnabled', checked)} />
                   </div>
                   <div className="flex items-center justify-between">
                     <Label>Encriptación de Respaldos</Label>
-                    <Switch
-                      checked={config.database.encryptionEnabled}
-                      onCheckedChange={(checked) => updateConfig("database", "encryptionEnabled", checked)}
-                    />
+                    <Switch checked={config.database.encryptionEnabled} onCheckedChange={(checked) => updateConfig('database', 'encryptionEnabled', checked)} />
                   </div>
                 </div>
               </div>
@@ -663,7 +567,7 @@ export default function SettingsManagement() {
                       id="maxConnections"
                       type="number"
                       value={config.database.maxConnections}
-                      onChange={(e) => updateConfig("database", "maxConnections", Number.parseInt(e.target.value))}
+                      onChange={(e) => updateConfig('database', 'maxConnections', Number.parseInt(e.target.value))}
                     />
                   </div>
                   <div className="space-y-2">
@@ -672,7 +576,7 @@ export default function SettingsManagement() {
                       id="queryTimeout"
                       type="number"
                       value={config.database.queryTimeout}
-                      onChange={(e) => updateConfig("database", "queryTimeout", Number.parseInt(e.target.value))}
+                      onChange={(e) => updateConfig('database', 'queryTimeout', Number.parseInt(e.target.value))}
                     />
                   </div>
                 </div>
@@ -713,21 +617,14 @@ export default function SettingsManagement() {
                       <Label>Integración LDAP</Label>
                       <p className="text-sm text-muted-foreground">Autenticación contra directorio LDAP</p>
                     </div>
-                    <Switch
-                      checked={config.integrations.ldapEnabled}
-                      onCheckedChange={(checked) => updateConfig("integrations", "ldapEnabled", checked)}
-                    />
+                    <Switch checked={config.integrations.ldapEnabled} onCheckedChange={(checked) => updateConfig('integrations', 'ldapEnabled', checked)} />
                   </div>
 
                   {config.integrations.ldapEnabled && (
                     <div className="grid grid-cols-2 gap-6 ml-6">
                       <div className="space-y-2">
                         <Label htmlFor="ldapServer">Servidor LDAP</Label>
-                        <Input
-                          id="ldapServer"
-                          value={config.integrations.ldapServer}
-                          onChange={(e) => updateConfig("integrations", "ldapServer", e.target.value)}
-                        />
+                        <Input id="ldapServer" value={config.integrations.ldapServer} onChange={(e) => updateConfig('integrations', 'ldapServer', e.target.value)} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="ldapPort">Puerto</Label>
@@ -735,7 +632,7 @@ export default function SettingsManagement() {
                           id="ldapPort"
                           type="number"
                           value={config.integrations.ldapPort}
-                          onChange={(e) => updateConfig("integrations", "ldapPort", Number.parseInt(e.target.value))}
+                          onChange={(e) => updateConfig('integrations', 'ldapPort', Number.parseInt(e.target.value))}
                         />
                       </div>
                     </div>
@@ -750,10 +647,7 @@ export default function SettingsManagement() {
                       <Label>Autenticación SAML</Label>
                       <p className="text-sm text-muted-foreground">Single Sign-On con SAML 2.0</p>
                     </div>
-                    <Switch
-                      checked={config.integrations.samlEnabled}
-                      onCheckedChange={(checked) => updateConfig("integrations", "samlEnabled", checked)}
-                    />
+                    <Switch checked={config.integrations.samlEnabled} onCheckedChange={(checked) => updateConfig('integrations', 'samlEnabled', checked)} />
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -761,10 +655,7 @@ export default function SettingsManagement() {
                       <Label>OAuth 2.0</Label>
                       <p className="text-sm text-muted-foreground">Autenticación con proveedores OAuth</p>
                     </div>
-                    <Switch
-                      checked={config.integrations.oauthEnabled}
-                      onCheckedChange={(checked) => updateConfig("integrations", "oauthEnabled", checked)}
-                    />
+                    <Switch checked={config.integrations.oauthEnabled} onCheckedChange={(checked) => updateConfig('integrations', 'oauthEnabled', checked)} />
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -772,10 +663,7 @@ export default function SettingsManagement() {
                       <Label>Webhooks</Label>
                       <p className="text-sm text-muted-foreground">Notificaciones HTTP a sistemas externos</p>
                     </div>
-                    <Switch
-                      checked={config.integrations.webhooksEnabled}
-                      onCheckedChange={(checked) => updateConfig("integrations", "webhooksEnabled", checked)}
-                    />
+                    <Switch checked={config.integrations.webhooksEnabled} onCheckedChange={(checked) => updateConfig('integrations', 'webhooksEnabled', checked)} />
                   </div>
                 </div>
 
@@ -790,7 +678,7 @@ export default function SettingsManagement() {
                       id="apiRateLimit"
                       type="number"
                       value={config.integrations.apiRateLimit}
-                      onChange={(e) => updateConfig("integrations", "apiRateLimit", Number.parseInt(e.target.value))}
+                      onChange={(e) => updateConfig('integrations', 'apiRateLimit', Number.parseInt(e.target.value))}
                     />
                   </div>
                 </div>
@@ -815,5 +703,5 @@ export default function SettingsManagement() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

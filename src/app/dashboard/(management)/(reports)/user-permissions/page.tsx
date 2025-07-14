@@ -1,339 +1,324 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import {
-  Search,
-  Download,
-  Shield,
-  Lock,
-  Unlock,
-  ChevronDown,
-  ChevronRight,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Crown,
-  Star,
-  Award,
-  RefreshCw,
-} from "lucide-react"
-import CardStatsContain from "@/components/custom/card/card-stats-contain"
-import { statsPermissionsForUsers } from "@/mocks/stats-mocks"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Search, Download, Shield, Lock, Unlock, ChevronDown, ChevronRight, AlertTriangle, CheckCircle, XCircle, Crown, Star, Award, RefreshCw } from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsPermissionsForUsers } from '@/mocks/stats-mocks';
 
 // Mock data
 const userPermissionsData = [
   {
-    id: "1",
+    id: '1',
     user: {
-      name: "Juan Carlos Pérez",
-      email: "jperez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Gerente General",
-      department: "Gerencia",
-      status: "active",
+      name: 'Juan Carlos Pérez',
+      email: 'jperez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Gerente General',
+      department: 'Gerencia',
+      status: 'active',
     },
     roles: [
       {
-        id: "admin",
-        name: "Administrador",
-        application: "Sistema Global",
-        level: "high",
+        id: 'admin',
+        name: 'Administrador',
+        application: 'Sistema Global',
+        level: 'high',
         permissions: [
-          { module: "users", actions: ["read", "write", "delete"], granted: true },
-          { module: "applications", actions: ["read", "write", "delete"], granted: true },
-          { module: "roles", actions: ["read", "write", "delete"], granted: true },
-          { module: "reports", actions: ["read", "write"], granted: true },
+          { module: 'users', actions: ['read', 'write', 'delete'], granted: true },
+          { module: 'applications', actions: ['read', 'write', 'delete'], granted: true },
+          { module: 'roles', actions: ['read', 'write', 'delete'], granted: true },
+          { module: 'reports', actions: ['read', 'write'], granted: true },
         ],
       },
       {
-        id: "inv_manager",
-        name: "Gerente de Inventario",
-        application: "Sistema de Inventario",
-        level: "medium",
+        id: 'inv_manager',
+        name: 'Gerente de Inventario',
+        application: 'Sistema de Inventario',
+        level: 'medium',
         permissions: [
-          { module: "products", actions: ["read", "write"], granted: true },
-          { module: "warehouse", actions: ["read", "write"], granted: true },
-          { module: "reports", actions: ["read"], granted: true },
+          { module: 'products', actions: ['read', 'write'], granted: true },
+          { module: 'warehouse', actions: ['read', 'write'], granted: true },
+          { module: 'reports', actions: ['read'], granted: true },
         ],
       },
     ],
     totalPermissions: 15,
-    riskLevel: "low",
-    lastReview: "2024-01-10",
-    createdAt: "2024-01-01",
+    riskLevel: 'low',
+    lastReview: '2024-01-10',
+    createdAt: '2024-01-01',
   },
   {
-    id: "2",
+    id: '2',
     user: {
-      name: "María García López",
-      email: "mgarcia@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Analista Senior",
-      department: "Sistemas",
-      status: "active",
+      name: 'María García López',
+      email: 'mgarcia@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Analista Senior',
+      department: 'Sistemas',
+      status: 'active',
     },
     roles: [
       {
-        id: "dev_lead",
-        name: "Líder de Desarrollo",
-        application: "Sistema de Inventario",
-        level: "medium",
+        id: 'dev_lead',
+        name: 'Líder de Desarrollo',
+        application: 'Sistema de Inventario',
+        level: 'medium',
         permissions: [
-          { module: "products", actions: ["read", "write"], granted: true },
-          { module: "warehouse", actions: ["read"], granted: true },
-          { module: "users", actions: ["read"], granted: true },
-          { module: "reports", actions: ["read"], granted: true },
+          { module: 'products', actions: ['read', 'write'], granted: true },
+          { module: 'warehouse', actions: ['read'], granted: true },
+          { module: 'users', actions: ['read'], granted: true },
+          { module: 'reports', actions: ['read'], granted: true },
         ],
       },
       {
-        id: "hr_analyst",
-        name: "Analista RRHH",
-        application: "Portal RRHH",
-        level: "low",
+        id: 'hr_analyst',
+        name: 'Analista RRHH',
+        application: 'Portal RRHH',
+        level: 'low',
         permissions: [
-          { module: "employees", actions: ["read"], granted: true },
-          { module: "reports", actions: ["read"], granted: true },
+          { module: 'employees', actions: ['read'], granted: true },
+          { module: 'reports', actions: ['read'], granted: true },
         ],
       },
     ],
     totalPermissions: 8,
-    riskLevel: "low",
-    lastReview: "2024-01-12",
-    createdAt: "2024-01-02",
+    riskLevel: 'low',
+    lastReview: '2024-01-12',
+    createdAt: '2024-01-02',
   },
   {
-    id: "3",
+    id: '3',
     user: {
-      name: "Carlos López Ruiz",
-      email: "clopez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Desarrollador",
-      department: "Sistemas",
-      status: "active",
+      name: 'Carlos López Ruiz',
+      email: 'clopez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Desarrollador',
+      department: 'Sistemas',
+      status: 'active',
     },
     roles: [
       {
-        id: "developer",
-        name: "Desarrollador",
-        application: "Sistema de Inventario",
-        level: "low",
+        id: 'developer',
+        name: 'Desarrollador',
+        application: 'Sistema de Inventario',
+        level: 'low',
         permissions: [
-          { module: "products", actions: ["read"], granted: true },
-          { module: "warehouse", actions: ["read"], granted: true },
-          { module: "reports", actions: ["read"], granted: false },
+          { module: 'products', actions: ['read'], granted: true },
+          { module: 'warehouse', actions: ['read'], granted: true },
+          { module: 'reports', actions: ['read'], granted: false },
         ],
       },
       {
-        id: "finance_user",
-        name: "Usuario Financiero",
-        application: "Sistema Financiero",
-        level: "medium",
+        id: 'finance_user',
+        name: 'Usuario Financiero',
+        application: 'Sistema Financiero',
+        level: 'medium',
         permissions: [
-          { module: "accounting", actions: ["read", "write"], granted: true },
-          { module: "invoicing", actions: ["read", "write"], granted: true },
-          { module: "reports", actions: ["read"], granted: true },
+          { module: 'accounting', actions: ['read', 'write'], granted: true },
+          { module: 'invoicing', actions: ['read', 'write'], granted: true },
+          { module: 'reports', actions: ['read'], granted: true },
         ],
       },
     ],
     totalPermissions: 7,
-    riskLevel: "medium",
-    lastReview: "2024-01-08",
-    createdAt: "2024-01-03",
+    riskLevel: 'medium',
+    lastReview: '2024-01-08',
+    createdAt: '2024-01-03',
   },
   {
-    id: "4",
+    id: '4',
     user: {
-      name: "Ana Martínez Silva",
-      email: "amartinez@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Especialista TI",
-      department: "Infraestructura",
-      status: "active",
+      name: 'Ana Martínez Silva',
+      email: 'amartinez@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Especialista TI',
+      department: 'Infraestructura',
+      status: 'active',
     },
     roles: [
       {
-        id: "it_specialist",
-        name: "Especialista TI",
-        application: "Sistema Global",
-        level: "high",
+        id: 'it_specialist',
+        name: 'Especialista TI',
+        application: 'Sistema Global',
+        level: 'high',
         permissions: [
-          { module: "users", actions: ["read", "write"], granted: true },
-          { module: "applications", actions: ["read"], granted: true },
-          { module: "security", actions: ["read", "write"], granted: true },
-          { module: "audit", actions: ["read"], granted: true },
+          { module: 'users', actions: ['read', 'write'], granted: true },
+          { module: 'applications', actions: ['read'], granted: true },
+          { module: 'security', actions: ['read', 'write'], granted: true },
+          { module: 'audit', actions: ['read'], granted: true },
         ],
       },
     ],
     totalPermissions: 6,
-    riskLevel: "high",
-    lastReview: "2024-01-05",
-    createdAt: "2024-01-04",
+    riskLevel: 'high',
+    lastReview: '2024-01-05',
+    createdAt: '2024-01-04',
   },
   {
-    id: "5",
+    id: '5',
     user: {
-      name: "Luis Fernando Torres",
-      email: "ltorres@empresa.com",
-      avatar: "/placeholder.svg?height=40&width=40",
-      position: "Gerente RRHH",
-      department: "Recursos Humanos",
-      status: "suspended",
+      name: 'Luis Fernando Torres',
+      email: 'ltorres@empresa.com',
+      avatar: '/placeholder.svg?height=40&width=40',
+      position: 'Gerente RRHH',
+      department: 'Recursos Humanos',
+      status: 'suspended',
     },
     roles: [
       {
-        id: "hr_manager",
-        name: "Gerente RRHH",
-        application: "Portal RRHH",
-        level: "high",
+        id: 'hr_manager',
+        name: 'Gerente RRHH',
+        application: 'Portal RRHH',
+        level: 'high',
         permissions: [
-          { module: "employees", actions: ["read", "write", "delete"], granted: false },
-          { module: "payroll", actions: ["read", "write"], granted: false },
-          { module: "performance", actions: ["read", "write"], granted: false },
-          { module: "reports", actions: ["read", "write"], granted: false },
+          { module: 'employees', actions: ['read', 'write', 'delete'], granted: false },
+          { module: 'payroll', actions: ['read', 'write'], granted: false },
+          { module: 'performance', actions: ['read', 'write'], granted: false },
+          { module: 'reports', actions: ['read', 'write'], granted: false },
         ],
       },
     ],
     totalPermissions: 8,
-    riskLevel: "high",
-    lastReview: "2024-01-01",
-    createdAt: "2024-01-05",
+    riskLevel: 'high',
+    lastReview: '2024-01-01',
+    createdAt: '2024-01-05',
   },
-]
+];
 
 export default function UserPermissionsReport() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [departmentFilter, setDepartmentFilter] = useState("all")
-  const [riskFilter, setRiskFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [expandedUsers, setExpandedUsers] = useState<string[]>([])
+  const [searchTerm, setSearchTerm] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [riskFilter, setRiskFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedUsers, setExpandedUsers] = useState<string[]>([]);
 
   const filteredUsers = userPermissionsData.filter((user) => {
     const matchesSearch =
       user.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.user.department.toLowerCase().includes(searchTerm.toLowerCase())
+      user.user.department.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesDepartment = departmentFilter === "all" || user.user.department === departmentFilter
-    const matchesRisk = riskFilter === "all" || user.riskLevel === riskFilter
-    const matchesStatus = statusFilter === "all" || user.user.status === statusFilter
+    const matchesDepartment = departmentFilter === 'all' || user.user.department === departmentFilter;
+    const matchesRisk = riskFilter === 'all' || user.riskLevel === riskFilter;
+    const matchesStatus = statusFilter === 'all' || user.user.status === statusFilter;
 
-    return matchesSearch && matchesDepartment && matchesRisk && matchesStatus
-  })
+    return matchesSearch && matchesDepartment && matchesRisk && matchesStatus;
+  });
 
   const getRiskBadge = (risk: string) => {
     switch (risk) {
-      case "high":
+      case 'high':
         return (
           <Badge className="bg-destructive/20 text-destructive border-destructive/30">
             <AlertTriangle className="w-3 h-3 mr-1" />
             Alto
           </Badge>
-        )
-      case "medium":
+        );
+      case 'medium':
         return (
           <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">
             <AlertTriangle className="w-3 h-3 mr-1" />
             Medio
           </Badge>
-        )
-      case "low":
+        );
+      case 'low':
         return (
           <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Bajo
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "active":
+      case 'active':
         return (
           <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Activo
           </Badge>
-        )
-      case "suspended":
+        );
+      case 'suspended':
         return (
           <Badge className="bg-destructive/20 text-destructive border-destructive/30">
             <XCircle className="w-3 h-3 mr-1" />
             Suspendido
           </Badge>
-        )
-      case "inactive":
+        );
+      case 'inactive':
         return (
           <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">
             <XCircle className="w-3 h-3 mr-1" />
             Inactivo
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   const getRoleLevelBadge = (level: string) => {
     switch (level) {
-      case "high":
+      case 'high':
         return (
           <Badge className="bg-primary/20 text-primary border-primary/30">
             <Crown className="w-3 h-3 mr-1" />
             Alto
           </Badge>
-        )
-      case "medium":
+        );
+      case 'medium':
         return (
           <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30">
             <Star className="w-3 h-3 mr-1" />
             Medio
           </Badge>
-        )
-      case "low":
+        );
+      case 'low':
         return (
           <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
             <Award className="w-3 h-3 mr-1" />
             Básico
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   const getPermissionIcon = (actions: string[], granted: boolean) => {
-    if (!granted) return <XCircle className="w-4 h-4 text-destructive" />
-    if (actions.includes("delete")) return <Shield className="w-4 h-4 text-destructive" />
-    if (actions.includes("write")) return <Lock className="w-4 h-4 text-chart-5" />
-    return <Unlock className="w-4 h-4 text-chart-4" />
-  }
+    if (!granted) return <XCircle className="w-4 h-4 text-destructive" />;
+    if (actions.includes('delete')) return <Shield className="w-4 h-4 text-destructive" />;
+    if (actions.includes('write')) return <Lock className="w-4 h-4 text-chart-5" />;
+    return <Unlock className="w-4 h-4 text-chart-4" />;
+  };
 
   const toggleUserExpansion = (userId: string) => {
-    setExpandedUsers((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]))
-  }
+    setExpandedUsers((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]));
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-ES")
-  }
+    return new Date(dateString).toLocaleDateString('es-ES');
+  };
 
-  const getPermissionSummary = (roles: (typeof userPermissionsData)[0]["roles"]) => {
-    const allPermissions = roles.flatMap((role) => role.permissions)
-    const granted = allPermissions.filter((p) => p.granted).length
-    const total = allPermissions.length
-    return { granted, total }
-  }
+  const getPermissionSummary = (roles: (typeof userPermissionsData)[0]['roles']) => {
+    const allPermissions = roles.flatMap((role) => role.permissions);
+    const granted = allPermissions.filter((p) => p.granted).length;
+    const total = allPermissions.length;
+    return { granted, total };
+  };
 
   return (
     <div className="space-y-6">
@@ -425,8 +410,8 @@ export default function UserPermissionsReport() {
             <CardContent>
               <div className="space-y-4">
                 {filteredUsers.map((user) => {
-                  const isExpanded = expandedUsers.includes(user.id)
-                  const permissionSummary = getPermissionSummary(user.roles)
+                  const isExpanded = expandedUsers.includes(user.id);
+                  const permissionSummary = getPermissionSummary(user.roles);
 
                   return (
                     <Card key={user.id} className="border-border bg-accent/20">
@@ -436,12 +421,12 @@ export default function UserPermissionsReport() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-4">
                                 <Avatar className="w-12 h-12">
-                                  <AvatarImage src={user.user.avatar || "/placeholder.svg"} />
+                                  <AvatarImage src={user.user.avatar || '/placeholder.svg'} />
                                   <AvatarFallback className="bg-gradient-to-r from-primary to-chart-1 text-primary-foreground font-semibold">
                                     {user.user.name
-                                      .split(" ")
+                                      .split(' ')
                                       .map((n) => n[0])
-                                      .join("")}
+                                      .join('')}
                                   </AvatarFallback>
                                 </Avatar>
                                 <div className="text-left">
@@ -471,11 +456,7 @@ export default function UserPermissionsReport() {
                                   <p className="text-sm text-muted-foreground">Última revisión</p>
                                   <p className="text-sm font-medium">{formatDate(user.lastReview)}</p>
                                 </div>
-                                {isExpanded ? (
-                                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                                ) : (
-                                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                                )}
+                                {isExpanded ? <ChevronDown className="w-5 h-5 text-muted-foreground" /> : <ChevronRight className="w-5 h-5 text-muted-foreground" />}
                               </div>
                             </div>
                           </CardContent>
@@ -499,24 +480,16 @@ export default function UserPermissionsReport() {
                                       </div>
                                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                         {role.permissions.map((permission, permIndex) => (
-                                          <div
-                                            key={permIndex}
-                                            className="flex items-center justify-between p-3 bg-accent/30 rounded"
-                                          >
+                                          <div key={permIndex} className="flex items-center justify-between p-3 bg-accent/30 rounded">
                                             <div className="flex items-center gap-2">
                                               {getPermissionIcon(permission.actions, permission.granted)}
                                               <div>
                                                 <p className="text-sm font-medium">{permission.module}</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                  {permission.actions.join(", ")}
-                                                </p>
+                                                <p className="text-xs text-muted-foreground">{permission.actions.join(', ')}</p>
                                               </div>
                                             </div>
-                                            <Badge
-                                              variant={permission.granted ? "default" : "destructive"}
-                                              className="text-xs"
-                                            >
-                                              {permission.granted ? "Concedido" : "Denegado"}
+                                            <Badge variant={permission.granted ? 'default' : 'destructive'} className="text-xs">
+                                              {permission.granted ? 'Concedido' : 'Denegado'}
                                             </Badge>
                                           </div>
                                         ))}
@@ -530,7 +503,7 @@ export default function UserPermissionsReport() {
                         </CollapsibleContent>
                       </Collapsible>
                     </Card>
-                  )
+                  );
                 })}
               </div>
             </CardContent>
@@ -555,7 +528,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-primary h-2 rounded-full" style={{ width: "35%" }} />
+                          <div className="bg-primary h-2 rounded-full" style={{ width: '35%' }} />
                         </div>
                         <span className="text-sm font-medium">35%</span>
                       </div>
@@ -567,7 +540,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-chart-2 h-2 rounded-full" style={{ width: "45%" }} />
+                          <div className="bg-chart-2 h-2 rounded-full" style={{ width: '45%' }} />
                         </div>
                         <span className="text-sm font-medium">45%</span>
                       </div>
@@ -579,7 +552,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-chart-3 h-2 rounded-full" style={{ width: "20%" }} />
+                          <div className="bg-chart-3 h-2 rounded-full" style={{ width: '20%' }} />
                         </div>
                         <span className="text-sm font-medium">20%</span>
                       </div>
@@ -597,7 +570,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-destructive h-2 rounded-full" style={{ width: "15%" }} />
+                          <div className="bg-destructive h-2 rounded-full" style={{ width: '15%' }} />
                         </div>
                         <span className="text-sm font-medium">15%</span>
                       </div>
@@ -609,7 +582,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-chart-5 h-2 rounded-full" style={{ width: "25%" }} />
+                          <div className="bg-chart-5 h-2 rounded-full" style={{ width: '25%' }} />
                         </div>
                         <span className="text-sm font-medium">25%</span>
                       </div>
@@ -621,7 +594,7 @@ export default function UserPermissionsReport() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-muted rounded-full h-2">
-                          <div className="bg-chart-4 h-2 rounded-full" style={{ width: "60%" }} />
+                          <div className="bg-chart-4 h-2 rounded-full" style={{ width: '60%' }} />
                         </div>
                         <span className="text-sm font-medium">60%</span>
                       </div>
@@ -757,5 +730,5 @@ export default function UserPermissionsReport() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

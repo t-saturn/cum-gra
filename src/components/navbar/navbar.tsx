@@ -7,7 +7,6 @@ import { UserPopover } from './user-popover';
 import { AppsPopover } from './apps-popover';
 
 function Navbar() {
-
   const handleToggleFullscreen = () => {
     if (!document.fullscreenElement)
       document.documentElement.requestFullscreen().catch((err) => {

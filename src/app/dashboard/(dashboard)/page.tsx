@@ -1,9 +1,7 @@
-import DashboardOverview from "./dashboard-page"
+import DashboardOverview from './dashboard-page';
 
 const page = () => {
-  return (
-    <DashboardOverview />
-  )
-}
+  return <DashboardOverview />;
+};
 
-export default page
+export default page;

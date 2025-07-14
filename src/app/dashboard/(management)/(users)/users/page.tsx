@@ -1,88 +1,71 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Search,
-  Plus,
-  Filter,
-  Download,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Shield,
-  Eye,
-} from "lucide-react"
-import CardStatsContain from "@/components/custom/card/card-stats-contain"
-import { statsUsers } from "@/mocks/stats-mocks"
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye } from 'lucide-react';
+import CardStatsContain from '@/components/custom/card/card-stats-contain';
+import { statsUsers } from '@/mocks/stats-mocks';
 
 // Mock data
 const users = [
   {
-    id: "1",
-    email: "juan.perez@empresa.com",
-    firstName: "Juan",
-    lastName: "Pérez",
-    dni: "12345678",
-    phone: "+51 999 888 777",
-    status: "active",
+    id: '1',
+    email: 'juan.perez@empresa.com',
+    firstName: 'Juan',
+    lastName: 'Pérez',
+    dni: '12345678',
+    phone: '+51 999 888 777',
+    status: 'active',
     emailVerified: true,
     phoneVerified: false,
     twoFactorEnabled: true,
-    structuralPosition: "Gerente General",
-    organicUnit: "Gerencia",
-    lastLogin: "2024-01-15 10:30:00",
-    createdAt: "2024-01-01 09:00:00",
+    structuralPosition: 'Gerente General',
+    organicUnit: 'Gerencia',
+    lastLogin: '2024-01-15 10:30:00',
+    createdAt: '2024-01-01 09:00:00',
   },
   {
-    id: "2",
-    email: "maria.garcia@empresa.com",
-    firstName: "María",
-    lastName: "García",
-    dni: "87654321",
-    phone: "+51 888 777 666",
-    status: "active",
+    id: '2',
+    email: 'maria.garcia@empresa.com',
+    firstName: 'María',
+    lastName: 'García',
+    dni: '87654321',
+    phone: '+51 888 777 666',
+    status: 'active',
     emailVerified: true,
     phoneVerified: true,
     twoFactorEnabled: false,
-    structuralPosition: "Analista Senior",
-    organicUnit: "Sistemas",
-    lastLogin: "2024-01-15 08:15:00",
-    createdAt: "2024-01-02 14:30:00",
+    structuralPosition: 'Analista Senior',
+    organicUnit: 'Sistemas',
+    lastLogin: '2024-01-15 08:15:00',
+    createdAt: '2024-01-02 14:30:00',
   },
   {
-    id: "3",
-    email: "carlos.lopez@empresa.com",
-    firstName: "Carlos",
-    lastName: "López",
-    dni: "11223344",
-    phone: "+51 777 666 555",
-    status: "suspended",
+    id: '3',
+    email: 'carlos.lopez@empresa.com',
+    firstName: 'Carlos',
+    lastName: 'López',
+    dni: '11223344',
+    phone: '+51 777 666 555',
+    status: 'suspended',
     emailVerified: false,
     phoneVerified: false,
     twoFactorEnabled: false,
-    structuralPosition: "Desarrollador",
-    organicUnit: "Sistemas",
-    lastLogin: "2024-01-10 16:45:00",
-    createdAt: "2024-01-03 11:15:00",
+    structuralPosition: 'Desarrollador',
+    organicUnit: 'Sistemas',
+    lastLogin: '2024-01-10 16:45:00',
+    createdAt: '2024-01-03 11:15:00',
   },
-]
+];
 
 export default function UsersManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUsers = users.filter(
     (user) =>
@@ -90,20 +73,20 @@ export default function UsersManagement() {
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.dni.includes(searchTerm),
-  )
+  );
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "active":
-        return <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">Activo</Badge>
-      case "suspended":
-        return <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">Suspendido</Badge>
-      case "deleted":
-        return <Badge className="bg-destructive/20 text-destructive border-destructive/30">Eliminado</Badge>
+      case 'active':
+        return <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">Activo</Badge>;
+      case 'suspended':
+        return <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">Suspendido</Badge>;
+      case 'deleted':
+        return <Badge className="bg-destructive/20 text-destructive border-destructive/30">Eliminado</Badge>;
       default:
-        return <Badge variant="secondary">Desconocido</Badge>
+        return <Badge variant="secondary">Desconocido</Badge>;
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -125,7 +108,7 @@ export default function UsersManagement() {
       </div>
 
       {/* Stats Cards */}
-      <CardStatsContain stats={statsUsers}/>
+      <CardStatsContain stats={statsUsers} />
 
       {/* Filters and Search */}
       <Card className="border-border bg-card/50">
@@ -194,15 +177,13 @@ export default function UsersManagement() {
                     <TableCell>{getStatusBadge(user.status)}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Badge variant={user.emailVerified ? "default" : "secondary"} className="text-xs">
-                          {user.emailVerified ? "✓" : "✗"} Email
+                        <Badge variant={user.emailVerified ? 'default' : 'secondary'} className="text-xs">
+                          {user.emailVerified ? '✓' : '✗'} Email
                         </Badge>
-                        <Badge variant={user.phoneVerified ? "default" : "secondary"} className="text-xs">
-                          {user.phoneVerified ? "✓" : "✗"} Tel
+                        <Badge variant={user.phoneVerified ? 'default' : 'secondary'} className="text-xs">
+                          {user.phoneVerified ? '✓' : '✗'} Tel
                         </Badge>
-                        {user.twoFactorEnabled && (
-                          <Badge className="text-xs bg-chart-4/20 text-chart-4 border-chart-4/30">2FA</Badge>
-                        )}
+                        {user.twoFactorEnabled && <Badge className="text-xs bg-chart-4/20 text-chart-4 border-chart-4/30">2FA</Badge>}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -211,7 +192,7 @@ export default function UsersManagement() {
                         <p className="text-xs text-muted-foreground">{user.organicUnit}</p>
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm">{new Date(user.lastLogin).toLocaleDateString("es-ES")}</TableCell>
+                    <TableCell className="text-sm">{new Date(user.lastLogin).toLocaleDateString('es-ES')}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -250,5 +231,5 @@ export default function UsersManagement() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

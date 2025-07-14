@@ -1,68 +1,47 @@
-import CardCustom from "@/components/custom/card/card-custom";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Clock, Clock1 } from "lucide-react";
+import CardCustom from '@/components/custom/card/card-custom';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Clock, Clock1 } from 'lucide-react';
 
 const pendingTasks = [
   {
     id: 1,
-    title: "Revisar solicitudes de acceso pendientes",
+    title: 'Revisar solicitudes de acceso pendientes',
     count: 12,
-    priority: "high",
+    priority: 'high',
     progress: 25,
   },
   {
     id: 2,
-    title: "Actualizar permisos de módulos",
+    title: 'Actualizar permisos de módulos',
     count: 5,
-    priority: "medium",
+    priority: 'medium',
     progress: 60,
   },
   {
     id: 3,
-    title: "Verificar usuarios inactivos",
+    title: 'Verificar usuarios inactivos',
     count: 23,
-    priority: "low",
+    priority: 'low',
     progress: 80,
   },
 ];
 
 const PendingTasks = () => {
   return (
-    <CardCustom
-      title="Tareas Pendientes"
-      description="Acciones que requieren tu atención"
-      order="col"
-      Icon={Clock1}
-    >
+    <CardCustom title="Tareas Pendientes" description="Acciones que requieren tu atención" order="col" Icon={Clock1}>
       {pendingTasks.map((task) => (
         <div key={task.id} className="p-4 bg-accent/30 rounded-lg">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <Clock className="w-4 h-4 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium text-foreground">
-                  {task.title}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {task.count} elementos
-                </p>
+                <p className="text-sm font-medium text-foreground">{task.title}</p>
+                <p className="text-xs text-muted-foreground">{task.count} elementos</p>
               </div>
             </div>
-            <Badge
-              className={
-                task.priority === "high"
-                 ? "bg-destructive"
-                  : task.priority === "medium"
-                 ? "bg-destructive/70"
-                  : "bg-destructive/50"
-              }
-            >
-              {task.priority === "high"
-                ? "Alta"
-                : task.priority === "medium"
-                ? "Media"
-                : "Baja"}
+            <Badge className={task.priority === 'high' ? 'bg-destructive' : task.priority === 'medium' ? 'bg-destructive/70' : 'bg-destructive/50'}>
+              {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
             </Badge>
           </div>
           <div className="space-y-2">
