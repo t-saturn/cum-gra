@@ -13,6 +13,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/infrastructure/database"
 )
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type structuralPositionRepository struct{}
 
 func NewStructuralPositionRepository() repositories.StructuralPositionRepository {
@@ -142,4 +143,63 @@ func (r *structuralPositionRepository) Delete(ctx context.Context, id uuid.UUID,
 			"deleted_at": now,
 			"deleted_by": deletedBy,
 		}).Error
+}
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type organicUnitRepository struct{}
+
+func NewOrganicUnitRepository() repositories.OrganicUnitRepository {
+	return &organicUnitRepository{}
+}
+
+func (r *organicUnitRepository) ExistsByName(name string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("name = ? AND is_deleted = false", name).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *organicUnitRepository) ExistsByAcronym(code string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("acronym = ? AND is_deleted = false", code).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *organicUnitRepository) ExistsByID(id uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("id = ? AND is_deleted = false", id).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (r *organicUnitRepository) Create(ctx context.Context, sp *domain.OrganicUnit) (*domain.OrganicUnit, error) {
+	sp.ID = uuid.New()
+	sp.CreatedAt = time.Now()
+	sp.UpdatedAt = time.Now()
+	sp.IsActive = true
+	sp.IsDeleted = false
+
+	if err := database.DB.WithContext(ctx).Create(sp).Error; err != nil {
+		return nil, err
+	}
+
+	return sp, nil
 }

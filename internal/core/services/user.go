@@ -9,6 +9,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/shared/dto"
 )
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type StructuralPositionService struct {
 	repo repositories.StructuralPositionRepository
 }
@@ -25,11 +26,9 @@ func (s *StructuralPositionService) IsNameTaken(name string) (bool, error) {
 func (s *StructuralPositionService) IsCodeTaken(code string) (bool, error) {
 	return s.repo.ExistsByCode(code)
 }
-
 func (s *StructuralPositionService) IsNameTakenExceptID(name string, excludeID uuid.UUID) (bool, error) {
 	return s.repo.ExistsByNameExceptID(name, excludeID)
 }
-
 func (s *StructuralPositionService) IsCodeTakenExceptID(code string, excludeID uuid.UUID) (bool, error) {
 	return s.repo.ExistsByCodeExceptID(code, excludeID)
 }
@@ -83,5 +82,41 @@ func (s *StructuralPositionService) Update(ctx context.Context, id uuid.UUID, in
 
 	_, err := s.repo.Update(ctx, id, entity)
 
+	return err
+}
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type OrganicUnitService struct {
+	repo repositories.OrganicUnitRepository
+}
+
+func NewOrganicUnitService(repo repositories.OrganicUnitRepository) *OrganicUnitService {
+	return &OrganicUnitService{
+		repo: repo,
+	}
+}
+
+func (s *OrganicUnitService) IsNameTaken(name string) (bool, error) {
+	return s.repo.ExistsByName(name)
+}
+
+func (s *OrganicUnitService) IsCodeTaken(acronym string) (bool, error) {
+	return s.repo.ExistsByAcronym(acronym)
+}
+
+func (s *OrganicUnitService) IsIdTaken(id uuid.UUID) (bool, error) {
+	return s.repo.ExistsByID(id)
+}
+
+func (s *OrganicUnitService) Create(ctx context.Context, input *dto.CreateOrganicUnitDTO) error {
+	entity := &domain.OrganicUnit{
+		Name:        input.Name,
+		Acronym:     input.Acronym,
+		Brand:       input.Brand,
+		Description: input.Description,
+		ParentID:    input.ParentID,
+	}
+
+	_, err := s.repo.Create(ctx, entity)
 	return err
 }

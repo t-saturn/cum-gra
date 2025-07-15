@@ -10,6 +10,7 @@ import (
 	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type StructuralPositionHandler struct {
 	service *services.StructuralPositionService
 }
@@ -113,15 +114,12 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 
 		// Obtener datos desde query params
 		input := dto.UpdateStructuralPositionDTO{}
-
 		if name := c.Query("name"); name != "" {
 			input.Name = &name
 		}
-
 		if code := c.Query("code"); code != "" {
 			input.Code = &code
 		}
-
 		if level := c.Query("level"); level != "" {
 			levelInt := 0
 			if levelParsed, err := strconv.Atoi(level); err == nil {
@@ -129,11 +127,9 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 			}
 			input.Level = &levelInt
 		}
-
 		if desc := c.Query("description"); desc != "" {
 			input.Description = &desc
 		}
-
 		if active := c.Query("is_active"); active != "" {
 			val, err := strconv.ParseBool(active)
 			if err != nil {
@@ -181,6 +177,86 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 
 		return c.Status(fiber.StatusOK).JSON(dto.MessageResponse{
 			Message: "Posición estructural actualizada exitosamente",
+		})
+	}
+}
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type OrganicUnitHandler struct {
+	service *services.OrganicUnitService
+}
+
+func NewOrganicUnitHandler(service *services.OrganicUnitService) *OrganicUnitHandler {
+	return &OrganicUnitHandler{
+		service: service,
+	}
+}
+
+func (h *OrganicUnitHandler) Create() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		var input dto.CreateOrganicUnitDTO
+
+		// Parsear el cuerpo
+		if err := c.Bind().Body(&input); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Cuerpo de la solicitud inválido",
+			})
+		}
+
+		// Validar estructura
+		if err := validator.Validate.Struct(input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
+			})
+		}
+
+		// Verificar nombre duplicado
+		if exists, err := h.service.IsNameTaken(input.Name); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al verificar nombre",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe una unidad orgánica con este nombre",
+			})
+		}
+
+		// Verificar sigla duplicada
+		if exists, err := h.service.IsCodeTaken(input.Acronym); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al verificar sigla",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe una unidad orgánica con esta sigla",
+			})
+		}
+
+		// Verificar si el parent_id existe (si se envió)
+		if input.ParentID != nil {
+			exists, err := h.service.IsIdTaken(*input.ParentID)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar unidad padre",
+				})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "La unidad orgánica padre especificada no existe",
+				})
+			}
+		}
+
+		// Crear
+		if err := h.service.Create(c.Context(), &input); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "No se pudo crear la unidad orgánica",
+			})
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(dto.MessageResponse{
+			Message: "Unidad orgánica creada exitosamente",
 		})
 	}
 }

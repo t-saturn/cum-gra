@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type CreateUserDTO struct {
 	Email                string     `json:"email" validate:"required,email"`
 	Password             string     `json:"password" validate:"required,min=8"`
@@ -44,6 +45,7 @@ type UserResponseDTO struct {
 	UpdatedAt            time.Time  `json:"updated_at"`
 }
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type CreateStructuralPositionDTO struct {
 	Name        string  `json:"name" validate:"required,min=3,max=100"`
 	Code        string  `json:"code" validate:"required,min=3,max=10"`
@@ -66,6 +68,7 @@ type StructuralPositionResponseDTO struct {
 	IsActive    bool      `json:"is_active"`
 }
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type CreateOrganicUnitDTO struct {
 	Name        string     `json:"name" validate:"required"`
 	Acronym     string     `json:"acronym" validate:"required"`
