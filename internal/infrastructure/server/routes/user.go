@@ -15,4 +15,6 @@ func UserRoutes(api fiber.Router) {
 
 	group := api.Group("/structural-positions")
 	group.Post("/", handler.Create())
+	group.Get("/:id", handler.GetByID())
+	group.Patch("/:id", handler.Update())
 }

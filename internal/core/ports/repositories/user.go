@@ -14,4 +14,7 @@ type StructuralPositionRepository interface {
 	Delete(ctx context.Context, id uuid.UUID, deletedBy uuid.UUID) error
 	ExistsByName(name string) (bool, error)
 	ExistsByCode(code string) (bool, error)
+
+	ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error)
+	ExistsByCodeExceptID(code string, excludeID uuid.UUID) (bool, error)
 }

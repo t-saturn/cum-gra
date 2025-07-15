@@ -45,6 +45,24 @@ func (r *structuralPositionRepository) ExistsByCode(code string) (bool, error) {
 	return count > 0, nil
 }
 
+func (r *structuralPositionRepository) ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *structuralPositionRepository) ExistsByCodeExceptID(code string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("code = ? AND id <> ? AND is_deleted = false", code, excludeID).
+		Count(&count).Error
+	return count > 0, err
+}
+
 func (r *structuralPositionRepository) Create(ctx context.Context, sp *domain.StructuralPosition) (*domain.StructuralPosition, error) {
 	sp.ID = uuid.New()
 	sp.CreatedAt = time.Now()
@@ -77,17 +95,41 @@ func (r *structuralPositionRepository) GetByID(ctx context.Context, id uuid.UUID
 }
 
 func (r *structuralPositionRepository) Update(ctx context.Context, id uuid.UUID, sp *domain.StructuralPosition) (*domain.StructuralPosition, error) {
-	sp.UpdatedAt = time.Now()
-	err := database.DB.WithContext(ctx).
-		Model(&domain.StructuralPosition{}).
-		Where("id = ? AND is_deleted = false", id).
-		Updates(sp).Error
+	var existing domain.StructuralPosition
+	db := database.DB.WithContext(ctx)
 
-	if err != nil {
+	// Verifica si existe
+	if err := db.First(&existing, "id = ? AND is_deleted = false", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 
-	return r.GetByID(ctx, id)
+	// Solo actualiza los campos no nulos
+	if sp.Name != "" {
+		existing.Name = sp.Name
+	}
+	if sp.Code != "" {
+		existing.Code = sp.Code
+	}
+	if sp.Level != nil {
+		existing.Level = sp.Level
+	}
+	if sp.Description != nil {
+		existing.Description = sp.Description
+	}
+	if sp.IsActive != existing.IsActive && sp.IsActive != false {
+		existing.IsActive = sp.IsActive
+	}
+
+	existing.UpdatedAt = time.Now()
+
+	if err := db.Save(&existing).Error; err != nil {
+		return nil, err
+	}
+
+	return &existing, nil
 }
 
 func (r *structuralPositionRepository) Delete(ctx context.Context, id uuid.UUID, deletedBy uuid.UUID) error {
