@@ -15,7 +15,7 @@ func main() {
 
 	logger.InitLogger()
 
-	logger.Log.Info("Iniciando servidor...")
+	logger.Log.Info("starting-server")
 
 	config.LoadConfig()
 	database.Connect()
@@ -27,9 +27,9 @@ func main() {
 
 	port := config.GetConfig().SERVERPort
 
-	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
+	logger.Log.Infof("server-listening-in http://localhost:%s", port)
 	if err := app.Listen(":" + port); err != nil {
-		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
+		logger.Log.Fatalf("error-at-the-start-of-the-server: %v", err)
 	}
 
 }

@@ -9,5 +9,13 @@ func Run() error {
 		return err
 	}
 
+	if err := SeedApplications(); err != nil {
+		return err
+	}
+
+	if err := SeedModules(); err != nil {
+		return err
+	}
+
 	return nil
 }
