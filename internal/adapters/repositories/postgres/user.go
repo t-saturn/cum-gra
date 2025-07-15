@@ -119,7 +119,7 @@ func (r *structuralPositionRepository) Update(ctx context.Context, id uuid.UUID,
 	if sp.Description != nil {
 		existing.Description = sp.Description
 	}
-	if sp.IsActive != existing.IsActive && sp.IsActive != false {
+	if sp.IsActive != existing.IsActive {
 		existing.IsActive = sp.IsActive
 	}
 
