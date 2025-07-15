@@ -81,7 +81,6 @@ func (s *StructuralPositionService) Update(ctx context.Context, id uuid.UUID, in
 	}
 
 	_, err := s.repo.Update(ctx, id, entity)
-
 	return err
 }
 
@@ -99,13 +98,20 @@ func NewOrganicUnitService(repo repositories.OrganicUnitRepository) *OrganicUnit
 func (s *OrganicUnitService) IsNameTaken(name string) (bool, error) {
 	return s.repo.ExistsByName(name)
 }
-
-func (s *OrganicUnitService) IsCodeTaken(acronym string) (bool, error) {
+func (s *OrganicUnitService) IsAcronymTaken(acronym string) (bool, error) {
 	return s.repo.ExistsByAcronym(acronym)
 }
-
 func (s *OrganicUnitService) IsIdTaken(id uuid.UUID) (bool, error) {
 	return s.repo.ExistsByID(id)
+}
+func (s *OrganicUnitService) IsNameTakenExceptID(name string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistsByNameExceptID(name, excludeID)
+}
+func (s *OrganicUnitService) IsAcronymTakenExceptID(code string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistsByAcronymExceptID(code, excludeID)
+}
+func (s *OrganicUnitService) IsIdTakenExeptedID(id string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistsByIDExceptID(id, excludeID)
 }
 
 func (s *OrganicUnitService) Create(ctx context.Context, input *dto.CreateOrganicUnitDTO) error {
@@ -118,5 +124,48 @@ func (s *OrganicUnitService) Create(ctx context.Context, input *dto.CreateOrgani
 	}
 
 	_, err := s.repo.Create(ctx, entity)
+	return err
+}
+
+func (s *OrganicUnitService) GetByID(ctx context.Context, id uuid.UUID) (*dto.OrganicUnitResponseDTO, error) {
+	entity, err := s.repo.GetByID(ctx, id)
+	if err != nil || entity == nil {
+		return nil, err
+	}
+
+	return &dto.OrganicUnitResponseDTO{
+		ID:          entity.ID,
+		Name:        entity.Name,
+		Acronym:     entity.Acronym,
+		Brand:       entity.Brand,
+		Description: entity.Description,
+		ParentID:    entity.ParentID,
+		IsActive:    entity.IsActive,
+	}, nil
+}
+
+func (s *OrganicUnitService) Update(ctx context.Context, id uuid.UUID, input *dto.UpdateOrganicUnitDTO) error {
+	entity := &domain.OrganicUnit{}
+
+	if input.Name != nil {
+		entity.Name = *input.Name
+	}
+	if input.Acronym != nil {
+		entity.Acronym = *input.Acronym
+	}
+	if input.Brand != nil {
+		entity.Brand = input.Brand
+	}
+	if input.Description != nil {
+		entity.Description = input.Description
+	}
+	if input.ParentID != nil {
+		entity.ParentID = input.ParentID
+	}
+	if input.IsActive != nil {
+		entity.IsActive = *input.IsActive
+	}
+
+	_, err := s.repo.Update(ctx, id, entity)
 	return err
 }

@@ -26,4 +26,6 @@ func UserRoutes(api fiber.Router) {
 
 	group = api.Group("/organic-units")
 	group.Post("/", organic_handler.Create())
+	group.Get("/:id", organic_handler.GetByID())
+	group.Patch("/:id", organic_handler.Update())
 }

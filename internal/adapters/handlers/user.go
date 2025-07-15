@@ -223,7 +223,7 @@ func (h *OrganicUnitHandler) Create() fiber.Handler {
 		}
 
 		// Verificar sigla duplicada
-		if exists, err := h.service.IsCodeTaken(input.Acronym); err != nil {
+		if exists, err := h.service.IsAcronymTaken(input.Acronym); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 				Error: "Error al verificar sigla",
 			})
@@ -257,6 +257,134 @@ func (h *OrganicUnitHandler) Create() fiber.Handler {
 
 		return c.Status(fiber.StatusCreated).JSON(dto.MessageResponse{
 			Message: "Unidad orgánica creada exitosamente",
+		})
+	}
+}
+
+func (h *OrganicUnitHandler) GetByID() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		idParam := c.Params("id")
+		id, err := uuid.Parse(idParam)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "ID inválido",
+			})
+		}
+
+		organicUnit, err := h.service.GetByID(c.Context(), id)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al obtener la unidad orgánica",
+			})
+		}
+		if organicUnit == nil {
+			return c.Status(fiber.StatusNotFound).JSON(dto.ErrorResponse{
+				Error: "Unidad orgánica no encontrada",
+			})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(organicUnit)
+	}
+}
+
+func (h *OrganicUnitHandler) Update() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		idParam := c.Params("id")
+		id, err := uuid.Parse(idParam)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "ID inválido",
+			})
+		}
+
+		input := dto.UpdateOrganicUnitDTO{}
+
+		if name := c.Query("name"); name != "" {
+			input.Name = &name
+		}
+		if acronym := c.Query("acronym"); acronym != "" {
+			input.Acronym = &acronym
+		}
+		if brand := c.Query("brand"); brand != "" {
+			input.Brand = &brand
+		}
+		if desc := c.Query("description"); desc != "" {
+			input.Description = &desc
+		}
+		if parentID := c.Query("parent_id"); parentID != "" {
+			parsedID, err := uuid.Parse(parentID)
+			if err != nil {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "parent_id inválido",
+				})
+			}
+
+			if parsedID == id {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "La unidad orgánica no puede ser su propio padre",
+				})
+			}
+
+			exists, err := h.service.IsIdTakenExeptedID(parsedID.String(), id)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar el ID del padre",
+				})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "La unidad orgánica padre no existe",
+				})
+			}
+
+			input.ParentID = &parsedID
+		}
+		if active := c.Query("is_active"); active != "" {
+			val, err := strconv.ParseBool(active)
+			if err != nil {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "El parámetro 'is_active' debe ser true o false",
+				})
+			}
+			input.IsActive = &val
+		}
+
+		if input.Name != nil {
+			exists, err := h.service.IsNameTakenExceptID(*input.Name, id)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar nombre",
+				})
+			}
+			if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "Ya existe otra unidad orgánica con este nombre",
+				})
+			}
+		}
+
+		if input.Acronym != nil {
+			exists, err := h.service.IsAcronymTakenExceptID(*input.Acronym, id)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar acrónimo",
+				})
+			}
+			if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "Ya existe otra unidad orgánica con este acrónimo",
+				})
+			}
+		}
+
+		if err := h.service.Update(c.Context(), id, &input); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "No se pudo actualizar la unidad orgánica",
+			})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(dto.MessageResponse{
+			Message: "Unidad orgánica actualizada exitosamente",
 		})
 	}
 }

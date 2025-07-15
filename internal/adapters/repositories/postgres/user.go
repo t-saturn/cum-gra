@@ -190,6 +190,36 @@ func (r *organicUnitRepository) ExistsByID(id uuid.UUID) (bool, error) {
 	return count > 0, nil
 }
 
+func (r *organicUnitRepository) ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *organicUnitRepository) ExistsByAcronymExceptID(code string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("acronym = ? AND id <> ? AND is_deleted = false", code, excludeID).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *organicUnitRepository) ExistsByIDExceptID(id string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("id = ? AND id <> AND is_deleted = false", id, excludeID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
 func (r *organicUnitRepository) Create(ctx context.Context, sp *domain.OrganicUnit) (*domain.OrganicUnit, error) {
 	sp.ID = uuid.New()
 	sp.CreatedAt = time.Now()
@@ -202,4 +232,62 @@ func (r *organicUnitRepository) Create(ctx context.Context, sp *domain.OrganicUn
 	}
 
 	return sp, nil
+}
+
+func (h *organicUnitRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.OrganicUnit, error) {
+	var ou domain.OrganicUnit
+	err := database.DB.WithContext(ctx).
+		Where("id = ? AND is_deleted = false", id).
+		First(&ou).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ou, nil
+}
+
+func (r *organicUnitRepository) Update(ctx context.Context, id uuid.UUID, sp *domain.OrganicUnit) (*domain.OrganicUnit, error) {
+	var existing domain.OrganicUnit
+	db := database.DB.WithContext(ctx)
+
+	// Verifica si existe
+	if err := db.First(&existing, "id = ? AND is_deleted = false", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	// Solo actualiza los campos no nulos
+	if sp.Name != "" {
+		existing.Name = sp.Name
+	}
+	if sp.Acronym != "" {
+		existing.Acronym = sp.Acronym
+	}
+	if sp.Brand != nil {
+		existing.Brand = sp.Brand
+	}
+	if sp.Description != nil {
+		existing.Description = sp.Description
+	}
+	if sp.ParentID != nil {
+		existing.ParentID = sp.ParentID
+	}
+	if sp.IsActive != existing.IsActive {
+		existing.IsActive = sp.IsActive
+	}
+
+	existing.UpdatedAt = time.Now()
+
+	if err := db.Save(&existing).Error; err != nil {
+		return nil, err
+	}
+
+	return &existing, nil
 }
