@@ -114,6 +114,7 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 
 		// Obtener datos desde query params
 		input := dto.UpdateStructuralPositionDTO{}
+
 		if name := c.Query("name"); name != "" {
 			input.Name = &name
 		}
@@ -121,9 +122,11 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 			input.Code = &code
 		}
 		if level := c.Query("level"); level != "" {
-			levelInt := 0
-			if levelParsed, err := strconv.Atoi(level); err == nil {
-				levelInt = levelParsed
+			levelInt, err := strconv.Atoi(level)
+			if err != nil {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "El parámetro 'level' debe ser un número entero",
+				})
 			}
 			input.Level = &levelInt
 		}
@@ -138,6 +141,14 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 				})
 			}
 			input.IsActive = &val
+		}
+
+		// Validar el DTO si hay datos
+		if err := validator.Validate.Struct(&input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
+			})
 		}
 
 		// Validación personalizada solo si se intenta actualizar valores únicos
@@ -169,6 +180,7 @@ func (h *StructuralPositionHandler) Update() fiber.Handler {
 			}
 		}
 
+		// Ejecutar actualización
 		if err := h.service.Update(c.Context(), id, &input); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 				Error: "No se pudo actualizar la posición estructural",
@@ -311,6 +323,15 @@ func (h *OrganicUnitHandler) Update() fiber.Handler {
 		if desc := c.Query("description"); desc != "" {
 			input.Description = &desc
 		}
+
+		// Validar el DTO si se enviaron campos
+		if err := validator.Validate.Struct(&input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
+			})
+		}
+
 		if parentID := c.Query("parent_id"); parentID != "" {
 			parsedID, err := uuid.Parse(parentID)
 			if err != nil {
@@ -318,13 +339,11 @@ func (h *OrganicUnitHandler) Update() fiber.Handler {
 					Error: "parent_id inválido",
 				})
 			}
-
 			if parsedID == id {
 				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
 					Error: "La unidad orgánica no puede ser su propio padre",
 				})
 			}
-
 			exists, err := h.service.IsIdTakenExeptedID(parsedID.String(), id)
 			if err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
@@ -336,7 +355,6 @@ func (h *OrganicUnitHandler) Update() fiber.Handler {
 					Error: "La unidad orgánica padre no existe",
 				})
 			}
-
 			input.ParentID = &parsedID
 		}
 		if active := c.Query("is_active"); active != "" {
@@ -386,5 +404,16 @@ func (h *OrganicUnitHandler) Update() fiber.Handler {
 		return c.Status(fiber.StatusOK).JSON(dto.MessageResponse{
 			Message: "Unidad orgánica actualizada exitosamente",
 		})
+	}
+}
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type UserHandler struct {
+	service *services.UserService
+}
+
+func NewUserHandler(service *services.UserService) *UserHandler {
+	return &UserHandler{
+		service: service,
 	}
 }

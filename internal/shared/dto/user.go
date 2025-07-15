@@ -10,13 +10,14 @@ import (
 type CreateUserDTO struct {
 	Email                string     `json:"email" validate:"required,email"`
 	Password             string     `json:"password" validate:"required,min=8"`
-	FirstName            *string    `json:"first_name"`
-	LastName             *string    `json:"last_name"`
-	Phone                *string    `json:"phone"`
-	DNI                  string     `json:"dni" validate:"required,len=8"`
-	StructuralPositionID *uuid.UUID `json:"structural_position_id"`
-	OrganicUnitID        *uuid.UUID `json:"organic_unit_id"`
+	FirstName            *string    `json:"first_name" validate:"omitempty,min=2,max=50"`
+	LastName             *string    `json:"last_name" validate:"omitempty,min=2,max=50"`
+	Phone                *string    `json:"phone" validate:"omitempty,min=7,max=20"` // Opcional, pero con rango
+	DNI                  string     `json:"dni" validate:"required,len=8,numeric"`
+	StructuralPositionID *uuid.UUID `json:"structural_position_id,omitempty"` // UUID válido si se envía
+	OrganicUnitID        *uuid.UUID `json:"organic_unit_id,omitempty"`
 }
+
 type UpdateUserDTO struct {
 	Email                *string    `json:"email" validate:"omitempty,email"`
 	Password             *string    `json:"password" validate:"omitempty,min=8"`
@@ -28,6 +29,7 @@ type UpdateUserDTO struct {
 	OrganicUnitID        *uuid.UUID `json:"organic_unit_id"`
 	Status               *string    `json:"status" validate:"omitempty,oneof=active inactive suspended blocked"`
 }
+
 type UserResponseDTO struct {
 	ID                   uuid.UUID  `json:"id"`
 	Email                string     `json:"email"`
@@ -52,13 +54,15 @@ type CreateStructuralPositionDTO struct {
 	Level       *int    `json:"level" validate:"required,min=1"`
 	Description *string `json:"description,omitempty" validate:"omitempty,max=255"`
 }
+
 type UpdateStructuralPositionDTO struct {
-	Name        *string `json:"name,omitempty"`
-	Code        *string `json:"code,omitempty"`
-	Level       *int    `json:"level,omitempty"`
-	Description *string `json:"description,omitempty"`
+	Name        *string `json:"name,omitempty" validate:"omitempty,min=3,max=100"`
+	Code        *string `json:"code,omitempty" validate:"omitempty,min=3,max=10"`
+	Level       *int    `json:"level,omitempty" validate:"omitempty,min=1"`
+	Description *string `json:"description,omitempty" validate:"omitempty,max=255"`
 	IsActive    *bool   `json:"is_active,omitempty"`
 }
+
 type StructuralPositionResponseDTO struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
@@ -70,20 +74,22 @@ type StructuralPositionResponseDTO struct {
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type CreateOrganicUnitDTO struct {
-	Name        string     `json:"name" validate:"required"`
-	Acronym     string     `json:"acronym" validate:"required"`
-	Brand       *string    `json:"brand,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	ParentID    *uuid.UUID `json:"parent_id,omitempty"`
+	Name        string     `json:"name" validate:"required,min=3,max=100"`
+	Acronym     string     `json:"acronym" validate:"required,min=2,max=10"`
+	Brand       *string    `json:"brand,omitempty" validate:"omitempty,url"`           // Solo si se envía, debe ser URL
+	Description *string    `json:"description,omitempty" validate:"omitempty,max=255"` // Solo si se envía
+	ParentID    *uuid.UUID `json:"parent_id,omitempty"`                                // UUID válido si se envía
 }
+
 type UpdateOrganicUnitDTO struct {
-	Name        *string    `json:"name,omitempty"`
-	Acronym     *string    `json:"acronym,omitempty"`
-	Brand       *string    `json:"brand,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	ParentID    *uuid.UUID `json:"parent_id,omitempty"`
+	Name        *string    `json:"name,omitempty" validate:"omitempty,min=3,max=100"`
+	Acronym     *string    `json:"acronym,omitempty" validate:"omitempty,min=2,max=10"`
+	Brand       *string    `json:"brand,omitempty" validate:"omitempty,url"`
+	Description *string    `json:"description,omitempty" validate:"omitempty,max=255"`
+	ParentID    *uuid.UUID `json:"parent_id,omitempty"` // No necesita validación extra si solo se valida tipo
 	IsActive    *bool      `json:"is_active,omitempty"`
 }
+
 type OrganicUnitResponseDTO struct {
 	ID          uuid.UUID  `json:"id"`
 	Name        string     `json:"name"`

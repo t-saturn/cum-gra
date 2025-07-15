@@ -291,3 +291,10 @@ func (r *organicUnitRepository) Update(ctx context.Context, id uuid.UUID, sp *do
 
 	return &existing, nil
 }
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type userRepository struct{}
+
+func NewUserRepository() repositories.UserRepository {
+	return &userRepository{}
+}

@@ -33,3 +33,7 @@ type OrganicUnitRepository interface {
 	ExistsByAcronymExceptID(code string, excludeID uuid.UUID) (bool, error)
 	ExistsByIDExceptID(id string, excludeID uuid.UUID) (bool, error)
 }
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type UserRepository interface {
+}

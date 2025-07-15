@@ -169,3 +169,14 @@ func (s *OrganicUnitService) Update(ctx context.Context, id uuid.UUID, input *dt
 	_, err := s.repo.Update(ctx, id, entity)
 	return err
 }
+
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type UserService struct {
+	repo repositories.UserRepository
+}
+
+func NewUserService(repo repositories.UserRepository) *UserService {
+	return &UserService{
+		repo: repo,
+	}
+}
