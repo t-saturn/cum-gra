@@ -237,3 +237,21 @@ func (s *UserService) Create(ctx context.Context, input *dto.CreateUserDTO) erro
 	_, err = s.repo.Create(ctx, entity)
 	return err
 }
+
+func (s *UserService) GetByID(ctx context.Context, id uuid.UUID) (*dto.UserResponseDTO, error) {
+	entity, err := s.repo.GetByID(ctx, id)
+	if err != nil || entity == nil {
+		return nil, err
+	}
+
+	return &dto.UserResponseDTO{
+		ID:                   entity.ID,
+		Email:                entity.Email,
+		FirstName:            entity.FirstName,
+		LastName:             entity.LastName,
+		Phone:                entity.Phone,
+		DNI:                  entity.DNI,
+		StructuralPositionID: entity.StructuralPositionID,
+		OrganicUnitID:        entity.OrganicUnitID,
+	}, nil
+}

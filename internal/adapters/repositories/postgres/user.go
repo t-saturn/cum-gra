@@ -407,3 +407,20 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 
 	return user, nil
 }
+
+func (h *userRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	var ou domain.User
+	err := database.DB.WithContext(ctx).
+		Where("id = ? AND is_deleted = false", id).
+		First(&ou).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ou, nil
+}

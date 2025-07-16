@@ -514,3 +514,29 @@ func (h *UserHandler) Create() fiber.Handler {
 		})
 	}
 }
+
+func (h *UserHandler) GetByID() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		idParam := c.Params("id")
+		id, err := uuid.Parse(idParam)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "ID inválido",
+			})
+		}
+
+		user, err := h.service.GetByID(c.Context(), id)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al obtener el usuario",
+			})
+		}
+		if user == nil {
+			return c.Status(fiber.StatusNotFound).JSON(dto.ErrorResponse{
+				Error: "Usuario no encontrado",
+			})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(user)
+	}
+}

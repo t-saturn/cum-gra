@@ -35,8 +35,9 @@ func UserRoutes(api fiber.Router) {
 	hasher := security.NewArgon2Service()
 	user_service := services.NewUserService(user_repository, hasher)
 	user_handler := handlers.NewUserHandler(user_service)
+
 	group = api.Group("/users")
 	group.Post("/", user_handler.Create())
-	// group.Get("/:id", user_handler.GetByID())
+	group.Get("/:id", user_handler.GetByID())
 	// group.Patch("/:id", user_handler.Update())
 }
