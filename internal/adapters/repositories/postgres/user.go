@@ -212,7 +212,7 @@ func (r *organicUnitRepository) ExistsByIDExceptID(id string, excludeID uuid.UUI
 	var count int64
 	err := database.DB.
 		Model(&domain.OrganicUnit{}).
-		Where("id = ? AND id <> AND is_deleted = false", id, excludeID).
+		Where("id = ? AND id <> ? AND is_deleted = false", id, excludeID).
 		Count(&count).Error
 	if err != nil {
 		return false, err
@@ -297,4 +297,113 @@ type userRepository struct{}
 
 func NewUserRepository() repositories.UserRepository {
 	return &userRepository{}
+}
+
+func (r *userRepository) ExistByEmail(email string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("email = ? AND is_deleted = false", email).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *userRepository) ExistByPhone(phone string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("phone = ? AND is_deleted = false", phone).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *userRepository) ExistByDni(dni string) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("dni = ? AND is_deleted = false", dni).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *userRepository) ExistByEmailExceptID(email string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("LOWER(email) = LOWER(?) AND id <> ? AND is_deleted = false", email, excludeID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, err
+}
+
+func (r *userRepository) ExistByPhoneExceptID(phone string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("phone = ? AND id <> ? AND is_deleted = false", phone, excludeID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, err
+}
+
+func (r *userRepository) ExistByDniExceptID(dni string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.User{}).
+		Where("dni =? AND id <> ? AND is_deleted = false", dni, excludeID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, err
+}
+func (r *userRepository) StructuralPositionExists(id uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.StructuralPosition{}).
+		Where("id = ? AND is_deleted = false", id).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *userRepository) OrganicUnitExists(id uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.
+		Model(&domain.OrganicUnit{}).
+		Where("id = ? AND is_deleted = false", id).
+		Count(&count).Error
+	return count > 0, err
+}
+
+func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
+	user.ID = uuid.New()
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
+	user.Status = "active"
+	user.IsDeleted = false
+
+	if err := database.DB.WithContext(ctx).Create(user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

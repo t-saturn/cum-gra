@@ -12,7 +12,7 @@ type CreateUserDTO struct {
 	Password             string     `json:"password" validate:"required,min=8"`
 	FirstName            *string    `json:"first_name" validate:"omitempty,min=2,max=50"`
 	LastName             *string    `json:"last_name" validate:"omitempty,min=2,max=50"`
-	Phone                *string    `json:"phone" validate:"omitempty,min=7,max=20"` // Opcional, pero con rango
+	Phone                *string    `json:"phone" validate:"omitempty,min=9,max=12"` // Opcional, pero con rango - 987654321 | +51987654321
 	DNI                  string     `json:"dni" validate:"required,len=8,numeric"`
 	StructuralPositionID *uuid.UUID `json:"structural_position_id,omitempty"` // UUID válido si se envía
 	OrganicUnitID        *uuid.UUID `json:"organic_unit_id,omitempty"`

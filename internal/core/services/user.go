@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/t-saturn/central-user-manager/internal/core/domain"
 	"github.com/t-saturn/central-user-manager/internal/core/ports/repositories"
+	portservices "github.com/t-saturn/central-user-manager/internal/core/ports/services"
 	"github.com/t-saturn/central-user-manager/internal/shared/dto"
 )
 
@@ -172,11 +173,67 @@ func (s *OrganicUnitService) Update(ctx context.Context, id uuid.UUID, input *dt
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type UserService struct {
-	repo repositories.UserRepository
+	repo        repositories.UserRepository
+	hashService portservices.HashService // <-- aquí
 }
 
-func NewUserService(repo repositories.UserRepository) *UserService {
+// nuevo constructor
+func NewUserService(repo repositories.UserRepository, hashService portservices.HashService) *UserService {
 	return &UserService{
-		repo: repo,
+		repo:        repo,
+		hashService: hashService,
 	}
+}
+
+func (s *UserService) IsEmailTaken(email string) (bool, error) {
+	return s.repo.ExistByEmail(email)
+}
+
+func (s *UserService) IsPhoneTaken(phone string) (bool, error) {
+	return s.repo.ExistByPhone(phone)
+}
+
+func (s *UserService) IsDniTaken(dni string) (bool, error) {
+	return s.repo.ExistByDni(dni)
+}
+
+func (s *UserService) IsEmailTakenExceptID(email string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistByEmailExceptID(email, excludeID)
+}
+
+func (s *UserService) IsPhoneTakenExceptID(phone string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistByPhoneExceptID(phone, excludeID)
+}
+
+func (s *UserService) IsDniTakenExceptID(dni string, excludeID uuid.UUID) (bool, error) {
+	return s.repo.ExistByDniExceptID(dni, excludeID)
+}
+
+func (s *UserService) IsStructuralPositionIDTaken(id uuid.UUID) (bool, error) {
+	return s.repo.StructuralPositionExists(id)
+}
+
+func (s *UserService) IsOrganicUnitIDTaken(id uuid.UUID) (bool, error) {
+	return s.repo.OrganicUnitExists(id)
+}
+
+func (s *UserService) Create(ctx context.Context, input *dto.CreateUserDTO) error {
+	hashedPassword, err := s.hashService.HashPassword(input.Password)
+	if err != nil {
+		return err
+	}
+
+	entity := &domain.User{
+		Email:                input.Email,
+		PasswordHash:         hashedPassword,
+		FirstName:            input.FirstName,
+		LastName:             input.LastName,
+		Phone:                input.Phone,
+		DNI:                  input.DNI,
+		StructuralPositionID: input.StructuralPositionID,
+		OrganicUnitID:        input.OrganicUnitID,
+	}
+
+	_, err = s.repo.Create(ctx, entity)
+	return err
 }

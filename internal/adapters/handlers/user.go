@@ -417,3 +417,100 @@ func NewUserHandler(service *services.UserService) *UserHandler {
 		service: service,
 	}
 }
+
+func (h *UserHandler) Create() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		var input dto.CreateUserDTO
+
+		// Parsear el cuerpo
+		if err := c.Bind().Body(&input); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Cuerpo de la solicitud inválido",
+			})
+		}
+
+		// Validar estructura del DTO
+		if err := validator.Validate.Struct(input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
+			})
+		}
+
+		// Verificar duplicado de email
+		if exists, err := h.service.IsEmailTaken(input.Email); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al verificar email",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe un usuario con este email",
+			})
+		}
+
+		// Verificar duplicado de DNI
+		if exists, err := h.service.IsDniTaken(input.DNI); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al verificar DNI",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Ya existe un usuario con este DNI",
+			})
+		}
+
+		// Verificar duplicado de teléfono (si se proporciona)
+		if input.Phone != nil {
+			if exists, err := h.service.IsPhoneTaken(*input.Phone); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar teléfono",
+				})
+			} else if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "Ya existe un usuario con este teléfono",
+				})
+			}
+		}
+
+		// Verificar existencia de StructuralPositionID (si se envía)
+		if input.StructuralPositionID != nil {
+			exists, err := h.service.IsStructuralPositionIDTaken(*input.StructuralPositionID)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar posición estructural",
+				})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "La posición estructural especificada no existe",
+				})
+			}
+		}
+
+		// Verificar existencia de OrganicUnitID (si se envía)
+		if input.OrganicUnitID != nil {
+			exists, err := h.service.IsOrganicUnitIDTaken(*input.OrganicUnitID)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+					Error: "Error al verificar unidad orgánica",
+				})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+					Error: "La unidad orgánica especificada no existe",
+				})
+			}
+		}
+
+		// Crear usuario
+		if err := h.service.Create(c.Context(), &input); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "No se pudo crear el usuario",
+			})
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(dto.MessageResponse{
+			Message: "Usuario creado exitosamente",
+		})
+	}
+}

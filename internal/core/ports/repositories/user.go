@@ -36,4 +36,16 @@ type OrganicUnitRepository interface {
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type UserRepository interface {
+	Create(ctx context.Context, u *domain.User) (*domain.User, error)
+	// GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	// Update(ctx context.Context, id uuid.UUID, u *domain.User) (*domain.User, error)
+
+	ExistByEmail(email string) (bool, error)
+	ExistByPhone(phone string) (bool, error)
+	ExistByDni(dni string) (bool, error)
+	ExistByEmailExceptID(email string, excludeID uuid.UUID) (bool, error)
+	ExistByPhoneExceptID(phone string, excludeID uuid.UUID) (bool, error)
+	ExistByDniExceptID(dni string, excludeID uuid.UUID) (bool, error)
+	OrganicUnitExists(id uuid.UUID) (bool, error)
+	StructuralPositionExists(id uuid.UUID) (bool, error)
 }

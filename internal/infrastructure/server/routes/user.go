@@ -6,6 +6,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/adapters/handlers"
 	"github.com/t-saturn/central-user-manager/internal/adapters/repositories/postgres"
 	"github.com/t-saturn/central-user-manager/internal/core/services"
+	"github.com/t-saturn/central-user-manager/internal/shared/security"
 )
 
 func UserRoutes(api fiber.Router) {
@@ -28,4 +29,14 @@ func UserRoutes(api fiber.Router) {
 	group.Post("/", organic_handler.Create())
 	group.Get("/:id", organic_handler.GetByID())
 	group.Patch("/:id", organic_handler.Update())
+
+	/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+	user_repository := postgres.NewUserRepository()
+	hasher := security.NewArgon2Service()
+	user_service := services.NewUserService(user_repository, hasher)
+	user_handler := handlers.NewUserHandler(user_service)
+	group = api.Group("/users")
+	group.Post("/", user_handler.Create())
+	// group.Get("/:id", user_handler.GetByID())
+	// group.Patch("/:id", user_handler.Update())
 }
