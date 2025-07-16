@@ -20,10 +20,11 @@ type CreateUserDTO struct {
 
 type UpdateUserDTO struct {
 	Email                *string    `json:"email" validate:"omitempty,email"`
-	Password             *string    `json:"password" validate:"omitempty,min=8"`
-	FirstName            *string    `json:"first_name"`
-	LastName             *string    `json:"last_name"`
-	Phone                *string    `json:"phone"`
+	CurrentPassword      *string    `json:"current_password" validate:"omitempty,min=8"`
+	NewPassword          *string    `json:"new_password" validate:"omitempty,min=8"`
+	FirstName            *string    `json:"first_name" validate:"omitempty,min=2,max=50"`
+	LastName             *string    `json:"last_name" validate:"omitempty,min=2,max=50"`
+	Phone                *string    `json:"phone" validate:"omitempty,min=9,max=12"`
 	DNI                  *string    `json:"dni" validate:"omitempty,len=8"`
 	StructuralPositionID *uuid.UUID `json:"structural_position_id"`
 	OrganicUnitID        *uuid.UUID `json:"organic_unit_id"`

@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/t-saturn/central-user-manager/internal/core/services"
 	"github.com/t-saturn/central-user-manager/internal/shared/dto"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
 	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
@@ -538,5 +539,83 @@ func (h *UserHandler) GetByID() fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(user)
+	}
+}
+
+func (h *UserHandler) Update() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		idParam := c.Params("id")
+		id, err := uuid.Parse(idParam)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "ID inválido"})
+		}
+
+		// Parsear el body
+		var input dto.UpdateUserDTO
+		if err := c.Bind().Body(&input); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Cuerpo de solicitud inválido"})
+		}
+
+		// Validar estructura
+		if err := validator.Validate.Struct(input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{Errors: translated})
+		}
+
+		// Validaciones únicas
+		if input.Email != nil {
+			if exists, err := h.service.IsEmailTakenExceptID(*input.Email, id); err != nil {
+				logger.Log.Error("Error al verificar email: ", err)
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno al verificar email"})
+			} else if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Ya existe otro usuario con este email"})
+			}
+		}
+		if input.Phone != nil {
+			if exists, err := h.service.IsPhoneTakenExceptID(*input.Phone, id); err != nil {
+				logger.Log.Error("Error al verificar teléfono: ", err)
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno al verificar teléfono"})
+			} else if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Ya existe otro usuario con este número de teléfono"})
+			}
+		}
+		if input.DNI != nil {
+			if exists, err := h.service.IsDniTakenExceptID(*input.DNI, id); err != nil {
+				logger.Log.Error("Error al verificar DNI: ", err)
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno al verificar DNI"})
+			} else if exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Ya existe otro usuario con este DNI"})
+			}
+		}
+
+		// Validar existencia de relaciones
+		if input.StructuralPositionID != nil {
+			exists, err := h.service.IsStructuralPositionIDTaken(*input.StructuralPositionID)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error al verificar posición estructural"})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "La posición estructural especificada no existe"})
+			}
+		}
+		if input.OrganicUnitID != nil {
+			exists, err := h.service.IsOrganicUnitIDTaken(*input.OrganicUnitID)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error al verificar unidad orgánica"})
+			}
+			if !exists {
+				return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "La unidad orgánica especificada no existe"})
+			}
+		}
+
+		// Ejecutar actualización
+		if err := h.service.Update(c.Context(), id, &input); err != nil {
+			logger.Log.Error("Error al actualizar usuario: ", err)
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: err.Error()})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(dto.MessageResponse{
+			Message: "Usuario actualizado exitosamente",
+		})
 	}
 }

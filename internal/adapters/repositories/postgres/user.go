@@ -424,3 +424,51 @@ func (h *userRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Use
 
 	return &ou, nil
 }
+
+func (r *userRepository) Update(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error) {
+	var existing domain.User
+	db := database.DB.WithContext(ctx)
+
+	// Verifica si existe
+	if err := db.First(&existing, "id = ? AND is_deleted = false", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	// Solo actualiza los campos no nulos
+	if *user.FirstName != "" {
+		existing.FirstName = user.FirstName
+	}
+	if *user.LastName != "" {
+		existing.LastName = user.LastName
+	}
+	if user.Email != "" {
+		existing.Email = user.Email
+	}
+	if *user.Phone != "" {
+		existing.Phone = user.Phone
+	}
+	if user.DNI != "" {
+		existing.DNI = user.DNI
+	}
+	if user.StructuralPositionID != nil {
+		existing.StructuralPositionID = user.StructuralPositionID
+	}
+	if user.OrganicUnitID != nil {
+		existing.OrganicUnitID = user.OrganicUnitID
+	}
+	if user.PasswordHash != "" {
+		existing.PasswordHash = user.PasswordHash
+	}
+
+	existing.UpdatedAt = time.Now()
+
+	if err := db.Save(&existing).Error; err != nil {
+		return nil, err
+	}
+
+	return &existing, nil
+
+}

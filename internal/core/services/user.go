@@ -2,12 +2,14 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/t-saturn/central-user-manager/internal/core/domain"
 	"github.com/t-saturn/central-user-manager/internal/core/ports/repositories"
 	portservices "github.com/t-saturn/central-user-manager/internal/core/ports/services"
 	"github.com/t-saturn/central-user-manager/internal/shared/dto"
+	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -254,4 +256,70 @@ func (s *UserService) GetByID(ctx context.Context, id uuid.UUID) (*dto.UserRespo
 		StructuralPositionID: entity.StructuralPositionID,
 		OrganicUnitID:        entity.OrganicUnitID,
 	}, nil
+}
+
+func (s *UserService) Update(ctx context.Context, id uuid.UUID, input *dto.UpdateUserDTO) error {
+	existing, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		logger.Log.Error("Error al obtener usuario: ", err)
+		return err
+	}
+	if existing == nil {
+		logger.Log.Warnf("Usuario con ID %s no encontrado", id)
+		return fmt.Errorf("usuario no encontrado")
+	}
+
+	// Validación: si se quiere cambiar la contraseña
+	if input.NewPassword != nil {
+		if input.CurrentPassword == nil {
+			return fmt.Errorf("la contraseña actual es requerida para cambiar la contraseña")
+		}
+
+		if !s.hashService.CheckPasswordHash(*input.CurrentPassword, existing.PasswordHash) {
+			logger.Log.Warnf("Contraseña actual incorrecta para usuario %s", id)
+			return fmt.Errorf("la contraseña actual es incorrecta")
+		}
+
+		hashed, hashErr := s.hashService.HashPassword(*input.NewPassword)
+		if hashErr != nil {
+			logger.Log.Error("Error al hashear la nueva contraseña: ", hashErr)
+			return hashErr
+		}
+		existing.PasswordHash = hashed
+	}
+
+	// Actualizar campos normales
+	if input.Email != nil {
+		existing.Email = *input.Email
+	}
+	if input.FirstName != nil {
+		existing.FirstName = input.FirstName
+	}
+	if input.LastName != nil {
+		existing.LastName = input.LastName
+	}
+	if input.Phone != nil {
+		existing.Phone = input.Phone
+	}
+	if input.DNI != nil {
+		existing.DNI = *input.DNI
+	}
+	if input.StructuralPositionID != nil {
+		existing.StructuralPositionID = input.StructuralPositionID
+	}
+	if input.OrganicUnitID != nil {
+		existing.OrganicUnitID = input.OrganicUnitID
+	}
+	if input.Status != nil {
+		existing.Status = *input.Status
+	}
+
+	_, err = s.repo.Update(ctx, id, existing)
+	if err != nil {
+		logger.Log.Error("Error al actualizar usuario: ", err)
+		return err
+	}
+
+	logger.Log.Infof("Usuario con ID %s actualizado exitosamente", id)
+	return nil
 }

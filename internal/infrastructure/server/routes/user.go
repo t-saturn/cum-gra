@@ -39,5 +39,5 @@ func UserRoutes(api fiber.Router) {
 	group = api.Group("/users")
 	group.Post("/", user_handler.Create())
 	group.Get("/:id", user_handler.GetByID())
-	// group.Patch("/:id", user_handler.Update())
+	group.Patch("/:id", user_handler.Update())
 }

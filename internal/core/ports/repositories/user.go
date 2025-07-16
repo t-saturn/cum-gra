@@ -38,7 +38,7 @@ type OrganicUnitRepository interface {
 type UserRepository interface {
 	Create(ctx context.Context, u *domain.User) (*domain.User, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
-	// Update(ctx context.Context, id uuid.UUID, u *domain.User) (*domain.User, error)
+	Update(ctx context.Context, id uuid.UUID, u *domain.User) (*domain.User, error)
 
 	ExistByEmail(email string) (bool, error)
 	ExistByPhone(phone string) (bool, error)
