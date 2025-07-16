@@ -22,10 +22,7 @@ func NewStructuralPositionRepository() repositories.StructuralPositionRepository
 
 func (r *structuralPositionRepository) ExistsByName(name string) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.StructuralPosition{}).
-		Where("name = ? AND is_deleted = false", name).
-		Count(&count).Error
+	err := database.DB.Model(&domain.StructuralPosition{}).Where("name = ? AND is_deleted = false", name).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -35,10 +32,7 @@ func (r *structuralPositionRepository) ExistsByName(name string) (bool, error) {
 
 func (r *structuralPositionRepository) ExistsByCode(code string) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.StructuralPosition{}).
-		Where("code = ? AND is_deleted = false", code).
-		Count(&count).Error
+	err := database.DB.Model(&domain.StructuralPosition{}).Where("code = ? AND is_deleted = false", code).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -48,19 +42,13 @@ func (r *structuralPositionRepository) ExistsByCode(code string) (bool, error) {
 
 func (r *structuralPositionRepository) ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.StructuralPosition{}).
-		Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).
-		Count(&count).Error
+	err := database.DB.Model(&domain.StructuralPosition{}).Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).Count(&count).Error
 	return count > 0, err
 }
 
 func (r *structuralPositionRepository) ExistsByCodeExceptID(code string, excludeID uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.StructuralPosition{}).
-		Where("code = ? AND id <> ? AND is_deleted = false", code, excludeID).
-		Count(&count).Error
+	err := database.DB.Model(&domain.StructuralPosition{}).Where("code = ? AND id <> ? AND is_deleted = false", code, excludeID).Count(&count).Error
 	return count > 0, err
 }
 
@@ -80,9 +68,7 @@ func (r *structuralPositionRepository) Create(ctx context.Context, sp *domain.St
 
 func (r *structuralPositionRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.StructuralPosition, error) {
 	var sp domain.StructuralPosition
-	err := database.DB.WithContext(ctx).
-		Where("id = ? AND is_deleted = false", id).
-		First(&sp).Error
+	err := database.DB.WithContext(ctx).Where("id = ? AND is_deleted = false", id).First(&sp).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
@@ -135,14 +121,7 @@ func (r *structuralPositionRepository) Update(ctx context.Context, id uuid.UUID,
 
 func (r *structuralPositionRepository) Delete(ctx context.Context, id uuid.UUID, deletedBy uuid.UUID) error {
 	now := time.Now()
-	return database.DB.WithContext(ctx).
-		Model(&domain.StructuralPosition{}).
-		Where("id = ? AND is_deleted = false", id).
-		Updates(map[string]interface{}{
-			"is_deleted": true,
-			"deleted_at": now,
-			"deleted_by": deletedBy,
-		}).Error
+	return database.DB.WithContext(ctx).Model(&domain.StructuralPosition{}).Where("id = ? AND is_deleted = false", id).Updates(map[string]interface{}{"is_deleted": true, "deleted_at": now, "deleted_by": deletedBy}).Error
 }
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -154,10 +133,7 @@ func NewOrganicUnitRepository() repositories.OrganicUnitRepository {
 
 func (r *organicUnitRepository) ExistsByName(name string) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("name = ? AND is_deleted = false", name).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("name = ? AND is_deleted = false", name).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -167,10 +143,7 @@ func (r *organicUnitRepository) ExistsByName(name string) (bool, error) {
 
 func (r *organicUnitRepository) ExistsByAcronym(code string) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("acronym = ? AND is_deleted = false", code).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("acronym = ? AND is_deleted = false", code).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -180,10 +153,7 @@ func (r *organicUnitRepository) ExistsByAcronym(code string) (bool, error) {
 
 func (r *organicUnitRepository) ExistsByID(id uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("id = ? AND is_deleted = false", id).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("id = ? AND is_deleted = false", id).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -192,28 +162,19 @@ func (r *organicUnitRepository) ExistsByID(id uuid.UUID) (bool, error) {
 
 func (r *organicUnitRepository) ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).Count(&count).Error
 	return count > 0, err
 }
 
 func (r *organicUnitRepository) ExistsByAcronymExceptID(code string, excludeID uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("acronym = ? AND id <> ? AND is_deleted = false", code, excludeID).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("acronym = ? AND id <> ? AND is_deleted = false", code, excludeID).Count(&count).Error
 	return count > 0, err
 }
 
 func (r *organicUnitRepository) ExistsByIDExceptID(id string, excludeID uuid.UUID) (bool, error) {
 	var count int64
-	err := database.DB.
-		Model(&domain.OrganicUnit{}).
-		Where("id = ? AND id <> ? AND is_deleted = false", id, excludeID).
-		Count(&count).Error
+	err := database.DB.Model(&domain.OrganicUnit{}).Where("id = ? AND id <> ? AND is_deleted = false", id, excludeID).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -236,9 +197,7 @@ func (r *organicUnitRepository) Create(ctx context.Context, sp *domain.OrganicUn
 
 func (h *organicUnitRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.OrganicUnit, error) {
 	var ou domain.OrganicUnit
-	err := database.DB.WithContext(ctx).
-		Where("id = ? AND is_deleted = false", id).
-		First(&ou).Error
+	err := database.DB.WithContext(ctx).Where("id = ? AND is_deleted = false", id).First(&ou).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
