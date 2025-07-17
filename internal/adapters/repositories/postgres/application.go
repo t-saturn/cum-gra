@@ -116,5 +116,45 @@ func (r *applicationRepository) Update(ctx context.Context, id uuid.UUID, app *d
 }
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type applicationRoleRepository struct{}
+
+func NewApplicationRoleRepository() repositories.ApplicationRoleRepository {
+	return &applicationRoleRepository{}
+}
+
+func (r *applicationRoleRepository) ExistsByName(name string) (bool, error) {
+	var count int64
+	err := database.DB.Model(&domain.ApplicationRole{}).Where("name = ? AND is_deleted = false", name).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (r *applicationRoleRepository) ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error) {
+	var count int64
+	err := database.DB.Model(&domain.ApplicationRole{}).Where("LOWER(name) = LOWER(?) AND id <> ? AND is_deleted = false", name, excludeID).Count(&count).Error
+
+	return count > 0, err
+}
+
+func (r *applicationRoleRepository) Create(ctx context.Context, data *domain.ApplicationRole) (*domain.ApplicationRole, error) {
+	data.ID = uuid.New()
+	data.CreatedAt = time.Now()
+	data.UpdatedAt = time.Now()
+	data.IsDeleted = false
+
+	if err := database.DB.WithContext(ctx).Create(data).Error; err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type userApplicationRoleRepository struct{}
+
+func NewUserApplicationRepository() repositories.UserApplicationRoleRepository {
+	return &userApplicationRoleRepository{}
+}

@@ -19,6 +19,11 @@ type ApplicationRepository interface {
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type ApplicationRoleRepository interface {
+	Create(ctx context.Context, sp *domain.ApplicationRole) (*domain.ApplicationRole, error)
+	// GetByID(ctx context.Context, id uuid.UUID) (*domain.ApplicationRole, error)
+
+	ExistsByName(name string) (bool, error)
+	ExistsByNameExceptID(name string, excludeID uuid.UUID) (bool, error)
 }
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */

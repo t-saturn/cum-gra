@@ -14,7 +14,7 @@ type ApplicationHandler struct {
 	service *services.ApplicationService
 }
 
-func NewApplicationHanlder(service *services.ApplicationService) *ApplicationHandler {
+func NewApplicationHandler(service *services.ApplicationService) *ApplicationHandler {
 	return &ApplicationHandler{
 		service: service,
 	}
@@ -146,5 +146,58 @@ func (h *ApplicationHandler) Update() fiber.Handler {
 }
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type ApplicationRoleHanlder struct {
+	service *services.ApplicationRoleService
+}
+
+func NewApplicationRoleHanlder(service *services.ApplicationRoleService) *ApplicationRoleHanlder {
+	return &ApplicationRoleHanlder{
+		service: service,
+	}
+}
+
+func (h *ApplicationRoleHanlder) Create() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		var input dto.CreateApplicationRoleDTO
+
+		// pasear el cuerpo
+		if err := c.Bind().Body(&input); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "Error al parsear el cuerpo",
+			})
+		}
+
+		// valdiar la estructura del DTO
+		if err := validator.Validate.Struct(input); err != nil {
+			translated := validator.FormatValidationError(err)
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
+				Errors: translated,
+			})
+		}
+
+		// Verificar si el nombre ya está en uso
+		if exists, err := h.service.IsnameTaken(input.Name); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "Error al verificar duplicidad",
+			})
+		} else if exists {
+			return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
+				Error: "El nombre ya se encuentra registrado",
+			})
+		}
+
+		// Ejecutar creación
+		if err := h.service.Create(c.Context(), &input); err != nil {
+			logger.Log.Error("Error al crear la aplicación: ", err)
+			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+				Error: "No se pudo crear la aplicación",
+			})
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(dto.MessageResponse{
+			Message: "Aplicación creada exitosamente",
+		})
+	}
+}
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */

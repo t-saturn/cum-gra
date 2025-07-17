@@ -23,6 +23,7 @@ func NewApplicationService(repo repositories.ApplicationRepository) *Application
 func (s *ApplicationService) IsnameTaken(name string) (bool, error) {
 	return s.repo.ExistsByName(name)
 }
+
 func (s *ApplicationService) IsNameTakenExceptID(name string, excludeID uuid.UUID) (bool, error) {
 	return s.repo.ExistsByNameExceptID(name, excludeID)
 }
@@ -100,5 +101,37 @@ func (services *ApplicationService) Update(ctx context.Context, id uuid.UUID, in
 }
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type ApplicationRoleService struct {
+	repo repositories.ApplicationRoleRepository
+}
+
+func NewApplicationRoleService(repo repositories.ApplicationRoleRepository) *ApplicationRoleService {
+	return &ApplicationRoleService{
+		repo: repo,
+	}
+}
+
+func (s *ApplicationRoleService) IsnameTaken(name string) (bool, error) {
+	return s.repo.ExistsByName(name)
+}
+
+func (s *ApplicationRoleService) Create(ctx context.Context, input *dto.CreateApplicationRoleDTO) error {
+	entity := &domain.ApplicationRole{
+		Name:          input.Name,
+		Description:   input.Description,
+		ApplicationID: input.ApplicationID,
+	}
+	_, err := s.repo.Create(ctx, entity)
+	return err
+}
 
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type UserApplicationRoleService struct {
+	repo repositories.ApplicationRepository
+}
+
+func NewUserApplicationRoleService(repo repositories.ApplicationRepository) *UserApplicationRoleService {
+	return &UserApplicationRoleService{
+		repo: repo,
+	}
+}
