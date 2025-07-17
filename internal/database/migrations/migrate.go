@@ -1,3 +1,4 @@
+// Package migrations proporciona funciones para ejecutar y administrar migraciones de base de datos.
 package migrations
 
 import (
@@ -8,6 +9,8 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
+
+	// Se requiere para usar archivos `.sql` como fuente de migraciones
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/t-saturn/central-user-manager/config"
 	"github.com/t-saturn/central-user-manager/pkg/logger"

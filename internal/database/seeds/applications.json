@@ -1,0 +1,12 @@
+[
+  {
+    "name": "central user manager",
+    "client_id": "cum",
+    "client_secret": "nix-os-by-tsaturn-team-sponsored-by-rrhh",
+    "domain": "https://cum.regionayacucho.gob.pe",
+    "logo": "https://files.regionayacucho.gob.pe/apps/segres-logo.svg",
+    "description": "Control central de usuarios",
+    "callback_urls": ["https://cum.regionayacucho.gob.pe/dashboard"],
+    "status": "active"
+  }
+]
