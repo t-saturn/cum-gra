@@ -1,3 +1,4 @@
+// Package config contiene la configuración de entorno y conexión a base de datos.
 package config
 
 import (
@@ -8,8 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
+// DB representa la instancia global de conexión a la base de datos GORM.
 var DB *gorm.DB
 
+// ConnectDB establece la conexión a la base de datos PostgreSQL utilizando los datos de configuración.
 func ConnectDB() {
 	cfg := GetConfig()
 

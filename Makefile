@@ -1,9 +1,12 @@
+SHELL := /bin/bash
+
 # CONFIGURACIÓN
 APP_NAME := central-user-manager
 MIGRATE_CMD := go run cmd/migrate/main.go
 SEED_CMD := go run cmd/seed/main.go
 BACKUP_CMD := go run cmd/backup/main.go
 DOCKER_COMPOSE_FILE := docker-compose.yml
+GOLANGCI_LINT := ./tools/bin/golangci-lint
 
 GREEN := \033[0;32m
 YELLOW := \033[0;33m
@@ -69,9 +72,29 @@ fmt:
 	@go fmt ./...
 
 lint:
-	@echo "$(GREEN) Ejecutando linter...$(NC)"
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "$(RED) golangci-lint no está instalado$(NC)"; exit 1; }
-	@golangci-lint run
+	@echo Ejecutando linter...
+	@if not exist tools\bin\golangci-lint.exe ( \
+		echo golangci-lint no está instalado. Ejecuta: make install-tools & \
+		exit /b 1 \
+	)
+	@tools\bin\golangci-lint.exe run
+
+# lint:
+# 	@echo "Ejecutando linter..."
+# 	@if [ ! -x "$(GOLANGCI_LINT)" ]; then \
+# 		echo "golangci-lint no está instalado. Ejecuta: make install-tools"; \
+# 		exit 1; \
+# 	fi
+# 	@$(GOLANGCI_LINT) run
+# lint:
+# 	@echo "$(GREEN) Ejecutando linter...$(NC)"
+# 	@command -v golangci-lint >/dev/null 2>&1 || { echo "$(RED) golangci-lint no está instalado$(NC)"; exit 1; }
+# 	@golangci-lint run
+
+install-tools:
+	@echo "Instalando herramientas locales..."
+	@mkdir -p tools/bin
+	@GOBIN=$(PWD)/tools/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 # DOCKER
 docker-up:

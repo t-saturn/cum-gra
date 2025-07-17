@@ -8,6 +8,7 @@ import (
 	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
+// LoggerMiddleware registra cada solicitud HTTP entrante con información útil.
 func LoggerMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		start := time.Now()
