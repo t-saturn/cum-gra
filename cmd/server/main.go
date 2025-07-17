@@ -4,6 +4,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
 	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/middlewares"
+	"github.com/t-saturn/central-user-manager/internal/routes"
 	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
@@ -18,6 +20,11 @@ func main() {
 
 	port := config.GetConfig().SERVERPort
 	app := fiber.New()
+
+	// Aplica logger personalizado
+	app.Use(middlewares.LoggerMiddleware())
+
+	routes.RegisterRoutes(app)
 
 	logger.Log.Infof("server-listening-in http://localhost:%s", port)
 	if err := app.Listen(":" + port); err != nil {
