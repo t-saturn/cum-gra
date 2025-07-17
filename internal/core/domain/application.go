@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 )
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type Application struct {
 	ID           uuid.UUID      `gorm:"type:uuid;primary_key" json:"id"`
 	Name         string         `gorm:"type:varchar(100);not null" json:"name"`
@@ -32,6 +33,7 @@ type Application struct {
 	UserModuleRestrictions []UserModuleRestriction `gorm:"foreignKey:ApplicationID" json:"user_module_restrictions,omitempty"`
 }
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type ApplicationRole struct {
 	ID            uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
 	Name          string     `gorm:"type:varchar(100);not null" json:"name"`
@@ -50,6 +52,7 @@ type ApplicationRole struct {
 	ModuleRolePermissions []ModuleRolePermission `gorm:"foreignKey:ApplicationRoleID" json:"module_role_permissions,omitempty"`
 }
 
+/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type UserApplicationRole struct {
 	ID                uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
 	UserID            uuid.UUID  `gorm:"type:uuid;not null" json:"user_id"`

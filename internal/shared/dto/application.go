@@ -53,10 +53,41 @@ type CreateApplicationRoleDTO struct {
 	ApplicationID uuid.UUID `json:"application_id" validate:"required"`
 }
 
+type ApplicationRoleResponseDTO struct {
+	ID            uuid.UUID `json:"id"`
+	Name          string    `json:"name"`
+	Description   *string   `json:"description,omitempty"`
+	ApplicationID uuid.UUID `json:"application_id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+}
+
+type UpdateApplicationRoleDTO struct {
+	Name        *string `json:"name" validate:"omitempty,min=2,max=100"`
+	Description *string `json:"description" validate:"omitempty,max=1000"`
+}
+
 /** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 type CreateUserApplicationRoleDTO struct {
 	UserID            uuid.UUID `json:"user_id" validate:"required"`
 	ApplicationID     uuid.UUID `json:"application_id" validate:"required"`
 	ApplicationRoleID uuid.UUID `json:"application_role_id" validate:"required"`
 	GrantedBy         uuid.UUID `json:"granted_by" validate:"required"`
+}
+
+type UserApplicationRoleResponseDTO struct {
+	ID                uuid.UUID  `json:"id"`
+	UserID            uuid.UUID  `json:"user_id"`
+	ApplicationID     uuid.UUID  `json:"application_id"`
+	ApplicationRoleID uuid.UUID  `json:"application_role_id"`
+	GrantedAt         time.Time  `json:"granted_at"`
+	GrantedBy         uuid.UUID  `json:"granted_by"`
+	RevokedAt         *time.Time `json:"revoked_at,omitempty"`
+	RevokedBy         *uuid.UUID `json:"revoked_by,omitempty"`
+}
+
+type UpdateUserApplicationRoleDTO struct {
+	ApplicationRoleID *uuid.UUID `json:"application_role_id" validate:"omitempty"`
+	RevokedAt         *string    `json:"revoked_at" validate:"omitempty,datetime=2006-01-02T15:04:05Z07:00"`
+	RevokedBy         *uuid.UUID `json:"revoked_by" validate:"omitempty"`
 }
