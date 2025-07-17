@@ -18,7 +18,6 @@ type Application struct {
 	Logo         *string        `gorm:"type:varchar(255)" json:"logo"`
 	Description  *string        `gorm:"type:text" json:"description"`
 	CallbackUrls pq.StringArray `gorm:"type:text[]" json:"callback_urls"`
-	IsFirstParty bool           `gorm:"default:false" json:"is_first_party"`
 	Status       string         `gorm:"type:application_status_enum;default:'active'" json:"status"`
 	CreatedAt    time.Time      `gorm:"default:now()" json:"created_at"`
 	UpdatedAt    time.Time      `gorm:"default:now()" json:"updated_at"`

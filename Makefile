@@ -18,18 +18,24 @@ NC := \033[0m
 # AYUDA
 help:
 	@echo "$(GREEN)=== Comandos disponibles ===$(NC)"
-	@echo "  make run         - Ejecutar servidor"
-	@echo "  make dev         - Desarrollo en caliente (requiere air)"
-	@echo "  make build       - Compilar aplicación"
-	@echo "  make migrate     - Ejecutar migraciones"
-	@echo "  make seed        - Ejecutar semillas"
-	@echo "  make backup      - Generar backup de la base de datos"
-	@echo "  make deps        - Descargar dependencias"
-	@echo "  make fmt         - Formatear código"
-	@echo "  make lint        - Ejecutar linter"
-	@echo "  make docker-up   - Levantar servicios Docker"
-	@echo "  make docker-down - Bajar servicios Docker"
-	@echo "  make docker-logs - Ver logs de Docker"
+	@echo "  make run              - Ejecutar servidor"
+	@echo "  make dev              - Desarrollo en caliente (requiere air)"
+	@echo "  make build            - Compilar aplicación"
+	@echo "  make migrate-up       - Ejecutar migración UP"
+	@echo "  make migrate-down     - Revertir migración DOWN"
+	@echo "  make reset-data       - Vaciar datos de todas las tablas (sin eliminar estructuras)"
+	@echo "  make migrate-reset    - Ejecutar limpieza de datos sin borrar estructuras"
+	@echo "  make migrate-force    - Forzar base de datos a una versión específica (usa -version=N)"
+	@echo "  make migrate-version  - Mostrar versión actual de la base de datos"
+	@echo "  make migrate-drop     - Eliminar todas las tablas migradas (peligroso)"
+	@echo "  make seed             - Ejecutar semillas"
+	@echo "  make backup           - Generar backup de la base de datos"
+	@echo "  make deps             - Descargar dependencias"
+	@echo "  make fmt              - Formatear código"
+	@echo "  make lint             - Ejecutar linter"
+	@echo "  make docker-up        - Levantar servicios Docker"
+	@echo "  make docker-down      - Bajar servicios Docker"
+	@echo "  make docker-logs      - Ver logs de Docker"
 
 # COMANDOS PRINCIPALES
 run:
@@ -50,9 +56,33 @@ clean:
 	@rm -rf bin tmp
 
 # MIGRACIONES / SEEDS / BACKUP
-migrate:
-	@echo "$(GREEN) Ejecutando migraciones...$(NC)"
-	@$(MIGRATE_CMD)
+migrate-up:
+	@echo "$(GREEN) Ejecutando migración UP...$(NC)"
+	@$(MIGRATE_CMD) -cmd=up -path=internal/database/migrations
+
+migrate-down:
+	@echo "$(YELLOW) Revirtiendo migración DOWN...$(NC)"
+	@$(MIGRATE_CMD) -cmd=down -path=internal/database/migrations
+
+reset-data:
+	@echo "$(RED) Vaciando datos de todas las tablas...$(NC)"
+	@psql $(DB_URL) -f internal/database/clean/reset_data.sql
+
+migrate-reset:
+	@echo "$(RED) Ejecutando limpieza de datos (RESET)...$(NC)"
+	@$(MIGRATE_CMD) -cmd=reset -path=internal/database/migrations
+
+migrate-force:
+	@echo "$(YELLOW) Forzando migración a versión $(VERSION)...$(NC)"
+	@$(MIGRATE_CMD) -cmd=force -version=$(VERSION) -path=internal/database/migrations
+
+migrate-version:
+	@echo "$(GREEN) Mostrando versión actual de migraciones...$(NC)"
+	@$(MIGRATE_CMD) -cmd=version -path=internal/database/migrations
+
+migrate-drop:
+	@echo "$(RED) Eliminando todas las tablas migradas...$(NC)"
+	@$(MIGRATE_CMD) -cmd=drop -path=internal/database/migrations
 
 seed:
 	@echo "$(GREEN) Ejecutando seeds...$(NC)"
@@ -78,18 +108,6 @@ lint:
 		exit /b 1 \
 	)
 	@tools\bin\golangci-lint.exe run
-
-# lint:
-# 	@echo "Ejecutando linter..."
-# 	@if [ ! -x "$(GOLANGCI_LINT)" ]; then \
-# 		echo "golangci-lint no está instalado. Ejecuta: make install-tools"; \
-# 		exit 1; \
-# 	fi
-# 	@$(GOLANGCI_LINT) run
-# lint:
-# 	@echo "$(GREEN) Ejecutando linter...$(NC)"
-# 	@command -v golangci-lint >/dev/null 2>&1 || { echo "$(RED) golangci-lint no está instalado$(NC)"; exit 1; }
-# 	@golangci-lint run
 
 install-tools:
 	@echo "Instalando herramientas locales..."
