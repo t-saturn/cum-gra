@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// VerifyCredentialsHandler maneja la solicitud POST para verificar credenciales de autenticación y retorna el ID del usuario si son válidas.
 func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequest
 
