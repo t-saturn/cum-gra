@@ -1,6 +1,6 @@
 -- Crear tabla structural_positions
 CREATE TABLE structural_positions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
     code VARCHAR(50) UNIQUE NOT NULL,
     level INTEGER DEFAULT 2,
@@ -15,12 +15,12 @@ CREATE TABLE structural_positions (
 
 -- Crear tabla organic_units
 CREATE TABLE organic_units (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
     acronym VARCHAR(20) UNIQUE,
     brand VARCHAR(100),
     description TEXT,
-    parent_id UUID,
+    parent_id INTEGER,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -42,8 +42,8 @@ CREATE TABLE users (
     phone_verified BOOLEAN DEFAULT false,
     two_factor_enabled BOOLEAN DEFAULT false,
     status VARCHAR(50) DEFAULT 'active',
-    structural_position_id UUID,
-    organic_unit_id UUID,
+    structural_position_id INTEGER,
+    organic_unit_id INTEGER,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     is_deleted BOOLEAN NOT NULL DEFAULT false,
