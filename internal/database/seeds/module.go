@@ -13,6 +13,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
+// SeedModule representa la estructura de un módulo utilizada para poblar la base de datos desde un archivo JSON.
 type SeedModule struct {
 	Item            *string `json:"item"`
 	Name            string  `json:"name"`
@@ -24,6 +25,7 @@ type SeedModule struct {
 	Status          string  `json:"status"`
 }
 
+// SeedModules inserta registros de módulos en la base de datos desde un archivo JSON, asociándolos a sus aplicaciones y padres si corresponde.
 func SeedModules() error {
 	logrus.Info("Seeding módulos desde JSON...")
 
@@ -31,7 +33,11 @@ func SeedModules() error {
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error al cerrar el archivo: %v\n", cerr)
+		}
+	}()
 
 	var seedData []SeedModule
 	if err := json.NewDecoder(file).Decode(&seedData); err != nil {
@@ -50,7 +56,7 @@ func SeedModules() error {
 			return fmt.Errorf("no se encontró la aplicación '%s': %w", sm.ApplicationName, err)
 		}
 
-		var parentID *uuid.UUID = nil
+		var parentID *uuid.UUID // nil por defecto, no es necesario asignarlo explícitamente
 		if sm.ParentName != nil {
 			if pid, ok := inserted[*sm.ParentName]; ok {
 				parentID = &pid

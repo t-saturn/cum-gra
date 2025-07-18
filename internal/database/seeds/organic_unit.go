@@ -10,6 +10,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
+// SeedOrganicUnit representa una unidad orgánica utilizada para poblar la base de datos desde un archivo JSON.
 type SeedOrganicUnit struct {
 	Name        string `json:"name"`
 	Acronym     string `json:"acronym"`
@@ -17,12 +18,17 @@ type SeedOrganicUnit struct {
 	Description string `json:"description"`
 }
 
+// SeedOrganicUnits inserta unidades orgánicas en la base de datos desde un archivo JSON si no existen previamente.
 func SeedOrganicUnits() error {
 	file, err := os.Open("data/organic_units.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error al cerrar el archivo: %v\n", cerr)
+		}
+	}()
 
 	var units []SeedOrganicUnit
 	if err := json.NewDecoder(file).Decode(&units); err != nil {

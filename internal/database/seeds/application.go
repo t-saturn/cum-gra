@@ -12,6 +12,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
+// SeedApplication representa los datos necesarios para insertar una aplicación desde un archivo JSON.
 type SeedApplication struct {
 	Name         string   `json:"name"`
 	ClientID     string   `json:"client_id"`
@@ -24,12 +25,17 @@ type SeedApplication struct {
 	Status       string   `json:"status"`
 }
 
+// SeedApplications inserta registros de aplicaciones en la base de datos desde un archivo JSON, evitando duplicados.
 func SeedApplications() error {
 	file, err := os.Open("data/applications.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error al cerrar el archivo: %v\n", cerr)
+		}
+	}()
 
 	var apps []SeedApplication
 	if err := json.NewDecoder(file).Decode(&apps); err != nil {

@@ -1,5 +1,7 @@
+// Package seeds contiene funciones para poblar la base de datos con datos iniciales o de prueba.
 package seeds
 
+// Run ejecuta todas las funciones de seeding para poblar la base de datos con datos iniciales.
 func Run() error {
 	if err := SeedStructuralPositions(); err != nil {
 		return err

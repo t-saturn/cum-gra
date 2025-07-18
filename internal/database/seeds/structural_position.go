@@ -10,6 +10,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
+// SeedPosition representa la estructura de una posición estructural para el seed desde un archivo JSON.
 type SeedPosition struct {
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -17,12 +18,17 @@ type SeedPosition struct {
 	Description string `json:"description"`
 }
 
+// SeedStructuralPositions inserta posiciones estructurales en la base de datos desde un archivo JSON si no existen previamente.
 func SeedStructuralPositions() error {
 	file, err := os.Open("data/structural_positions.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error al cerrar el archivo: %v\n", cerr)
+		}
+	}()
 
 	var positions []SeedPosition
 	if err := json.NewDecoder(file).Decode(&positions); err != nil {
