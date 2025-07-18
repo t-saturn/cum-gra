@@ -3,6 +3,8 @@ module github.com/t-saturn/central-user-manager
 go 1.24.4
 
 require (
+	github.com/go-playground/locales v0.14.1
+	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/golang-migrate/migrate/v4 v4.18.3
@@ -14,8 +16,6 @@ require (
 	golang.org/x/crypto v0.36.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
-	github.com/go-playground/locales v0.14.1
-	github.com/go-playground/universal-translator v0.18.1
 )
 
 require (
