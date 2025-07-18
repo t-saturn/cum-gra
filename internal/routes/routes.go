@@ -16,4 +16,5 @@ func RegisterRoutes(app *fiber.App) {
 
 	// Aquí irán los grupos: users, auth, tokens, etc.
 	// e.g. RegisterUserRoutes(app)
+	RegisterUserRoutes(app)
 }

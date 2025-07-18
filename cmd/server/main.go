@@ -8,6 +8,7 @@ import (
 	"github.com/t-saturn/central-user-manager/internal/middlewares"
 	"github.com/t-saturn/central-user-manager/internal/routes"
 	"github.com/t-saturn/central-user-manager/pkg/logger"
+	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
 func main() {
@@ -18,6 +19,8 @@ func main() {
 
 	config.LoadConfig()
 	config.ConnectDB()
+
+	validator.InitValidator()
 
 	port := config.GetConfig().SERVERPort
 	app := fiber.New()
