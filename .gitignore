@@ -79,3 +79,5 @@ pb/
 coverage.txt
 coverage.out
 *.cover
+.bun.lock
+.pnpm-lock.yaml
