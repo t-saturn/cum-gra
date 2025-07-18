@@ -1,16 +1,25 @@
 ---
 
 ---
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/src/styles/login.css">
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>Iniciar Sesión</h1>
+      <form class="login-form" method="POST" action="/auth/login">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required />
+
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+    </div>
+  </body>
 </html>
