@@ -8,16 +8,11 @@ BACKUP_CMD := go run cmd/backup/main.go
 DOCKER_COMPOSE_FILE := docker-compose.yml
 GOLANGCI_LINT := ./tools/bin/golangci-lint
 
-GREEN := \033[0;32m
-YELLOW := \033[0;33m
-RED := \033[0;31m
-NC := \033[0m
-
 .PHONY: help build run dev clean deps fmt lint docker-up docker-down docker-logs migrate seed backup
 
 # AYUDA
 help:
-	@echo "$(GREEN)=== Comandos disponibles ===$(NC)"
+	@echo "=== Comandos disponibles ==="
 	@echo "  make run              - Ejecutar servidor"
 	@echo "  make dev              - Desarrollo en caliente (requiere air)"
 	@echo "  make build            - Compilar aplicación"
@@ -39,75 +34,75 @@ help:
 
 # COMANDOS PRINCIPALES
 run:
-	@echo "$(GREEN) Ejecutando servidor...$(NC)"
+	@echo "Ejecutando servidor..."
 	@go run cmd/server/main.go
 
 dev:
-	@echo "$(GREEN) Iniciando desarrollo con Air...$(NC)"
+	@echo "Iniciando desarrollo con Air..."
 	@air
 
 build:
-	@echo "$(GREEN) Compilando aplicación...$(NC)"
+	@echo "Compilando aplicación..."
 	@go build -o bin/$(APP_NAME) cmd/server/main.go
 
 clean:
-	@echo "$(YELLOW) Limpiando artefactos...$(NC)"
+	@echo "Limpiando artefactos..."
 	@go clean
 	@rm -rf bin tmp
 
 # MIGRACIONES / SEEDS / BACKUP
 migrate-up:
-	@echo "$(GREEN) Ejecutando migración UP...$(NC)"
+	@echo "Ejecutando migración UP..."
 	@$(MIGRATE_CMD) -cmd=up -path=internal/database/migrations
 
 migrate-down:
-	@echo "$(YELLOW) Revirtiendo migración DOWN...$(NC)"
+	@echo "Revirtiendo migración DOWN..."
 	@$(MIGRATE_CMD) -cmd=down -path=internal/database/migrations
 
 reset-data:
-	@echo "$(RED) Vaciando datos de todas las tablas...$(NC)"
+	@echo "Vaciando datos de todas las tablas..."
 	@psql $(DB_URL) -f internal/database/clean/reset_data.sql
 
 migrate-reset:
-	@echo "$(RED) Ejecutando limpieza de datos (RESET)...$(NC)"
+	@echo "Ejecutando limpieza de datos (RESET)..."
 	@$(MIGRATE_CMD) -cmd=reset -path=internal/database/migrations
 
 migrate-force:
-	@echo "$(YELLOW) Forzando migración a versión $(VERSION)...$(NC)"
+	@echo "Forzando migración a versión $(VERSION)..."
 	@$(MIGRATE_CMD) -cmd=force -version=$(VERSION) -path=internal/database/migrations
 
 migrate-version:
-	@echo "$(GREEN) Mostrando versión actual de migraciones...$(NC)"
+	@echo "Mostrando versión actual de migraciones..."
 	@$(MIGRATE_CMD) -cmd=version -path=internal/database/migrations
 
 migrate-drop:
-	@echo "$(RED) Eliminando todas las tablas migradas...$(NC)"
+	@echo "Eliminando todas las tablas migradas..."
 	@$(MIGRATE_CMD) -cmd=drop -path=internal/database/migrations
 
 seed:
-	@echo "$(GREEN) Ejecutando seeds...$(NC)"
+	@echo "Ejecutando seeds..."
 	@$(SEED_CMD)
 
 backup:
-	@echo "$(GREEN) Ejecutando backup...$(NC)"
+	@echo "Ejecutando backup..."
 	@$(BACKUP_CMD)
 
 # DEPENDENCIAS Y FORMATO
 deps:
-	@echo "$(GREEN) Descargando dependencias...$(NC)"
+	@echo "Descargando dependencias..."
 	@go mod tidy
 
 fmt:
-	@echo "$(GREEN) Formateando código...$(NC)"
+	@echo "Formateando código..."
 	@go fmt ./...
 
 lint:
-	@echo Ejecutando linter...
-	@if not exist tools\bin\golangci-lint.exe ( \
-		echo golangci-lint no está instalado. Ejecuta: make install-tools & \
-		exit /b 1 \
-	)
-	@tools\bin\golangci-lint.exe run
+	@echo "Ejecutando linter..."
+	@if [ ! -f tools/bin/golangci-lint ]; then \
+		echo "golangci-lint no está instalado. Ejecuta: make install-tools"; \
+		exit 1; \
+	fi
+	@tools/bin/golangci-lint run
 
 install-tools:
 	@echo "Instalando herramientas locales..."
@@ -116,11 +111,11 @@ install-tools:
 
 # DOCKER
 docker-up:
-	@echo "$(GREEN) Levantando Docker...$(NC)"
+	@echo "Levantando Docker..."
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) up -d
 
 docker-down:
-	@echo "$(YELLOW) Bajando Docker...$(NC)"
+	@echo "Bajando Docker..."
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) down
 
 docker-logs:
