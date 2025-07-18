@@ -1,5 +1,6 @@
 package dto
 
+// CreateUserDTO representa los datos necesarios para registrar un nuevo usuario.
 type CreateUserDTO struct {
 	Email     string `json:"email" validate:"required,email"`
 	Password  string `json:"password" validate:"required,min=8,max=22"`

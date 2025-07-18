@@ -1,3 +1,4 @@
+// Package services contiene la lógica de negocio para operaciones relacionadas a usuarios.
 package services
 
 import (
@@ -10,8 +11,11 @@ import (
 	"github.com/t-saturn/central-user-manager/pkg/security"
 )
 
+// CreateUser crea un nuevo usuario con los datos proporcionados y lo guarda en la base de datos.
 func CreateUser(input dto.CreateUserDTO) (*models.User, error) {
-	passwordHash, err := security.HashPassword(input.Password)
+	argon := security.NewArgon2Service()
+	passwordHash, err := argon.HashPassword(input.Password)
+
 	if err != nil {
 		return nil, err
 	}

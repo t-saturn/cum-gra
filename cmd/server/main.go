@@ -20,9 +20,10 @@ func main() {
 	config.LoadConfig()
 	config.ConnectDB()
 
-	validator.InitValidator()
+	if err := validator.InitValidator(); err != nil {
+		logger.Log.Fatalf("Error al inicializar el validador: %v", err)
+	}
 
-	port := config.GetConfig().SERVERPort
 	app := fiber.New()
 
 	// Aplica logger personalizado
@@ -31,6 +32,7 @@ func main() {
 
 	routes.RegisterRoutes(app)
 
+	port := config.GetConfig().SERVERPort
 	logger.Log.Infof("server-listening-in http://localhost:%s", port)
 	if err := app.Listen(":" + port); err != nil {
 		logger.Log.Fatalf("error-at-the-start-of-the-server: %v", err)
