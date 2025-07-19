@@ -1,3 +1,4 @@
+// Package validator contiene lógica para validaciones personalizadas y traducciones.
 package validator
 
 import (
@@ -9,11 +10,13 @@ import (
 	esTranslations "github.com/go-playground/validator/v10/translations/es"
 )
 
+// Validate es la instancia global del validador con traducciones registradas.
 var (
 	Validate *validatorv10.Validate
 	trans    ut.Translator
 )
 
+// InitValidator inicializa el validador con traducciones en español y mensajes personalizados.
 func InitValidator() error {
 	Validate = validatorv10.New()
 

@@ -1,3 +1,4 @@
+// Package logger proporciona una configuración global del sistema de logs para la aplicación.
 package logger
 
 import (
@@ -9,15 +10,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Log es el logger global utilizado por toda la aplicación, configurado con salida a consola y archivo.
 var Log *logrus.Logger
 
+// InitLogger inicializa el logger global con formato, nivel de log y salida a archivo + consola.
 func InitLogger() {
 	Log = logrus.New()
 
 	// Crear carpeta logs si no existe
 	logDir := "logs"
-	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		os.Mkdir(logDir, os.ModePerm)
+	if err := os.MkdirAll(logDir, os.ModePerm); err != nil {
+		logrus.Fatalf("No se pudo crear el directorio de logs: %v", err)
 	}
 
 	// Nombre del archivo: logs/YYYY-MM-DD.log
