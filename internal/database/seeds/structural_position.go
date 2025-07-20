@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
 

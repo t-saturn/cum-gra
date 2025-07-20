@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/dto"
 	"github.com/t-saturn/central-user-manager/internal/models"
 	"github.com/t-saturn/central-user-manager/pkg/logger"

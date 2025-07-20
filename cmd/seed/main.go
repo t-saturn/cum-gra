@@ -3,7 +3,7 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/database/seeds"
 	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
