@@ -6,14 +6,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Respuesta del validador
 type ValidationResponse struct {
 	UserID          primitive.ObjectID `bson:"user_id,omitempty"`
 	ServiceResponse string             `bson:"service_response,omitempty"`
 	ValidatedBy     string             `bson:"validated_by,omitempty"`
 }
 
-// Modelo principal
 type AuthAttempt struct {
 	ID            primitive.ObjectID `bson:"_id,omitempty"`
 	Method        string             `bson:"method"` // "credentials" | "token"
