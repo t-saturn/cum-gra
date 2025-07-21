@@ -6,4 +6,5 @@ import (
 
 func main() {
 	logger.InitLogger()
+	logger.Log.Info("Starting authentication service...")
 }

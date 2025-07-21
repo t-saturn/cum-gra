@@ -9,7 +9,7 @@ tmp_dir = "tmp"
 [build]
 # Comando para compilar el proyecto
 # Indicamos que compile el archivo en cmd/api/main.go
-cmd = "go build -o ./tmp/main.exe ./cmd/main.go"
+cmd = "go build -o ./tmp/main.exe ./cmd/server/main.go"
 # Nombre del binario generado
 bin = "tmp/main.exe"
 # Extensiones de archivos a monitorear
