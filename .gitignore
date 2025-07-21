@@ -9,6 +9,7 @@ dist/
 .vercel/
 .netlify/
 *.local
+bun.lock
 
 # ================================
 # ARCHIVOS DEL SISTEMA OPERATIVO

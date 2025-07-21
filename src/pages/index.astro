@@ -1,4 +1,6 @@
 ---
+// src/pages/signup.astro
+import { ScanFace } from "@lucide/astro";
 import "../styles/global.css";
 ---
 
@@ -6,47 +8,94 @@ import "../styles/global.css";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Iniciar Sesion</title>
   </head>
-  <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h1 class="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h1>
-      <form method="POST" action="/auth/login" class="space-y-4">
-        <div>
-          <label for="email" class="block font-medium text-gray-700"
-            >Correo electrónico</label
-          >
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="ejemplo@correo.com"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label for="password" class="block font-medium text-gray-700"
-            >Contraseña</label
-          >
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="••••••••"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <button
-          type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+  <body class="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img
+          src="../../public/logo_tmp.png"
+          alt="GORE_AYACUCHO"
+          class="mx-auto h-26 w-auto"
+        />
+        <h2
+          class="mt-5 text-center text-2xl/9 font-bold tracking-tight text-red-700"
         >
-          Iniciar Sesión
-        </button>
-      </form>
+          Gobierno Regional de Ayacucho
+        </h2>
+      </div>
+
+      <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form action="#" method="POST" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm/6 font-medium text-gray-900"
+              >Correo Electrónico</label
+            >
+            <div class="mt-2">
+              <input
+                id="email"
+                type="email"
+                name="email"
+                required
+                autocomplete="email"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-600 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="password"
+                class="block text-sm/6 font-medium text-gray-900"
+                >Contraseña</label
+              >
+              <div class="text-sm">
+                <a
+                  href="#"
+                  class="font-semibold text-red-600 hover:text-red-500"
+                  >Recuperar?</a
+                >
+              </div>
+            </div>
+            <div class="mt-2">
+              <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-600 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+              >Ingresar</button
+            >
+          </div>
+
+          <div class="flex items-center justify-center">
+            <p>Continuar con</p>
+          </div>
+          <div class="flex flex-row gap-5 justify-center">
+            <div class="bg-gray-300 rounded-sm p-2">
+              <ScanFace size={36} />
+            </div>
+
+            <div class="bg-gray-300 rounded-sm p-2">
+              <img
+                src="../../public/san-google.png"
+                alt="GORE_AYACUCHO"
+                class="h-10 w-auto"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </body>
 </html>
