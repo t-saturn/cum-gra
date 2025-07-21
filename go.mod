@@ -9,6 +9,7 @@ require (
 	github.com/spf13/viper v1.20.1
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/crypto v0.40.0
+	gopkg.in/square/go-jose.v2 v2.6.0
 )
 
 require (

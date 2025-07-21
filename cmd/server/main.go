@@ -5,6 +5,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/middlewares"
+	"github.com/t-saturn/auth-service-server/internal/routes"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
 
@@ -21,6 +22,8 @@ func main() {
 
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
+
+	routes.RegisterRoutes(app)
 
 	// Ruta de prueba para verificar conexión a Mongo
 	app.Get("/ping", func(c fiber.Ctx) error {
