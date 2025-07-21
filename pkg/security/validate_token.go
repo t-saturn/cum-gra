@@ -19,7 +19,7 @@ type TokenValidationResult struct {
 
 // ValidateToken descifra y valida un token JWT cifrado como JWE
 func ValidateToken(tokenString string) TokenValidationResult {
-	secret := []byte(config.GetConfig().JWT_SECRET)
+	secret := []byte(config.GetConfig().Server.JWTSecret)
 
 	// Parsear el token JWE
 	tok, err := jwt.ParseEncrypted(tokenString)

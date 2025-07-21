@@ -13,7 +13,7 @@ import (
 // GenerateToken crea un JWT y lo cifra como JWE con go-jose.v2
 func GenerateToken(userID string) (string, error) {
 	// Obtener secreto desde config
-	secret := []byte(config.GetConfig().JWT_SECRET)
+	secret := []byte(config.GetConfig().Server.JWTSecret)
 
 	// Crear el token JWT con claims personalizados
 	claims := jwt.Claims{

@@ -7,35 +7,69 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
 
-// Config contiene la configuración global de la aplicación cargada desde variables de entorno.
+// PostgreSQL Configuración
+type PostgresConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
+}
+
+// MongoDB Configuración
+type MongoConfig struct {
+	URI    string
+	DBName string
+}
+
+// JWT + Server Configuración
+type ServerConfig struct {
+	JWTSecret     string
+	JWTExpMinutes string
+	Port          string
+}
+
+// Estructura principal que agrupa todas las configuraciones
 type Config struct {
-	MONGO_URI      string
-	MONGO_DB_NAME  string
-	PORT           string
-	JWT_SECRET     string
-	JWT_EXP_MINUTES string
+	Postgres PostgresConfig
+	Mongo    MongoConfig
+	Server      ServerConfig
 }
 
 var cfg Config
 
-// LoadConfig carga la configuración de la aplicación desde variables de entorno.
+// Carga toda la configuración de variables de entorno
 func LoadConfig() {
 	viper.AutomaticEnv()
 
 	cfg = Config{
-		MONGO_URI:      getEnv("MONGO_URI", "mongodb://localhost:27017"),
-		MONGO_DB_NAME:  getEnv("MONGO_DB_NAME", "mongo_db"),
-		PORT:           getEnv("PORT", "8000"),
-		JWT_SECRET:     getEnv("JWT_SECRET", "my_secret_key"),
-		JWT_EXP_MINUTES: getEnv("JWT_EXP_MINUTES", "15"),
+		Postgres: PostgresConfig{
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnv("DB_PORT", "5432"),
+			User:     getEnv("DB_USER", "postgres"),
+			Password: getEnv("DB_PASSWORD", "password"),
+			DBName:   getEnv("DB_NAME", "postgres_db"),
+			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+		},
+		Mongo: MongoConfig{
+			URI:    getEnv("MONGO_URI", "mongodb://localhost:27017"),
+			DBName: getEnv("MONGO_DB_NAME", "mongo_db"),
+		},
+		Server: ServerConfig{
+			JWTSecret:     getEnv("JWT_SECRET", "my_secret_key"),
+			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
+			Port:          getEnv("PORT", "8000"),
+		},
 	}
 }
 
-// GetConfig devuelve la configuración global cargada de la aplicación.
+// Retorna la configuración cargada
 func GetConfig() Config {
 	return cfg
 }
 
+// Utilidad interna para leer variables de entorno con valor por defecto
 func getEnv(key string, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value

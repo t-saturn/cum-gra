@@ -12,25 +12,25 @@ import (
 var MongoClient *mongo.Client
 var MongoDatabase *mongo.Database
 
-// ConnectMongo establece la conexión con MongoDB y asigna los valores a MongoClient y MongoDatabase.
+// ConnectMongo establece la conexión con MongoDB y asigna los valores globales.
 func ConnectMongo() {
-	cfg := GetConfig()
+	cfg := GetConfig() // Carga la configuración global
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	clientOpts := options.Client().ApplyURI(cfg.MONGO_URI)
+	clientOpts := options.Client().ApplyURI(cfg.Mongo.URI)
 	client, err := mongo.Connect(ctx, clientOpts)
 	if err != nil {
 		logger.Log.Fatalf("Error al conectar a MongoDB: %v", err)
 	}
 
-	// Verificar la conexión
+	// Verifica la conexión con un ping
 	if err := client.Ping(ctx, nil); err != nil {
 		logger.Log.Fatalf("MongoDB no responde al ping: %v", err)
 	}
 
 	MongoClient = client
-	MongoDatabase = client.Database(cfg.MONGO_DB_NAME)
+	MongoDatabase = client.Database(cfg.Mongo.DBName)
 
-	logger.Log.Infof("Conectado a MongoDB exitosamente en %s", cfg.MONGO_URI)
+	logger.Log.Infof("Conectado a MongoDB en %s", cfg.Mongo.URI)
 }

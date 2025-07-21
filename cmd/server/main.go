@@ -33,7 +33,7 @@ func main() {
 		return c.JSON(fiber.Map{"message": "Conectado a MongoDB correctamente"})
 	})
 
-	port := config.GetConfig().PORT
+	port := config.GetConfig().Server.Port
 	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
 	if err := app.Listen(":" + port); err != nil {
 		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
