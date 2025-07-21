@@ -4,7 +4,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
-	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/middlewares"
 	"github.com/t-saturn/central-user-manager/internal/routes"
 	"github.com/t-saturn/central-user-manager/pkg/logger"

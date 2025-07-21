@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/central-user-manager/config"
+	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/dto"
 	"github.com/t-saturn/central-user-manager/internal/models"
 	"github.com/t-saturn/central-user-manager/pkg/logger"
@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// VerifyCredentialsHandler maneja la solicitud POST para verificar credenciales de autenticación y retorna el ID del usuario si son válidas.
 func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequest
 
