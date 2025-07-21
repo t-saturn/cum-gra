@@ -1,10 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 
 	"github.com/spf13/viper"
+	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
 
 // Config contiene la configuración global de la aplicación cargada desde variables de entorno.
@@ -40,6 +40,6 @@ func getEnv(key string, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
-	log.Printf("%s no definido, usando valor por defecto: %s", key, fallback)
+	logger.Log.Infof("Environment variable %s not set, using default value: %s", key, fallback)
 	return fallback
 }
