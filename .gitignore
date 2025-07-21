@@ -94,7 +94,6 @@ pids/
 .cache/
 .parcel-cache/
 
-
 # dotenv environment variables file
 .env
 .env.test
@@ -118,3 +117,6 @@ site/
 # Ignore OS generated files
 ehthumbs.db
 Icon?
+
+# ================= others
+tools/bin/
