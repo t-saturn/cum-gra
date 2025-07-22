@@ -29,8 +29,6 @@ func InitValidator() error {
 		return fmt.Errorf("error registrando traducciones: %w", err)
 	}
 
-	// -- Puedes registrar aquí validaciones personalizadas si deseas
-	// Sobrescribimos algunos mensajes predeterminados
 	registerTranslation := func(tag, msg string) {
 		_ = Validate.RegisterTranslation(tag, trans, func(ut ut.Translator) error {
 			return ut.Add(tag, msg, true)
@@ -40,7 +38,6 @@ func InitValidator() error {
 		})
 	}
 
-	// Mensajes personalizados
 	registerTranslation("required", "{0} es obligatorio")
 	registerTranslation("min", "{0} es demasiado corto")
 	registerTranslation("max", "{0} es demasiado largo")

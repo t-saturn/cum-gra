@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
@@ -15,27 +17,23 @@ import (
 func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequest
 
-	// Validar formato del body
 	if err := c.Bind().Body(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
 			Error: "Datos mal formateados",
 		})
 	}
 
-	// Validar campos requeridos
 	if err := validator.Validate.Struct(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	// Obtener conexión a PostgreSQL
 	db := config.GetPostgresDB()
 
 	var user models.User
 	tx := db.Model(&models.User{})
 
-	// Buscar por email o DNI
 	if input.Email != nil && *input.Email != "" {
 		tx = tx.Where("email = ?", input.Email)
 	} else if input.DNI != nil && *input.DNI != "" {
@@ -46,7 +44,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		})
 	}
 
-	// Ejecutar consulta
 	if err := tx.First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusUnauthorized).JSON(dto.ErrorResponse{
@@ -59,7 +56,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		})
 	}
 
-	// Verificar contraseña
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
 		return c.Status(fiber.StatusUnauthorized).JSON(dto.ErrorResponse{
@@ -67,15 +63,14 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		})
 	}
 
-	// Generar tokens
-	accessToken, err := security.GenerateToken(user.ID.String())
+	accessToken, err := security.GenerateToken(user.ID.String(), 15*time.Minute)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 			Error: "No se pudo generar el token de acceso",
 		})
 	}
 
-	refreshToken, err := security.GenerateToken(user.ID.String()) // Idealmente, generar con expiración diferente
+	refreshToken, err := security.GenerateToken(user.ID.String(), 7*24*time.Hour)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 			Error: "No se pudo generar el token de refresco",

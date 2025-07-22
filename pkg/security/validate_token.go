@@ -21,7 +21,6 @@ type TokenValidationResult struct {
 func ValidateToken(tokenString string) TokenValidationResult {
 	secret := []byte(config.GetConfig().Server.JWTSecret)
 
-	// Parsear el token JWE
 	tok, err := jwt.ParseEncrypted(tokenString)
 	if err != nil {
 		logger.Log.Warnf("Token inválido (no se pudo parsear): %v", err)
@@ -34,19 +33,20 @@ func ValidateToken(tokenString string) TokenValidationResult {
 		return TokenValidationResult{Code: 3, Message: "Firma inválida o clave incorrecta"}
 	}
 
-	// Validar expiración y otros claims
-	err = claims.Validate(jwt.Expected{
-		Time: time.Now(),
-	})
+	// Validación de claims (especial atención al error por expiración)
+	err = claims.Validate(jwt.Expected{Time: time.Now()})
 	if err != nil {
 		if errors.Is(err, jwt.ErrExpired) {
-			logger.Log.Infof("Token expirado")
-			return TokenValidationResult{Code: 2, Message: "Token expirado"}
+			logger.Log.Infof("Token expirado, pero claims válidos extraídos")
+			return TokenValidationResult{
+				Code:    2,
+				Claims:  &claims,
+				Message: "Token expirado",
+			}
 		}
 		logger.Log.Warnf("Token inválido por claims: %v", err)
 		return TokenValidationResult{Code: 1, Message: "Claims inválidos"}
 	}
 
-	// Token válido
 	return TokenValidationResult{Code: 0, Claims: &claims}
 }

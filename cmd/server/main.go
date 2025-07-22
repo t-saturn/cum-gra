@@ -16,7 +16,6 @@ func main() {
 	logger.InitLogger()
 	logger.Log.Info("Iniciando servidor...")
 
-	// Cargar configuración y establecer conexiones a bases de datos
 	config.LoadConfig()
 	config.ConnectPostgres()
 	config.ConnectMongo()
@@ -25,25 +24,19 @@ func main() {
 		logger.Log.Fatalf("Error al inicializar el validador: %v", err)
 	}
 
-	// Crear instancia de Fiber
 	app := fiber.New()
 
-	// Configurar middlewares
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
 
-	// Registrar rutas
 	routes.RegisterRoutes(app)
 
-	// Iniciar servidor
 	port := config.GetConfig().Server.ServerPort
 	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
 
-	// Manejar cierre graceful
 	if err := app.Listen(":" + port); err != nil {
 		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
 	}
 
-	// Cerrar conexión de MongoDB al terminar
 	defer config.DisconnectMongo()
 }

@@ -13,7 +13,7 @@ func LoggerMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		start := time.Now()
 
-		err := c.Next() // Procesar siguiente middleware/handler
+		err := c.Next()
 
 		stop := time.Now()
 		latency := stop.Sub(start)

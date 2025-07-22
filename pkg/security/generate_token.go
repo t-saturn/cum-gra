@@ -10,20 +10,19 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
 
-// GenerateToken crea un JWT y lo cifra como JWE con go-jose.v2
-func GenerateToken(userID string) (string, error) {
-	// Obtener secreto desde config
+// GenerateToken crea un JWT cifrado como JWE con duración personalizada
+func GenerateToken(userID string, duration time.Duration) (string, error) {
 	secret := []byte(config.GetConfig().Server.JWTSecret)
 
-	// Crear el token JWT con claims personalizados
+	now := time.Now()
+
 	claims := jwt.Claims{
 		Issuer:   "auth-service",
 		Subject:  userID,
-		IssuedAt: jwt.NewNumericDate(time.Now()),
-		Expiry:   jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
+		IssuedAt: jwt.NewNumericDate(now),
+		Expiry:   jwt.NewNumericDate(now.Add(duration)),
 	}
 
-	// Algoritmo de encriptación: direct + AES256 GCM
 	encrypter, err := jose.NewEncrypter(
 		jose.A256GCM,
 		jose.Recipient{
@@ -37,7 +36,6 @@ func GenerateToken(userID string) (string, error) {
 		return "", err
 	}
 
-	// Encriptar el JWT con claims
 	raw, err := jwt.Encrypted(encrypter).Claims(claims).CompactSerialize()
 	if err != nil {
 		logger.Log.Errorf("Error serializando token JWE: %v", err)
@@ -46,4 +44,3 @@ func GenerateToken(userID string) (string, error) {
 
 	return raw, nil
 }
-
