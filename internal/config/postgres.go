@@ -2,17 +2,17 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// DB representa la instancia global de conexión a PostgreSQL.
-var DB *gorm.DB
+var PostgresDB *gorm.DB
 
-// ConnectDB establece la conexión a la base de datos PostgreSQL utilizando los datos de configuración.
-func ConnectDB() {
+// ConnectPostgres establece la conexión a la base de datos PostgreSQL utilizando los datos de configuración.
+func ConnectPostgres() {
 	cfg := GetConfig() // Obtiene la configuración global
 
 	dsn := fmt.Sprintf(
@@ -30,6 +30,15 @@ func ConnectDB() {
 		logger.Log.Fatalf("Error al conectar con PostgreSQL: %v", err)
 	}
 
-	DB = db
-	logger.Log.Infof("Conectado a PostgreSQL en %s:%s", cfg.Postgres.Host, cfg.Postgres.Port)
+	// Configurar el pool de conexiones
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Log.Fatalf("Error al obtener DB de GORM: %v", err)
+	}
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetMaxIdleConns(5)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	PostgresDB = db
+	logger.Log.Infof("Conexión exitosa establecida a PostgreSQL ")
 }

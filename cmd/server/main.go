@@ -15,27 +15,30 @@ func main() {
 	logger.InitLogger()
 	logger.Log.Info("Iniciando servidor...")
 
+	// Cargar configuración y establecer conexiones a bases de datos
 	config.LoadConfig()
+	config.ConnectPostgres()
 	config.ConnectMongo()
 
+	// Crear instancia de Fiber
 	app := fiber.New()
 
+	// Configurar middlewares
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
 
+	// Registrar rutas
 	routes.RegisterRoutes(app)
 
-	// Ruta de prueba para verificar conexión a Mongo
-	app.Get("/ping", func(c fiber.Ctx) error {
-		if config.MongoClient == nil || config.MongoDatabase == nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "MongoDB no conectado"})
-		}
-		return c.JSON(fiber.Map{"message": "Conectado a MongoDB correctamente"})
-	})
-
-	port := config.GetConfig().Server.Port
+	// Iniciar servidor
+	port := config.GetConfig().Server.ServerPort
 	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
+
+	// Manejar cierre graceful
 	if err := app.Listen(":" + port); err != nil {
 		logger.Log.Fatalf("Error al iniciar el servidor: %v", err)
 	}
+
+	// Cerrar conexión de MongoDB al terminar
+	defer config.DisconnectMongo()
 }

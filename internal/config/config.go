@@ -27,14 +27,14 @@ type MongoConfig struct {
 type ServerConfig struct {
 	JWTSecret     string
 	JWTExpMinutes string
-	Port          string
+	ServerPort    string
 }
 
 // Estructura principal que agrupa todas las configuraciones
 type Config struct {
 	Postgres PostgresConfig
 	Mongo    MongoConfig
-	Server      ServerConfig
+	Server   ServerConfig
 }
 
 var cfg Config
@@ -59,7 +59,7 @@ func LoadConfig() {
 		Server: ServerConfig{
 			JWTSecret:     getEnv("JWT_SECRET", "my_secret_key"),
 			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
-			Port:          getEnv("PORT", "8000"),
+			ServerPort:    getEnv("SERVER_PORT", "8000"),
 		},
 	}
 }
