@@ -42,3 +42,7 @@ func ConnectPostgres() {
 	PostgresDB = db
 	logger.Log.Infof("Conexión exitosa establecida a PostgreSQL ")
 }
+
+func GetPostgresDB() *gorm.DB {
+	return PostgresDB
+}

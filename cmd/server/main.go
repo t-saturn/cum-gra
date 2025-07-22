@@ -7,6 +7,7 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/middlewares"
 	"github.com/t-saturn/auth-service-server/internal/routes"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
+	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
 func main() {
@@ -19,6 +20,10 @@ func main() {
 	config.LoadConfig()
 	config.ConnectPostgres()
 	config.ConnectMongo()
+
+	if err := validator.InitValidator(); err != nil {
+		logger.Log.Fatalf("Error al inicializar el validador: %v", err)
+	}
 
 	// Crear instancia de Fiber
 	app := fiber.New()
