@@ -9,7 +9,5 @@ import (
 func RegisterAuthRoutes(router fiber.Router) {
 	auth := router.Group("/auth")
 	auth.Post("/verify", handlers.VerifyCredentialsHandler)
-
-	token := router.Group("/token")
-	token.Post("/validate", handlers.ValidateTokenHandler)
+	auth.Post("/validate", handlers.ValidateTokenHandler)
 }
