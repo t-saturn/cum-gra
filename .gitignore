@@ -9,6 +9,7 @@ dist/
 .vercel/
 .netlify/
 *.local
+bun.lock
 
 # ================================
 # ARCHIVOS DEL SISTEMA OPERATIVO
@@ -79,3 +80,6 @@ pb/
 coverage.txt
 coverage.out
 *.cover
+.bun.lock
+.pnpm-lock.yaml
+logs.txt
