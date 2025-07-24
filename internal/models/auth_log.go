@@ -46,9 +46,3 @@ type AuthLog struct {
 	Timestamp      time.Time           `bson:"timestamp"`
 	ProcessingTime int                 `bson:"processing_time,omitempty"` // en milisegundos
 }
-
-// credential_submit, credential_validation, credential_expired
-// token_generate, token_validate, token_refresh, token_invalidate, token_expire
-// session_create, session_extend, session_terminate, sso_login
-// login_attempt, login_success, logout, forced_logout
-// suspicious_activity, security_violation, device_change, location_change
