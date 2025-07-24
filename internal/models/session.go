@@ -19,18 +19,17 @@ type LocationDetail struct {
 
 // Información extendida del dispositivo
 type SessionDeviceInfo struct {
-	UserAgent        string          `bson:"user_agent,omitempty"`
-	IP               string          `bson:"ip,omitempty"`
-	DeviceID         string          `bson:"device_id,omitempty"`
-	BrowserName      string          `bson:"browser_name,omitempty"`
-	BrowserVersion   string          `bson:"browser_version,omitempty"`
-	OS               string          `bson:"os,omitempty"`
-	OSVersion        string          `bson:"os_version,omitempty"`
-	DeviceType       string          `bson:"device_type,omitempty"` // desktop, mobile, tablet
-	ScreenResolution string          `bson:"screen_resolution,omitempty"`
-	Timezone         string          `bson:"timezone,omitempty"`
-	Language         string          `bson:"language,omitempty"`
-	Location         *LocationDetail `bson:"location,omitempty"`
+	UserAgent      string          `bson:"user_agent,omitempty"`
+	IP             string          `bson:"ip,omitempty"`
+	DeviceID       string          `bson:"device_id,omitempty"`
+	BrowserName    string          `bson:"browser_name,omitempty"`
+	BrowserVersion string          `bson:"browser_version,omitempty"`
+	OS             string          `bson:"os,omitempty"`
+	OSVersion      string          `bson:"os_version,omitempty"`
+	DeviceType     string          `bson:"device_type,omitempty"` // desktop, mobile, tablet
+	Timezone       string          `bson:"timezone,omitempty"`
+	Language       string          `bson:"language,omitempty"`
+	Location       *LocationDetail `bson:"location,omitempty"`
 }
 
 // Métricas de la sesión

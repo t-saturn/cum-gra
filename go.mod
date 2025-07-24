@@ -7,7 +7,10 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.5
+	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
+	github.com/mssola/user_agent v0.6.0
+	github.com/mssola/useragent v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.20.1
 	go.mongodb.org/mongo-driver v1.17.4
@@ -15,7 +18,6 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
-	github.com/google/uuid v1.6.0
 )
 
 require (
