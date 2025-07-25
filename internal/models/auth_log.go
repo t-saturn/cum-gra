@@ -35,14 +35,18 @@ type AuthLog struct {
 	ID             primitive.ObjectID  `bson:"_id,omitempty"`
 	UserID         primitive.ObjectID  `bson:"user_id,omitempty"`
 	SessionID      *primitive.ObjectID `bson:"session_id,omitempty"`
-	CredentialID   string              `bson:"credential_id,omitempty"` // puede ser UUID
+	CredentialID   string              `bson:"credential_id,omitempty"`
 	TokenID        string              `bson:"token_id,omitempty"`
-	Action         string              `bson:"action,omitempty"` // ver lista estándar
+	Action         string              `bson:"action,omitempty"` // login, token_validation, captcha, etc.
 	Success        bool                `bson:"success,omitempty"`
 	ApplicationID  string              `bson:"application_id,omitempty"`
 	ApplicationURL string              `bson:"application_url,omitempty"`
-	Details        AuthLogDetails      `bson:"details,omitempty"`
-	DeviceInfo     DeviceInfo          `bson:"device_info,omitempty"`
 	Timestamp      time.Time           `bson:"timestamp"`
-	ProcessingTime int                 `bson:"processing_time,omitempty"` // en milisegundos
+	ProcessingTime int                 `bson:"processing_time,omitempty"`
+
+	DeviceInfo DeviceInfo     `bson:"device_info,omitempty"`
+	Details    AuthLogDetails `bson:"details,omitempty"`
+
+	// Nuevo: relación con el resultado del captcha
+	CaptchaLogID *primitive.ObjectID `bson:"captcha_log_id,omitempty"`
 }
