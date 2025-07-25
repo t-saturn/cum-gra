@@ -9,6 +9,7 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
+	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
@@ -34,6 +35,8 @@ func NewAuthService(db *gorm.DB) *AuthService {
 }
 
 func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResult, error) {
+	logger.Log.Debugf("Iniciando verificación de credenciales")
+
 	type UserData struct {
 		ID           uuid.UUID
 		Email        string
@@ -49,43 +52,54 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		Where("is_deleted = false").
 		Scopes(func(db *gorm.DB) *gorm.DB {
 			if input.Email != nil && *input.Email != "" {
+				logger.Log.Debugf("Consultando usuario por email: %s", *input.Email)
 				return db.Where("email = ?", *input.Email)
 			} else if input.DNI != nil && *input.DNI != "" {
+				logger.Log.Debugf("Consultando usuario por DNI: %s", *input.DNI)
 				return db.Where("dni = ?", *input.DNI)
 			}
+			logger.Log.Warn("No se proporcionó ni email ni DNI")
 			return db
 		}).
 		First(&user)
 
 	if tx.Error != nil {
 		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			logger.Log.Warn("Usuario no encontrado")
 			return nil, ErrInvalidCredentials
 		}
+		logger.Log.Errorf("Error consultando usuario: %v", tx.Error)
 		return nil, tx.Error
 	}
 
+	logger.Log.Debugf("Usuario encontrado: %s", user.ID)
+
 	if user.Status != "active" {
+		logger.Log.Warnf("Usuario con estado inactivo: %s", user.Status)
 		return nil, ErrInactiveAccount
 	}
 
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
+		logger.Log.Warn("Contraseña inválida")
 		return nil, ErrInvalidCredentials
 	}
+	logger.Log.Debug("Contraseña verificada correctamente")
 
-	// Generar tokens
 	accessToken, err := security.GenerateToken(user.ID.String(), 15*time.Minute)
 	if err != nil {
+		logger.Log.Errorf("Error generando access token: %v", err)
 		return nil, err
 	}
 	refreshToken, err := security.GenerateToken(user.ID.String(), 7*24*time.Hour)
 	if err != nil {
+		logger.Log.Errorf("Error generando refresh token: %v", err)
 		return nil, err
 	}
+	logger.Log.Debug("Tokens generados exitosamente")
 
-	// Registrar en MongoDB
 	now := time.Now()
-	userObjectID := primitive.NewObjectID() // Si sincronizas con Mongo, usa el real
+	userObjectID := primitive.NewObjectID()
 
 	authAttempt := models.AuthAttempt{
 		Method:        "credentials",
@@ -108,12 +122,15 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		},
 	}
 
+	logger.Log.Debug("Insertando AuthAttempt en MongoDB")
 	authCol := config.GetMongoCollection("auth_attempts")
 	insertRes, err := authCol.InsertOne(context.TODO(), authAttempt)
 	if err != nil {
+		logger.Log.Errorf("Error insertando AuthAttempt: %v", err)
 		return nil, err
 	}
 	authAttemptID := insertRes.InsertedID.(primitive.ObjectID)
+	logger.Log.Debugf("AuthAttempt creado con ID: %s", authAttemptID.Hex())
 
 	authLog := models.AuthLog{
 		UserID:        userObjectID,
@@ -128,8 +145,10 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 	logCol := config.GetMongoCollection("auth_logs")
 	_, err = logCol.InsertOne(context.TODO(), authLog)
 	if err != nil {
+		logger.Log.Errorf("Error insertando AuthLog: %v", err)
 		return nil, err
 	}
+	logger.Log.Debug("AuthLog insertado correctamente")
 
 	return &AuthResult{
 		UserID:       user.ID.String(),
@@ -138,7 +157,6 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 	}, nil
 }
 
-// deref devuelve el valor string o "" si es nil
 func deref(s *string) string {
 	if s == nil {
 		return ""
