@@ -15,6 +15,7 @@ const (
 	// Estados de autenticación
 	AuthStatusPending = "pending"
 	AuthStatusSuccess = "success"
+	AuthStatusInvalid = "invalid_credentials"
 	AuthStatusFailed  = "failed"
 	AuthStatusExpired = "expired"
 
