@@ -2,13 +2,6 @@ package dto
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-// AuthVerifyRequest representa la estructura de entrada para verificar credenciales de autenticación.
-type AuthVerifyRequest struct {
-	Email    *string `json:"email" validate:"omitempty,email"`
-	DNI      *string `json:"dni" validate:"omitempty,len=8"`
-	Password string  `json:"password" validate:"required"`
-}
-
 // AuthVerifyResponse representa la respuesta al verificar credenciales exitosamente, incluyendo el ID del usuario.
 type AuthVerifyResponse struct {
 	UserID       string `json:"user_id"`
@@ -31,24 +24,32 @@ type TokenValidationResponse struct {
 	ExpiresIn int64  `json:"expires_in,omitempty"` // en segundos
 }
 
-/** ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+type DeviceInfoDTO struct {
+	UserAgent   string `json:"user_agent" validate:"required"`
+	IP          string `json:"ip" validate:"required,ip"`
+	DeviceID    string `json:"device_id" validate:"omitempty"`
+	BrowserName string `json:"browser_name" validate:"omitempty"`
+	OS          string `json:"os" validate:"omitempty"`
+}
+
+// AuthVerifyRequest representa la solicitud de verificación de credenciales.
+type AuthVerifyRequest struct {
+	Email         *string       `json:"email,omitempty" validate:"omitempty,email"`
+	DNI           *string       `json:"dni,omitempty" validate:"omitempty,len=8,numeric"`
+	Password      string        `json:"password" validate:"required"`
+	ApplicationID string        `json:"application_id" validate:"required,uuid4"`
+	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required"`
+	CaptchaToken  *string       `json:"captcha_token,omitempty"`
+}
+
 // VerifyCredentialsDTO representa los datos necesarios para verificar credenciales de un usuario.
 type VerifyCredentialsDTO struct {
 	Email         string        `json:"email" validate:"omitempty,email"`       // email o dni requerido
 	DNI           string        `json:"dni" validate:"omitempty,len=8,numeric"` // email o dni requerido
 	Password      string        `json:"password" validate:"required,min=6,max=64"`
 	ApplicationID string        `json:"application_id" validate:"required,uuid4"`
-	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required,dive"`
+	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required"`
 	CaptchaToken  string        `json:"captcha_token,omitempty" validate:"omitempty"`
-}
-
-// DeviceInfoDTO representa los datos básicos del dispositivo usados para validación.
-type DeviceInfoDTO struct {
-	UserAgent   string `json:"user_agent" validate:"required"`
-	IP          string `json:"ip" validate:"required,ip"` // se puede usar `ip|ipv4|ipv6` según necesidad
-	DeviceID    string `json:"device_id" validate:"omitempty"`
-	BrowserName string `json:"browser_name" validate:"omitempty"`
-	OS          string `json:"os" validate:"omitempty"`
 }
 
 // VerifyCredentialsResponseDTO representa la respuesta al verificar credenciales del usuario.
