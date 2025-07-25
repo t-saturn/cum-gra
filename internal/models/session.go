@@ -54,3 +54,22 @@ type Session struct {
 	DeviceInfo SessionDeviceInfo `bson:"device_info,omitempty"`
 	Metrics    SessionMetrics    `bson:"metrics,omitempty"`
 }
+
+type CaptchaLog struct {
+	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	Token       string             `bson:"token"`                 // Token del captcha resuelto
+	Success     bool               `bson:"success"`               // ¿Validación exitosa?
+	ChallengeTS time.Time          `bson:"challenge_ts"`          // Hora del desafío
+	Hostname    string             `bson:"hostname"`              // Dominio desde el cual se resolvió
+	Action      string             `bson:"action,omitempty"`      // Acción definida (captcha v3)
+	CustomData  string             `bson:"cdata,omitempty"`       // Información contextual opcional
+	ErrorCodes  []string           `bson:"error_codes,omitempty"` // Errores del proveedor CAPTCHA
+	RemoteIP    string             `bson:"remote_ip"`             // IP del usuario
+	CreatedAt   time.Time          `bson:"created_at"`            // Hora de creación
+
+	// Relaciones
+	UserID        primitive.ObjectID  `bson:"user_id,omitempty"`        // Usuario que resolvió el captcha
+	SessionID     *primitive.ObjectID `bson:"session_id,omitempty"`     // Sesión activa, si existe
+	AuthLogID     *primitive.ObjectID `bson:"auth_log_id,omitempty"`    // Registro de log asociado
+	ApplicationID string              `bson:"application_id,omitempty"` // App desde la que se resolvió
+}
