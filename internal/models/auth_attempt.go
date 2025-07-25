@@ -23,7 +23,7 @@ type AuthAttempt struct {
 	PasswordHash string `bson:"password_hash,omitempty"`
 
 	// Si method = "token"
-	Token string `bson:"token,omitempty"` // idealmente guardado como hash
+	Token string `bson:"token,omitempty"`
 
 	DeviceInfo DeviceInfo `bson:"device_info,omitempty"`
 

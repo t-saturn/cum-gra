@@ -9,14 +9,14 @@ import (
 // Modelo de token unificado
 type Token struct {
 	ID        primitive.ObjectID  `bson:"_id,omitempty"`
-	TokenID   string              `bson:"token_id"` // jti
+	TokenID   string              `bson:"token_id"`
 	TokenHash string              `bson:"token_hash"`
 	UserID    primitive.ObjectID  `bson:"user_id"`
 	SessionID *primitive.ObjectID `bson:"session_id,omitempty"`
 
 	Status    string    `bson:"status"`           // active, invalid, expired, revoked
 	Reason    string    `bson:"reason,omitempty"` // user_logout, invalid_token, etc.
-	UpdatedAt time.Time `bson:"updated_at"`       // último cambio de estado
+	UpdatedAt time.Time `bson:"updated_at"`
 
 	TokenType string     `bson:"token_type"` // access, refresh
 	IssuedAt  time.Time  `bson:"issued_at"`
