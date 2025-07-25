@@ -9,7 +9,6 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
-	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
@@ -35,8 +34,6 @@ func NewAuthService(db *gorm.DB) *AuthService {
 }
 
 func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResult, error) {
-	logger.Log.Debugf("Iniciando verificación de credenciales")
-
 	type UserData struct {
 		ID           uuid.UUID
 		Email        string
@@ -47,54 +44,45 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 	}
 
 	var user UserData
-	var status string = "success"
+	status := models.AuthStatusSuccess
 	var userID uuid.UUID
 
 	tx := s.DB.Table("users").
 		Where("is_deleted = false").
 		Scopes(func(db *gorm.DB) *gorm.DB {
 			if input.Email != nil && *input.Email != "" {
-				logger.Log.Debugf("Consultando usuario por email: %s", *input.Email)
 				return db.Where("email = ?", *input.Email)
 			} else if input.DNI != nil && *input.DNI != "" {
-				logger.Log.Debugf("Consultando usuario por DNI: %s", *input.DNI)
 				return db.Where("dni = ?", *input.DNI)
 			}
-			logger.Log.Warn("No se proporcionó ni email ni DNI")
-			status = "missing_identifier"
+			status = models.AuthStatusFailed
 			return db
 		}).
 		First(&user)
 
 	if tx.Error != nil {
 		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			status = "invalid_credentials"
+			status = models.AuthStatusInvalid
 		} else {
-			logger.Log.Errorf("Error consultando usuario: %v", tx.Error)
-			status = "db_error"
+			status = models.AuthStatusFailed
 		}
 	} else {
 		userID = user.ID
 		if user.Status != "active" {
-			logger.Log.Warnf("Usuario con estado inactivo: %s", user.Status)
-			status = "inactive_account"
+			status = models.AuthStatusFailed
 		} else {
 			argon := security.NewArgon2Service()
 			if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
-				logger.Log.Warn("Contraseña inválida")
-				status = "invalid_credentials"
+				status = models.AuthStatusInvalid
 			} else {
-				logger.Log.Debug("Contraseña verificada correctamente")
-				status = "success"
+				status = models.AuthStatusSuccess
 			}
 		}
 	}
 
 	now := time.Now()
-	userObjectID := primitive.NewObjectID()
-
 	authAttempt := models.AuthAttempt{
-		Method:        "credentials",
+		Method:        models.AuthMethodCredentials,
 		Status:        status,
 		ApplicationID: input.ApplicationID,
 		Email:         deref(input.Email),
@@ -108,23 +96,22 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		CreatedAt:   now,
 		ValidatedAt: &now,
 		ValidationResponse: &models.ValidationResponse{
-			UserID:         userObjectID,
-			ValidatedBy:    "credentials",
+			UserID:         primitive.NewObjectID(),
+			ValidatedBy:    models.AuthMethodCredentials,
 			ValidationTime: 0,
 		},
 	}
-
 	authCol := config.GetMongoCollection("auth_attempts")
 	_, err := authCol.InsertOne(context.TODO(), authAttempt)
 	if err != nil {
-		logger.Log.Errorf("Error insertando AuthAttempt: %v", err)
 		return nil, err
 	}
 
-	if status != "success" {
-		if status == "invalid_credentials" {
+	if status != models.AuthStatusSuccess {
+		switch status {
+		case models.AuthStatusInvalid:
 			return nil, ErrInvalidCredentials
-		} else if status == "inactive_account" {
+		case models.AuthStatusFailed:
 			return nil, ErrInactiveAccount
 		}
 		return nil, errors.New("fallo de autenticación")
@@ -132,12 +119,10 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 
 	accessToken, err := security.GenerateToken(userID.String(), 15*time.Minute)
 	if err != nil {
-		logger.Log.Errorf("Error generando access token: %v", err)
 		return nil, err
 	}
 	refreshToken, err := security.GenerateToken(userID.String(), 7*24*time.Hour)
 	if err != nil {
-		logger.Log.Errorf("Error generando refresh token: %v", err)
 		return nil, err
 	}
 
