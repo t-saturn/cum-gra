@@ -48,7 +48,6 @@ const (
 )
 
 // --- TIPOS BÁSICOS ---
-
 // Coordenadas geográficas [longitud, latitud]
 type Coordinates [2]float64
 
@@ -99,7 +98,6 @@ type SessionDeviceInfo struct {
 }
 
 // --- CAPTCHA ---
-
 // Log de validación de CAPTCHA
 type CaptchaLog struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
@@ -121,7 +119,6 @@ type CaptchaLog struct {
 }
 
 // --- RESPUESTA DE VALIDACIÓN ---
-
 // Respuesta del servicio de validación
 type ValidationResponse struct {
 	UserID          primitive.ObjectID `bson:"user_id,omitempty"`
@@ -131,7 +128,6 @@ type ValidationResponse struct {
 }
 
 // --- MÉTRICAS ---
-
 // Métricas de sesión
 type SessionMetrics struct {
 	TotalRequests        int    `bson:"total_requests"`
