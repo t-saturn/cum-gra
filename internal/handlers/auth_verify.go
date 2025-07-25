@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/validator"
@@ -33,16 +34,16 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		switch err {
 		case services.ErrInvalidCredentials:
 			return c.Status(http.StatusUnauthorized).JSON(dto.ErrorResponse{
-				Error: "Credenciales inválidas",
+				Error: models.AuthStatusInvalid,
 			})
 		case services.ErrInactiveAccount:
 			return c.Status(http.StatusUnauthorized).JSON(dto.ErrorResponse{
-				Error: "Cuenta inactiva",
+				Error: models.SessionStatusInactive, // O usar un mensaje personalizado como "inactive_account"
 			})
 		default:
 			logger.Log.Errorf("Error en autenticación: %v", err)
 			return c.Status(http.StatusInternalServerError).JSON(dto.ErrorResponse{
-				Error: "Error interno del servidor",
+				Error: models.AuthStatusFailed,
 			})
 		}
 	}
