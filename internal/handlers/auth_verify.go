@@ -27,8 +27,8 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	}
 
 	authService := services.NewAuthService(config.GetPostgresDB())
-
 	result, err := authService.VerifyCredentials(input)
+
 	if err != nil {
 		switch err {
 		case services.ErrInvalidCredentials:
@@ -46,8 +46,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 			})
 		}
 	}
-
-	// TODO: Crear sesión y logs en MongoDB
 
 	return c.Status(http.StatusOK).JSON(dto.AuthVerifyResponse{
 		UserID:       result.UserID,

@@ -47,6 +47,8 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 	}
 
 	var user UserData
+	var status string = "success"
+	var userID uuid.UUID
 
 	tx := s.DB.Table("users").
 		Where("is_deleted = false").
@@ -59,51 +61,41 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 				return db.Where("dni = ?", *input.DNI)
 			}
 			logger.Log.Warn("No se proporcionó ni email ni DNI")
+			status = "missing_identifier"
 			return db
 		}).
 		First(&user)
 
 	if tx.Error != nil {
 		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			logger.Log.Warn("Usuario no encontrado")
-			return nil, ErrInvalidCredentials
+			status = "invalid_credentials"
+		} else {
+			logger.Log.Errorf("Error consultando usuario: %v", tx.Error)
+			status = "db_error"
 		}
-		logger.Log.Errorf("Error consultando usuario: %v", tx.Error)
-		return nil, tx.Error
+	} else {
+		userID = user.ID
+		if user.Status != "active" {
+			logger.Log.Warnf("Usuario con estado inactivo: %s", user.Status)
+			status = "inactive_account"
+		} else {
+			argon := security.NewArgon2Service()
+			if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
+				logger.Log.Warn("Contraseña inválida")
+				status = "invalid_credentials"
+			} else {
+				logger.Log.Debug("Contraseña verificada correctamente")
+				status = "success"
+			}
+		}
 	}
-
-	logger.Log.Debugf("Usuario encontrado: %s", user.ID)
-
-	if user.Status != "active" {
-		logger.Log.Warnf("Usuario con estado inactivo: %s", user.Status)
-		return nil, ErrInactiveAccount
-	}
-
-	argon := security.NewArgon2Service()
-	if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
-		logger.Log.Warn("Contraseña inválida")
-		return nil, ErrInvalidCredentials
-	}
-	logger.Log.Debug("Contraseña verificada correctamente")
-
-	accessToken, err := security.GenerateToken(user.ID.String(), 15*time.Minute)
-	if err != nil {
-		logger.Log.Errorf("Error generando access token: %v", err)
-		return nil, err
-	}
-	refreshToken, err := security.GenerateToken(user.ID.String(), 7*24*time.Hour)
-	if err != nil {
-		logger.Log.Errorf("Error generando refresh token: %v", err)
-		return nil, err
-	}
-	logger.Log.Debug("Tokens generados exitosamente")
 
 	now := time.Now()
 	userObjectID := primitive.NewObjectID()
 
 	authAttempt := models.AuthAttempt{
 		Method:        "credentials",
-		Status:        "success",
+		Status:        status,
 		ApplicationID: input.ApplicationID,
 		Email:         deref(input.Email),
 		DeviceInfo: models.DeviceInfo{
@@ -122,36 +114,35 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		},
 	}
 
-	logger.Log.Debug("Insertando AuthAttempt en MongoDB")
 	authCol := config.GetMongoCollection("auth_attempts")
-	insertRes, err := authCol.InsertOne(context.TODO(), authAttempt)
+	_, err := authCol.InsertOne(context.TODO(), authAttempt)
 	if err != nil {
 		logger.Log.Errorf("Error insertando AuthAttempt: %v", err)
 		return nil, err
 	}
-	authAttemptID := insertRes.InsertedID.(primitive.ObjectID)
-	logger.Log.Debugf("AuthAttempt creado con ID: %s", authAttemptID.Hex())
 
-	authLog := models.AuthLog{
-		UserID:        userObjectID,
-		AuthAttemptID: &authAttemptID,
-		Action:        "login",
-		Success:       true,
-		ApplicationID: input.ApplicationID,
-		Timestamp:     now,
-		DeviceInfo:    authAttempt.DeviceInfo,
+	if status != "success" {
+		if status == "invalid_credentials" {
+			return nil, ErrInvalidCredentials
+		} else if status == "inactive_account" {
+			return nil, ErrInactiveAccount
+		}
+		return nil, errors.New("fallo de autenticación")
 	}
 
-	logCol := config.GetMongoCollection("auth_logs")
-	_, err = logCol.InsertOne(context.TODO(), authLog)
+	accessToken, err := security.GenerateToken(userID.String(), 15*time.Minute)
 	if err != nil {
-		logger.Log.Errorf("Error insertando AuthLog: %v", err)
+		logger.Log.Errorf("Error generando access token: %v", err)
 		return nil, err
 	}
-	logger.Log.Debug("AuthLog insertado correctamente")
+	refreshToken, err := security.GenerateToken(userID.String(), 7*24*time.Hour)
+	if err != nil {
+		logger.Log.Errorf("Error generando refresh token: %v", err)
+		return nil, err
+	}
 
 	return &AuthResult{
-		UserID:       user.ID.String(),
+		UserID:       userID.String(),
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil

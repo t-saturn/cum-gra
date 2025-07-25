@@ -136,32 +136,3 @@ type SessionMetrics struct {
 	LastApplicationUsed  string `bson:"last_application_used,omitempty"`
 	SessionDuration      int64  `bson:"session_duration"` // en segundos
 }
-
-// Detalles específicos del evento de autenticación
-type AuthLogDetails struct {
-	// Para credential_validation
-	CredentialStatus string `bson:"credential_status,omitempty"` // pending, correct, invalid, expired
-	ValidationTime   int    `bson:"validation_time,omitempty"`   // ms
-
-	// Para token_validation
-	TokenType    string `bson:"token_type,omitempty"`
-	Refreshed    bool   `bson:"refreshed,omitempty"`
-	RefreshCount int    `bson:"refresh_count,omitempty"`
-
-	// Para errores
-	ErrorCode    string `bson:"error_code,omitempty"`
-	ErrorMessage string `bson:"error_message,omitempty"`
-
-	// Para logout
-	LogoutType string `bson:"logout_type,omitempty"` // user_initiated, session_expired...
-
-	// Información adicional
-	UserAgent          string `bson:"user_agent,omitempty"`
-	PreviousIP         string `bson:"previous_ip,omitempty"`
-	SuspiciousActivity bool   `bson:"suspicious_activity,omitempty"`
-
-	// Nueva información para seguridad
-	FailedAttempts  int  `bson:"failed_attempts,omitempty"`
-	LocationChanged bool `bson:"location_changed,omitempty"`
-	DeviceChanged   bool `bson:"device_changed,omitempty"`
-}

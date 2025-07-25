@@ -51,33 +51,3 @@ type AuthAttempt struct {
 	ErrorMessage   string `bson:"error_message,omitempty"`   // Mensaje de error
 	Notes          string `bson:"notes,omitempty"`           // Notas adicionales
 }
-
-// Log completo de autenticación (para auditoría)
-type AuthLog struct {
-	ID            primitive.ObjectID  `bson:"_id,omitempty"`
-	UserID        primitive.ObjectID  `bson:"user_id,omitempty"`
-	SessionID     *primitive.ObjectID `bson:"session_id,omitempty"`
-	AuthAttemptID *primitive.ObjectID `bson:"auth_attempt_id,omitempty"` // Referencia al intento
-	CredentialID  string              `bson:"credential_id,omitempty"`
-	TokenID       string              `bson:"token_id,omitempty"`
-
-	Action         string `bson:"action,omitempty"` // login, token_validation, captcha, logout, etc.
-	Success        bool   `bson:"success,omitempty"`
-	ApplicationID  string `bson:"application_id,omitempty"`
-	ApplicationURL string `bson:"application_url,omitempty"`
-
-	Timestamp      time.Time `bson:"timestamp"`
-	ProcessingTime int       `bson:"processing_time,omitempty"` // ms
-
-	DeviceInfo DeviceInfo     `bson:"device_info,omitempty"`
-	Details    AuthLogDetails `bson:"details,omitempty"`
-
-	// Relaciones adicionales
-	CaptchaLogID *primitive.ObjectID `bson:"captcha_log_id,omitempty"`
-	TokenLogID   *primitive.ObjectID `bson:"token_log_id,omitempty"` // Referencia al token usado
-
-	// Campos de auditoría
-	RequestID string `bson:"request_id,omitempty"` // ID único de la request
-	TraceID   string `bson:"trace_id,omitempty"`   // ID de trace distribuido
-	SpanID    string `bson:"span_id,omitempty"`    // ID del span
-}
