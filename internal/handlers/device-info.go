@@ -13,7 +13,7 @@ import (
 
 func DeviceInfo(c fiber.Ctx) error {
 	// 1. Llamar a httpbin.org/get
-	httpbinResp, err := http.Get("https://httpbin.org/get")
+	httpbinResp, err := http.Get("https://httpbun.com/get")
 	if err != nil {
 		log.Println("Error llamando a httpbin:", err)
 		return c.Status(500).SendString("Error al obtener datos de httpbin")
