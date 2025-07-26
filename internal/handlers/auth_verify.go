@@ -38,7 +38,7 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 			})
 		case services.ErrInactiveAccount:
 			return c.Status(http.StatusUnauthorized).JSON(dto.ErrorResponse{
-				Error: models.SessionStatusInactive, // O usar un mensaje personalizado como "inactive_account"
+				Error: models.SessionStatusInactive,
 			})
 		default:
 			logger.Log.Errorf("Error en autenticación: %v", err)
