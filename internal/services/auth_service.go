@@ -10,7 +10,6 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/pkg/security"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gorm.io/gorm"
 )
 
@@ -46,7 +45,6 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 	var user UserData
 	status := models.AuthStatusSuccess
 	var userID uuid.UUID
-
 	tx := s.DB.Table("users").
 		Where("is_deleted = false").
 		Scopes(func(db *gorm.DB) *gorm.DB {
@@ -96,10 +94,15 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		CreatedAt:   now,
 		ValidatedAt: &now,
 		ValidationResponse: &models.ValidationResponse{
-			UserID:         primitive.NewObjectID(),
-			ValidatedBy:    models.AuthMethodCredentials,
-			ValidationTime: 0,
+			UserID:          "",
+			ServiceResponse: status,
+			ValidatedBy:     models.AuthMethodCredentials,
+			ValidationTime:  0,
 		},
+	}
+
+	if status == models.AuthStatusSuccess {
+		authAttempt.ValidationResponse.UserID = userID.String()
 	}
 	authCol := config.GetMongoCollection("auth_attempts")
 	_, err := authCol.InsertOne(context.TODO(), authAttempt)

@@ -122,10 +122,10 @@ type CaptchaLog struct {
 // --- RESPUESTA DE VALIDACIÓN ---
 // Respuesta del servicio de validación
 type ValidationResponse struct {
-	UserID          primitive.ObjectID `bson:"user_id,omitempty"`
-	ServiceResponse string             `bson:"service_response,omitempty"`
-	ValidatedBy     string             `bson:"validated_by,omitempty"`
-	ValidationTime  int                `bson:"validation_time,omitempty"` // tiempo en ms
+	UserID          string `bson:"user_id,omitempty"`
+	ServiceResponse string `bson:"service_response,omitempty"`
+	ValidatedBy     string `bson:"validated_by,omitempty"`
+	ValidationTime  int    `bson:"validation_time,omitempty"` // tiempo en ms
 }
 
 // --- MÉTRICAS ---
