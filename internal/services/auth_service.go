@@ -3,13 +3,14 @@ package services
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
+	repository "github.com/t-saturn/auth-service-server/internal/repositories"
+	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
+	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -33,55 +34,47 @@ func NewAuthService(db *gorm.DB) *AuthService {
 }
 
 func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResult, error) {
-	type UserData struct {
-		ID           uuid.UUID
-		Email        string
-		PasswordHash string
-		DNI          string
-		Status       string
-		IsDeleted    bool
-	}
-
-	var user UserData
-	status := models.AuthStatusSuccess
-	var userID uuid.UUID
-	tx := s.DB.Table("users").
-		Where("is_deleted = false").
-		Scopes(func(db *gorm.DB) *gorm.DB {
-			if input.Email != nil && *input.Email != "" {
-				return db.Where("email = ?", *input.Email)
-			} else if input.DNI != nil && *input.DNI != "" {
-				return db.Where("dni = ?", *input.DNI)
-			}
-			status = models.AuthStatusFailed
-			return db
-		}).
-		First(&user)
-
-	if tx.Error != nil {
-		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			status = models.AuthStatusInvalid
-		} else {
-			status = models.AuthStatusFailed
-		}
-	} else {
-		userID = user.ID
-		if user.Status != "active" {
-			status = models.AuthStatusFailed
-		} else {
-			argon := security.NewArgon2Service()
-			if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
-				status = models.AuthStatusInvalid
-			} else {
-				status = models.AuthStatusSuccess
-			}
+	// 1) Buscar usuario usando el repositorio
+	userRepo := repository.NewUserRepository(s.DB)
+	userData, err := userRepo.FindActiveByEmailOrDNI(context.Background(), input.Email, input.DNI)
+	if err != nil {
+		switch {
+		case errors.Is(err, repository.ErrUserDeleted):
+			// El repo detectó is_deleted = true
+			return nil, ErrInactiveAccount
+		case errors.Is(err, repository.ErrUserDisabled):
+			// El repo detectó status != "active"
+			return nil, ErrInactiveAccount
+		case errors.Is(err, gorm.ErrRecordNotFound):
+			// No existe ningún usuario con ese email/DNI
+			return nil, ErrInvalidCredentials
+		default:
+			return nil, err
 		}
 	}
 
-	now := time.Now()
+	// 2) Verificar la contraseña
+	argon := security.NewArgon2Service()
+	if !argon.CheckPasswordHash(input.Password, userData.PasswordHash) {
+		return nil, ErrInvalidCredentials
+	}
+
+	// 3) Generar tokens JWE
+	accessToken, err := security.GenerateAccessToken(userData.ID.String())
+	if err != nil {
+		return nil, err
+	}
+	refreshToken, err := security.GenerateRefreshToken(userData.ID.String())
+	if err != nil {
+		return nil, err
+	}
+
+	// 4) Registrar el intento en MongoDB
+	now := utils.NowUTC()
+
 	authAttempt := models.AuthAttempt{
 		Method:        models.AuthMethodCredentials,
-		Status:        status,
+		Status:        models.AuthStatusSuccess,
 		ApplicationID: input.ApplicationID,
 		Email:         deref(input.Email),
 		DeviceInfo: models.DeviceInfo{
@@ -94,48 +87,24 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		CreatedAt:   now,
 		ValidatedAt: &now,
 		ValidationResponse: &models.ValidationResponse{
-			UserID:          "",
-			ServiceResponse: status,
+			UserID:          userData.ID.String(),
+			ServiceResponse: models.AuthStatusSuccess,
 			ValidatedBy:     models.AuthMethodCredentials,
 			ValidationTime:  0,
 		},
 	}
-
-	if status == models.AuthStatusSuccess {
-		authAttempt.ValidationResponse.UserID = userID.String()
-	}
 	authCol := config.GetMongoCollection("auth_attempts")
-	_, err := authCol.InsertOne(context.TODO(), authAttempt)
-	if err != nil {
-		return nil, err
+	if _, err := authCol.InsertOne(context.Background(), authAttempt); err != nil {
+		logger.Log.Errorf("Error guardando auth attempt en Mongo: %v", err)
 	}
 
-	if status != models.AuthStatusSuccess {
-		switch status {
-		case models.AuthStatusInvalid:
-			return nil, ErrInvalidCredentials
-		case models.AuthStatusFailed:
-			return nil, ErrInactiveAccount
-		}
-		return nil, errors.New("fallo de autenticación")
-	}
-
-	accessToken, err := security.GenerateAccessToken(userID.String())
-	if err != nil {
-		return nil, err
-	}
-	refreshToken, err := security.GenerateRefreshToken(userID.String())
-	if err != nil {
-		return nil, err
-	}
-
+	// 5) Devolver resultado exitoso
 	return &AuthResult{
-		UserID:       userID.String(),
+		UserID:       userData.ID.String(),
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
-
 func deref(s *string) string {
 	if s == nil {
 		return ""

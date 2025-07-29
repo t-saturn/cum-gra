@@ -6,10 +6,10 @@
 
 | Función                                                          | Retorno              |
 | ---------------------------------------------------------------- | -------------------- |
-| \* `HashPassword(password string)`                               | `(string, error)`    |
-| \* `CheckPasswordHash(password, encodedHash string)`             | `bool`               |
-| \* `GenerateAccessToken(userID string)`                          | `(string, error)`    |
-| \* `GenerateRefreshToken(userID string)`                         | `(string, error)`    |
+| `HashPassword(password string)`                                  | `(string, error)`    |
+| `CheckPasswordHash(password, encodedHash string)`                | `bool`               |
+| `GenerateAccessToken(userID string)`                             | `(string, error)`    |
+| `GenerateRefreshToken(userID string)`                            | `(string, error)`    |
 | `NowUTC()`                                                       | `time.Time`          |
 | `ParseISOTime(s string)`                                         | `(time.Time, error)` |
 | `JSON(w http.ResponseWriter, status int, payload interface{})`   | `void`               |
@@ -21,8 +21,7 @@
 
 | Repositorio               | Función                                                                                                              | Retorno                        |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| **UserRepository**        | `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                    | `(*models.User, error)`        |
-|                           | `CreateUser(ctx context.Context, u *models.User)`                                                                    | `(uuid.UUID, error)`           |
+| **UserRepository**        | `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                    | `(*UserData, error)`           |
 | **AuthAttemptRepository** | `Insert(ctx context.Context, a *models.AuthAttempt)`                                                                 | `error`                        |
 | **SessionRepository**     | `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)`  |
 |                           | `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`     |

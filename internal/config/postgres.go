@@ -13,7 +13,7 @@ var PostgresDB *gorm.DB
 
 // ConnectPostgres establece la conexión a la base de datos PostgreSQL utilizando los datos de configuración.
 func ConnectPostgres() {
-	cfg := GetConfig() // Obtiene la configuración global
+	cfg := GetConfig()
 
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
