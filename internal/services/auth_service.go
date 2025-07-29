@@ -120,11 +120,11 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		return nil, errors.New("fallo de autenticación")
 	}
 
-	accessToken, err := security.GenerateToken(userID.String(), 15*time.Minute)
+	accessToken, err := security.GenerateAccessToken(userID.String())
 	if err != nil {
 		return nil, err
 	}
-	refreshToken, err := security.GenerateToken(userID.String(), 7*24*time.Hour)
+	refreshToken, err := security.GenerateRefreshToken(userID.String())
 	if err != nil {
 		return nil, err
 	}
