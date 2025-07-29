@@ -52,13 +52,6 @@ const (
 // Coordenadas geográficas [longitud, latitud]
 type Coordinates [2]float64
 
-// Información de ubicación básica
-type Location struct {
-	Country     string      `bson:"country,omitempty"`
-	City        string      `bson:"city,omitempty"`
-	Coordinates Coordinates `bson:"coordinates,omitempty"`
-}
-
 // Información de ubicación detallada
 type LocationDetail struct {
 	Country      string      `bson:"country,omitempty"`
@@ -70,21 +63,8 @@ type LocationDetail struct {
 	Organization string      `bson:"organization,omitempty"`
 }
 
-// Información básica del dispositivo
-type DeviceInfo struct {
-	UserAgent      string    `bson:"user_agent,omitempty"`
-	IP             string    `bson:"ip,omitempty"`
-	DeviceID       string    `bson:"device_id,omitempty"`
-	BrowserName    string    `bson:"browser_name,omitempty"`
-	BrowserVersion string    `bson:"browser_version,omitempty"`
-	OS             string    `bson:"os,omitempty"`
-	OSVersion      string    `bson:"os_version,omitempty"`
-	DeviceType     string    `bson:"device_type,omitempty"`
-	Location       *Location `bson:"location,omitempty"`
-}
-
 // Información extendida del dispositivo para sesiones
-type SessionDeviceInfo struct {
+type DeviceInfo struct {
 	UserAgent      string          `bson:"user_agent,omitempty"`
 	IP             string          `bson:"ip,omitempty"`
 	DeviceID       string          `bson:"device_id,omitempty"`
@@ -113,7 +93,7 @@ type CaptchaLog struct {
 	CreatedAt   time.Time          `bson:"created_at"`
 
 	// Relaciones
-	UserID        primitive.ObjectID  `bson:"user_id,omitempty"`
+	UserID        string              `bson:"user_id,omitempty"`
 	SessionID     *primitive.ObjectID `bson:"session_id,omitempty"`
 	AuthAttemptID *primitive.ObjectID `bson:"auth_attempt_id,omitempty"`
 	ApplicationID string              `bson:"application_id,omitempty"`
@@ -126,14 +106,4 @@ type ValidationResponse struct {
 	ServiceResponse string `bson:"service_response,omitempty"`
 	ValidatedBy     string `bson:"validated_by,omitempty"`
 	ValidationTime  int    `bson:"validation_time,omitempty"` // tiempo en ms
-}
-
-// --- MÉTRICAS ---
-// Métricas de sesión
-type SessionMetrics struct {
-	TotalRequests        int    `bson:"total_requests"`
-	TotalTokenRefreshes  int    `bson:"total_token_refreshes"`
-	ApplicationsAccessed int    `bson:"applications_accessed"`
-	LastApplicationUsed  string `bson:"last_application_used,omitempty"`
-	SessionDuration      int64  `bson:"session_duration"` // en segundos
 }

@@ -14,7 +14,7 @@ import (
 )
 
 func VerifyCredentialsHandler(c fiber.Ctx) error {
-	var input dto.AuthVerifyRequest
+	var input dto.AuthVerifyRequestDTO
 
 	// Bindear el cuerpo JSON
 	if err := c.Bind().Body(&input); err != nil {
@@ -43,7 +43,7 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	}
 
 	// Respuesta exitosa
-	return utils.JSON(c, http.StatusOK, dto.AuthVerifyResponse{
+	return utils.JSON(c, http.StatusOK, dto.AuthVerifyResponseDTO{
 		UserID:       result.UserID,
 		AccessToken:  result.AccessToken,
 		RefreshToken: result.RefreshToken,

@@ -33,7 +33,7 @@ func NewAuthService(db *gorm.DB) *AuthService {
 	return &AuthService{DB: db}
 }
 
-func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResult, error) {
+func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthResult, error) {
 	// 1) Buscar usuario usando el repositorio
 	userRepo := repository.NewUserRepository(s.DB)
 	userData, err := userRepo.FindActiveByEmailOrDNI(context.Background(), input.Email, input.DNI)
@@ -78,11 +78,27 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		ApplicationID: input.ApplicationID,
 		Email:         deref(input.Email),
 		DeviceInfo: models.DeviceInfo{
-			UserAgent:   input.DeviceInfo.UserAgent,
-			IP:          input.DeviceInfo.IP,
-			DeviceID:    input.DeviceInfo.DeviceID,
-			OS:          input.DeviceInfo.OS,
-			BrowserName: input.DeviceInfo.BrowserName,
+			UserAgent:      input.DeviceInfo.UserAgent,
+			IP:             input.DeviceInfo.IP,
+			DeviceID:       input.DeviceInfo.DeviceID,
+			OS:             input.DeviceInfo.OS,
+			OSVersion:      input.DeviceInfo.OSVersion,
+			BrowserName:    input.DeviceInfo.BrowserName,
+			BrowserVersion: input.DeviceInfo.BrowserVersion,
+			DeviceType:     input.DeviceInfo.DeviceType,
+			Timezone:       input.DeviceInfo.Timezone,
+			Language:       input.DeviceInfo.Language,
+			Location: &models.LocationDetail{
+				Country:     input.DeviceInfo.Location.Country,
+				CountryCode: input.DeviceInfo.Location.CountryCode,
+				Region:      input.DeviceInfo.Location.Region,
+				City:        input.DeviceInfo.Location.City,
+				Coordinates: models.Coordinates{
+					input.DeviceInfo.Location.Coordinates[0],
+					input.DeviceInfo.Location.Coordinates[1]},
+				ISP:          input.DeviceInfo.Location.ISP,
+				Organization: input.DeviceInfo.Location.Organization,
+			},
 		},
 		CreatedAt:   now,
 		ValidatedAt: &now,
@@ -105,6 +121,7 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequest) (*AuthResul
 		RefreshToken: refreshToken,
 	}, nil
 }
+
 func deref(s *string) string {
 	if s == nil {
 		return ""

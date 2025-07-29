@@ -12,18 +12,18 @@ import (
 
 // ValidateTokenHandler recibe un token y devuelve información si es válido
 func ValidateTokenHandler(c fiber.Ctx) error {
-	var req dto.TokenValidationRequest
+	var req dto.TokenValidationRequestDTO
 
 	if err := c.Bind().Body(&req); err != nil {
 		logger.Log.Warnf("Body inválido: %v", err)
-		return c.Status(fiber.StatusBadRequest).JSON(dto.TokenValidationResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(dto.TokenValidationResponseDTO{
 			Valid:   false,
 			Message: "Body inválido",
 		})
 	}
 
 	if err := validator.Validate.Struct(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(dto.TokenValidationResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(dto.TokenValidationResponseDTO{
 			Valid:   false,
 			Message: "Token requerido",
 		})
@@ -41,7 +41,7 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 		// Diferenciar entre expirado e inválido
 		switch result.Code {
 		case 0: // válido
-			return c.Status(fiber.StatusOK).JSON(dto.TokenValidationResponse{
+			return c.Status(fiber.StatusOK).JSON(dto.TokenValidationResponseDTO{
 				Valid:     true,
 				Message:   "Token válido",
 				Subject:   result.Claims.Subject,
@@ -50,7 +50,7 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 				ExpiresIn: expiresIn,
 			})
 		case 2: // expirado pero válido
-			return c.Status(fiber.StatusUnauthorized).JSON(dto.TokenValidationResponse{
+			return c.Status(fiber.StatusUnauthorized).JSON(dto.TokenValidationResponseDTO{
 				Valid:     false,
 				Message:   "Token expirado",
 				Subject:   result.Claims.Subject,
@@ -62,7 +62,7 @@ func ValidateTokenHandler(c fiber.Ctx) error {
 	}
 
 	// No se pudo obtener claims (token inválido o clave incorrecta)
-	return c.Status(fiber.StatusUnauthorized).JSON(dto.TokenValidationResponse{
+	return c.Status(fiber.StatusUnauthorized).JSON(dto.TokenValidationResponseDTO{
 		Valid:   false,
 		Message: result.Message,
 	})
