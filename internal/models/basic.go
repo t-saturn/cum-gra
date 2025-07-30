@@ -1,11 +1,5 @@
 package models
 
-import (
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 // Constantes para estados y tipos
 const (
 	// Métodos de autenticación
@@ -76,27 +70,6 @@ type DeviceInfo struct {
 	Timezone       string          `bson:"timezone,omitempty"`
 	Language       string          `bson:"language,omitempty"`
 	Location       *LocationDetail `bson:"location,omitempty"`
-}
-
-// --- CAPTCHA ---
-// Log de validación de CAPTCHA
-type Captcha struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	Token       string             `bson:"token"`
-	Success     bool               `bson:"success"`
-	ChallengeTS time.Time          `bson:"challenge_ts"`
-	Hostname    string             `bson:"hostname"`
-	Action      string             `bson:"action,omitempty"`
-	CustomData  string             `bson:"cdata,omitempty"`
-	ErrorCodes  []string           `bson:"error_codes,omitempty"`
-	RemoteIP    string             `bson:"remote_ip"`
-	CreatedAt   time.Time          `bson:"created_at"`
-
-	// Relaciones
-	UserID        string              `bson:"user_id,omitempty"`
-	SessionID     *primitive.ObjectID `bson:"session_id,omitempty"`
-	AuthAttemptID *primitive.ObjectID `bson:"auth_attempt_id,omitempty"`
-	ApplicationID string              `bson:"application_id,omitempty"`
 }
 
 // --- RESPUESTA DE VALIDACIÓN ---

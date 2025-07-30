@@ -30,23 +30,22 @@
 |                           | 🔸 `FindByID(ctx context.Context, tokenID string)`                                                                      | `(*models.Token, error)`      |
 |                           | 🔸 `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time, lastUsed *time.Time)` | `error`                       |
 |                           | 🔸 `IncrementRefreshCount(ctx context.Context, id primitive.ObjectID)`                                                  | `error`                       |
-| **CaptchaRepository**     | 🔸 `Insert(ctx context.Context, c *models.CaptchaLog)`                                                                  | `error`                       |
 
 ---
 
 ### 1.3 `services/` (casos de uso reutilizables)
 
-| Servicio           | Método                                                    | Retorno                          |
-| ------------------ | --------------------------------------------------------- | -------------------------------- |
-| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequest)`  | `(*dto.VerifyResponse, error)`   |
-|                    | `Login(ctx, input dto.AuthLoginRequest)`                  | `(*dto.LoginResponse, error)`    |
-|                    | `Logout(ctx, token string, input dto.LogoutRequest)`      | `(*dto.LogoutResponse, error)`   |
-|                    | `RefreshToken(ctx, input dto.RefreshRequest)`             | `(*dto.RefreshResponse, error)`  |
-|                    | `ValidateToken(ctx, input dto.ValidateRequest)`           | `(*dto.ValidateResponse, error)` |
-| **SessionService** | `GetCurrent(ctx, token string)`                           | `(*dto.SessionResponse, error)`  |
-|                    | `List(ctx, userID string, params dto.ListSessionsParams)` | `([]dto.SessionInfo, error)`     |
-|                    | `Revoke(ctx, userID, sessionID string)`                   | `(*dto.RevokeResponse, error)`   |
-| **HealthService**  | `Check(ctx context.Context)`                              | `(*dto.HealthResponse, error)`   |
+| Servicio           | Método                                                      | Retorno                             |
+| ------------------ | ----------------------------------------------------------- | ----------------------------------- |
+| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequestDTO)` | `(*dto.VerifyResponseDTO, error)`   |
+|                    | `Login(ctx, input dto.AuthLoginRequestDTO)`                 | `(*dto.LoginResponseDTO, error)`    |
+|                    | `Logout(ctx, token string, input dto.LogoutRequestDTO)`     | `(*dto.LogoutResponseDTO, error)`   |
+|                    | `RefreshToken(ctx, input dto.RefreshRequestDTO)`            | `(*dto.RefreshResponseDTO, error)`  |
+|                    | `ValidateToken(ctx, input dto.ValidateRequestDTO)`          | `(*dto.ValidateResponseDTO, error)` |
+| **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponseDTO, error)`  |
+|                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfo, error)`        |
+|                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponseDTO, error)`   |
+| **HealthService**  | `Check(ctx context.Context)`                                | `(*dto.HealthResponseDTO, error)`   |
 
 ---
 
@@ -70,20 +69,20 @@
 
 > **Formato:** `Función (paquete) — Retorno`
 
-### 🔸 `/auth/verify`
+### `/auth/verify`
 
 - **Repo**:
 
-  - `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
-  - `AuthAttemptRepository.Insert` — `error`
+  - 🔸 `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
+  - 🔸 `AuthAttemptRepository.Insert` — `error`
 
 - **Service**:
 
-  - `AuthService.VerifyCredentials` — `(*dto.VerifyResponse, error)`
+  - 🔸 `AuthService.VerifyCredentials` — `(*dto.VerifyResponse, error)`
 
 - **Handler**:
 
-  - `AuthHandler.Verify` — `void`
+  - 🔸 `AuthHandler.Verify` — `void`
 
 ---
 
@@ -95,7 +94,6 @@
   - `AuthAttemptRepository.Insert` — `error`
   - `SessionRepository.Create` — `(primitive.ObjectID, error)`
   - `TokenRepository.Create` — `(primitive.ObjectID, error)`
-  - `CaptchaRepository.Insert` — `error`
 
 - **Service**:
 
