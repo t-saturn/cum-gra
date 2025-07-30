@@ -46,8 +46,6 @@
 | **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponse, error)`  |
 |                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfo, error)`     |
 |                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponse, error)`   |
-| **AuditService**   | `RegisterAttempt(ctx, input dto.ManualAttemptRequest)`      | `(*dto.AttemptResponse, error)`  |
-|                    | `GetLogs(ctx, userID string, params dto.LogsParams)`        | `([]models.AuthLog, error)`      |
 | **StatsService**   | `GetTokenStats(ctx, userID string, params dto.StatsParams)` | `(*dto.StatsResponse, error)`    |
 | **HealthService**  | `Check(ctx context.Context)`                                | `(*dto.HealthResponse, error)`   |
 
@@ -55,20 +53,18 @@
 
 ### 1.4 `handlers/` (adaptadores HTTP genéricos)
 
-| Handler            | Método                            | Retorno |
-| ------------------ | --------------------------------- | ------- |
-| **AuthHandler**    | `Verify(c *gin.Context)`          | `void`  |
-|                    | `Login(c *gin.Context)`           | `void`  |
-|                    | `Logout(c *gin.Context)`          | `void`  |
-|                    | `Refresh(c *gin.Context)`         | `void`  |
-|                    | `Validate(c *gin.Context)`        | `void`  |
-| **SessionHandler** | `Me(c *gin.Context)`              | `void`  |
-|                    | `List(c *gin.Context)`            | `void`  |
-|                    | `Revoke(c *gin.Context)`          | `void`  |
-| **AuditHandler**   | `RegisterAttempt(c *gin.Context)` | `void`  |
-|                    | `GetLogs(c *gin.Context)`         | `void`  |
-| **StatsHandler**   | `TokenStats(c *gin.Context)`      | `void`  |
-| **HealthHandler**  | `Health(c *gin.Context)`          | `void`  |
+| Handler            | Método                       | Retorno |
+| ------------------ | ---------------------------- | ------- |
+| **AuthHandler**    | `Verify(c *gin.Context)`     | `void`  |
+|                    | `Login(c *gin.Context)`      | `void`  |
+|                    | `Logout(c *gin.Context)`     | `void`  |
+|                    | `Refresh(c *gin.Context)`    | `void`  |
+|                    | `Validate(c *gin.Context)`   | `void`  |
+| **SessionHandler** | `Me(c *gin.Context)`         | `void`  |
+|                    | `List(c *gin.Context)`       | `void`  |
+|                    | `Revoke(c *gin.Context)`     | `void`  |
+| **StatsHandler**   | `TokenStats(c *gin.Context)` | `void`  |
+| **HealthHandler**  | `Health(c *gin.Context)`     | `void`  |
 
 ---
 
@@ -83,7 +79,6 @@
   - `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
   - `AuthAttemptRepository.Insert` — `error`
   - `CaptchaLogRepository.Insert` — `error`
-  - `AuthLogRepository.Insert` — `error`
 
 - **Service**:
 
@@ -104,8 +99,6 @@
   - `SessionRepository.Create` — `(primitive.ObjectID, error)`
   - `TokenRepository.Create` — `(primitive.ObjectID, error)`
   - `CaptchaLogRepository.Insert` — `error`
-  - `TokenActivityRepo.Insert` — `error`
-  - `AuthLogRepository.Insert` — `error`
 
 - **Service**:
 
@@ -123,8 +116,6 @@
 
   - `TokenRepository.UpdateStatus` — `error`
   - `SessionRepository.UpdateStatus` — `error`
-  - `AuthLogRepository.Insert` — `error`
-  - `TokenActivityRepo.Insert` — `error`
 
 - **Service**:
 
@@ -144,8 +135,6 @@
   - `TokenRepository.IncrementRefreshCount` — `error`
   - `TokenRepository.Create` — `(primitive.ObjectID, error)`
   - `SessionRepository.UpdateStatus` — `error`
-  - `AuthLogRepository.Insert` — `error`
-  - `TokenActivityRepo.Insert` — `error`
 
 - **Service**:
 
@@ -164,8 +153,6 @@
   - `TokenRepository.FindByID` — `(*models.Token, error)`
   - `TokenRepository.UpdateStatus` — `error`
   - `SessionRepository.UpdateStatus` — `error`
-  - `AuthLogRepository.Insert` — `error`
-  - `TokenActivityRepo.Insert` — `error`
 
 - **Service**:
 
@@ -215,7 +202,6 @@
 
   - `SessionRepository.UpdateStatus` — `error`
   - `TokenRepository.UpdateStatusBySession` — `error`
-  - `TokenActivityRepo.Insert` — `error`
 
 - **Service**:
 
@@ -224,23 +210,6 @@
 - **Handler**:
 
   - `SessionHandler.Revoke` — `void`
-
----
-
-### 🔸 `POST /auth/attempts`
-
-- **Repo**:
-
-  - `AuthAttemptRepository.Insert` — `error`
-  - `AuthLogRepository.Insert` — `error`
-
-- **Service**:
-
-  - `AuditService.RegisterAttempt` — `(*dto.AttemptResponse, error)`
-
-- **Handler**:
-
-  - `AuditHandler.RegisterAttempt` — `void`
 
 ---
 
