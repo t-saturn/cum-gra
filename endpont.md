@@ -36,35 +36,33 @@
 
 ### 1.3 `services/` (casos de uso reutilizables)
 
-| Servicio           | Método                                                      | Retorno                          |
-| ------------------ | ----------------------------------------------------------- | -------------------------------- |
-| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequest)`    | `(*dto.VerifyResponse, error)`   |
-|                    | `Login(ctx, input dto.AuthLoginRequest)`                    | `(*dto.LoginResponse, error)`    |
-|                    | `Logout(ctx, token string, input dto.LogoutRequest)`        | `(*dto.LogoutResponse, error)`   |
-|                    | `RefreshToken(ctx, input dto.RefreshRequest)`               | `(*dto.RefreshResponse, error)`  |
-|                    | `ValidateToken(ctx, input dto.ValidateRequest)`             | `(*dto.ValidateResponse, error)` |
-| **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponse, error)`  |
-|                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfo, error)`     |
-|                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponse, error)`   |
-| **StatsService**   | `GetTokenStats(ctx, userID string, params dto.StatsParams)` | `(*dto.StatsResponse, error)`    |
-| **HealthService**  | `Check(ctx context.Context)`                                | `(*dto.HealthResponse, error)`   |
+| Servicio           | Método                                                    | Retorno                          |
+| ------------------ | --------------------------------------------------------- | -------------------------------- |
+| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequest)`  | `(*dto.VerifyResponse, error)`   |
+|                    | `Login(ctx, input dto.AuthLoginRequest)`                  | `(*dto.LoginResponse, error)`    |
+|                    | `Logout(ctx, token string, input dto.LogoutRequest)`      | `(*dto.LogoutResponse, error)`   |
+|                    | `RefreshToken(ctx, input dto.RefreshRequest)`             | `(*dto.RefreshResponse, error)`  |
+|                    | `ValidateToken(ctx, input dto.ValidateRequest)`           | `(*dto.ValidateResponse, error)` |
+| **SessionService** | `GetCurrent(ctx, token string)`                           | `(*dto.SessionResponse, error)`  |
+|                    | `List(ctx, userID string, params dto.ListSessionsParams)` | `([]dto.SessionInfo, error)`     |
+|                    | `Revoke(ctx, userID, sessionID string)`                   | `(*dto.RevokeResponse, error)`   |
+| **HealthService**  | `Check(ctx context.Context)`                              | `(*dto.HealthResponse, error)`   |
 
 ---
 
 ### 1.4 `handlers/` (adaptadores HTTP genéricos)
 
-| Handler            | Método                       | Retorno |
-| ------------------ | ---------------------------- | ------- |
-| **AuthHandler**    | 🔸 `Verify(c *gin.Context)`  | `void`  |
-|                    | `Login(c *gin.Context)`      | `void`  |
-|                    | `Logout(c *gin.Context)`     | `void`  |
-|                    | `Refresh(c *gin.Context)`    | `void`  |
-|                    | `Validate(c *gin.Context)`   | `void`  |
-| **SessionHandler** | `Me(c *gin.Context)`         | `void`  |
-|                    | `List(c *gin.Context)`       | `void`  |
-|                    | `Revoke(c *gin.Context)`     | `void`  |
-| **StatsHandler**   | `TokenStats(c *gin.Context)` | `void`  |
-| **HealthHandler**  | `Health(c *gin.Context)`     | `void`  |
+| Handler            | Método                      | Retorno |
+| ------------------ | --------------------------- | ------- |
+| **AuthHandler**    | 🔸 `Verify(c *gin.Context)` | `void`  |
+|                    | `Login(c *gin.Context)`     | `void`  |
+|                    | `Logout(c *gin.Context)`    | `void`  |
+|                    | `Refresh(c *gin.Context)`   | `void`  |
+|                    | `Validate(c *gin.Context)`  | `void`  |
+| **SessionHandler** | `Me(c *gin.Context)`        | `void`  |
+|                    | `List(c *gin.Context)`      | `void`  |
+|                    | `Revoke(c *gin.Context)`    | `void`  |
+| **HealthHandler**  | `Health(c *gin.Context)`    | `void`  |
 
 ---
 
