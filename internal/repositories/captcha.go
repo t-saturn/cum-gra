@@ -7,16 +7,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// CaptchaLogRepository gestiona los logs de CAPTCHA.
-type CaptchaLogRepository struct {
+// CaptchaRepository gestiona los logs de CAPTCHA.
+type CaptchaRepository struct {
 	col *mongo.Collection
 }
 
-func NewCaptchaLogRepository(db *mongo.Database) *CaptchaLogRepository {
-	return &CaptchaLogRepository{col: db.Collection("captcha_logs")}
+func NewCaptchaRepository(db *mongo.Database) *CaptchaRepository {
+	return &CaptchaRepository{col: db.Collection("captcha_logs")}
 }
 
-func (r *CaptchaLogRepository) Insert(ctx context.Context, c *models.CaptchaLog) error {
+func (r *CaptchaRepository) Insert(ctx context.Context, c *models.Captcha) error {
 	_, err := r.col.InsertOne(ctx, c)
 	return err
 }

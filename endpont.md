@@ -30,7 +30,7 @@
 |                           | `FindByID(ctx context.Context, tokenID string)`                                                                      | `(*models.Token, error)`      |
 |                           | `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time, lastUsed *time.Time)` | `error`                       |
 |                           | `IncrementRefreshCount(ctx context.Context, id primitive.ObjectID)`                                                  | `error`                       |
-| **CaptchaLogRepository**  | `Insert(ctx context.Context, c *models.CaptchaLog)`                                                                  | `error`                       |
+| **CaptchaRepository**     | `Insert(ctx context.Context, c *models.CaptchaLog)`                                                                  | `error`                       |
 
 ---
 
@@ -78,7 +78,6 @@
 
   - `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
   - `AuthAttemptRepository.Insert` — `error`
-  - `CaptchaLogRepository.Insert` — `error`
 
 - **Service**:
 
@@ -98,7 +97,7 @@
   - `AuthAttemptRepository.Insert` — `error`
   - `SessionRepository.Create` — `(primitive.ObjectID, error)`
   - `TokenRepository.Create` — `(primitive.ObjectID, error)`
-  - `CaptchaLogRepository.Insert` — `error`
+  - `CaptchaRepository.Insert` — `error`
 
 - **Service**:
 

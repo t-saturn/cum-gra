@@ -80,7 +80,7 @@ type DeviceInfo struct {
 
 // --- CAPTCHA ---
 // Log de validación de CAPTCHA
-type CaptchaLog struct {
+type Captcha struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
 	Token       string             `bson:"token"`
 	Success     bool               `bson:"success"`
