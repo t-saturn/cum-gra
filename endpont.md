@@ -19,18 +19,18 @@
 
 ### 1.2 `repo/` (data‑access helpers)
 
-| Repositorio               | Función                                                                                                              | Retorno                       |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| **UserRepository**        | 🔸 `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                 | `(*UserData, error)`          |
-| **AuthAttemptRepository** | 🔸 `Insert(ctx context.Context, a *models.AuthAttempt)`                                                              | `error`                       |
-| **SessionRepository**     | `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)` |
-|                           | `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`    |
-|                           | `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time)`                      | `error`                       |
-| **TokenRepository**       | `Create(ctx context.Context, t *models.Token)`                                                                       | `(primitive.ObjectID, error)` |
-|                           | `FindByID(ctx context.Context, tokenID string)`                                                                      | `(*models.Token, error)`      |
-|                           | `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time, lastUsed *time.Time)` | `error`                       |
-|                           | `IncrementRefreshCount(ctx context.Context, id primitive.ObjectID)`                                                  | `error`                       |
-| **CaptchaRepository**     | `Insert(ctx context.Context, c *models.CaptchaLog)`                                                                  | `error`                       |
+| Repositorio               | Función                                                                                                                 | Retorno                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **UserRepository**        | 🔸 `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                    | `(*UserData, error)`          |
+| **AuthAttemptRepository** | 🔸 `Insert(ctx context.Context, a *models.AuthAttempt)`                                                                 | `error`                       |
+| **SessionRepository**     | 🔸 `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)` |
+|                           | 🔸 `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`    |
+|                           | 🔸 `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time)`                      | `error`                       |
+| **TokenRepository**       | 🔸 `Create(ctx context.Context, t *models.Token)`                                                                       | `(primitive.ObjectID, error)` |
+|                           | 🔸 `FindByID(ctx context.Context, tokenID string)`                                                                      | `(*models.Token, error)`      |
+|                           | 🔸 `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time, lastUsed *time.Time)` | `error`                       |
+|                           | 🔸 `IncrementRefreshCount(ctx context.Context, id primitive.ObjectID)`                                                  | `error`                       |
+| **CaptchaRepository**     | 🔸 `Insert(ctx context.Context, c *models.CaptchaLog)`                                                                  | `error`                       |
 
 ---
 
