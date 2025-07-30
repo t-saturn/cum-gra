@@ -16,20 +16,25 @@ import (
 func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequestDTO
 
-	// Bindear el cuerpo JSON
+	// 1 Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
 		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
 	}
 
-	// Validación de campos
+	// 2 Validación de campos
 	if err := validator.Validate.Struct(&input); err != nil {
 		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	authService := services.NewAuthService(config.GetPostgresDB())
-	result, err := authService.VerifyCredentials(input)
+	// 3 Construir servicio con Postgres y MongoDB
+	pgDB := config.GetPostgresDB()
+	mongoDB := config.MongoDB // *mongo.Database, inicializado en config.ConnectMongo
+	authService := services.NewAuthService(pgDB, mongoDB)
+
+	// 4 Verificar credenciales
+	result, err := authService.VerifyCredentials(c, input)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidCredentials:
@@ -42,10 +47,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	// Respuesta exitosa
-	return utils.JSON(c, http.StatusOK, dto.AuthVerifyResponseDTO{
-		UserID:       result.UserID,
-		AccessToken:  result.AccessToken,
-		RefreshToken: result.RefreshToken,
-	})
+	// 5 Devolver resultado DTO directamente
+	return utils.JSON(c, http.StatusOK, result)
 }

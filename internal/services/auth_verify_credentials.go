@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 
-	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/repositories"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
+	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/gorm"
 )
 
@@ -19,43 +19,49 @@ var (
 	ErrInactiveAccount    = errors.New("cuenta inactiva")
 )
 
-type AuthService struct {
-	DB *gorm.DB
-}
-
 type AuthResult struct {
 	UserID       string
 	AccessToken  string
 	RefreshToken string
 }
 
-func NewAuthService(db *gorm.DB) *AuthService {
-	return &AuthService{DB: db}
+// AuthService gestiona la lógica de autenticación.
+type AuthService struct {
+	userRepo        *repositories.UserRepository
+	authAttemptRepo *repositories.AuthAttemptRepository
 }
 
-func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthResult, error) {
-	// 1 Buscar usuario usando el repositorio
-	userRepo := repositories.NewUserRepository(s.DB)
-	userData, err := userRepo.FindActiveByEmailOrDNI(context.Background(), input.Email, input.DNI)
+// NewAuthService construye un AuthService con Postgres y Mongo ya conectados.
+func NewAuthService(pgDB *gorm.DB, mongoDB *mongo.Database) *AuthService {
+	return &AuthService{
+		userRepo:        repositories.NewUserRepository(pgDB),
+		authAttemptRepo: repositories.NewAuthAttemptRepository(mongoDB),
+	}
+}
+
+// VerifyCredentials verifica email/DNI + contraseña y retorna los tokens.
+func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerifyRequestDTO) (*dto.AuthVerifyResponseDTO, error) {
+	// 1 Cargar usuario
+	userData, err := s.userRepo.FindActiveByEmailOrDNI(ctx, input.Email, input.DNI)
 	if err != nil {
 		switch {
-		case errors.Is(err, repositories.ErrUserDeleted):
-			// El repo detectó is_deleted = true
+		case errors.Is(err, repositories.ErrUserDeleted), errors.Is(err, repositories.ErrUserDisabled):
+			// Cuenta eliminada o deshabilitada
+			s.logAttempt(ctx, input, models.AuthStatusFailed, "")
 			return nil, ErrInactiveAccount
-		case errors.Is(err, repositories.ErrUserDisabled):
-			// El repo detectó status != "active"
-			return nil, ErrInactiveAccount
-		case errors.Is(err, gorm.ErrRecordNotFound):
-			// No existe ningún usuario con ese email/DNI
+		case errors.Is(err, gorm.ErrRecordNotFound), errors.Is(err, repositories.ErrUserNotFound):
+			// Usuario no existe
+			s.logAttempt(ctx, input, models.AuthStatusInvalid, "")
 			return nil, ErrInvalidCredentials
 		default:
 			return nil, err
 		}
 	}
 
-	// 2) Verificar la contraseña
+	// 2 Verificar la contraseña
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, userData.PasswordHash) {
+		s.logAttempt(ctx, input, models.AuthStatusInvalid, "")
 		return nil, ErrInvalidCredentials
 	}
 
@@ -69,12 +75,24 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthRe
 		return nil, err
 	}
 
-	// 4 Registrar el intento en MongoDB
-	now := utils.NowUTC()
+	// 4 Registrar intento exitoso
+	s.logAttempt(ctx, input, models.AuthStatusSuccess, userData.ID.String())
 
-	authAttempt := models.AuthAttempt{
+	// 5) Devolver respuesta DTO
+	return &dto.AuthVerifyResponseDTO{
+		UserID:       userData.ID.String(),
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}
+
+// logAttempt inserta un AuthAttempt usando el repositorio.
+// status debe ser uno de los modelos.AuthStatus* y userID solo si es éxito.
+func (s *AuthService) logAttempt(ctx context.Context, input dto.AuthVerifyRequestDTO, status, userID string) {
+	now := utils.NowUTC()
+	attempt := &models.AuthAttempt{
 		Method:        models.AuthMethodCredentials,
-		Status:        models.AuthStatusSuccess,
+		Status:        status,
 		ApplicationID: input.ApplicationID,
 		Email:         deref(input.Email),
 		DeviceInfo: models.DeviceInfo{
@@ -103,25 +121,18 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthRe
 		CreatedAt:   now,
 		ValidatedAt: &now,
 		ValidationResponse: &models.ValidationResponse{
-			UserID:          userData.ID.String(),
-			ServiceResponse: models.AuthStatusSuccess,
+			UserID:          userID,
+			ServiceResponse: status,
 			ValidatedBy:     models.AuthMethodCredentials,
 			ValidationTime:  0,
 		},
 	}
-	authCol := config.GetMongoCollection("auth_attempts")
-	if _, err := authCol.InsertOne(context.Background(), authAttempt); err != nil {
-		logger.Log.Errorf("Error guardando auth attempt en Mongo: %v", err)
+	if err := s.authAttemptRepo.Insert(ctx, attempt); err != nil {
+		logger.Log.Errorf("Error guardando AuthAttempt: %v", err)
 	}
-
-	// 5 Devolver resultado exitoso
-	return &AuthResult{
-		UserID:       userData.ID.String(),
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
 }
 
+// deref convierte *string a string, devolviendo cadena vacía si es nil.
 func deref(s *string) string {
 	if s == nil {
 		return ""

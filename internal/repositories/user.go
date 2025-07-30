@@ -10,11 +10,8 @@ import (
 )
 
 var (
-	// ErrUserNotFound se devuelve cuando no existe ningún registro con ese email o DNI.
 	ErrUserNotFound = errors.New("usuario no encontrado")
-	// ErrUserDeleted se devuelve cuando el registro existe pero está marcado como eliminado.
-	ErrUserDeleted = errors.New("este usuario está eliminado")
-	// ErrUserDisabled se devuelve cuando el registro existe pero su status no es "active".
+	ErrUserDeleted  = errors.New("este usuario está eliminado")
 	ErrUserDisabled = errors.New("el usuario está deshabilitado")
 )
 
