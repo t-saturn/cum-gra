@@ -19,12 +19,6 @@ var (
 	ErrInactiveAccount    = errors.New("cuenta inactiva")
 )
 
-type AuthResult struct {
-	UserID       string
-	AccessToken  string
-	RefreshToken string
-}
-
 // AuthService gestiona la lógica de autenticación.
 type AuthService struct {
 	userRepo        *repositories.UserRepository
@@ -78,7 +72,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	// 4 Registrar intento exitoso
 	s.logAttempt(ctx, input, models.AuthStatusSuccess, userData.ID.String())
 
-	// 5) Devolver respuesta DTO
+	// 5 Devolver respuesta DTO
 	return &dto.AuthVerifyResponseDTO{
 		UserID:       userData.ID.String(),
 		AccessToken:  accessToken,
