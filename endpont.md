@@ -21,7 +21,7 @@
 
 | Repositorio               | Función                                                                                                              | Retorno                        |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| **UserRepository**        | `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                    | `(*UserData, error)`           |
+| **UserRepository**        | `*FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                   | `(*UserData, error)`           |
 | **AuthAttemptRepository** | `Insert(ctx context.Context, a *models.AuthAttempt)`                                                                 | `error`                        |
 | **SessionRepository**     | `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)`  |
 |                           | `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`     |

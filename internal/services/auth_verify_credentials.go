@@ -7,7 +7,7 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
-	repository "github.com/t-saturn/auth-service-server/internal/repositories"
+	"github.com/t-saturn/auth-service-server/internal/repositories"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
@@ -34,15 +34,15 @@ func NewAuthService(db *gorm.DB) *AuthService {
 }
 
 func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthResult, error) {
-	// 1) Buscar usuario usando el repositorio
-	userRepo := repository.NewUserRepository(s.DB)
+	// 1 Buscar usuario usando el repositorio
+	userRepo := repositories.NewUserRepository(s.DB)
 	userData, err := userRepo.FindActiveByEmailOrDNI(context.Background(), input.Email, input.DNI)
 	if err != nil {
 		switch {
-		case errors.Is(err, repository.ErrUserDeleted):
+		case errors.Is(err, repositories.ErrUserDeleted):
 			// El repo detectó is_deleted = true
 			return nil, ErrInactiveAccount
-		case errors.Is(err, repository.ErrUserDisabled):
+		case errors.Is(err, repositories.ErrUserDisabled):
 			// El repo detectó status != "active"
 			return nil, ErrInactiveAccount
 		case errors.Is(err, gorm.ErrRecordNotFound):
@@ -59,7 +59,7 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthRe
 		return nil, ErrInvalidCredentials
 	}
 
-	// 3) Generar tokens JWE
+	// 3 Generar tokens JWE
 	accessToken, err := security.GenerateAccessToken(userData.ID.String())
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthRe
 		return nil, err
 	}
 
-	// 4) Registrar el intento en MongoDB
+	// 4 Registrar el intento en MongoDB
 	now := utils.NowUTC()
 
 	authAttempt := models.AuthAttempt{
@@ -114,7 +114,7 @@ func (s *AuthService) VerifyCredentials(input dto.AuthVerifyRequestDTO) (*AuthRe
 		logger.Log.Errorf("Error guardando auth attempt en Mongo: %v", err)
 	}
 
-	// 5) Devolver resultado exitoso
+	// 5 Devolver resultado exitoso
 	return &AuthResult{
 		UserID:       userData.ID.String(),
 		AccessToken:  accessToken,
