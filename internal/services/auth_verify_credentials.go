@@ -41,11 +41,11 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 		switch {
 		case errors.Is(err, repositories.ErrUserDeleted), errors.Is(err, repositories.ErrUserDisabled):
 			// Cuenta eliminada o deshabilitada
-			s.logAttempt(ctx, input, models.AuthStatusFailed, "")
+			s.LogAttempt(ctx, input, models.AuthStatusFailed, "")
 			return nil, ErrInactiveAccount
 		case errors.Is(err, gorm.ErrRecordNotFound), errors.Is(err, repositories.ErrUserNotFound):
 			// Usuario no existe
-			s.logAttempt(ctx, input, models.AuthStatusInvalid, "")
+			s.LogAttempt(ctx, input, models.AuthStatusInvalid, "")
 			return nil, ErrInvalidCredentials
 		default:
 			return nil, err
@@ -55,7 +55,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	// 2 Verificar la contraseña
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, userData.PasswordHash) {
-		s.logAttempt(ctx, input, models.AuthStatusInvalid, "")
+		s.LogAttempt(ctx, input, models.AuthStatusInvalid, "")
 		return nil, ErrInvalidCredentials
 	}
 
@@ -70,7 +70,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	}
 
 	// 4 Registrar intento exitoso
-	s.logAttempt(ctx, input, models.AuthStatusSuccess, userData.ID.String())
+	s.LogAttempt(ctx, input, models.AuthStatusSuccess, userData.ID.String())
 
 	// 5 Devolver respuesta DTO
 	return &dto.AuthVerifyResponseDTO{
@@ -82,7 +82,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 
 // logAttempt inserta un AuthAttempt usando el repositorio.
 // status debe ser uno de los modelos.AuthStatus* y userID solo si es éxito.
-func (s *AuthService) logAttempt(ctx context.Context, input dto.AuthVerifyRequestDTO, status, userID string) {
+func (s *AuthService) LogAttempt(ctx context.Context, input dto.AuthVerifyRequestDTO, status, userID string) {
 	now := utils.NowUTC()
 	attempt := &models.AuthAttempt{
 		Method:        models.AuthMethodCredentials,
@@ -121,6 +121,7 @@ func (s *AuthService) logAttempt(ctx context.Context, input dto.AuthVerifyReques
 			ValidationTime:  0,
 		},
 	}
+
 	if err := s.authAttemptRepo.Insert(ctx, attempt); err != nil {
 		logger.Log.Errorf("Error guardando AuthAttempt: %v", err)
 	}

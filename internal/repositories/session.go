@@ -4,10 +4,12 @@ import (
 	"context"
 	"time"
 
+	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // SessionRepository gestiona las sesiones en MongoDB.
@@ -39,6 +41,46 @@ func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*model
 		return nil, err
 	}
 	return &sess, nil
+}
+
+// FindByUserID retorna todas las sesiones de un usuario según filtros.
+func (r *SessionRepository) FindByUserID(ctx context.Context, userID string, params dto.ListSessionsParamsDTO) ([]models.Session, error) {
+	// Construir filtro base
+	filter := bson.M{"user_id": userID}
+
+	// Filtros opcionales
+	if params.Status != nil {
+		filter["status"] = *params.Status
+	}
+	if params.IsActive != nil {
+		filter["is_active"] = *params.IsActive
+	}
+
+	// Opciones de consulta: orden por defecto de sesiones más recientes primero
+	findOpts := options.Find()
+	findOpts.SetSort(bson.D{{Key: "created_at", Value: -1}})
+
+	// Ejecutar consulta
+	cur, err := r.col.Find(ctx, filter, findOpts)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	// Leer resultados
+	sessions := make([]models.Session, 0)
+	for cur.Next(ctx) {
+		var s models.Session
+		if err := cur.Decode(&s); err != nil {
+			return nil, err
+		}
+		sessions = append(sessions, s)
+	}
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
 }
 
 // UpdateStatus actualiza el status y la fecha de revocación de una sesión.

@@ -25,6 +25,7 @@
 | **AuthAttemptRepository** | 🔸 `Insert(ctx context.Context, a *models.AuthAttempt)`                                                                 | `error`                       |
 | **SessionRepository**     | 🔸 `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)` |
 |                           | 🔸 `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`    |
+|                           | 🔸 `FindByUserID(ctx context.Context, userID string, params dto.ListSessionsParams)`                                    | `([]models.Session, error)`   |
 |                           | 🔸 `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time)`                      | `error`                       |
 | **TokenRepository**       | 🔸 `Create(ctx context.Context, t *models.Token)`                                                                       | `(primitive.ObjectID, error)` |
 |                           | 🔸 `FindByID(ctx context.Context, tokenID string)`                                                                      | `(*models.Token, error)`      |
@@ -35,17 +36,17 @@
 
 ### 1.3 `services/` (casos de uso reutilizables)
 
-| Servicio           | Método                                                      | Retorno                             |
-| ------------------ | ----------------------------------------------------------- | ----------------------------------- |
-| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequestDTO)` | `(*dto.VerifyResponseDTO, error)`   |
-|                    | `Login(ctx, input dto.AuthLoginRequestDTO)`                 | `(*dto.LoginResponseDTO, error)`    |
-|                    | `Logout(ctx, token string, input dto.LogoutRequestDTO)`     | `(*dto.LogoutResponseDTO, error)`   |
-|                    | `RefreshToken(ctx, input dto.RefreshRequestDTO)`            | `(*dto.RefreshResponseDTO, error)`  |
-|                    | `ValidateToken(ctx, input dto.ValidateRequestDTO)`          | `(*dto.ValidateResponseDTO, error)` |
-| **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponseDTO, error)`  |
-|                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfo, error)`        |
-|                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponseDTO, error)`   |
-| **HealthService**  | `Check(ctx context.Context)`                                | `(*dto.HealthResponseDTO, error)`   |
+| Servicio           | Método                                                      | Retorno                                 |
+| ------------------ | ----------------------------------------------------------- | --------------------------------------- |
+| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequestDTO)` | `(*dto.AuthVerifyResponseDTO, error)`   |
+|                    | `Login(ctx, input dto.AuthLoginRequestDTO)`                 | `(*dto.AuthLoginResponseDTO, error)`    |
+|                    | `Logout(ctx, token string, input dto.AuthLogoutRequestDTO)` | `(*dto.AuthLogoutResponseDTO, error)`   |
+|                    | `RefreshToken(ctx, input dto.AuthRefreshRequestDTO)`        | `(*dto.AuthRefreshResponseDTO, error)`  |
+|                    | `ValidateToken(ctx, input dto.AuthValidateRequestDTO)`      | `(*dto.AuthValidateResponseDTO, error)` |
+| **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponseDTO, error)`      |
+|                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfoDTO, error)`         |
+|                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponseDTO, error)`       |
+| **HealthService**  | `Check(ctx context.Context)`                                | `(*dto.HealthResponseDTO, error)`       |
 
 ---
 
@@ -65,20 +66,16 @@
 
 ---
 
-## 2. Componentes específicos por endpoint
-
-> **Formato:** `Función (paquete) — Retorno`
-
-### `/auth/verify`
+## `/auth/verify`
 
 - **Repo**:
 
-  - 🔸 `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
+  - 🔸 `UserRepository.FindActiveByEmailOrDNI` — `(*UserData, error)`
   - 🔸 `AuthAttemptRepository.Insert` — `error`
 
 - **Service**:
 
-  - 🔸 `AuthService.VerifyCredentials` — `(*dto.VerifyResponse, error)`
+  - 🔸 `AuthService.VerifyCredentials` — `(*dto.AuthVerifyResponseDTO, error)`
 
 - **Handler**:
 
@@ -86,18 +83,18 @@
 
 ---
 
-### `/auth/login`
+## `/auth/login`
 
 - **Repo**:
 
-  - `UserRepository.FindActiveByEmailOrDNI` — `(*models.User, error)`
+  - `UserRepository.FindActiveByEmailOrDNI` — `(*UserData, error)`
   - `AuthAttemptRepository.Insert` — `error`
   - `SessionRepository.Create` — `(primitive.ObjectID, error)`
   - `TokenRepository.Create` — `(primitive.ObjectID, error)`
 
 - **Service**:
 
-  - `AuthService.Login` — `(*dto.LoginResponse, error)`
+  - `AuthService.Login` — `(*dto.AuthLoginResponseDTO, error)`
 
 - **Handler**:
 
@@ -105,7 +102,7 @@
 
 ---
 
-### `/auth/logout`
+## `/auth/logout`
 
 - **Repo**:
 
@@ -114,7 +111,7 @@
 
 - **Service**:
 
-  - `AuthService.Logout` — `(*dto.LogoutResponse, error)`
+  - `AuthService.Logout` — `(*dto.AuthLogoutResponseDTO, error)`
 
 - **Handler**:
 
@@ -122,7 +119,7 @@
 
 ---
 
-### `/auth/token/refresh`
+## `/auth/token/refresh`
 
 - **Repo**:
 
@@ -133,7 +130,7 @@
 
 - **Service**:
 
-  - `AuthService.RefreshToken` — `(*dto.RefreshResponse, error)`
+  - `AuthService.RefreshToken` — `(*dto.AuthRefreshResponseDTO, error)`
 
 - **Handler**:
 
@@ -141,7 +138,7 @@
 
 ---
 
-### `/auth/token/validate`
+## `/auth/token/validate`
 
 - **Repo**:
 
@@ -151,7 +148,7 @@
 
 - **Service**:
 
-  - `AuthService.ValidateToken` — `(*dto.ValidateResponse, error)`
+  - `AuthService.ValidateToken` — `(*dto.AuthValidateResponseDTO, error)`
 
 - **Handler**:
 
@@ -159,7 +156,7 @@
 
 ---
 
-### `/auth/session/me`
+## `/auth/session/me`
 
 - **Repo**:
 
@@ -167,7 +164,7 @@
 
 - **Service**:
 
-  - `SessionService.GetCurrent` — `(*dto.SessionResponse, error)`
+  - `SessionService.GetCurrent` — `(*dto.SessionResponseDTO, error)`
 
 - **Handler**:
 
@@ -175,7 +172,7 @@
 
 ---
 
-### `/auth/sessions`
+## `/auth/sessions`
 
 - **Repo**:
 
@@ -183,7 +180,7 @@
 
 - **Service**:
 
-  - `SessionService.List` — `([]dto.SessionInfo, error)`
+  - `SessionService.List` — `([]dto.SessionInfoDTO, error)`
 
 - **Handler**:
 
@@ -191,7 +188,7 @@
 
 ---
 
-### `DELETE /auth/sessions/{id}`
+## `DELETE /auth/sessions/{id}`
 
 - **Repo**:
 
@@ -200,7 +197,7 @@
 
 - **Service**:
 
-  - `SessionService.Revoke` — `(*dto.RevokeResponse, error)`
+  - `SessionService.Revoke` — `(*dto.RevokeResponseDTO, error)`
 
 - **Handler**:
 
@@ -208,13 +205,13 @@
 
 ---
 
-### `GET /auth/health`
+## `GET /auth/health`
 
 - **Repo**: _(ninguno)_
 
 - **Service**:
 
-  - `HealthService.Check` — `(*dto.HealthResponse, error)`
+  - `HealthService.Check` — `(*dto.HealthResponseDTO, error)`
 
 - **Handler**:
 
