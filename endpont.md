@@ -4,16 +4,16 @@
 
 ### 1.1 `utils/` (helpers genéricos)
 
-| Función                                                          | Retorno              |
-| ---------------------------------------------------------------- | -------------------- |
-| `HashPassword(password string)`                                  | `(string, error)`    |
-| `CheckPasswordHash(password, encodedHash string)`                | `bool`               |
-| `GenerateAccessToken(userID string)`                             | `(string, error)`    |
-| `GenerateRefreshToken(userID string)`                            | `(string, error)`    |
-| `NowUTC()`                                                       | `time.Time`          |
-| `ParseISOTime(s string)`                                         | `(time.Time, error)` |
-| `JSON(w http.ResponseWriter, status int, payload interface{})`   | `void`               |
-| `JSONError(w http.ResponseWriter, status int, code, msg string)` | `void`               |
+| Función                                                             | Retorno              |
+| ------------------------------------------------------------------- | -------------------- |
+| 🔸 `HashPassword(password string)`                                  | `(string, error)`    |
+| 🔸 `CheckPasswordHash(password, encodedHash string)`                | `bool`               |
+| 🔸 `GenerateAccessToken(userID string)`                             | `(string, error)`    |
+| 🔸 `GenerateRefreshToken(userID string)`                            | `(string, error)`    |
+| 🔸 `NowUTC()`                                                       | `time.Time`          |
+| 🔸 `ParseISOTime(s string)`                                         | `(time.Time, error)` |
+| 🔸 `JSON(w http.ResponseWriter, status int, payload interface{})`   | `void`               |
+| 🔸 `JSONError(w http.ResponseWriter, status int, code, msg string)` | `void`               |
 
 ---
 
@@ -21,8 +21,8 @@
 
 | Repositorio               | Función                                                                                                              | Retorno                       |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| **UserRepository**        | `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                    | `(*UserData, error)`          |
-| **AuthAttemptRepository** | `Insert(ctx context.Context, a *models.AuthAttempt)`                                                                 | `error`                       |
+| **UserRepository**        | 🔸 `FindActiveByEmailOrDNI(ctx context.Context, email, dni *string)`                                                 | `(*UserData, error)`          |
+| **AuthAttemptRepository** | 🔸 `Insert(ctx context.Context, a *models.AuthAttempt)`                                                              | `error`                       |
 | **SessionRepository**     | `Create(ctx context.Context, s *models.Session)`                                                                     | `(primitive.ObjectID, error)` |
 |                           | `FindByUUID(ctx context.Context, uuid string)`                                                                       | `(*models.Session, error)`    |
 |                           | `UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time)`                      | `error`                       |
@@ -38,7 +38,7 @@
 
 | Servicio           | Método                                                      | Retorno                          |
 | ------------------ | ----------------------------------------------------------- | -------------------------------- |
-| **AuthService**    | `VerifyCredentials(ctx, input dto.AuthVerifyRequest)`       | `(*dto.VerifyResponse, error)`   |
+| **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequest)`    | `(*dto.VerifyResponse, error)`   |
 |                    | `Login(ctx, input dto.AuthLoginRequest)`                    | `(*dto.LoginResponse, error)`    |
 |                    | `Logout(ctx, token string, input dto.LogoutRequest)`        | `(*dto.LogoutResponse, error)`   |
 |                    | `RefreshToken(ctx, input dto.RefreshRequest)`               | `(*dto.RefreshResponse, error)`  |
@@ -55,7 +55,7 @@
 
 | Handler            | Método                       | Retorno |
 | ------------------ | ---------------------------- | ------- |
-| **AuthHandler**    | `Verify(c *gin.Context)`     | `void`  |
+| **AuthHandler**    | 🔸 `Verify(c *gin.Context)`  | `void`  |
 |                    | `Login(c *gin.Context)`      | `void`  |
 |                    | `Logout(c *gin.Context)`     | `void`  |
 |                    | `Refresh(c *gin.Context)`    | `void`  |
@@ -90,7 +90,7 @@
 
 ---
 
-### 🔸 `/auth/login`
+### `/auth/login`
 
 - **Repo**:
 
@@ -110,7 +110,7 @@
 
 ---
 
-### 🔸 `/auth/logout`
+### `/auth/logout`
 
 - **Repo**:
 
@@ -127,7 +127,7 @@
 
 ---
 
-### 🔸 `/auth/token/refresh`
+### `/auth/token/refresh`
 
 - **Repo**:
 
@@ -146,7 +146,7 @@
 
 ---
 
-### 🔸 `/auth/token/validate`
+### `/auth/token/validate`
 
 - **Repo**:
 
@@ -164,7 +164,7 @@
 
 ---
 
-### 🔸 `/auth/session/me`
+### `/auth/session/me`
 
 - **Repo**:
 
@@ -180,7 +180,7 @@
 
 ---
 
-### 🔸 `/auth/sessions`
+### `/auth/sessions`
 
 - **Repo**:
 
@@ -196,7 +196,7 @@
 
 ---
 
-### 🔸 `DELETE /auth/sessions/{id}`
+### `DELETE /auth/sessions/{id}`
 
 - **Repo**:
 
@@ -213,7 +213,7 @@
 
 ---
 
-### 🔸 `GET /auth/health`
+### `GET /auth/health`
 
 - **Repo**: _(ninguno)_
 
