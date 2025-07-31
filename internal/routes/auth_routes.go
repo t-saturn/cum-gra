@@ -8,6 +8,9 @@ import (
 // RegisterAuthRoutes agrupa las rutas relacionadas con autenticación
 func RegisterAuthRoutes(router fiber.Router) {
 	auth := router.Group("/auth")
-	auth.Post("/verify", handlers.VerifyCredentialsHandler)
-	auth.Post("/validate", handlers.ValidateTokenHandler)
+
+	authHandler := handlers.NewAuthHandler()
+
+	auth.Post("/verify", authHandler.VerifyCredentials)
+	// auth.Post("/validate", authHandler.ValidateToken) // Este método debes implementarlo de forma similar
 }

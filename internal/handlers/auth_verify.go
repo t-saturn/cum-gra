@@ -13,28 +13,40 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-func VerifyCredentialsHandler(c fiber.Ctx) error {
+// AuthHandler agrupa los handlers relacionados a autenticación.
+type AuthHandler struct {
+	authService *services.AuthService
+}
+
+// NewAuthHandler crea una nueva instancia de AuthHandler.
+func NewAuthHandler() *AuthHandler {
+	pgDB := config.GetPostgresDB()
+	mongoDB := config.MongoDB
+
+	service := services.NewAuthService(pgDB, mongoDB)
+	return &AuthHandler{
+		authService: service,
+	}
+}
+
+// VerifyCredentials maneja la verificación de credenciales.
+func (h *AuthHandler) VerifyCredentials(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequestDTO
 
-	// 1 Parsear JSON
+	// 1. Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
 		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
 	}
 
-	// 2 Validación de campos
+	// 2. Validar campos
 	if err := validator.Validate.Struct(&input); err != nil {
 		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	// 3 Construir servicio con Postgres y MongoDB
-	pgDB := config.GetPostgresDB()
-	mongoDB := config.MongoDB // *mongo.Database, inicializado en config.ConnectMongo
-	authService := services.NewAuthService(pgDB, mongoDB)
-
-	// 4 Verificar credenciales
-	result, err := authService.VerifyCredentials(c, input)
+	// 3. Verificar credenciales
+	result, err := h.authService.VerifyCredentials(c, input)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidCredentials:
@@ -47,6 +59,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	// 5 Devolver resultado DTO directamente
+	// 4. Respuesta
 	return utils.JSONResponse(c, http.StatusOK, result.Success, result.Message, result.Data)
 }
