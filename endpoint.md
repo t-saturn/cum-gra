@@ -39,7 +39,7 @@
 | Servicio           | Método                                                      | Retorno                                 |
 | ------------------ | ----------------------------------------------------------- | --------------------------------------- |
 | **AuthService**    | 🔸 `VerifyCredentials(ctx, input dto.AuthVerifyRequestDTO)` | `(*dto.AuthVerifyResponseDTO, error)`   |
-|                    | `Login(ctx, input dto.AuthLoginRequestDTO)`                 | `(*dto.AuthLoginResponseDTO, error)`    |
+|                    | 🔸 `Login(ctx, input dto.AuthLoginRequestDTO)`              | `(*dto.AuthLoginResponseDTO, error)`    |
 |                    | `Logout(ctx, token string, input dto.AuthLogoutRequestDTO)` | `(*dto.AuthLogoutResponseDTO, error)`   |
 |                    | `RefreshToken(ctx, input dto.AuthRefreshRequestDTO)`        | `(*dto.AuthRefreshResponseDTO, error)`  |
 |                    | `ValidateToken(ctx, input dto.AuthValidateRequestDTO)`      | `(*dto.AuthValidateResponseDTO, error)` |
@@ -55,7 +55,7 @@
 | Handler            | Método                      | Retorno |
 | ------------------ | --------------------------- | ------- |
 | **AuthHandler**    | 🔸 `Verify(c *gin.Context)` | `void`  |
-|                    | `Login(c *gin.Context)`     | `void`  |
+|                    | 🔸 `Login(c *gin.Context)`  | `void`  |
 |                    | `Logout(c *gin.Context)`    | `void`  |
 |                    | `Refresh(c *gin.Context)`   | `void`  |
 |                    | `Validate(c *gin.Context)`  | `void`  |
@@ -87,18 +87,18 @@
 
 - **Repo**:
 
-  - `UserRepository.FindActiveByEmailOrDNI` — `(*UserData, error)`
-  - `AuthAttemptRepository.Insert` — `error`
-  - `SessionRepository.Create` — `(primitive.ObjectID, error)`
-  - `TokenRepository.Create` — `(primitive.ObjectID, error)`
+  - 🔸 `UserRepository.FindActiveByEmailOrDNI` — `(*UserData, error)`
+  - 🔸 `AuthAttemptRepository.Insert` — `error`
+  - 🔸 `SessionRepository.Create` — `(primitive.ObjectID, error)`
+  - 🔸 `TokenRepository.Create` — `(primitive.ObjectID, error)`
 
 - **Service**:
 
-  - `AuthService.Login` — `(*dto.AuthLoginResponseDTO, error)`
+  - 🔸 `AuthService.Login` — `(*dto.AuthLoginResponseDTO, error)`
 
 - **Handler**:
 
-  - `AuthHandler.Login` — `void`
+  - 🔸 `AuthHandler.Login` — `void`
 
 ---
 

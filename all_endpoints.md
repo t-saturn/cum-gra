@@ -249,13 +249,18 @@
   "message": "Token válido",
   "data": {
     "token_id": "550e8400-e29b-41d4-a716-446655440001",
-    "user_id": "user_123",
+    "user_id": "550e8400-e29b-41d4-a716-446655440001",
     "session_id": "550e8400-e29b-41d4-a716-446655440000",
     "status": "active",
     "token_type": "access",
-    "expires_at": "2025-07-30T11:30:00Z",
-    "last_used": "2025-07-30T10:45:00Z",
-    "is_valid": true
+    "token_detail": {
+      "valid": true,
+      "message": "Token válido",
+      "subject": "user_123",
+      "issued_at": "2025-07-30T09:45:00Z",
+      "expires_at": "2025-07-30T11:30:00Z",
+      "expires_in": 6300
+    }
   }
 }
 ```
