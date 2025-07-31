@@ -24,8 +24,8 @@ func NewSessionRepository(db *mongo.Database) *SessionRepository {
 	}
 }
 
-// Create inserta una nueva sesión y devuelve su ObjectID.
-func (r *SessionRepository) Create(ctx context.Context, s *models.Session) (primitive.ObjectID, error) {
+// Insert inserta una nueva sesión y devuelve su ObjectID.
+func (r *SessionRepository) Insert(ctx context.Context, s *models.Session) (primitive.ObjectID, error) {
 	res, err := r.col.InsertOne(ctx, s)
 	if err != nil {
 		return primitive.NilObjectID, err

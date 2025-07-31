@@ -26,7 +26,7 @@ type AuthLoginRequestDTO struct {
 	Password      string        `json:"password" validate:"required,min=6"`
 	ApplicationID string        `json:"application_id" validate:"required"`
 	RememberMe    bool          `json:"remember_me"`
-	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required,dive"`
+	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required"`
 }
 
 // AuthLoginResponseDTO define la parte "data" de la respuesta para /auth/login.

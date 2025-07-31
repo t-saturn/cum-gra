@@ -13,5 +13,4 @@ func RegisterAuthRoutes(router fiber.Router) {
 
 	auth.Post("/verify", authHandler.Verify)
 	auth.Post("/login", authHandler.Login)
-	// auth.Post("/validate", authHandler.ValidateToken) // Este método debes implementarlo de forma similar
 }

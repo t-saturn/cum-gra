@@ -24,6 +24,8 @@ type AuthService struct {
 	userRepo          *repositories.UserRepository
 	authAttemptRepo   *repositories.AuthAttemptRepository
 	verifyAttemptRepo *repositories.VerifyAttemptRepository
+	sessionRepo       *repositories.SessionRepository
+	tokenRepo         *repositories.TokenRepository
 }
 
 // NewAuthService construye un AuthService con Postgres y Mongo ya conectados.
@@ -32,6 +34,8 @@ func NewAuthService(pgDB *gorm.DB, mongoDB *mongo.Database) *AuthService {
 		userRepo:          repositories.NewUserRepository(pgDB),
 		authAttemptRepo:   repositories.NewAuthAttemptRepository(mongoDB),
 		verifyAttemptRepo: repositories.NewVerifyAttemptRepository(mongoDB),
+		sessionRepo:       repositories.NewSessionRepository(mongoDB),
+		tokenRepo:         repositories.NewTokenRepository(mongoDB),
 	}
 }
 
@@ -46,11 +50,11 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 		switch {
 		case errors.Is(err, repositories.ErrUserDeleted), errors.Is(err, repositories.ErrUserDisabled):
 			reason = "account_inactive"
-			s.LogVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
+			s.InsertVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
 			return nil, ErrInactiveAccount
 		case errors.Is(err, gorm.ErrRecordNotFound), errors.Is(err, repositories.ErrUserNotFound):
 			reason = "user_not_found"
-			s.LogVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
+			s.InsertVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
 			return nil, ErrInvalidCredentials
 		default:
 			return nil, err
@@ -60,14 +64,14 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	// 2 Verificar la contraseña
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, userData.PasswordHash) {
-		s.LogVerify(ctx, input, models.AuthStatusFailed, "invalid_password", "", 0)
+		s.InsertVerify(ctx, input, models.AuthStatusFailed, "invalid_password", "", 0)
 		return nil, ErrInvalidCredentials
 	}
 	elapsed := time.Since(start).Milliseconds()
 
 	// 3 Registrar intento exitoso
-	// (La función LogVerify debería insertar y devolver el ObjectID si lo necesitas como AttemptID)
-	objID, err := s.LogVerify(ctx, input, models.AuthStatusSuccess, "correct", userData.ID.String(), elapsed)
+	// (La función InsertVerify debería insertar y devolver el ObjectID si lo necesitas como AttemptID)
+	objID, err := s.InsertVerify(ctx, input, models.AuthStatusSuccess, "correct", userData.ID.String(), elapsed)
 	if err != nil {
 		return nil, err
 	}

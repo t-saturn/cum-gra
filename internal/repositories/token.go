@@ -22,8 +22,8 @@ func NewTokenRepository(db *mongo.Database) *TokenRepository {
 	}
 }
 
-// Create inserta un nuevo token y devuelve su ObjectID.
-func (r *TokenRepository) Create(ctx context.Context, t *models.Token) (primitive.ObjectID, error) {
+// Insert inserta un nuevo token y devuelve su ObjectID.
+func (r *TokenRepository) Insert(ctx context.Context, t *models.Token) (primitive.ObjectID, error) {
 	res, err := r.col.InsertOne(ctx, t)
 	if err != nil {
 		return primitive.NilObjectID, err
