@@ -78,5 +78,5 @@ type ValidationResponse struct {
 	UserID          string `bson:"user_id,omitempty"`
 	ServiceResponse string `bson:"service_response,omitempty"`
 	ValidatedBy     string `bson:"validated_by,omitempty"`
-	ValidationTime  int    `bson:"validation_time,omitempty"` // tiempo en ms
+	ValidationTime  int64  `bson:"validation_time,omitempty"` // tiempo en ms
 }
