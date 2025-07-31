@@ -7,13 +7,14 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // LogVerify registra un intento de /auth/verify en la colección verify_attempts.
 // - status: "success" | "failed" | "locked" ...
-// - reason: "invalid_password" | "user_not_found" | ...
+// - reason: "invalid_password" | "user_not_found" | "account_inactive" | ...
 // - userID: vacía si no se encontró usuario
-func (s *AuthService) LogVerify(ctx context.Context, input dto.AuthVerifyRequestDTO, status, reason, userID string, validationTimeMs int64) {
+func (s *AuthService) LogVerify(ctx context.Context, input dto.AuthVerifyRequestDTO, status, reason, userID string, validationTimeMs int64) (primitive.ObjectID, error) {
 	now := utils.NowUTC()
 
 	attempt := &models.VerifyAttempt{
@@ -57,9 +58,7 @@ func (s *AuthService) LogVerify(ctx context.Context, input dto.AuthVerifyRequest
 		},
 	}
 
-	if err := s.verifyAttemptRepo.Insert(ctx, attempt); err != nil {
-		logger.Log.Errorf("Error guardando VerifyAttempt: %v", err)
-	}
+	return s.verifyAttemptRepo.Insert(ctx, attempt)
 }
 
 // logAttempt inserta un AuthAttempt usando el repositorio.

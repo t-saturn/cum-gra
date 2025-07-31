@@ -9,6 +9,7 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/repositories"
 	"github.com/t-saturn/auth-service-server/pkg/security"
+	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/gorm"
 )
@@ -34,20 +35,22 @@ func NewAuthService(pgDB *gorm.DB, mongoDB *mongo.Database) *AuthService {
 	}
 }
 
-// VerifyCredentials verifica email/DNI + contraseña y retorna los tokens.
-func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerifyRequestDTO) (*dto.AuthVerifyResponseDTO, error) {
+// VerifyCredentials verifica email/DNI + contraseña y retorna el wrapper genérico.
+func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerifyRequestDTO) (*dto.ResponseDTO[dto.AuthVerifyResponseDTO], error) {
 	start := time.Now()
+
 	// 1 Cargar usuario
 	userData, err := s.userRepo.FindActiveByEmailOrDNI(ctx, input.Email, input.DNI)
 	if err != nil {
+		reason := ""
 		switch {
 		case errors.Is(err, repositories.ErrUserDeleted), errors.Is(err, repositories.ErrUserDisabled):
-			// Cuenta eliminada o deshabilitada
-			s.LogVerify(ctx, input, models.AuthStatusFailed, "account_inactive", "", 0)
+			reason = "account_inactive"
+			s.LogVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
 			return nil, ErrInactiveAccount
 		case errors.Is(err, gorm.ErrRecordNotFound), errors.Is(err, repositories.ErrUserNotFound):
-			// Usuario no existe
-			s.LogVerify(ctx, input, models.AuthStatusFailed, "user_not_found", "", 0)
+			reason = "user_not_found"
+			s.LogVerify(ctx, input, models.AuthStatusFailed, reason, "", 0)
 			return nil, ErrInvalidCredentials
 		default:
 			return nil, err
@@ -62,23 +65,33 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	}
 	elapsed := time.Since(start).Milliseconds()
 
-	// 3 Generar tokens JWE
-	accessToken, err := security.GenerateAccessToken(userData.ID.String())
-	if err != nil {
-		return nil, err
-	}
-	refreshToken, err := security.GenerateRefreshToken(userData.ID.String())
+	// 3 Registrar intento exitoso
+	// (La función LogVerify debería insertar y devolver el ObjectID si lo necesitas como AttemptID)
+	objID, err := s.LogVerify(ctx, input, models.AuthStatusSuccess, "correct", userData.ID.String(), elapsed)
 	if err != nil {
 		return nil, err
 	}
 
-	// 4 Registrar intento exitoso
-	s.LogVerify(ctx, input, models.AuthStatusSuccess, "correct", userData.ID.String(), elapsed)
+	// 4 Construir el DTO específico
+	now := utils.NowUTC()
+	verifyData := dto.AuthVerifyResponseDTO{
+		AttemptID:   objID.Hex(),
+		UserID:      userData.ID.String(),
+		Status:      models.AuthStatusSuccess,
+		ValidatedAt: now,
+		ValidationResponse: dto.ValidationResponseDTO{
+			UserID:          userData.ID.String(),
+			ServiceResponse: models.AuthStatusSuccess,
+			ValidatedBy:     models.AuthMethodCredentials,
+			ValidationTime:  elapsed,
+		},
+	}
 
-	// 5 Devolver respuesta DTO
-	return &dto.AuthVerifyResponseDTO{
-		UserID:       userData.ID.String(),
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
+	// 5 Envolverlo en el ResponseDTO genérico
+	resp := &dto.ResponseDTO[dto.AuthVerifyResponseDTO]{
+		Success: true,
+		Message: "Credenciales válidas",
+		Data:    verifyData,
+	}
+	return resp, nil
 }

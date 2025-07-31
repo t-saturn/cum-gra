@@ -1,6 +1,24 @@
 // Package dto define estructuras de datos utilizadas para la entrada y salida en las operaciones de la API.
 package dto
 
+type ResponseDTO[T any] struct {
+	Success bool   `json:"success"`
+	Message string `json:"message,omitempty"`
+	Data    T      `json:"data,omitempty"`
+}
+
+type ValidationResponseDTO struct {
+	UserID          string `bson:"user_id,omitempty"`
+	ServiceResponse string `bson:"service_response,omitempty"`
+	ValidatedBy     string `bson:"validated_by,omitempty"`
+	ValidationTime  int64  `bson:"validation_time,omitempty"` // tiempo en ms
+}
+
+// ValidationErrorResponse representa una respuesta con errores de validación por campo.
+type ValidationErrorResponse struct {
+	Errors map[string]string `json:"errors"`
+}
+
 type CoordinatesDTO [2]float64
 
 type LocationDetailDTO struct {
@@ -25,11 +43,6 @@ type DeviceInfoDTO struct {
 	Timezone       string             `json:"timezone,omitempty"`
 	Language       string             `json:"language,omitempty"`
 	Location       *LocationDetailDTO `json:"location,omitempty"`
-}
-
-// ValidationErrorResponse representa una respuesta con errores de validación por campo.
-type ValidationErrorResponse struct {
-	Errors map[string]string `json:"errors"`
 }
 
 // HealthResponse representa la respuesta del endpoint /health

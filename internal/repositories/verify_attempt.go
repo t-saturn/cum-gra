@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/t-saturn/auth-service-server/internal/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,9 +18,10 @@ func NewVerifyAttemptRepository(db *mongo.Database) *VerifyAttemptRepository {
 	return &VerifyAttemptRepository{col: db.Collection("verify_attempts")}
 }
 
-// Insert guarda un VerifyAttempt en la colección.
-// Se asume que los datos ya han sido validados en capas superiores.
-func (r *VerifyAttemptRepository) Insert(ctx context.Context, a *models.VerifyAttempt) error {
-	_, err := r.col.InsertOne(ctx, a)
-	return err
+func (r *VerifyAttemptRepository) Insert(ctx context.Context, a *models.VerifyAttempt) (primitive.ObjectID, error) {
+	res, err := r.col.InsertOne(ctx, a)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return res.InsertedID.(primitive.ObjectID), nil
 }

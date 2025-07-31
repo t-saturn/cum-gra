@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 // TokenValidationRequest representa el JSON recibido con el token.
 type TokenValidationRequestDTO struct {
 	Token string `json:"token" validate:"required"`
@@ -23,8 +25,11 @@ type AuthVerifyRequestDTO struct {
 	CaptchaToken  *string       `json:"captcha_token,omitempty"`
 }
 
+// AuthVerifyResponseDTO define el contenido de "data" para el endpoint /auth/verify.
 type AuthVerifyResponseDTO struct {
-	UserID       string `json:"user_id"`
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	AttemptID          string                `json:"attempt_id"`
+	UserID             string                `json:"user_id,omitempty"`
+	Status             string                `json:"status"`
+	ValidatedAt        time.Time             `json:"validated_at"`
+	ValidationResponse ValidationResponseDTO `json:"validation_response"`
 }
