@@ -31,7 +31,7 @@ POST /auth/login
 
 | Ruta                   | Método | Descripción               | Handler                 | Service               | Repos / Modelos clave                                                             |
 | ---------------------- | ------ | ------------------------- | ----------------------- | --------------------- | --------------------------------------------------------------------------------- |
-| `/auth/verify`         | POST   | Verificar credenciales    | `AuthHandler.Verify`    | `VerifyCredentials`   | `UserRepository`, `AuthAttempt`                                                   |
+| `/auth/verify`         | POST   | Verificar credenciales    | `AuthHandler.Verify`    | `VerifyCredentials`   | `UserRepository`, `VerifyAttemp`                                                  |
 | `/auth/login`          | POST   | Login completo            | `AuthHandler.Login`     | `Login`               | `UserRepository`, `SessionRepository`, `TokenRepository`, `AuthAttemptRepository` |
 | `/auth/logout`         | POST   | Cerrar sesión             | `AuthHandler.Logout`    | `Logout`              | `TokenRepository`, `SessionRepository`                                            |
 | `/auth/token/refresh`  | POST   | Refrescar token           | `AuthHandler.Refresh`   | `RefreshToken`        | `TokenRepository`, `SessionRepository`                                            |
