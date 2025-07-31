@@ -7,11 +7,11 @@ const (
 	AuthMethodToken       = "token"
 
 	// Estados de autenticación
-	AuthStatusPending = "pending"
-	AuthStatusSuccess = "success"
-	AuthStatusInvalid = "invalid_credentials"
-	AuthStatusFailed  = "failed"
-	AuthStatusExpired = "expired"
+	AuthStatusSuccess     = "success"
+	AuthStatusInvalid     = "invalid_credentials"
+	AuthStatusInvalidPass = "invalid_password"
+	AuthStatusInvalidUser = "invalid_user"
+	AuthStatusFailed      = "failed"
 
 	// Estados de tokens
 	TokenStatusActive  = "active"

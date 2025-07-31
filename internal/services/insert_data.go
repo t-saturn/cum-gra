@@ -64,13 +64,14 @@ func (s *AuthService) InsertVerify(ctx context.Context, input dto.AuthVerifyRequ
 	return s.verifyAttemptRepo.Insert(ctx, attempt)
 }
 
-func (s *AuthService) InsertAttempt(ctx context.Context, input dto.AuthVerifyRequestDTO, status, userID string) (primitive.ObjectID, error) {
+// InsertAttempt registra un AuthAttempt con status y reason.
+func (s *AuthService) InsertAttempt(ctx context.Context, input dto.AuthLoginRequestDTO, status, reason, userID string) (primitive.ObjectID, error) {
 	now := utils.NowUTC()
 	attempt := &models.AuthAttempt{
 		Method:        models.AuthMethodCredentials,
 		Status:        status,
 		ApplicationID: input.ApplicationID,
-		Email:         deref(input.Email),
+		Email:         input.Email,
 		DeviceInfo: models.DeviceInfo{
 			UserAgent:      input.DeviceInfo.UserAgent,
 			IP:             input.DeviceInfo.IP,
@@ -98,12 +99,11 @@ func (s *AuthService) InsertAttempt(ctx context.Context, input dto.AuthVerifyReq
 		ValidatedAt: &now,
 		ValidationResponse: &models.ValidationResponse{
 			UserID:          userID,
-			ServiceResponse: status,
+			ServiceResponse: reason,
 			ValidatedBy:     models.AuthMethodCredentials,
 			ValidationTime:  0,
 		},
 	}
-
 	return s.authAttemptRepo.Insert(ctx, attempt)
 }
 
