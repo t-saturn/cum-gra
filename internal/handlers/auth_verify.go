@@ -30,7 +30,7 @@ func NewAuthHandler() *AuthHandler {
 }
 
 // VerifyCredentials maneja la verificación de credenciales.
-func (h *AuthHandler) VerifyCredentials(c fiber.Ctx) error {
+func (h *AuthHandler) Verify(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequestDTO
 
 	// 1. Parsear JSON

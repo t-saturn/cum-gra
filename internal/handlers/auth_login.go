@@ -30,11 +30,5 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	fmt.Println("Aquí llamamos al servicio Login (pendiente de implementación)")
 
 	// 4. Devolver respuesta con data = null
-	return utils.JSONResponse[*dto.AuthLoginResponseDTO](
-		c,
-		http.StatusOK,
-		true,
-		"Login exitoso",
-		nil, // data será null
-	)
+	return utils.JSONResponse[*dto.AuthLoginResponseDTO](c, http.StatusOK, true, "Login exitoso", nil)
 }
