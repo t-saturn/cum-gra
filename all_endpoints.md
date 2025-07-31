@@ -16,16 +16,25 @@
   "password": "contraseña123",
   "application_id": "app_001",
   "device_info": {
-    "user_agent": "Mozilla/5.0...",
-    "ip": "192.168.1.100",
-    "device_id": "device_123",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "ip": "203.0.113.42",
+    "device_id": "device-1234abcd",
     "browser_name": "Chrome",
-    "browser_version": "91.0",
+    "browser_version": "115.0.0.0",
     "os": "Windows",
     "os_version": "10",
     "device_type": "desktop",
-    "timezone": "America/Lima",
-    "language": "es-PE"
+    "timezone": "America/New_York",
+    "language": "en-US",
+    "location": {
+      "country": "United States",
+      "country_code": "US",
+      "region": "New York",
+      "city": "New York City",
+      "coordinates": [-74.006, 40.7128],
+      "isp": "Example ISP",
+      "organization": "Example Organization"
+    }
   }
 }
 ```
@@ -66,24 +75,24 @@
   "application_id": "app_001",
   "remember_me": true,
   "device_info": {
-    "user_agent": "Mozilla/5.0...",
-    "ip": "192.168.1.100",
-    "device_id": "device_123",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "ip": "203.0.113.42",
+    "device_id": "device-1234abcd",
     "browser_name": "Chrome",
-    "browser_version": "91.0",
+    "browser_version": "115.0.0.0",
     "os": "Windows",
     "os_version": "10",
     "device_type": "desktop",
-    "timezone": "America/Lima",
-    "language": "es-PE",
+    "timezone": "America/New_York",
+    "language": "en-US",
     "location": {
-      "country": "Peru",
-      "country_code": "PE",
-      "region": "Lima",
-      "city": "Lima",
-      "coordinates": [-77.0428, -12.0464],
-      "isp": "Telefonica del Peru",
-      "organization": "Movistar"
+      "country": "United States",
+      "country_code": "US",
+      "region": "New York",
+      "city": "New York City",
+      "coordinates": [-74.006, 40.7128],
+      "isp": "Example ISP",
+      "organization": "Example Organization"
     }
   }
 }
@@ -169,9 +178,25 @@
 {
   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "device_info": {
-    "user_agent": "Mozilla/5.0...",
-    "ip": "192.168.1.100",
-    "device_id": "device_123"
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "ip": "203.0.113.42",
+    "device_id": "device-1234abcd",
+    "browser_name": "Chrome",
+    "browser_version": "115.0.0.0",
+    "os": "Windows",
+    "os_version": "10",
+    "device_type": "desktop",
+    "timezone": "America/New_York",
+    "language": "en-US",
+    "location": {
+      "country": "United States",
+      "country_code": "US",
+      "region": "New York",
+      "city": "New York City",
+      "coordinates": [-74.006, 40.7128],
+      "isp": "Example ISP",
+      "organization": "Example Organization"
+    }
   }
 }
 ```
@@ -264,15 +289,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     "last_activity": "2025-07-30T12:15:00Z",
     "expires_at": "2025-07-31T10:30:00Z",
     "device_info": {
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+      "ip": "203.0.113.42",
+      "device_id": "device-1234abcd",
       "browser_name": "Chrome",
-      "browser_version": "91.0",
+      "browser_version": "115.0.0.0",
       "os": "Windows",
       "os_version": "10",
       "device_type": "desktop",
-      "ip": "192.168.1.100",
+      "timezone": "America/New_York",
+      "language": "en-US",
       "location": {
-        "country": "Peru",
-        "city": "Lima"
+        "country": "United States",
+        "country_code": "US",
+        "region": "New York",
+        "city": "New York City",
+        "coordinates": [-74.006, 40.7128],
+        "isp": "Example ISP",
+        "organization": "Example Organization"
       }
     },
     "active_tokens": [
@@ -335,12 +369,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         "last_activity": "2025-07-29T18:30:00Z",
         "expires_at": "2025-07-30T08:00:00Z",
         "device_info": {
-          "browser_name": "Safari",
-          "os": "iOS",
-          "device_type": "mobile",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+          "ip": "203.0.113.42",
+          "device_id": "device-1234abcd",
+          "browser_name": "Chrome",
+          "browser_version": "115.0.0.0",
+          "os": "Windows",
+          "os_version": "10",
+          "device_type": "desktop",
+          "timezone": "America/New_York",
+          "language": "en-US",
           "location": {
-            "country": "Peru",
-            "city": "Lima"
+            "country": "United States",
+            "country_code": "US",
+            "region": "New York",
+            "city": "New York City",
+            "coordinates": [-74.006, 40.7128],
+            "isp": "Example ISP",
+            "organization": "Example Organization"
           }
         },
         "is_current": false
