@@ -48,5 +48,5 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	}
 
 	// 5 Devolver resultado DTO directamente
-	return utils.JSON(c, http.StatusOK, result)
+	return utils.JSONResponse(c, http.StatusOK, result.Success, result.Message, result.Data)
 }

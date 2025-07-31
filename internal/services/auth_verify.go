@@ -74,7 +74,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 
 	// 4 Construir el DTO específico
 	now := utils.NowUTC()
-	verifyData := dto.AuthVerifyResponseDTO{
+	data := dto.AuthVerifyResponseDTO{
 		AttemptID:   objID.Hex(),
 		UserID:      userData.ID.String(),
 		Status:      models.AuthStatusSuccess,
@@ -91,7 +91,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 	resp := &dto.ResponseDTO[dto.AuthVerifyResponseDTO]{
 		Success: true,
 		Message: "Credenciales válidas",
-		Data:    verifyData,
+		Data:    data,
 	}
 	return resp, nil
 }
