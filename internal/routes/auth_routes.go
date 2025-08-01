@@ -22,4 +22,5 @@ func RegisterAuthRoutes(router fiber.Router) {
 	session := auth.Group("/session")
 	session.Get("/me", authHandler.Me)
 	session.Get("/list", authHandler.ListSessions)
+	session.Delete("/:session_id", authHandler.Revoke)
 }

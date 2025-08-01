@@ -62,3 +62,17 @@ type ListSessionsResponseDTO struct {
 	Limit    int                 `json:"limit"`
 	Offset   int                 `json:"offset"`
 }
+
+// SessionRevokeRequestDTO define la petición para DELETE /auth/sessions/{session_id}
+type SessionRevokeRequestDTO struct {
+	Reason          string `json:"reason" validate:"required"`
+	RevokeAllTokens bool   `json:"revoke_all_tokens"`
+}
+
+// SessionRevokeResponseDTO define la parte "data" de la respuesta para DELETE /auth/sessions/{session_id}
+type SessionRevokeResponseDTO struct {
+	SessionID        string    `json:"session_id"`
+	RevokedAt        time.Time `json:"revoked_at"`
+	RevocationReason string    `json:"revocation_reason"`
+	TokensRevoked    []string  `json:"tokens_revoked"`
+}
