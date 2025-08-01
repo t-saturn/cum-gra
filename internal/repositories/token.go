@@ -41,6 +41,29 @@ func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.
 	return &tok, nil
 }
 
+// FindBySessionID recupera todos los tokens asociados a una sesión.
+func (r *TokenRepository) FindBySessionID(ctx context.Context, sessionID string) ([]models.Token, error) {
+	filter := bson.M{"session_id": sessionID}
+	cur, err := r.col.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	var tokens []models.Token
+	for cur.Next(ctx) {
+		var t models.Token
+		if err := cur.Decode(&t); err != nil {
+			return nil, err
+		}
+		tokens = append(tokens, t)
+	}
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+	return tokens, nil
+}
+
 // UpdateStatus modifica el estado y la fecha de revocación
 func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt, lastUsed *time.Time) error {
 	set := bson.M{"status": status}
