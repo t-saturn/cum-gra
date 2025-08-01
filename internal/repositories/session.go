@@ -43,6 +43,17 @@ func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*model
 	return &sess, nil
 }
 
+// FindBySessionID busca una sesión por su SessionID (campo session_id).
+func (r *SessionRepository) FindBySessionID(ctx context.Context, sessionID string) (*models.Session, error) {
+	var sess models.Session
+	// Filtrar por el campo "session_id"
+	err := r.col.FindOne(ctx, bson.M{"session_id": sessionID}).Decode(&sess)
+	if err != nil {
+		return nil, err
+	}
+	return &sess, nil
+}
+
 // FindByUserID retorna todas las sesiones de un usuario según filtros.
 func (r *SessionRepository) FindByUserID(ctx context.Context, userID string, params dto.ListSessionsParamsDTO) ([]models.Session, error) {
 	// Construir filtro base

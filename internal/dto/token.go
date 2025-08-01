@@ -18,8 +18,8 @@ type TokenDetailDTO struct {
 
 // TokenValidationRequest representa el JSON recibido con el token.
 type TokenValidationRequestDTO struct {
-	Token         string `json:"token" validate:"required"`
-	ApplicationID string `json:"application_id" validate:"required"`
+	TokenHash string `json:"token_hash" validate:"required"`
+	SessionID string `json:"session_id" validate:"required"`
 }
 
 type TokenValidationResponseDTO struct {

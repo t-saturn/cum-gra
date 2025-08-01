@@ -19,7 +19,7 @@ import (
 func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) (*dto.AuthLoginResponseDTO, error) {
 	now := utils.NowUTC()
 
-	// 1) Intento: usuario no encontrado / inactivo
+	// 1 Intento: usuario no encontrado / inactivo
 	user, err := s.userRepo.FindActiveByEmailOrDNI(ctx, &input.Email, nil)
 	if err != nil {
 		reason := models.AuthStatusInvalidUser // "invalid_credentials"
@@ -37,7 +37,7 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 		return nil, ErrInvalidCredentials
 	}
 
-	// 2) Intento: contraseña inválida
+	// 2 Intento: contraseña inválida
 	argon := security.NewArgon2Service()
 	if !argon.CheckPasswordHash(input.Password, user.PasswordHash) {
 		if _, recErr := s.InsertAttempt(ctx, input, models.AuthStatusFailed, models.AuthStatusInvalidPass, user.ID.String()); recErr != nil {
@@ -46,19 +46,19 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 		return nil, ErrInvalidCredentials
 	}
 
-	// 3) Intento exitoso
+	// 3 Intento exitoso
 	authAttemptID, err := s.InsertAttempt(ctx, input, models.AuthStatusSuccess, models.AuthStatusSuccess, user.ID.String())
 	if err != nil {
 		logger.Log.Errorf("Error guardando AuthAttempt (success): %v", err)
 	}
 
-	// 4) Crear sesión
+	// 4 Crear sesión
 	_, sessionDTO, err := s.InsertSession(ctx, input, user.ID.String(), authAttemptID, now)
 	if err != nil {
 		return nil, err
 	}
 
-	// 5) Generar y persistir tokens
+	// 5 Generar y persistir tokens
 	expMin, _ := strconv.Atoi(config.GetConfig().Server.JWTExpMinutes)
 	durAccess := time.Duration(expMin) * time.Minute
 	accessJWT, _ := security.GenerateAccessToken(user.ID.String())
@@ -80,7 +80,7 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 		ExpiresAt: now.Add(durRefresh),
 	}
 
-	// 6) Devolver respuesta
+	// 6 Devolver respuesta
 	return &dto.AuthLoginResponseDTO{
 		UserID:    user.ID.String(),
 		Session:   sessionDTO,

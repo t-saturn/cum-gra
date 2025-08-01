@@ -44,6 +44,16 @@ func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models
 	return &tok, nil
 }
 
+// FindByHash busca un token por su hash (token_hash) y lo devuelve.
+func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.Token, error) {
+	var tok models.Token
+	err := r.col.FindOne(ctx, bson.M{"token_hash": hash}).Decode(&tok)
+	if err != nil {
+		return nil, err
+	}
+	return &tok, nil
+}
+
 // UpdateStatus modifica el estado, la fecha de revocación y la última vez usado.
 func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt, lastUsed *time.Time) error {
 	set := bson.M{"status": status}

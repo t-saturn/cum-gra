@@ -72,7 +72,7 @@ POST /auth/login
   - `SessionRepository.Create`
   - `TokenRepository.Create`
 
-- **Modelos:** `AuthAttempt`, `Session`, `Token`, `AuthLog`, `TokenActivityLog`, `SessionActivityLog`, `CaptchaLog`
+- **Modelos:** `AuthAttempt`, `Session`, `Token`
 
 ---
 
@@ -85,7 +85,7 @@ POST /auth/login
   - `TokenRepository.UpdateStatus`
   - `SessionRepository.UpdateStatus`
 
-- **Modelos:** `Token`, `Session`, `AuthLog`, `TokenActivityLog`, `SessionActivityLog`
+- **Modelos:** `Token`, `Session`, `SessionActivityLog`
 
 ---
 
@@ -100,7 +100,7 @@ POST /auth/login
   - `TokenRepository.Create`
   - `SessionRepository.UpdateStatus`
 
-- **Modelos:** `Token`, `AuthLog`, `TokenActivityLog`, `Session`
+- **Modelos:** `Token`, `Session`
 
 ---
 
@@ -114,7 +114,7 @@ POST /auth/login
   - `TokenRepository.UpdateStatus`
   - `SessionRepository.UpdateStatus`
 
-- **Modelos:** `Token`, `AuthLog`, `TokenActivityLog`, `Session`
+- **Modelos:** `Token`, `Session`
 
 ---
 

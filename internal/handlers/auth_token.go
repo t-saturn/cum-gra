@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"github.com/t-saturn/auth-service-server/pkg/validator"
@@ -26,9 +27,24 @@ func (h *AuthHandler) Validate(c fiber.Ctx) error {
 		})
 	}
 
-	// 3. Punto de integración pendiente: llamar a h.authService.ValidateToken(...)
-	logger.Log.Info("Aquí implementamos el servicio ValidateToken")
+	// 3. Llamar al servicio de validación
+	data, err := h.authService.ValidateToken(c, input)
+	if err != nil {
+		switch err {
+		case services.ErrInvalidToken:
+			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN", "Token inválido o inactivo")
+		case services.ErrSessionNotFound:
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+		case services.ErrSessionMismatch:
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_MISMATCH", "Token no pertenece a la sesión proporcionada")
+		case services.ErrSessionInactive:
+			return utils.JSONError(c, http.StatusForbidden, "SESSION_INACTIVE", "Sesión inactiva o revocada")
+		default:
+			logger.Log.Errorf("Error validando token: %v", err)
+			return utils.JSONError(c, http.StatusInternalServerError, "VALIDATION_ERROR", "Error interno al validar token")
+		}
+	}
 
-	// 4. Devolver placeholder con data = null
-	return utils.JSONResponse[*dto.TokenValidationResponseDTO](c, http.StatusOK, true, "Token válido", nil)
+	// 4. Responder con success, message y data
+	return utils.JSONResponse(c, http.StatusOK, true, "Token válido", data)
 }
