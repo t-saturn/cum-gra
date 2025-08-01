@@ -35,3 +35,30 @@ type SessionMeResponseDTO struct {
 	DeviceInfo   DeviceInfoDTO `json:"device_info"`
 	ActiveTokens []string      `json:"active_tokens"`
 }
+
+// ListSessionsRequestDTO agrupa los query params de GET /auth/sessions.
+type ListSessionsRequestDTO struct {
+	Status *string `query:"status"` // "active", "inactive", "revoked", "expired"
+	Limit  *int    `query:"limit"`  // máximo resultados (default 10)
+	Offset *int    `query:"offset"` // paginación (default 0)
+}
+
+// SessionSummaryDTO describe cada sesión en la lista.
+type SessionSummaryDTO struct {
+	SessionID    string        `json:"session_id"`
+	Status       string        `json:"status"`
+	IsActive     bool          `json:"is_active"`
+	CreatedAt    time.Time     `json:"created_at"`
+	LastActivity time.Time     `json:"last_activity"`
+	ExpiresAt    time.Time     `json:"expires_at"`
+	DeviceInfo   DeviceInfoDTO `json:"device_info"`
+	IsCurrent    bool          `json:"is_current"`
+}
+
+// ListSessionsResponseDTO envuelve la respuesta de GET /auth/sessions.
+type ListSessionsResponseDTO struct {
+	Sessions []SessionSummaryDTO `json:"sessions"`
+	Total    int64               `json:"total"`
+	Limit    int                 `json:"limit"`
+	Offset   int                 `json:"offset"`
+}
