@@ -4,8 +4,8 @@
 
 ### 1. Verificar Credenciales
 
-**Ruta:** `/auth/verify`  
-**Método:** `POST`  
+<!-- **Ruta:** `/auth/verify`
+**Método:** `POST`
 **Descripción:** Verifica las credenciales del usuario sin crear sesión ni tokens
 
 **Datos de entrada:**
@@ -58,12 +58,12 @@
     }
   }
 }
-```
+``` -->
 
 ### 2. Login Completo
 
-**Ruta:** `/auth/login`  
-**Método:** `POST`  
+<!-- **Ruta:** `/auth/login`
+**Método:** `POST`
 **Descripción:** Realiza login completo creando sesión y tokens
 
 **Datos de entrada:**
@@ -129,7 +129,7 @@
     "attempt_id": "507f1f77bcf86cd799439012"
   }
 }
-```
+``` -->
 
 ### 3. Cerrar Sesión
 
@@ -228,8 +228,8 @@
 
 ### 5. Validar Token
 
-**Ruta:** `/auth/token/validate`  
-**Método:** `POST`  
+<!-- **Ruta:** `/auth/token/validate`
+**Método:** `POST`
 **Descripción:** Valida si un access token es válido y activo
 
 **Datos de entrada:**
@@ -263,7 +263,7 @@
     }
   }
 }
-```
+``` -->
 
 ## Endpoints de Sesiones
 

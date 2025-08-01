@@ -42,7 +42,7 @@
 |                    | 🔸 `Login(ctx, input dto.AuthLoginRequestDTO)`              | `(*dto.AuthLoginResponseDTO, error)`    |
 |                    | `Logout(ctx, token string, input dto.AuthLogoutRequestDTO)` | `(*dto.AuthLogoutResponseDTO, error)`   |
 |                    | `RefreshToken(ctx, input dto.AuthRefreshRequestDTO)`        | `(*dto.AuthRefreshResponseDTO, error)`  |
-|                    | `ValidateToken(ctx, input dto.AuthValidateRequestDTO)`      | `(*dto.AuthValidateResponseDTO, error)` |
+|                    | 🔸 `ValidateToken(ctx, input dto.AuthValidateRequestDTO)`   | `(*dto.AuthValidateResponseDTO, error)` |
 | **SessionService** | `GetCurrent(ctx, token string)`                             | `(*dto.SessionResponseDTO, error)`      |
 |                    | `List(ctx, userID string, params dto.ListSessionsParams)`   | `([]dto.SessionInfoDTO, error)`         |
 |                    | `Revoke(ctx, userID, sessionID string)`                     | `(*dto.RevokeResponseDTO, error)`       |
@@ -52,17 +52,17 @@
 
 ### 1.4 `handlers/` (adaptadores HTTP genéricos)
 
-| Handler            | Método                      | Retorno |
-| ------------------ | --------------------------- | ------- |
-| **AuthHandler**    | 🔸 `Verify(c *gin.Context)` | `void`  |
-|                    | 🔸 `Login(c *gin.Context)`  | `void`  |
-|                    | `Logout(c *gin.Context)`    | `void`  |
-|                    | `Refresh(c *gin.Context)`   | `void`  |
-|                    | `Validate(c *gin.Context)`  | `void`  |
-| **SessionHandler** | `Me(c *gin.Context)`        | `void`  |
-|                    | `List(c *gin.Context)`      | `void`  |
-|                    | `Revoke(c *gin.Context)`    | `void`  |
-| **HealthHandler**  | `Health(c *gin.Context)`    | `void`  |
+| Handler            | Método                        | Retorno |
+| ------------------ | ----------------------------- | ------- |
+| **AuthHandler**    | 🔸 `Verify(c *gin.Context)`   | `void`  |
+|                    | 🔸 `Login(c *gin.Context)`    | `void`  |
+|                    | `Logout(c *gin.Context)`      | `void`  |
+|                    | `Refresh(c *gin.Context)`     | `void`  |
+|                    | 🔸 `Validate(c *gin.Context)` | `void`  |
+| **SessionHandler** | `Me(c *gin.Context)`          | `void`  |
+|                    | `List(c *gin.Context)`        | `void`  |
+|                    | `Revoke(c *gin.Context)`      | `void`  |
+| **HealthHandler**  | `Health(c *gin.Context)`      | `void`  |
 
 ---
 
@@ -142,17 +142,17 @@
 
 - **Repo**:
 
-  - `TokenRepository.FindByID` — `(*models.Token, error)`
-  - `TokenRepository.UpdateStatus` — `error`
-  - `SessionRepository.UpdateStatus` — `error`
+  - 🔸 `TokenRepository.FindByID` — `(*models.Token, error)`
+  - 🔸 `TokenRepository.UpdateStatus` — `error`
+  - 🔸 `SessionRepository.UpdateStatus` — `error`
 
 - **Service**:
 
-  - `AuthService.ValidateToken` — `(*dto.AuthValidateResponseDTO, error)`
+  - 🔸 `AuthService.ValidateToken` — `(*dto.AuthValidateResponseDTO, error)`
 
 - **Handler**:
 
-  - `AuthHandler.Validate` — `void`
+  - 🔸 `AuthHandler.Validate` — `void`
 
 ---
 
