@@ -50,3 +50,17 @@ type AuthRefreshResponseDTO struct {
 	SessionID    string         `json:"session_id"`
 	RefreshCount int            `json:"refresh_count"`
 }
+
+// LogoutRequestDTO define la petición para /auth/logout
+type LogoutRequestDTO struct {
+	Token      string `json:"token" validate:"required"`
+	SessionID  string `json:"session_id" validate:"required,uuid4"`
+	LogoutType string `json:"logout_type" validate:"required,oneof=user_initiated session_expired admin_revoked security_breach"`
+}
+
+// LogoutResponseDTO define la parte "data" de la respuesta para /auth/logout
+type LogoutResponseDTO struct {
+	SessionID     string    `json:"session_id"`
+	RevokedAt     time.Time `json:"revoked_at"`
+	TokensRevoked []string  `json:"tokens_revoked"`
+}
