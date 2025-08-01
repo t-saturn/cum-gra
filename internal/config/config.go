@@ -30,11 +30,18 @@ type ServerConfig struct {
 	ServerPort    string
 }
 
+// App Configuración - NUEVO
+type AppConfig struct {
+	Version string
+}
+
 // Estructura principal que agrupa todas las configuraciones
 type Config struct {
-	Postgres PostgresConfig
-	Mongo    MongoConfig
-	Server   ServerConfig
+	Postgres         PostgresConfig
+	Mongo            MongoConfig
+	Server           ServerConfig
+	App              AppConfig         // NUEVO
+	ExternalServices map[string]string // NUEVO
 }
 
 var cfg Config
@@ -61,12 +68,51 @@ func LoadConfig() {
 			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
 			ServerPort:    getEnv("SERVER_PORT", "8000"),
 		},
+		// NUEVO: Configuración de la aplicación
+		App: AppConfig{
+			Version: getEnv("APP_VERSION", "1.0.0"),
+		},
+		// NUEVO: Servicios externos
+		ExternalServices: loadExternalServices(),
 	}
 }
 
 // Retorna la configuración cargada
 func GetConfig() Config {
 	return cfg
+}
+
+// NUEVA: Carga los servicios externos desde variables de entorno
+func loadExternalServices() map[string]string {
+	services := make(map[string]string)
+
+	// Servicios por defecto
+	defaultServices := map[string]string{
+		"auth-api":     "http://auth-api:8080/health",
+		"user-service": "http://user-service:8080/health",
+	}
+
+	// Cargar servicios por defecto
+	for name, url := range defaultServices {
+		services[name] = url
+	}
+
+	// Sobrescribir con variables de entorno si existen
+	if authAPI := os.Getenv("AUTH_API_HEALTH_URL"); authAPI != "" {
+		services["auth-api"] = authAPI
+	}
+	if userService := os.Getenv("USER_SERVICE_HEALTH_URL"); userService != "" {
+		services["user-service"] = userService
+	}
+
+	// Patrón genérico para agregar más servicios
+	// EXTERNAL_SERVICE_[NOMBRE]_HEALTH_URL
+	// for _, env := range os.Environ() {
+	// 	// Puedes implementar lógica más compleja aquí si necesitas
+	// 	// detectar automáticamente servicios desde variables de entorno
+	// }
+
+	return services
 }
 
 // Utilidad interna para leer variables de entorno con valor por defecto

@@ -5,22 +5,28 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"maps"
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mssola/user_agent"
+	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/handlers"
 	"github.com/t-saturn/auth-service-server/internal/services"
-	"go.mongodb.org/mongo-driver/mongo"
-	"gorm.io/gorm"
 )
 
 // RegisterHealthRoutes configura las rutas para el endpoint de salud.
-func RegisterHealthRoutes(router fiber.Router, pgDB *gorm.DB, mongoDB *mongo.Database, version string, deps map[string]string) {
+func RegisterHealthRoutes(router fiber.Router) {
 	health := router.Group("/health")
 
+	// Obtener dependencias directamente aquí
+	pgDB := config.GetPostgresDB()
+	mongoDB := config.GetMongoDB()
+	version := getApplicationVersion()
+	externalDeps := getExternalDependencies()
+
 	// Crear el servicio de salud
-	healthService := services.NewHealthService(pgDB, mongoDB, version, deps)
+	healthService := services.NewHealthService(pgDB, mongoDB, version, externalDeps)
 
 	// Crear el handler con el servicio inyectado
 	healthHandler := handlers.NewHealthHandler(healthService)
@@ -97,4 +103,27 @@ func RegisterHealthRoutes(router fiber.Router, pgDB *gorm.DB, mongoDB *mongo.Dat
 		// 7. Retornar como respuesta JSON
 		return c.Status(200).JSON(result)
 	})
+}
+
+// getApplicationVersion obtiene la versión de la aplicación
+func getApplicationVersion() string {
+	cfg := config.GetConfig()
+	if cfg.App.Version != "" {
+		return cfg.App.Version
+	}
+
+	return "1.0.0"
+}
+
+// getExternalDependencies obtiene las dependencias externas
+func getExternalDependencies() map[string]string {
+	// Crear mapa para dependencias
+	deps := make(map[string]string)
+
+	cfg := config.GetConfig()
+	if len(cfg.ExternalServices) > 0 {
+		maps.Copy(deps, cfg.ExternalServices)
+	}
+
+	return deps
 }

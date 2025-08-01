@@ -22,8 +22,6 @@ func main() {
 	config.LoadConfig()
 	config.ConnectPostgres()
 	config.ConnectMongo()
-	pgDB := config.GetPostgresDB()
-	mongoDB := config.GetMongoDB()
 
 	// Inicializar validador
 	if err := validator.InitValidator(); err != nil {
@@ -37,15 +35,8 @@ func main() {
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
 
-	// Definir dependencias para el servicio de salud
-	version := "1.0.0" // Puedes obtener esto de config.GetConfig() si está definido
-	deps := map[string]string{
-		"auth-api":     "http://auth-api:8080/health",
-		"user-service": "http://user-service:8080/health",
-	}
-
-	// Registrar rutas con dependencias
-	routes.RegisterRoutes(app, pgDB, mongoDB, version, deps)
+	// Registrar rutas (sin dependencias adicionales)
+	routes.RegisterRoutes(app)
 
 	// Iniciar servidor
 	port := config.GetConfig().Server.ServerPort
