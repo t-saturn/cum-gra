@@ -44,9 +44,3 @@ type DeviceInfoDTO struct {
 	Language       string             `json:"language,omitempty"`
 	Location       *LocationDetailDTO `json:"location,omitempty"`
 }
-
-// HealthResponse representa la respuesta del endpoint /health
-type HealthResponse struct {
-	Status  string `json:"status"`  // e.g. "ok"
-	Message string `json:"message"` // texto adicional opcional
-}
