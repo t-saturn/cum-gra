@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"github.com/t-saturn/auth-service-server/pkg/validator"
@@ -26,9 +27,20 @@ func (h *AuthHandler) Logout(c fiber.Ctx) error {
 		})
 	}
 
-	// 3. Punto de integración pendiente: llamar a h.authService.Logout(...)
-	logger.Log.Info("Aquí implementamos el servicio Logout")
+	// 3. Llamar al servicio de logout
+	data, err := h.authService.Logout(c, input)
+	if err != nil {
+		switch err {
+		case services.ErrSessionNotFound:
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+		case services.ErrSessionInactive:
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_INACTIVE", "Sesión ya inactiva")
+		default:
+			logger.Log.Errorf("Error en logout: %v", err)
+			return utils.JSONError(c, http.StatusInternalServerError, "LOGOUT_FAILED", "Error interno al cerrar sesión")
+		}
+	}
 
-	// 4. Devolver placeholder con data = null
-	return utils.JSONResponse[*dto.LogoutResponseDTO](c, http.StatusOK, true, "Logout exitoso", nil)
+	// 4. Devolver respuesta
+	return utils.JSONResponse(c, http.StatusOK, true, "Logout exitoso", data)
 }
