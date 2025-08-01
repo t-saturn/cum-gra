@@ -31,6 +31,33 @@ func (r *TokenRepository) Insert(ctx context.Context, t *models.Token) (primitiv
 	return res.InsertedID.(primitive.ObjectID), nil
 }
 
+// FindByHash busca un token por su hash (token_hash) y lo devuelve.
+func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.Token, error) {
+	var tok models.Token
+	err := r.col.FindOne(ctx, bson.M{"token_hash": hash}).Decode(&tok)
+	if err != nil {
+		return nil, err
+	}
+	return &tok, nil
+}
+
+// UpdateStatus modifica el estado y la fecha de revocación
+func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt, lastUsed *time.Time) error {
+	set := bson.M{"status": status}
+	if revokedAt != nil {
+		set["revoked_at"] = *revokedAt
+	}
+
+	_, err := r.col.UpdateByID(ctx, id, bson.M{"$set": set})
+	return err
+}
+
+// IncrementRefreshCount incrementa en 1 el contador de refresh.
+func (r *TokenRepository) IncrementRefreshCount(ctx context.Context, id primitive.ObjectID) error {
+	_, err := r.col.UpdateByID(ctx, id, bson.M{"$inc": bson.M{"refresh_count": 1}})
+	return err
+}
+
 // FindByID recupera un token a partir de su ID en hex string.
 func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models.Token, error) {
 	oid, err := primitive.ObjectIDFromHex(tokenID)
@@ -42,33 +69,4 @@ func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models
 		return nil, err
 	}
 	return &tok, nil
-}
-
-// FindByHash busca un token por su hash (token_hash) y lo devuelve.
-func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.Token, error) {
-	var tok models.Token
-	err := r.col.FindOne(ctx, bson.M{"token_hash": hash}).Decode(&tok)
-	if err != nil {
-		return nil, err
-	}
-	return &tok, nil
-}
-
-// UpdateStatus modifica el estado, la fecha de revocación y la última vez usado.
-func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt, lastUsed *time.Time) error {
-	set := bson.M{"status": status}
-	if revokedAt != nil {
-		set["revoked_at"] = *revokedAt
-	}
-	if lastUsed != nil {
-		set["last_used"] = *lastUsed
-	}
-	_, err := r.col.UpdateByID(ctx, id, bson.M{"$set": set})
-	return err
-}
-
-// IncrementRefreshCount incrementa en 1 el contador de refresh.
-func (r *TokenRepository) IncrementRefreshCount(ctx context.Context, id primitive.ObjectID) error {
-	_, err := r.col.UpdateByID(ctx, id, bson.M{"$inc": bson.M{"refresh_count": 1}})
-	return err
 }

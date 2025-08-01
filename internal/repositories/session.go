@@ -33,21 +33,21 @@ func (r *SessionRepository) Insert(ctx context.Context, s *models.Session) (prim
 	return res.InsertedID.(primitive.ObjectID), nil
 }
 
-// FindByUUID busca una sesión por su UUID.
-func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*models.Session, error) {
+// FindBySessionID busca una sesión por su SessionID (campo session_id).
+func (r *SessionRepository) FindBySessionID(ctx context.Context, sessionID string) (*models.Session, error) {
 	var sess models.Session
-	err := r.col.FindOne(ctx, bson.M{"uuid": uuid}).Decode(&sess)
+	// Filtrar por el campo "session_id"
+	err := r.col.FindOne(ctx, bson.M{"session_id": sessionID}).Decode(&sess)
 	if err != nil {
 		return nil, err
 	}
 	return &sess, nil
 }
 
-// FindBySessionID busca una sesión por su SessionID (campo session_id).
-func (r *SessionRepository) FindBySessionID(ctx context.Context, sessionID string) (*models.Session, error) {
+// FindByUUID busca una sesión por su UUID.
+func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*models.Session, error) {
 	var sess models.Session
-	// Filtrar por el campo "session_id"
-	err := r.col.FindOne(ctx, bson.M{"session_id": sessionID}).Decode(&sess)
+	err := r.col.FindOne(ctx, bson.M{"uuid": uuid}).Decode(&sess)
 	if err != nil {
 		return nil, err
 	}
