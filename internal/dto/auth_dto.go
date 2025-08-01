@@ -40,7 +40,7 @@ type AuthLoginResponseDTO struct {
 // AuthRefreshRequestDTO define la estructura de la petición para /auth/token/refresh
 type AuthRefreshRequestDTO struct {
 	RefreshToken string        `json:"refresh_token" validate:"required"`
-	DeviceInfo   DeviceInfoDTO `json:"device_info" validate:"required,dive"`
+	DeviceInfo   DeviceInfoDTO `json:"device_info" validate:"required"`
 }
 
 // AuthRefreshResponseDTO define la parte "data" de la respuesta para /auth/token/refresh
