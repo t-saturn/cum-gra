@@ -9,18 +9,24 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mssola/user_agent"
-	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/handlers"
+	"github.com/t-saturn/auth-service-server/internal/services"
+	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
 )
 
-func RegisterHealthRoutes(router fiber.Router) {
-	// Ruta para monitoreo de salud
-	router.Get("/health", func(c fiber.Ctx) error {
-		response := dto.HealthResponse{
-			Status:  "ok",
-			Message: "Auth service is healthy",
-		}
-		return c.Status(fiber.StatusOK).JSON(response)
-	})
+// RegisterHealthRoutes configura las rutas para el endpoint de salud.
+func RegisterHealthRoutes(router fiber.Router, pgDB *gorm.DB, mongoDB *mongo.Database, version string, deps map[string]string) {
+	health := router.Group("/health")
+
+	// Crear el servicio de salud
+	healthService := services.NewHealthService(pgDB, mongoDB, version, deps)
+
+	// Crear el handler con el servicio inyectado
+	healthHandler := handlers.NewHealthHandler(healthService)
+
+	// Registrar la ruta GET /health
+	health.Get("/", healthHandler.Health)
 
 	// Ruta para obtener info del dispositivo
 	router.Get("/device-info", func(c fiber.Ctx) error {

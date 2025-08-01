@@ -62,6 +62,14 @@ func DisconnectMongo() {
 	}
 }
 
+// GetMongoDB retorna la instancia de la base de datos MongoDB
+func GetMongoDB() *mongo.Database {
+	if MongoDB == nil {
+		logger.Log.Fatal("MongoDB no está conectado")
+	}
+	return MongoDB
+}
+
 // GetMongoCollection retorna una colección específica de MongoDB
 func GetMongoCollection(collectionName string) *mongo.Collection {
 	if MongoDB == nil {
