@@ -17,7 +17,7 @@ type Token struct {
 	SessionID string `bson:"session_id,omitempty"`
 
 	// Estado y tipo
-	Status    string `bson:"status"`     // active, invalid, expired, revoked
+	Status    string `bson:"status"`     // active, revoked, expired
 	TokenType string `bson:"token_type"` // access, refresh
 
 	// Timestamps
