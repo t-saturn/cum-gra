@@ -94,6 +94,19 @@ func (r *SessionRepository) FindByUserID(ctx context.Context, userID string, par
 	return sessions, nil
 }
 
+// CountByUserID cuenta cuántas sesiones tiene un usuario, opcionalmente filtrando por estado.
+func (r *SessionRepository) CountByUserID(ctx context.Context, userID string, status *string) (int64, error) {
+	filter := bson.M{"user_id": userID}
+	if status != nil {
+		filter["status"] = *status
+	}
+	count, err := r.col.CountDocuments(ctx, filter)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // UpdateStatus actualiza el status y la fecha de revocación de una sesión.
 func (r *SessionRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time) error {
 	update := bson.M{"$set": bson.M{"status": status}}
