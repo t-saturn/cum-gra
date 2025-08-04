@@ -41,11 +41,5 @@ func (h *AuthHandler) ListSessions(c fiber.Ctx) error {
 	logger.Log.Info("Llamando al servicio ListSessions con query=", q)
 
 	// 5. Responder placeholder con data = null
-	return utils.JSONResponse[*dto.ListSessionsResponseDTO](
-		c,
-		http.StatusOK,
-		true,
-		"Sesiones obtenidas",
-		nil,
-	)
+	return utils.JSONResponse[*dto.ListSessionsResponseDTO](c, http.StatusOK, true, "Sesiones obtenidas", nil)
 }
