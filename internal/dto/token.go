@@ -39,3 +39,17 @@ type TokenValidationDetailsResponseDTO struct {
 	ExpiresAt string `json:"expires_at,omitempty"` // formato ISO8601
 	ExpiresIn int64  `json:"expires_in,omitempty"`
 }
+
+// AuthRefreshRequestDTO define la estructura de la petición para /auth/token/refresh
+type AuthRefreshRequestDTO struct {
+	RefreshToken string        `json:"refresh_token" validate:"required"`
+	DeviceInfo   DeviceInfoDTO `json:"device_info" validate:"required"`
+}
+
+// AuthRefreshResponseDTO define la parte "data" de la respuesta para /auth/token/refresh
+type AuthRefreshResponseDTO struct {
+	AccessToken  TokenDetailDTO `json:"access_token"`
+	RefreshToken TokenDetailDTO `json:"refresh_token"`
+	SessionID    string         `json:"session_id"`
+	RefreshCount int            `json:"refresh_count"`
+}

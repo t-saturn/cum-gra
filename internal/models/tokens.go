@@ -31,10 +31,6 @@ type Token struct {
 	// Información del dispositivo
 	DeviceInfo DeviceInfo `bson:"device_info,omitempty"`
 
-	// Para tokens refresh
-	RefreshCount    int `bson:"refresh_count,omitempty"`     // Cuántas veces se ha usado para refresh
-	MaxRefreshCount int `bson:"max_refresh_count,omitempty"` // Máximo permitido
-
 	// Relaciones entre tokens
 	ParentTokenID *primitive.ObjectID  `bson:"parent_token_id,omitempty"` // Token padre (para refresh)
 	PairedTokenID *primitive.ObjectID  `bson:"paired_token_id,omitempty"` // Token access/refresh pareado

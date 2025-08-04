@@ -57,10 +57,6 @@ func (s *AuthService) RefreshToken(ctx context.Context, input dto.AuthRefreshReq
 		return nil, err
 	}
 
-	if err := s.tokenRepo.IncrementRefreshCount(ctx, oldTok.ID); err == nil {
-		oldTok.RefreshCount++
-	}
-
 	// 4. Generar nuevo access token (1 minuto)
 	accessJWT, err := security.GenerateToken(oldTok.UserID, time.Minute)
 	if err != nil {
@@ -174,8 +170,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, input dto.AuthRefreshReq
 			TokenType: models.TokenTypeRefresh,
 			ExpiresAt: refreshModel.ExpiresAt,
 		},
-		SessionID:    oldTok.SessionID,
-		RefreshCount: oldTok.RefreshCount,
+		SessionID: oldTok.SessionID,
 	}
 
 	return resp, nil

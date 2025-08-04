@@ -37,20 +37,6 @@ type AuthLoginResponseDTO struct {
 	AttemptID string     `json:"attempt_id"`
 }
 
-// AuthRefreshRequestDTO define la estructura de la petición para /auth/token/refresh
-type AuthRefreshRequestDTO struct {
-	RefreshToken string        `json:"refresh_token" validate:"required"`
-	DeviceInfo   DeviceInfoDTO `json:"device_info" validate:"required"`
-}
-
-// AuthRefreshResponseDTO define la parte "data" de la respuesta para /auth/token/refresh
-type AuthRefreshResponseDTO struct {
-	AccessToken  TokenDetailDTO `json:"access_token"`
-	RefreshToken TokenDetailDTO `json:"refresh_token"`
-	SessionID    string         `json:"session_id"`
-	RefreshCount int            `json:"refresh_count"`
-}
-
 // LogoutRequestDTO define la petición para /auth/logout
 type LogoutRequestDTO struct {
 	Token      string `json:"token" validate:"required"`

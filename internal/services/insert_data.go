@@ -114,6 +114,10 @@ func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequ
 	if input.RememberMe {
 		expires = now.Add(7 * 24 * time.Hour)
 	}
+
+	// Calcular duración máxima de sesión (refresh)
+	maxRefresh := now.Add(7 * 24 * time.Hour) // 7 días sin reautenticarse
+
 	sess := &models.Session{
 		SessionID:    uuid.New().String(),
 		UserID:       userID,
@@ -122,6 +126,7 @@ func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequ
 		CreatedAt:    now,
 		LastActivity: now,
 		ExpiresAt:    expires,
+		MaxRefreshAt: maxRefresh,
 		DeviceInfo: models.DeviceInfo{
 			UserAgent:      input.DeviceInfo.UserAgent,
 			IP:             input.DeviceInfo.IP,

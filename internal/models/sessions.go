@@ -15,6 +15,7 @@ type Session struct {
 	// Estado de la sesión
 	Status       string     `bson:"status"`    // active, inactive, revoked, expired
 	IsActive     bool       `bson:"is_active"` // Estado rápido de consulta
+	MaxRefreshAt time.Time  `bson:"max_refresh_at"`
 	CreatedAt    time.Time  `bson:"created_at"`
 	LastActivity time.Time  `bson:"last_activity"`
 	ExpiresAt    time.Time  `bson:"expires_at"`

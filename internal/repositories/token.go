@@ -75,12 +75,6 @@ func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectI
 	return err
 }
 
-// IncrementRefreshCount incrementa en 1 el contador de refresh.
-func (r *TokenRepository) IncrementRefreshCount(ctx context.Context, id primitive.ObjectID) error {
-	_, err := r.col.UpdateByID(ctx, id, bson.M{"$inc": bson.M{"refresh_count": 1}})
-	return err
-}
-
 // FindByID recupera un token a partir de su ID en hex string.
 func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models.Token, error) {
 	oid, err := primitive.ObjectIDFromHex(tokenID)
