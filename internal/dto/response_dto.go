@@ -1,6 +1,8 @@
 // Package dto define estructuras de datos utilizadas para la entrada y salida en las operaciones de la API.
 package dto
 
+import "github.com/t-saturn/auth-service-server/internal/models"
+
 type ResponseDTO[T any] struct {
 	Success bool   `json:"success"`
 	Message string `json:"message,omitempty"`
@@ -43,4 +45,32 @@ type DeviceInfoDTO struct {
 	Timezone       string             `json:"timezone,omitempty"`
 	Language       string             `json:"language,omitempty"`
 	Location       *LocationDetailDTO `json:"location,omitempty"`
+}
+
+// ToModel convierte un DeviceInfoDTO a models.DeviceInfo
+func (d DeviceInfoDTO) ToModel() models.DeviceInfo {
+	mi := models.DeviceInfo{
+		UserAgent:      d.UserAgent,
+		IP:             d.IP,
+		DeviceID:       d.DeviceID,
+		BrowserName:    d.BrowserName,
+		BrowserVersion: d.BrowserVersion,
+		OS:             d.OS,
+		OSVersion:      d.OSVersion,
+		DeviceType:     d.DeviceType,
+		Timezone:       d.Timezone,
+		Language:       d.Language,
+	}
+	if d.Location != nil {
+		mi.Location = &models.LocationDetail{
+			Country:      d.Location.Country,
+			CountryCode:  d.Location.CountryCode,
+			Region:       d.Location.Region,
+			City:         d.Location.City,
+			Coordinates:  models.Coordinates{d.Location.Coordinates[0], d.Location.Coordinates[1]},
+			ISP:          d.Location.ISP,
+			Organization: d.Location.Organization,
+		}
+	}
+	return mi
 }
