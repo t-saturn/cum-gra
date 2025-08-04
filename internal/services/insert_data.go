@@ -171,7 +171,10 @@ func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequ
 }
 
 // InsertToken encapsula la creación y persistencia de un token.
-func (s *AuthService) InsertToken(ctx context.Context, input dto.AuthLoginRequestDTO, userID, sessionID string, now time.Time, tokenType string, duration time.Duration, parentID *primitive.ObjectID) (primitive.ObjectID, error) {
+// - recibe sólo lo mínimo necesario: userID, sessionID, deviceInfo, tipo y duración.
+// - devuelve el ObjectID recién insertado.
+func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID string, deviceInfo dto.DeviceInfoDTO, tokenType string, duration time.Duration, parentID *primitive.ObjectID) (primitive.ObjectID, string, error) {
+	// 1) Generar el JWT (hash)
 	var jwtStr string
 	var err error
 	switch tokenType {
@@ -180,53 +183,32 @@ func (s *AuthService) InsertToken(ctx context.Context, input dto.AuthLoginReques
 	case models.TokenTypeRefresh:
 		jwtStr, err = security.GenerateRefreshToken(userID)
 	default:
-		return primitive.NilObjectID, errors.New("tipo de token no soportado")
+		return primitive.NilObjectID, "", errors.New("tipo de token no soportado")
 	}
 	if err != nil {
-		return primitive.NilObjectID, err
+		return primitive.NilObjectID, "", err
 	}
 
-	// Crear modelo Token
+	// 2) Armar el modelo
 	tokenUUID := uuid.New().String()
 	tokModel := &models.Token{
-		TokenID:   tokenUUID,
-		TokenHash: jwtStr,
-		UserID:    userID,
-		SessionID: sessionID,
-		Status:    models.TokenStatusActive,
-		TokenType: tokenType,
-		IssuedAt:  now,
-		ExpiresAt: now.Add(duration),
-		CreatedAt: now,
-		UpdatedAt: now,
-		DeviceInfo: models.DeviceInfo{
-			UserAgent:      input.DeviceInfo.UserAgent,
-			IP:             input.DeviceInfo.IP,
-			DeviceID:       input.DeviceInfo.DeviceID,
-			OS:             input.DeviceInfo.OS,
-			OSVersion:      input.DeviceInfo.OSVersion,
-			BrowserName:    input.DeviceInfo.BrowserName,
-			BrowserVersion: input.DeviceInfo.BrowserVersion,
-			DeviceType:     input.DeviceInfo.DeviceType,
-			Timezone:       input.DeviceInfo.Timezone,
-			Language:       input.DeviceInfo.Language,
-			Location: &models.LocationDetail{
-				Country:     input.DeviceInfo.Location.Country,
-				CountryCode: input.DeviceInfo.Location.CountryCode,
-				Region:      input.DeviceInfo.Location.Region,
-				City:        input.DeviceInfo.Location.City,
-				Coordinates: models.Coordinates{
-					input.DeviceInfo.Location.Coordinates[0],
-					input.DeviceInfo.Location.Coordinates[1]},
-				ISP:          input.DeviceInfo.Location.ISP,
-				Organization: input.DeviceInfo.Location.Organization,
-			},
-		},
+		TokenID:       tokenUUID,
+		TokenHash:     jwtStr,
+		UserID:        userID,
+		SessionID:     sessionID,
+		Status:        models.TokenStatusActive,
+		TokenType:     tokenType,
+		IssuedAt:      time.Now().UTC(),
+		ExpiresAt:     time.Now().UTC().Add(duration),
+		CreatedAt:     time.Now().UTC(),
+		UpdatedAt:     time.Now().UTC(),
+		DeviceInfo:    deviceInfo.ToModel(),
 		ParentTokenID: parentID,
 	}
 
-	// Persistir en BD y devolver ID
-	return s.tokenRepo.Insert(ctx, tokModel)
+	// 3) Persistir y devolver ID + el JWT generado
+	oid, err := s.tokenRepo.Insert(ctx, tokModel)
+	return oid, jwtStr, err
 }
 
 // deref convierte *string a string, devolviendo cadena vacía si es nil.
