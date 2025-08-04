@@ -61,20 +61,26 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 	// 5 Generar y persistir tokens
 	expMin, _ := strconv.Atoi(config.GetConfig().Server.JWTExpMinutes)
 	durAccess := time.Duration(expMin) * time.Minute
-	accessJWT, _ := security.GenerateAccessToken(user.ID.String())
-	accessMongoID, _ := s.InsertToken(ctx, input, user.ID.String(), sessionDTO.SessionID, now, models.TokenTypeAccess, durAccess, nil)
+
+	accessID, accessJWT, err := s.InsertToken(ctx, user.ID.String(), sessionDTO.SessionID, input.DeviceInfo, models.TokenTypeAccess, durAccess, nil)
+	if err != nil {
+		return nil, err
+	}
 	accessDetail := dto.TokenDetailDTO{
-		TokenID:   accessMongoID.Hex(),
+		TokenID:   accessID.Hex(),
 		Token:     accessJWT,
 		TokenType: models.TokenTypeAccess,
 		ExpiresAt: now.Add(durAccess),
 	}
 
 	durRefresh := 7 * 24 * time.Hour
-	refreshJWT, _ := security.GenerateRefreshToken(user.ID.String())
-	refreshMongoID, _ := s.InsertToken(ctx, input, user.ID.String(), sessionDTO.SessionID, now, models.TokenTypeRefresh, durRefresh, &accessMongoID)
+
+	refreshID, refreshJWT, err := s.InsertToken(ctx, user.ID.String(), sessionDTO.SessionID, input.DeviceInfo, models.TokenTypeRefresh, durRefresh, &accessID)
+	if err != nil {
+		return nil, err
+	}
 	refreshDetail := dto.TokenDetailDTO{
-		TokenID:   refreshMongoID.Hex(),
+		TokenID:   refreshID.Hex(),
 		Token:     refreshJWT,
 		TokenType: models.TokenTypeRefresh,
 		ExpiresAt: now.Add(durRefresh),
