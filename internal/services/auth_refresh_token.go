@@ -10,7 +10,6 @@ import (
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Error variables for RefreshToken flow
