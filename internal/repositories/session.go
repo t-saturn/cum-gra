@@ -44,6 +44,17 @@ func (r *SessionRepository) FindBySessionID(ctx context.Context, sessionID strin
 	return &sess, nil
 }
 
+// SetRevocationInfo actualiza la sesión con información de revocación
+func (r *SessionRepository) SetRevocationInfo(ctx context.Context, id primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
+	update := bson.M{"$set": bson.M{
+		"revocation_reason": reason,
+		"revoked_by":        revokedBy,
+		"revoked_by_app":    revokedByApp,
+	}}
+	_, err := r.col.UpdateByID(ctx, id, update)
+	return err
+}
+
 // FindByUUID busca una sesión por su UUID.
 func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*models.Session, error) {
 	var sess models.Session

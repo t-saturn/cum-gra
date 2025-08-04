@@ -118,7 +118,7 @@ func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models
 }
 
 // ListTokenIDsBySession devuelve los IDs de tokens activos asociados a una sesión.
-func (r *TokenRepository) ListTokenIDsBySession(ctx context.Context, sessionID string) ([]primitive.ObjectID, error) {
+func (r *TokenRepository) ListActiveTokensIDsBySession(ctx context.Context, sessionID string) ([]primitive.ObjectID, error) {
 	filter := bson.M{
 		"session_id": sessionID,
 		"status":     "active",
@@ -175,3 +175,19 @@ func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, tokenIDs []prim
 	_, err := r.col.UpdateMany(ctx, filter, update)
 	return err
 }
+
+// // RevokeTokensByIDs actualiza el status y revocation info de un lote de tokens.
+// func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, ids []primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
+//     now := time.Now().UTC()
+//     update := bson.M{"$set": bson.M{
+//         "status":           models.TokenStatusRevoked,
+//         "revoked_at":       now,
+//         "validation_response": bson.M{
+//             "reason":         reason,
+//             "revoked_by":     revokedBy,
+//             "revoked_by_app": revokedByApp,
+//         },
+//     }}
+//     _, err := r.col.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": ids}}, update)
+//     return err
+// }
