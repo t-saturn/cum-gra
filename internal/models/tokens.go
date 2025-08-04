@@ -37,7 +37,7 @@ type Token struct {
 	ChildTokens   []primitive.ObjectID `bson:"child_tokens,omitempty"`    // Tokens hijos generados
 
 	// Información de revocación
-	Reason       string `bson:"reason,omitempty"`         // user_logout, invalid_token, security_breach, etc.
+	Reason       string `bson:"reason,omitempty"`         // user_logout, invalid_token, security_breach, session_expired, admin_revoked etc.
 	RevokedBy    string `bson:"revoked_by,omitempty"`     // Usuario/admin que revocó
 	RevokedByApp string `bson:"revoked_by_app,omitempty"` // Aplicación que revocó
 }

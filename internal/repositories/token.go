@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/t-saturn/auth-service-server/internal/models"
@@ -64,14 +65,26 @@ func (r *TokenRepository) FindBySessionID(ctx context.Context, sessionID string)
 	return tokens, nil
 }
 
-// UpdateStatus modifica el estado y la fecha de revocación
-func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt, lastUsed *time.Time) error {
-	set := bson.M{"status": status}
-	if revokedAt != nil {
-		set["revoked_at"] = *revokedAt
+// UpdateStatus revoca un token individual actualizando su estado, motivo y metadatos
+func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, reason string, revokedBy string, revokedByApp string) error {
+	if !models.IsValidTokenReason(reason) {
+		return fmt.Errorf("razón inválida para revocación de token: %q", reason)
 	}
 
-	_, err := r.col.UpdateByID(ctx, id, bson.M{"$set": set})
+	now := time.Now()
+
+	update := bson.M{
+		"$set": bson.M{
+			"status":         status,
+			"revoked_at":     now,
+			"reason":         reason,
+			"revoked_by":     revokedBy,
+			"revoked_by_app": revokedByApp,
+			"updated_at":     now,
+		},
+	}
+
+	_, err := r.col.UpdateByID(ctx, id, update)
 	return err
 }
 
@@ -102,4 +115,63 @@ func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models
 		return nil, err
 	}
 	return &tok, nil
+}
+
+// ListTokenIDsBySession devuelve los IDs de tokens activos asociados a una sesión.
+func (r *TokenRepository) ListTokenIDsBySession(ctx context.Context, sessionID string) ([]primitive.ObjectID, error) {
+	filter := bson.M{
+		"session_id": sessionID,
+		"status":     "active",
+	}
+
+	cursor, err := r.col.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var tokenIDs []primitive.ObjectID
+	for cursor.Next(ctx) {
+		var token struct {
+			ID primitive.ObjectID `bson:"_id"`
+		}
+		if err := cursor.Decode(&token); err != nil {
+			return nil, err
+		}
+		tokenIDs = append(tokenIDs, token.ID)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return tokenIDs, nil
+}
+
+// RevokeTokensByIDs revoca múltiples tokens por sus IDs.
+func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, tokenIDs []primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
+	if !models.IsValidTokenReason(reason) {
+		return fmt.Errorf("razón inválida para revocación de token: %q", reason)
+	}
+
+	now := time.Now()
+
+	filter := bson.M{
+		"_id":    bson.M{"$in": tokenIDs},
+		"status": "active",
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status":         "revoked",
+			"revoked_at":     now,
+			"reason":         reason,
+			"revoked_by":     revokedBy,
+			"revoked_by_app": revokedByApp,
+			"updated_at":     now,
+		},
+	}
+
+	_, err := r.col.UpdateMany(ctx, filter, update)
+	return err
 }

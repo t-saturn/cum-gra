@@ -65,8 +65,8 @@ type ListSessionsResponseDTO struct {
 
 // SessionRevokeRequestDTO define la petición para DELETE /auth/sessions/{session_id}
 type SessionRevokeRequestDTO struct {
-	Reason          string `json:"reason" validate:"required"`
-	RevokeAllTokens bool   `json:"revoke_all_tokens"`
+	Reason string `json:"reason" validate:"required"`
+	UserID string `json:"user_id" validate:"required"`
 }
 
 // SessionRevokeResponseDTO define la parte "data" de la respuesta para DELETE /auth/sessions/{session_id}

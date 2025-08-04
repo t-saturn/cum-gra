@@ -19,6 +19,11 @@ const (
 	TokenStatusExpired = "expired"
 	TokenStatusInvalid = "invalid"
 
+	TokenReasonUserLogout     = "user_logout"
+	TokenReasonRefreshToken   = "refresh_token"
+	TokenReasonSessionExpired = "session_expired"
+	TokenReasonAdminRevoked   = "admin_revoked"
+
 	// Tipos de tokens
 	TokenTypeAccess  = "access"
 	TokenTypeRefresh = "refresh"
@@ -41,6 +46,18 @@ const (
 	DeviceTypeTablet  = "tablet"
 	DeviceTypeOther   = "other"
 )
+
+var allowedTokenReasons = map[string]struct{}{
+	TokenReasonUserLogout:     {},
+	TokenReasonRefreshToken:   {},
+	TokenReasonSessionExpired: {},
+	TokenReasonAdminRevoked:   {},
+}
+
+func IsValidTokenReason(reason string) bool {
+	_, ok := allowedTokenReasons[reason]
+	return ok
+}
 
 // --- TIPOS BÁSICOS ---
 // Coordenadas geográficas [longitud, latitud]

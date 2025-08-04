@@ -20,10 +20,7 @@ var (
 )
 
 // RefreshToken genera un nuevo par access/refresh a partir de un refresh token válido.
-func (s *AuthService) RefreshToken(
-	ctx context.Context,
-	input dto.AuthRefreshRequestDTO,
-) (*dto.AuthRefreshResponseDTO, error) {
+func (s *AuthService) RefreshToken(ctx context.Context, input dto.AuthRefreshRequestDTO) (*dto.AuthRefreshResponseDTO, error) {
 	now := utils.NowUTC()
 
 	// 1) Buscar el refresh token original en BD
@@ -53,20 +50,16 @@ func (s *AuthService) RefreshToken(
 	}
 
 	// 4) Revocar el refresh antiguo
-	if err := s.tokenRepo.UpdateStatus(ctx, oldTok.ID, models.TokenStatusRevoked, &now, nil); err != nil {
+	reason := models.TokenReasonRefreshToken
+	revokedBy := oldTok.UserID
+	revokedByApp := oldTok.SessionID
+
+	if err := s.tokenRepo.UpdateStatus(ctx, oldTok.ID, models.TokenStatusRevoked, reason, revokedBy, revokedByApp); err != nil {
 		return nil, err
 	}
 
 	// 5) Crear y persistir el nuevo refresh token
-	refreshID, refreshJWT, err := s.InsertToken(
-		ctx,
-		oldTok.UserID,
-		sess.SessionID,
-		input.DeviceInfo,
-		models.TokenTypeRefresh,
-		7*24*time.Hour,
-		&oldTok.ID,
-	)
+	refreshID, refreshJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, input.DeviceInfo, models.TokenTypeRefresh, 7*24*time.Hour, &oldTok.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -75,15 +68,7 @@ func (s *AuthService) RefreshToken(
 
 	// 6) Crear y persistir el nuevo access token
 	expMin, _ := strconv.Atoi(config.GetConfig().Server.JWTExpMinutes)
-	accessID, accessJWT, err := s.InsertToken(
-		ctx,
-		oldTok.UserID,
-		sess.SessionID,
-		input.DeviceInfo,
-		models.TokenTypeAccess,
-		time.Duration(expMin)*time.Minute,
-		nil,
-	)
+	accessID, accessJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, input.DeviceInfo, models.TokenTypeAccess, time.Duration(expMin)*time.Minute, nil)
 	if err != nil {
 		return nil, err
 	}
