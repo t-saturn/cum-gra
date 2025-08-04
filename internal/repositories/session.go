@@ -116,3 +116,11 @@ func (r *SessionRepository) UpdateStatus(ctx context.Context, id primitive.Objec
 	_, err := r.col.UpdateByID(ctx, id, update)
 	return err
 }
+
+// AddTokenToSession añade el ObjectID de un token al campo TokensGenerated de una sesión.
+func (r *SessionRepository) AddTokenToSession(ctx context.Context, sessionID string, tokenID primitive.ObjectID) error {
+	filter := bson.M{"session_id": sessionID}
+	update := bson.M{"$push": bson.M{"tokens_generated": tokenID}}
+	_, err := r.col.UpdateOne(ctx, filter, update)
+	return err
+}

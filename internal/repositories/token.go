@@ -75,6 +75,22 @@ func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectI
 	return err
 }
 
+// Añade childID al slice ChildTokens del token parentID.
+func (r *TokenRepository) AddChildToken(ctx context.Context, parentID, childID primitive.ObjectID) error {
+	_, err := r.col.UpdateByID(ctx, parentID, bson.M{
+		"$push": bson.M{"child_tokens": childID},
+	})
+	return err
+}
+
+// Guarda el ID de un token “pareado” (access ↔ refresh) en PairedTokenID.
+func (r *TokenRepository) SetPairedTokenID(ctx context.Context, tokenID, pairedID primitive.ObjectID) error {
+	_, err := r.col.UpdateByID(ctx, tokenID, bson.M{
+		"$set": bson.M{"paired_token_id": pairedID},
+	})
+	return err
+}
+
 // FindByID recupera un token a partir de su ID en hex string.
 func (r *TokenRepository) FindByID(ctx context.Context, tokenID string) (*models.Token, error) {
 	oid, err := primitive.ObjectIDFromHex(tokenID)
