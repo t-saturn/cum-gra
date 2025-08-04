@@ -152,3 +152,33 @@ POST /auth/login
   - `TokenRepository.UpdateStatusBySession`
 
 - **Modelos:** `Session`, `Token`, `SessionActivityLog`, `TokenActivityLog`
+
+---
+
+### 👤 **Rutas para el Usuario (sesiones personales)**
+
+| Método | Ruta                  | Descripción                                                 |
+| ------ | --------------------- | ----------------------------------------------------------- |
+| `GET`  | `/session/me`         | Obtener **todas** las sesiones propias (activas/inactivas). |
+| `GET`  | `/session/me/current` | Obtener **la sesión actual** del usuario.                   |
+
+> Puedes agregar filtros opcionales por query param si deseas algo como `/session/me?status=active`.
+
+---
+
+### 🛡️ **Rutas para el Administrador (gestiona cualquier usuario)**
+
+| Método | Ruta                             | Descripción                                                     |
+| ------ | -------------------------------- | --------------------------------------------------------------- |
+| `GET`  | `/session/user/:user_id`         | Ver todas las sesiones de un usuario específico.                |
+| `GET`  | `/session/user/:user_id/current` | Ver la sesión actual (si está activa) de un usuario.            |
+| `GET`  | `/session`                       | Listar sesiones de **todos los usuarios** (opcional, paginada). |
+
+> Estas rutas deben requerir permisos especiales en middleware para asegurar que solo los administradores puedan accederlas.
+
+---
+
+```js
+GET /session/me?status=active
+GET /session/user/abc123?status=inactive&limit=10&page=2
+```
