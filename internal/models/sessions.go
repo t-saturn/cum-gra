@@ -27,7 +27,7 @@ type Session struct {
 	// Relaciones
 	AuthAttemptID   *primitive.ObjectID  `bson:"auth_attempt_id,omitempty"`   // Intento que creó la sesión
 	ParentSessionID *primitive.ObjectID  `bson:"parent_session_id,omitempty"` // Sesión padre (si aplica)
-	ActiveTokens    []primitive.ObjectID `bson:"active_tokens,omitempty"`     // Tokens activos de esta sesión
+	TokensGenerated []primitive.ObjectID `bson:"tokens_generated,omitempty"`  // Tokens generados de esta sesión
 
 	// Información de revocación
 	RevokedBy        *primitive.ObjectID `bson:"revoked_by,omitempty"`        // Usuario/admin que revocó
