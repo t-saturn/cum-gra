@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"github.com/t-saturn/auth-service-server/pkg/validator"
@@ -12,8 +13,8 @@ import (
 
 // Revoke maneja DELETE /auth/sessions/{session_id}: revoca una sesión y sus tokens.
 func (h *AuthHandler) Revoke(c fiber.Ctx) error {
-	// 1. Leer path param
-	sessionID := c.Params("session_id")
+	// 1. Leer path query
+	sessionID := c.Query("session_id")
 	if sessionID == "" {
 		return utils.JSONError(c, http.StatusBadRequest, "MISSING_SESSION_ID", "Falta session_id en la ruta")
 	}
@@ -31,9 +32,20 @@ func (h *AuthHandler) Revoke(c fiber.Ctx) error {
 		})
 	}
 
-	// 4. Punto de integración pendiente: llamar a h.authService.RevokeSession(...)
-	logger.Log.Info("Aquí implementamos el servicio RevokeSession para session_id=", sessionID)
+	// 4. Llamar al servicio RevokeSession
+	resp, err := h.authService.RevokeSession(c, sessionID, input.Reason, input.UserID, input.RevokedByApp)
+	if err != nil {
+		switch err {
+		case services.ErrSessionNotFound:
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+		case services.ErrSessionAlreadyRevoked:
+			return utils.JSONError(c, http.StatusConflict, "SESSION_ALREADY_REVOKED", "La sesión ya está revocada")
+		default:
+			logger.Log.Errorf("Error revocando sesión: %v", err)
+			return utils.JSONError(c, http.StatusInternalServerError, "REVOKE_FAILED", "No se pudo revocar la sesión")
+		}
+	}
 
-	// 5. Responder placeholder
-	return utils.JSONResponse[*dto.SessionRevokeResponseDTO](c, http.StatusOK, true, "Sesión revocada exitosamente", nil)
+	// 5. Responder con datos reales
+	return utils.JSONResponse(c, http.StatusOK, true, "Sesión revocada exitosamente", resp)
 }
