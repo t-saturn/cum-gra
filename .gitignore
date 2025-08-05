@@ -1,85 +1,57 @@
 # ================================
-# ASTRO Y FRONTEND (TAILWIND, NODE)
+# QWIK
+# ================================
+dist/
+lib/
+lib-types/
+.qwik/
+.vite/
+server/
+client/
+
+# ================================
+# NODE.JS
 # ================================
 node_modules/
-dist/
-.astro/
-.svelte-kit/
-.next/
-.vercel/
-.netlify/
-*.local
-bun.lock
+*.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
 
 # ================================
-# ARCHIVOS DEL SISTEMA OPERATIVO
+# TESTING
 # ================================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-Icon?
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
 
 # ================================
-# EDITORES E IDEs
+# ENVIRONMENT
 # ================================
-.vscode/
-.idea/
-.qodo/
-*.swp
-*.swo
-*~
-.vim/
-.emacs.d/
-.sublime-*
-.vscode-test
-
-# Archivos de configuración local
 .env
 .env.local
 .env.*.local
-.env.test
-.env.production
-
-# Logs
-*.log
-logs/
-*.log.*
-lerna-debug.log*
 
 # ================================
-# OTROS ARCHIVOS TEMPORALES
+# CACHE Y BUILD
 # ================================
-*.bak
-*.backup
-*.tmp
-tmp/
-temp/
-*.orig
-*.rej
-
-# Cache directories
 .cache/
-.parcel-cache/
+.tmp/
+*.tsbuildinfo
 
 # ================================
-# DOCUMENTACIÓN Y OTROS
+# SISTEMA OPERATIVO
 # ================================
-docs/build/
-site/
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # ================================
-# OTROS
+# EDITORES
 # ================================
-tools/bin/
-pb/
-coverage.txt
-coverage.out
-*.cover
-.bun.lock
-.pnpm-lock.yaml
-logs.txt
+.vscode/
+.idea/
+*.swp
+*~
