@@ -27,6 +27,7 @@ export default component$(() => {
         <Infobox>
           <div q:slot="title" class="icon icon-cli">
             CLI Commands
+            <h1 class="text-3xl font-bold underline"> Hello World! </h1>
           </div>
           <>
             <p>
@@ -102,7 +103,7 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "sso auth client",
   meta: [
     {
       name: "description",
