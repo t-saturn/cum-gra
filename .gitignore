@@ -1,13 +1,10 @@
 # ================================
-# QWIK
+# NEXT.JS
 # ================================
-dist/
-lib/
-lib-types/
-.qwik/
-.vite/
-server/
-client/
+.next/
+out/
+build/
+next-env.d.ts
 
 # ================================
 # NODE.JS
@@ -18,12 +15,12 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 bun.lockb
-bun.lock
 
 # ================================
 # TESTING
 # ================================
 coverage/
+.nyc_output/
 test-results/
 playwright-report/
 playwright/.cache/
@@ -39,7 +36,7 @@ playwright/.cache/
 # CACHE Y BUILD
 # ================================
 .cache/
-.tmp/
+.swc/
 *.tsbuildinfo
 
 # ================================
@@ -56,3 +53,9 @@ desktop.ini
 .idea/
 *.swp
 *~
+
+# ================================
+# DEPLOYMENT
+# ================================
+.vercel/
+.netlify/
