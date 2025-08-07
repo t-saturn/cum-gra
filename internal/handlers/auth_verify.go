@@ -35,7 +35,7 @@ func (h *AuthHandler) Verify(c fiber.Ctx) error {
 
 	// 1. Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
 	}
 
 	// 2. Validar campos
@@ -50,12 +50,12 @@ func (h *AuthHandler) Verify(c fiber.Ctx) error {
 	if err != nil {
 		switch err {
 		case services.ErrInvalidCredentials:
-			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_CREDENTIALS", models.AuthStatusInvalid)
+			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_CREDENTIALS", models.AuthStatusInvalid, "Credenciales no válidas")
 		case services.ErrInactiveAccount:
-			return utils.JSONError(c, http.StatusUnauthorized, "INACTIVE_ACCOUNT", models.SessionStatusInactive)
+			return utils.JSONError(c, http.StatusUnauthorized, "INACTIVE_ACCOUNT", models.SessionStatusInactive, "La cuenta está inactiva")
 		default:
 			logger.Log.Errorf("Error en autenticación: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError, "AUTH_FAILED", models.AuthStatusFailed)
+			return utils.JSONError(c, http.StatusInternalServerError, "AUTH_FAILED", models.AuthStatusFailed, "Error desconocido")
 		}
 	}
 

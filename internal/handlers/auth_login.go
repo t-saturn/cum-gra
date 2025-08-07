@@ -33,12 +33,12 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	if err != nil {
 		switch err {
 		case services.ErrInvalidCredentials:
-			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_CREDENTIALS", models.AuthStatusInvalid)
+			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_CREDENTIALS", models.AuthStatusInvalid, "Credenciales inválidas")
 		case services.ErrInactiveAccount:
-			return utils.JSONError(c, http.StatusForbidden, "ACCOUNT_INACTIVE", models.SessionStatusInactive)
+			return utils.JSONError(c, http.StatusForbidden, "ACCOUNT_INACTIVE", models.SessionStatusInactive, "Cuenta inactiva")
 		default:
 			logger.Log.Errorf("Error en login: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError, "LOGIN_FAILED", "Error interno al realizar login")
+			return utils.JSONError(c, http.StatusInternalServerError, "LOGIN_FAILED", "Error interno al realizar login", "Error desconocido")
 		}
 	}
 

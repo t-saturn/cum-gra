@@ -15,12 +15,12 @@ func (h *AuthHandler) ListSessions(c fiber.Ctx) error {
 	// 1. Extraer y validar JWT de Authorization
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return utils.JSONError(c, http.StatusUnauthorized, "NO_AUTH_HEADER", "Encabezado de autorización requerido")
+		return utils.JSONError(c, http.StatusUnauthorized, "NO_AUTH_HEADER", "Encabezado de autorización requerido", "falta Authorization")
 	}
 	// Asumiendo que authHeader es "Bearer <token>", extraemos el token
 	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 	if tokenString == authHeader { // No se encontró "Bearer "
-		return utils.JSONError(c, http.StatusUnauthorized, "INVALID_AUTH_HEADER", "Formato de encabezado inválido")
+		return utils.JSONError(c, http.StatusUnauthorized, "INVALID_AUTH_HEADER", "Formato de encabezado inválido", "cuerpo no válido")
 	}
 	logger.Log.Info("Validando token con Authorization=", authHeader)
 
@@ -34,7 +34,7 @@ func (h *AuthHandler) ListSessions(c fiber.Ctx) error {
 	// 3. Parsear query params en el DTO
 	var q dto.ListSessionsRequestDTO
 	if err := c.Bind().Query(&q); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "cuerpo no válido")
 	}
 
 	// 4. Punto de integración pendiente: llamar a h.authService.ListSessions(...)

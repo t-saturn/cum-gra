@@ -17,7 +17,7 @@ func (h *AuthHandler) Logout(c fiber.Ctx) error {
 
 	// 1. Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
 	}
 
 	// 2. Validar campos
@@ -32,12 +32,12 @@ func (h *AuthHandler) Logout(c fiber.Ctx) error {
 	if err != nil {
 		switch err {
 		case services.ErrSessionNotFound:
-			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
 		case services.ErrSessionInactive:
-			return utils.JSONError(c, http.StatusBadRequest, "SESSION_INACTIVE", "Sesión ya inactiva")
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_INACTIVE", "Sesión ya inactiva", "La sesión ya está inactiva")
 		default:
 			logger.Log.Errorf("Error en logout: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError, "LOGOUT_FAILED", "Error interno al cerrar sesión")
+			return utils.JSONError(c, http.StatusInternalServerError, "LOGOUT_FAILED", "Error interno al cerrar sesión", "Error desconocido")
 		}
 	}
 

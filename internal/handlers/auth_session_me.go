@@ -15,12 +15,12 @@ func (h *AuthHandler) Me(c fiber.Ctx) error {
 	// 1. Extraer token de la cabecera Authorization
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return utils.JSONError(c, http.StatusUnauthorized, "MISSING_TOKEN", "Falta cabecera Authorization")
+		return utils.JSONError(c, http.StatusUnauthorized, "MISSING_TOKEN", "Falta cabecera Authorization", "falta Authorization")
 	}
 	// En formato "Bearer <token>"
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_AUTH_HEADER", "Formato de Authorization inválido")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_AUTH_HEADER", "Formato de Authorization inválido", "cuerpo no válido")
 	}
 	token := parts[1]
 

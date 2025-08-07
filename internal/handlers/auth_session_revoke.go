@@ -16,13 +16,13 @@ func (h *AuthHandler) Revoke(c fiber.Ctx) error {
 	// 1. Leer path query
 	sessionID := c.Query("session_id")
 	if sessionID == "" {
-		return utils.JSONError(c, http.StatusBadRequest, "MISSING_SESSION_ID", "Falta session_id en la ruta")
+		return utils.JSONError(c, http.StatusBadRequest, "MISSING_SESSION_ID", "Falta session_id en la ruta", "falta session_id")
 	}
 
 	// 2. Parsear body
 	var input dto.SessionRevokeRequestDTO
 	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
 	}
 
 	// 3. Validar campos
@@ -37,12 +37,12 @@ func (h *AuthHandler) Revoke(c fiber.Ctx) error {
 	if err != nil {
 		switch err {
 		case services.ErrSessionNotFound:
-			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
 		case services.ErrSessionAlreadyRevoked:
-			return utils.JSONError(c, http.StatusConflict, "SESSION_ALREADY_REVOKED", "La sesión ya está revocada")
+			return utils.JSONError(c, http.StatusConflict, "SESSION_ALREADY_REVOKED", "La sesión ya está revocada", "La sesión ya ha sido revocada")
 		default:
 			logger.Log.Errorf("Error revocando sesión: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError, "REVOKE_FAILED", "No se pudo revocar la sesión")
+			return utils.JSONError(c, http.StatusInternalServerError, "REVOKE_FAILED", "No se pudo revocar la sesión", "Error desconocido")
 		}
 	}
 

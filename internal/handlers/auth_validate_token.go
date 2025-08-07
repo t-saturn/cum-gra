@@ -17,7 +17,7 @@ func (h *AuthHandler) Validate(c fiber.Ctx) error {
 
 	// 1. Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados")
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
 	}
 
 	// 2. Validar campos
@@ -32,16 +32,16 @@ func (h *AuthHandler) Validate(c fiber.Ctx) error {
 	if err != nil {
 		switch err {
 		case services.ErrInvalidToken:
-			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN", "Token inválido o inactivo")
+			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN", "Token inválido o inactivo", "Token no válido")
 		case services.ErrSessionNotFound:
-			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada")
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
 		case services.ErrSessionMismatch:
-			return utils.JSONError(c, http.StatusBadRequest, "SESSION_MISMATCH", "Token no pertenece a la sesión proporcionada")
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_MISMATCH", "Token no pertenece a la sesión proporcionada", "Token no válido")
 		case services.ErrSessionInactive:
-			return utils.JSONError(c, http.StatusForbidden, "SESSION_INACTIVE", "Sesión inactiva o revocada")
+			return utils.JSONError(c, http.StatusForbidden, "SESSION_INACTIVE", "Sesión inactiva o revocada", "La sesión está inactiva o ha sido revocada")
 		default:
 			logger.Log.Errorf("Error validando token: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError, "VALIDATION_ERROR", "Error interno al validar token")
+			return utils.JSONError(c, http.StatusInternalServerError, "VALIDATION_ERROR", "Error interno al validar token", "Error desconocido")
 		}
 	}
 
