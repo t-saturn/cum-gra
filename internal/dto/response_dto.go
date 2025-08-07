@@ -3,10 +3,17 @@ package dto
 
 import "github.com/t-saturn/auth-service-server/internal/models"
 
+// ErrorDTO describe la información de error incluida en las respuestas de la API.
+type ErrorDTO struct {
+	Code    string `json:"code"`
+	Details string `json:"details,omitempty"`
+}
+
 type ResponseDTO[T any] struct {
-	Success bool   `json:"success"`
-	Message string `json:"message,omitempty"`
-	Data    T      `json:"data,omitempty"`
+	Success bool      `json:"success"`
+	Message string    `json:"message"`
+	Data    T         `json:"data"`
+	Error   *ErrorDTO `json:"error"`
 }
 
 type ValidationResponseDTO struct {

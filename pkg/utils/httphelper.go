@@ -22,25 +22,25 @@ func JSON(c fiber.Ctx, status int, payload interface{}) error {
 	return c.Status(status).JSON(payload)
 }
 
-// JSONError envía un error con un código de aplicación y un mensaje.
-func JSONError(c fiber.Ctx, status int, code, message string) error {
-	errResp := struct {
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	}{
-		Code:    code,
-		Message: message,
+// JSONError envía una respuesta de error estandarizada.
+// El parámetro opcional details permite incluir información adicional.
+func JSONError(c fiber.Ctx, status int, code, message string, details ...string) error {
+	errObj := &dto.ErrorDTO{Code: code}
+	if len(details) > 0 && details[0] != "" {
+		errObj.Details = details[0]
 	}
-	return c.Status(status).JSON(errResp)
+	return JSONResponse[any](c, status, false, message, nil, errObj)
 }
 
 // JSONResponse envuelve automáticamente tu ResponseDTO[T].
 // message y data pueden omitirse (data puede ser el valor cero de T).
-func JSONResponse[T any](c fiber.Ctx, status int, success bool, message string, data T) error {
+// err permite adjuntar detalles de error en las respuestas fallidas.
+func JSONResponse[T any](c fiber.Ctx, status int, success bool, message string, data T, err *dto.ErrorDTO) error {
 	resp := dto.ResponseDTO[T]{
 		Success: success,
 		Message: message,
 		Data:    data,
+		Error:   err,
 	}
 	return c.Status(status).JSON(resp)
 }

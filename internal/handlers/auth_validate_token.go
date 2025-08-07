@@ -46,5 +46,5 @@ func (h *AuthHandler) Validate(c fiber.Ctx) error {
 	}
 
 	// 4. Responder con success, message y data
-	return utils.JSONResponse(c, http.StatusOK, true, "Token válido", data)
+	return utils.JSONResponse(c, http.StatusOK, true, "Token válido", data, nil)
 }

@@ -60,5 +60,5 @@ func (h *AuthHandler) Verify(c fiber.Ctx) error {
 	}
 
 	// 4. Respuesta
-	return utils.JSONResponse(c, http.StatusOK, result.Success, result.Message, result.Data)
+	return utils.JSONResponse(c, http.StatusOK, result.Success, result.Message, result.Data, nil)
 }

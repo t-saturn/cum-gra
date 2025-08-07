@@ -28,5 +28,5 @@ func (h *AuthHandler) Me(c fiber.Ctx) error {
 	logger.Log.Info("Aquí implementamos el servicio GetCurrentSession con token=", token)
 
 	// 3. Devolver placeholder con data = null
-	return utils.JSONResponse[*dto.SessionMeResponseDTO](c, http.StatusOK, true, "Sesión actual obtenida", nil)
+	return utils.JSONResponse[*dto.SessionMeResponseDTO](c, http.StatusOK, true, "Sesión actual obtenida", nil, nil)
 }

@@ -42,5 +42,5 @@ func (h *AuthHandler) Logout(c fiber.Ctx) error {
 	}
 
 	// 4. Devolver respuesta
-	return utils.JSONResponse(c, http.StatusOK, true, "Logout exitoso", data)
+	return utils.JSONResponse(c, http.StatusOK, true, "Logout exitoso", data, nil)
 }

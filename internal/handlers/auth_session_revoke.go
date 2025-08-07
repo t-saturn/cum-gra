@@ -47,5 +47,5 @@ func (h *AuthHandler) Revoke(c fiber.Ctx) error {
 	}
 
 	// 5. Responder con datos reales
-	return utils.JSONResponse(c, http.StatusOK, true, "Sesión revocada exitosamente", resp)
+	return utils.JSONResponse(c, http.StatusOK, true, "Sesión revocada exitosamente", resp, nil)
 }

@@ -46,5 +46,5 @@ func (h *AuthHandler) Refresh(c fiber.Ctx) error {
 	}
 
 	// 4. Responder con los nuevos tokens
-	return utils.JSONResponse(c, http.StatusOK, true, "Token refrescado exitosamente", resp)
+	return utils.JSONResponse(c, http.StatusOK, true, "Token refrescado exitosamente", resp, nil)
 }

@@ -37,5 +37,5 @@ func (h *HealthHandler) Health(c fiber.Ctx) error {
 	}
 
 	// 2. Devolver la respuesta
-	return utils.JSONResponse(c, http.StatusOK, true, "Servicio operativo", respDTO)
+	return utils.JSONResponse(c, http.StatusOK, true, "Servicio operativo", respDTO, nil)
 }

@@ -43,5 +43,5 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	}
 
 	// 4. Devolver respuesta con datos del login
-	return utils.JSONResponse(c, http.StatusOK, true, "Login exitoso", result)
+	return utils.JSONResponse(c, http.StatusOK, true, "Login exitoso", result, nil)
 }
