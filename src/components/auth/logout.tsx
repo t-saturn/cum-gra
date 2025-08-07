@@ -1,25 +1,30 @@
+'use client';
+
 import React from 'react';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-export const Logout = () => {
+export const Logout: React.FC = () => {
   const router = useRouter();
+
   async function handle_logout() {
-    const res = await fetch('/api/auth/logout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: '82ef5a24-ede9-4a9c-8441-048200f8a50a', // replace with actual session ID logic
-        logout_type: 'user_logout',
-      }),
-    });
-    const json = await res.json();
-    if (res.ok && json.success) {
-      // redirect to login
-      router.push('/login');
-    } else {
-      toast.error(json.error?.details || json.message);
+    try {
+      const res = await fetch('/api/auth/logout?logout_type=user_logout', {
+        method: 'GET',
+        credentials: 'include', // <-- send cookies
+      });
+      const json = await res.json();
+      console.log('Logout response:', json);
+
+      if (res.ok && json.success) {
+        toast.success('Cierre de sesión exitoso');
+        router.push('/auth/login');
+      } else {
+        toast.error(json.error?.details || json.message || 'Error al cerrar sesión');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Error en la petición de logout');
     }
   }
 
