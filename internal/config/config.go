@@ -28,6 +28,7 @@ type ServerConfig struct {
 	JWTSecret     string
 	JWTExpMinutes string
 	ServerPort    string
+	CookieDomain  string
 }
 
 // App Configuración - NUEVO
@@ -67,6 +68,7 @@ func LoadConfig() {
 			JWTSecret:     getEnv("JWT_SECRET", "my_secret_key"),
 			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
 			ServerPort:    getEnv("SERVER_PORT", "8000"),
+			CookieDomain:  getEnv("COOKIE_DOMAIN", "localhost"),
 		},
 		// NUEVO: Configuración de la aplicación
 		App: AppConfig{

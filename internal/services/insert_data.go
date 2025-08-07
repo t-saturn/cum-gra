@@ -111,9 +111,6 @@ func (s *AuthService) InsertAttempt(ctx context.Context, input dto.AuthLoginRequ
 func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequestDTO, userID string, authAttemptID primitive.ObjectID, now time.Time) (primitive.ObjectID, dto.SessionDTO, error) {
 	// Calcular expiración
 	expires := now.Add(24 * time.Hour)
-	if input.RememberMe {
-		expires = now.Add(7 * 24 * time.Hour)
-	}
 
 	// Calcular duración máxima de sesión (refresh)
 	maxRefresh := now.Add(7 * 24 * time.Hour) // 7 días sin reautenticarse
