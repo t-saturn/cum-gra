@@ -38,7 +38,6 @@ type AuthLoginResponseDTO struct {
 
 // LogoutRequestDTO define la petición para /auth/logout
 type LogoutRequestDTO struct {
-	Token      string `json:"token" validate:"required"`
 	SessionID  string `json:"session_id" validate:"required,uuid4"`
 	LogoutType string `json:"logout_type" validate:"required,oneof=user_logout refresh_token session_expired admin_revoked"`
 }
