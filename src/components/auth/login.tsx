@@ -13,16 +13,37 @@ import { Input } from '../ui/input';
 export const Login: React.FC = () => {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handle_login = () => {
-    // Aquí iría la lógica de autenticación
-    console.log('Iniciando sesión...');
-    toast.success('Inicio de sesión exitoso', {
-      position: 'top-right',
-      duration: 3000,
-    });
-    router.push('/');
-  };
+  async function handle_login(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.currentTarget as HTMLFormElement;
+    const data = {
+      email: (form.email as HTMLInputElement).value,
+      password: (form.password as HTMLInputElement).value,
+    };
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      console.log(res);
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Login failed');
+
+      toast.success('Inicio de sesión exitoso', { position: 'top-right' });
+      router.push('/');
+    } catch (err: any) {
+      toast.error(err.message || 'Error en el login', { position: 'top-right' });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -32,17 +53,11 @@ export const Login: React.FC = () => {
       </CardHeader>
 
       <CardContent>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handle_login();
-          }}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={handle_login} className="flex flex-col gap-6">
           {/* Email */}
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Input id="email" name="email" type="email" placeholder="m@example.com" required />
           </div>
 
           {/* Password */}
@@ -54,7 +69,7 @@ export const Login: React.FC = () => {
               </a>
             </div>
             <div className="relative">
-              <Input id="password" type={passwordVisible ? 'text' : 'password'} required />
+              <Input id="password" name="password" type={passwordVisible ? 'text' : 'password'} required />
               <button
                 type="button"
                 onClick={() => setPasswordVisible((v) => !v)}
@@ -67,18 +82,26 @@ export const Login: React.FC = () => {
             </div>
           </div>
 
-          <Button variant={'ghost'} type="submit" className="w-full bg-red-600 font-bold text-white">
-            Login
+          {/* Remember me */}
+          <div className="flex items-center">
+            <input type="checkbox" id="remember" name="remember" className="mr-2" />
+            <Label htmlFor="remember" className="m-0">
+              Remember me
+            </Label>
+          </div>
+
+          <Button variant="ghost" type="submit" className="w-full bg-red-600 font-bold text-white" disabled={loading}>
+            {loading ? 'Logging in…' : 'Login'}
           </Button>
         </form>
       </CardContent>
 
       <CardFooter className="flex-col gap-8">
-        <Button variant="outline" className="w-full" onClick={handle_login}>
+        <Button variant="outline" className="w-full" onClick={() => router.push('/api/auth/login/google')}>
           <GlobeLock className="mr-2 w-5 h-5" />
           Continuar con Google
         </Button>
-        <Button variant="outline" className="w-full" onClick={handle_login}>
+        <Button variant="outline" className="w-full" onClick={() => router.push('/api/auth/login/facial')}>
           <ScanFace className="mr-2 w-5 h-5" />
           Autenticación Facial
         </Button>
