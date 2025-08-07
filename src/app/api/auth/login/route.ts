@@ -28,9 +28,6 @@ export async function POST(req: NextRequest) {
   // 5. Read backend response body
   const backendJson = await backendRes.json();
 
-  console.log(backendJson);
-  console.log(backendRes.status);
-
   // 6. Create NextResponse with the same body & status
   const response = NextResponse.json(backendJson, {
     status: backendRes.status,

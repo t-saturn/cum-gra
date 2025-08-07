@@ -31,15 +31,19 @@ export const Login: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      console.log(res);
 
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Login failed');
+      if (!res.ok) {
+        // backendJson.error.details holds the human message
+        toast.error(json.error?.details || json.message, { position: 'top-right' });
+        setLoading(false);
+        return;
+      }
 
       toast.success('Inicio de sesión exitoso', { position: 'top-right' });
       router.push('/');
-    } catch (err: any) {
-      toast.error(err.message || 'Error en el login', { position: 'top-right' });
+    } catch (json: any) {
+      toast.error('Error en el login', { position: 'top-right' });
     } finally {
       setLoading(false);
     }
