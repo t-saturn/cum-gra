@@ -14,30 +14,32 @@ import (
 
 // Logout maneja POST /auth/logout: cierra la sesión y revoca los tokens.
 func (h *AuthHandler) Logout(c fiber.Ctx) error {
-	var input dto.LogoutRequestDTO
-
-	// 1. Solo parseamos session_id y logout_type
-	if err := c.Bind().Body(&input); err != nil {
+	// 1. Leemos logout_type desde query, no desde JSON
+	logoutType := c.Query("logout_type")
+	if logoutType == "" {
 		return utils.JSONError(c, http.StatusBadRequest,
-			"BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
+			"BAD_FORMAT", "Logout type missing", "logout_type debe ir como ?logout_type=…")
 	}
 
-	// 2. Validamos session_id y logout_type
+	// 2. Validamos logout_type
+	input := dto.LogoutQueryDTO{LogoutType: logoutType}
 	if err := validator.Validate.Struct(&input); err != nil {
 		return utils.JSON(c, http.StatusBadRequest,
 			dto.ValidationErrorResponse{Errors: validator.FormatValidationError(err)})
 	}
 
-	// 3. Leemos el token de la cookie
-	token := c.Cookies("access_token")
-	fmt.Println("Token de acceso:", token)
-	if token == "" {
+	// 3. Leemos los tokens de cookies
+	accessToken := c.Cookies("access_token")
+	refreshToken := c.Cookies("refresh_token")
+	if accessToken == "" && refreshToken == "" {
 		return utils.JSONError(c, http.StatusUnauthorized,
-			"NO_TOKEN", "Token no presente", "No se encontró cookie de token")
+			"NO_TOKEN", "No se encontró ningún token en cookies", "Debe estar autenticado")
 	}
 
-	// 4. Ejecutamos el logout (service ya usa solo input.SessionID)
-	data, err := h.authService.Logout(c, input)
+	fmt.Print("AccessToken:", accessToken, " RefreshToken:", refreshToken)
+
+	// 4. Pasamos tokens al servicio en lugar de session_id
+	data, err := h.authService.Logout(c, accessToken, refreshToken, input.LogoutType)
 	if err != nil {
 		switch err {
 		case services.ErrSessionNotFound:

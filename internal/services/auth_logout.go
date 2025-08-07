@@ -10,7 +10,25 @@ import (
 )
 
 // Logout cierra una sesión y revoca los tokens asociados.
-func (s *AuthService) Logout(ctx context.Context, input dto.LogoutRequestDTO) (*dto.LogoutResponseDTO, error) {
+func (s *AuthService) Logout(ctx context.Context, accessToken, refreshToken, reason string) (*dto.LogoutResponseDTO, error) {
+	// 1. Extraer sessionID del token de acceso (o refresh) — por ejemplo:
+	sessionID, err := s.tokenRepo.FindSessionID(ctx, accessToken)
+	if err != nil {
+		return nil, ErrSessionNotFound
+	}
+	fmt.Print("SessionID:", sessionID)
+
+	// 2. Construir un DTO interno con sessionID y reason
+	input := dto.LogoutRequestDTO{
+		SessionID:  sessionID,
+		LogoutType: reason,
+	}
+
+	// 3. Llamar a la lógica anterior usando input.SessionID
+	return s.logoutBySession(ctx, input)
+}
+
+func (s *AuthService) logoutBySession(ctx context.Context, input dto.LogoutRequestDTO) (*dto.LogoutResponseDTO, error) {
 	// 1. Obtener la sesión
 	sess, err := s.sessionRepo.FindBySessionID(ctx, input.SessionID)
 	if err != nil {

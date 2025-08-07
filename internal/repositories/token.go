@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -23,14 +24,8 @@ func NewTokenRepository(db *mongo.Database) *TokenRepository {
 	}
 }
 
-// Insert inserta un nuevo token y devuelve su ObjectID.
-func (r *TokenRepository) Insert(ctx context.Context, t *models.Token) (primitive.ObjectID, error) {
-	res, err := r.col.InsertOne(ctx, t)
-	if err != nil {
-		return primitive.NilObjectID, err
-	}
-	return res.InsertedID.(primitive.ObjectID), nil
-}
+// ErrSessionNotFound indica que no hay ningún token registrado con ese valor.
+var ErrSessionNotFound = errors.New("session not found for given token")
 
 // FindByHash busca un token por su hash (token_hash) y lo devuelve.
 func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.Token, error) {
@@ -40,6 +35,29 @@ func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.
 		return nil, err
 	}
 	return &tok, nil
+}
+
+// FindSessionIDByTokenValue busca el token real en el campo token_hash
+// y devuelve únicamente el session_id asociado.
+func (r *TokenRepository) FindSessionID(ctx context.Context, tokenValue string) (string, error) {
+	// Ajusta aquí al campo correcto donde guardas el token sin hash,
+	// o al hash si has hasheado la cadena.
+	filter := bson.M{"token_hash": tokenValue}
+
+	var result struct {
+		SessionID string `bson:"session_id"`
+	}
+	err := r.col.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return "", ErrSessionNotFound
+		}
+		return "", err
+	}
+	if result.SessionID == "" {
+		return "", ErrSessionNotFound
+	}
+	return result.SessionID, nil
 }
 
 // FindBySessionID recupera todos los tokens asociados a una sesión.
@@ -86,6 +104,15 @@ func (r *TokenRepository) UpdateStatus(ctx context.Context, id primitive.ObjectI
 
 	_, err := r.col.UpdateByID(ctx, id, update)
 	return err
+}
+
+// Insert inserta un nuevo token y devuelve su ObjectID.
+func (r *TokenRepository) Insert(ctx context.Context, t *models.Token) (primitive.ObjectID, error) {
+	res, err := r.col.InsertOne(ctx, t)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return res.InsertedID.(primitive.ObjectID), nil
 }
 
 // Añade childID al slice ChildTokens del token parentID.
