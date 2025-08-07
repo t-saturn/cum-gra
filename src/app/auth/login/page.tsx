@@ -3,16 +3,12 @@
 import { NextPage } from 'next';
 import { useState } from 'react';
 import { Building2, Eye, EyeOff, ScanFace, GlobeLock } from 'lucide-react';
-import { getDeviceInfo } from '@/helpers/device-info';
 import { useRouter } from 'next/navigation';
 import { loginAction } from '@/actions/auth-login';
 
 const Login: NextPage = () => {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  const deviceInfo = getDeviceInfo();
-  console.log('Device info on client:', deviceInfo);
 
   return (
     <>
@@ -93,7 +89,7 @@ const Login: NextPage = () => {
 
                 <form
                   className="space-y-6"
-                  method="post"
+                  method="null"
                   action={async (formData: FormData) => {
                     try {
                       await loginAction(formData);

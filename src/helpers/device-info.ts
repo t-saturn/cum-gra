@@ -1,26 +1,4 @@
-export interface DeviceInfo {
-  user_agent: string;
-  ip: string;
-  device_id: string;
-  browser_name: string;
-  browser_version: string;
-  os: string;
-  os_version: string;
-  device_type: string;
-  timezone: string;
-  language: string;
-  location: Location;
-}
-
-export interface Location {
-  country: string;
-  country_code: string;
-  region: string;
-  city: string;
-  coordinates: number[];
-  isp: string;
-  organization: string;
-}
+import { DeviceInfo } from '@/types';
 
 interface IpWhoResponse {
   success: boolean;
@@ -70,13 +48,9 @@ export async function getDeviceInfo(): Promise<DeviceInfo> {
   const ipRes = await fetch('https://ipwho.is/');
   const ipJson = (await ipRes.json()) as IpWhoResponse;
 
-  console.log('IP Who response:', ipJson);
-
   // Fetch headers including User-Agent and Accept-Language
   const httpRes = await fetch('https://httpbun.com/get');
   const httpJson = (await httpRes.json()) as HttpbunResponse;
-
-  console.log('HTTP Bun response:', httpJson);
 
   const ua = httpJson.headers['user-agent'] || httpJson.headers['User-Agent'] || navigator.userAgent;
   const language = httpJson.headers['accept-language'] || navigator.language;

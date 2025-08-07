@@ -7,7 +7,6 @@ export const loginAction = async (formData: FormData) => {
   const password = formData.get('password') as string;
   const remember = formData.get('remember') === 'on';
 
-  // recoge toda la info del dispositivo
   const device_info = await getDeviceInfo();
 
   const payload = {
