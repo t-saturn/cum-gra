@@ -1,57 +1,42 @@
-# ================================
-# QWIK
-# ================================
-dist/
-lib/
-lib-types/
-.qwik/
-.vite/
-server/
-client/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ================================
-# NODE.JS
-# ================================
-node_modules/
-*.log
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-bun.lockb
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# ================================
-# TESTING
-# ================================
-coverage/
-test-results/
-playwright-report/
-playwright/.cache/
+# testing
+/coverage
 
-# ================================
-# ENVIRONMENT
-# ================================
-.env
-.env.local
-.env.*.local
+# next.js
+/.next/
+/out/
 
-# ================================
-# CACHE Y BUILD
-# ================================
-.cache/
-.tmp/
-*.tsbuildinfo
+# production
+/build
 
-# ================================
-# SISTEMA OPERATIVO
-# ================================
+# misc
 .DS_Store
-Thumbs.db
-desktop.ini
+*.pem
 
-# ================================
-# EDITORES
-# ================================
-.vscode/
-.idea/
-*.swp
-*~
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+bun.lock
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
