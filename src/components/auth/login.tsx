@@ -60,20 +60,24 @@ export const Login: React.FC = () => {
         <form onSubmit={handle_login} className="flex flex-col gap-6">
           {/* Email */}
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+            <Label htmlFor="email" className="capitalize">
+              correo electrónico
+            </Label>
+            <Input id="email" name="email" type="email" placeholder="nicola.tesla@gmail.com" required />
           </div>
 
           {/* Password */}
           <div className="grid gap-2">
             <div className="flex items-center gap-4">
-              <Label htmlFor="password">Password</Label>
-              <a href="/forgot" className="ml-auto text-sm underline-offset-4 hover:underline text-red-500">
-                Forgot your password?
+              <Label htmlFor="password" className="capitalize">
+                contraseña
+              </Label>
+              <a href="/auth/forgot" className=" ml-auto text-sm underline-offset-4 hover:underline text-red-500">
+                olvidaste tu contraseña?
               </a>
             </div>
             <div className="relative">
-              <Input id="password" name="password" type={passwordVisible ? 'text' : 'password'} required />
+              <Input id="password" name="password" placeholder="********" type={passwordVisible ? 'text' : 'password'} required />
               <button
                 type="button"
                 onClick={() => setPasswordVisible((v) => !v)}
@@ -87,25 +91,25 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Remember me */}
-          <div className="flex items-center">
+          <div className="flex items-center justify-end">
             <input type="checkbox" id="remember" name="remember" className="mr-2" />
             <Label htmlFor="remember" className="m-0">
-              Remember me
+              Guardar
             </Label>
           </div>
 
-          <Button variant="ghost" type="submit" className="w-full bg-red-600 font-bold text-white" disabled={loading}>
+          <Button variant="ghost" type="submit" className="w-full bg-red-600 font-bold text-white " disabled={loading}>
             {loading ? 'Logging in…' : 'Login'}
           </Button>
         </form>
       </CardContent>
 
       <CardFooter className="flex-col gap-8">
-        <Button variant="outline" className="w-full" onClick={() => router.push('/api/auth/login/google')}>
+        <Button variant="outline" className="w-full " onClick={() => router.push('/api/auth/login/google')}>
           <GlobeLock className="mr-2 w-5 h-5" />
           Continuar con Google
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => router.push('/api/auth/login/facial')}>
+        <Button variant="outline" className="w-full " onClick={() => router.push('/api/auth/login/facial')}>
           <ScanFace className="mr-2 w-5 h-5" />
           Autenticación Facial
         </Button>
