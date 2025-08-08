@@ -147,7 +147,7 @@ export default function UsersManagement() {
                   <TableHead>Teléfono</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Verificación</TableHead>
-                  <TableHead>Posición</TableHead>
+                  <TableHead>Cargo</TableHead>
                   <TableHead>Último Acceso</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>

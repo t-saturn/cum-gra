@@ -13,29 +13,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Search,
-  Plus,
-  Filter,
-  Download,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Building2,
-  Users,
-  Shield,
-  Globe,
-  Key,
-  Settings,
-  Activity,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ExternalLink,
-  Copy,
-  RefreshCw,
-} from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Building2, Users, Shield, LayoutGrid } from 'lucide-react';
+import { Globe, Key, Settings, Activity, CheckCircle, XCircle, Clock, ExternalLink, Copy, RefreshCw } from 'lucide-react';
 import CardStatsContain from '@/components/custom/card/card-stats-contain';
 import { statsApplications } from '@/mocks/stats-mocks';
 
@@ -43,8 +22,8 @@ import { statsApplications } from '@/mocks/stats-mocks';
 const applications = [
   {
     id: '1',
-    name: 'Sistema de Inventario',
-    description: 'Aplicación para gestión de inventarios y almacenes',
+    name: 'Central User Manager',
+    description: 'Aplicación de control de usuarios, aplicaciones, módulos',
     clientId: 'inv_client_12345',
     clientSecret: 'inv_secret_abcdef123456',
     redirectUris: ['https://inventario.empresa.com/callback', 'https://inventario.empresa.com/auth'],
@@ -53,9 +32,9 @@ const applications = [
     refreshTokenExpiration: 86400,
     status: 'active',
     type: 'web',
-    owner: {
+    admin: {
       name: 'Carlos López',
-      email: 'clopez@empresa.com',
+      email: 'clopez@regionayacucho.gob.pe',
     },
     statistics: {
       totalUsers: 45,
@@ -75,39 +54,6 @@ const applications = [
   },
   {
     id: '2',
-    name: 'Portal de Recursos Humanos',
-    description: 'Sistema integral para gestión de recursos humanos y nómina',
-    clientId: 'hr_client_67890',
-    clientSecret: 'hr_secret_xyz789456',
-    redirectUris: ['https://rrhh.empresa.com/oauth/callback'],
-    allowedOrigins: ['https://rrhh.empresa.com', 'https://admin.rrhh.empresa.com'],
-    tokenExpiration: 7200,
-    refreshTokenExpiration: 172800,
-    status: 'active',
-    type: 'web',
-    owner: {
-      name: 'María García',
-      email: 'mgarcia@empresa.com',
-    },
-    statistics: {
-      totalUsers: 120,
-      activeUsers: 95,
-      totalLogins: 3450,
-      lastAccess: '2024-01-15 16:45:00',
-    },
-    modules: [
-      { id: 'hr_employees', name: 'Gestión de Empleados', enabled: true },
-      { id: 'hr_payroll', name: 'Nómina', enabled: true },
-      { id: 'hr_attendance', name: 'Control de Asistencia', enabled: true },
-      { id: 'hr_performance', name: 'Evaluación de Desempeño', enabled: true },
-      { id: 'hr_recruitment', name: 'Reclutamiento', enabled: false },
-    ],
-    scopes: ['read:employees', 'write:employees', 'read:payroll', 'write:payroll'],
-    createdAt: '2024-01-02',
-    updatedAt: '2024-01-14',
-  },
-  {
-    id: '3',
     name: 'App Móvil Ventas',
     description: 'Aplicación móvil para el equipo de ventas en campo',
     clientId: 'mobile_sales_11111',
@@ -118,9 +64,9 @@ const applications = [
     refreshTokenExpiration: 604800,
     status: 'development',
     type: 'mobile',
-    owner: {
+    admin: {
       name: 'Ana Martínez',
-      email: 'amartinez@empresa.com',
+      email: 'amartinez@regionayacucho.gob.pe',
     },
     statistics: {
       totalUsers: 25,
@@ -139,7 +85,7 @@ const applications = [
     updatedAt: '2024-01-13',
   },
   {
-    id: '4',
+    id: '3',
     name: 'Sistema Financiero',
     description: 'Plataforma para gestión financiera y contable',
     clientId: 'finance_client_22222',
@@ -150,9 +96,9 @@ const applications = [
     refreshTokenExpiration: 259200,
     status: 'suspended',
     type: 'web',
-    owner: {
+    admin: {
       name: 'Luis Torres',
-      email: 'ltorres@empresa.com',
+      email: 'ltorres@regionayacucho.gob.pe',
     },
     statistics: {
       totalUsers: 15,
@@ -183,7 +129,7 @@ export default function ApplicationsManagement() {
     (app) =>
       app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.owner.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      app.admin.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getStatusBadge = (status: string) => {
@@ -323,10 +269,10 @@ export default function ApplicationsManagement() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="owner">Propietario</Label>
+                      <Label htmlFor="admin">Administrador</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar propietario" />
+                          <SelectValue placeholder="Seleccionar administrador" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">Carlos López</SelectItem>
@@ -464,7 +410,7 @@ export default function ApplicationsManagement() {
                 <TableRow className="bg-accent/50">
                   <TableHead>Aplicación</TableHead>
                   <TableHead>Tipo</TableHead>
-                  <TableHead>Propietario</TableHead>
+                  <TableHead>Administrador</TableHead>
                   <TableHead>Usuarios</TableHead>
                   <TableHead>Último Acceso</TableHead>
                   <TableHead>Estado</TableHead>
@@ -477,7 +423,7 @@ export default function ApplicationsManagement() {
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-primary" />
+                          <LayoutGrid className="w-4 h-4 text-primary" />
                           <p className="font-medium text-foreground">{app.name}</p>
                         </div>
                         <p className="text-sm text-muted-foreground line-clamp-2">{app.description}</p>
@@ -490,8 +436,8 @@ export default function ApplicationsManagement() {
                     <TableCell>{getTypeBadge(app.type)}</TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium text-sm">{app.owner.name}</p>
-                        <p className="text-xs text-muted-foreground">{app.owner.email}</p>
+                        <p className="font-medium text-sm">{app.admin.name}</p>
+                        <p className="text-xs text-muted-foreground">{app.admin.email}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -580,8 +526,8 @@ export default function ApplicationsManagement() {
                           {getStatusBadge(selectedApp.status)}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Propietario:</span>
-                          <span>{selectedApp.owner.name}</span>
+                          <span className="text-muted-foreground">Administrador:</span>
+                          <span>{selectedApp.admin.name}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Creada:</span>
