@@ -52,8 +52,8 @@ export const Login: React.FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
-        <CardDescription>Enter your email and password below to login</CardDescription>
+        <CardTitle>Iniciar sesión en su cuenta</CardTitle>
+        <CardDescription>Ingrese su correo electrónico y contraseña a continuación para iniciar sesión</CardDescription>
       </CardHeader>
 
       <CardContent>
