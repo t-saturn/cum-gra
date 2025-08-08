@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
@@ -12,53 +12,47 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-// Logout maneja POST /auth/logout: cierra la sesión y revoca los tokens.
+// POST /auth/logout?logout_type=...&session_id=...
 func (h *AuthHandler) Logout(c fiber.Ctx) error {
-	// 1. Leemos logout_type desde query, no desde JSON
-	logoutType := c.Query("logout_type")
-	if logoutType == "" {
-		return utils.JSONError(c, http.StatusBadRequest,
-			"BAD_FORMAT", "Logout type missing", "logout_type debe ir como ?logout_type=…")
+	// 1. Leer query params
+	input := dto.LogoutRequestDTO{
+		LogoutType: c.Query("logout_type"),
+		SessionID:  c.Query("session_id"),
 	}
 
-	// 2. Validamos logout_type
-	input := dto.LogoutQueryDTO{LogoutType: logoutType}
+	// 2. Validar query
 	if err := validator.Validate.Struct(&input); err != nil {
-		return utils.JSON(c, http.StatusBadRequest,
-			dto.ValidationErrorResponse{Errors: validator.FormatValidationError(err)})
+		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
+			Errors: validator.FormatValidationError(err),
+		})
 	}
 
-	// 3. Leemos los tokens de cookies
-	accessToken := c.Cookies("access_token")
-	refreshToken := c.Cookies("refresh_token")
-	if accessToken == "" && refreshToken == "" {
-		return utils.JSONError(c, http.StatusUnauthorized,
-			"NO_TOKEN", "No se encontró ningún token en cookies", "Debe estar autenticado")
+	// 3. Extraer refresh token desde Authorization: Bearer ...
+	authz := c.Get("Authorization")
+	var refreshToken string
+	if strings.HasPrefix(strings.ToLower(authz), "bearer ") {
+		refreshToken = strings.TrimSpace(authz[len("Bearer "):])
 	}
 
-	fmt.Print("AccessToken:", accessToken, " RefreshToken:", refreshToken)
+	// Si no hay refresh token, error
+	if refreshToken == "" {
+		return utils.JSONError(c, http.StatusUnauthorized, "NO_TOKEN", "No se encontró refresh token en Authorization", "Envíe Authorization: Bearer <refresh_token>")
+	}
 
-	// 4. Pasamos tokens al servicio en lugar de session_id
-	data, err := h.authService.Logout(c, accessToken, refreshToken, input.LogoutType)
+	// 4. Lógica de servicio
+	data, err := h.authService.Logout(c, refreshToken, input.LogoutType, input.SessionID)
 	if err != nil {
 		switch err {
 		case services.ErrSessionNotFound:
-			return utils.JSONError(c, http.StatusNotFound,
-				"SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
 		case services.ErrSessionInactive:
-			return utils.JSONError(c, http.StatusBadRequest,
-				"SESSION_INACTIVE", "Sesión ya inactiva", "La sesión ya está inactiva")
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_INACTIVE", "Sesión ya inactiva", "La sesión ya está inactiva")
 		default:
 			logger.Log.Errorf("Error en logout: %v", err)
-			return utils.JSONError(c, http.StatusInternalServerError,
-				"LOGOUT_FAILED", "Error interno al cerrar sesión", "Error desconocido")
+			return utils.JSONError(c, http.StatusInternalServerError, "LOGOUT_FAILED", "Error interno al cerrar sesión", "Error desconocido")
 		}
 	}
 
-	// 5. Limpiamos las cookies para realmente desloguear al cliente
-	c.ClearCookie("access_token")
-	c.ClearCookie("refresh_token")
-
-	// 6. Devolvemos el resultado
+	// 5. Responder con éxito
 	return utils.JSONResponse(c, http.StatusOK, true, "Logout exitoso", data, nil)
 }
