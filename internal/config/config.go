@@ -29,6 +29,7 @@ type ServerConfig struct {
 	JWTExpMinutes string
 	ServerPort    string
 	CookieDomain  string
+	AppLandingURL string
 }
 
 // App Configuración - NUEVO
@@ -69,6 +70,7 @@ func LoadConfig() {
 			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
 			ServerPort:    getEnv("SERVER_PORT", "8000"),
 			CookieDomain:  getEnv("COOKIE_DOMAIN", "localhost"),
+			AppLandingURL: getEnv("APP_LANDING_URL", "http://localhost:8000"),
 		},
 		// NUEVO: Configuración de la aplicación
 		App: AppConfig{

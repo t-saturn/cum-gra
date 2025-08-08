@@ -46,6 +46,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	// 4. Establecer cookies (desde resultado del servicio)
 	accessToken := result.Tokens.AccessToken
 	refreshToken := result.Tokens.RefreshToken
+	sessionID := result.Session.SessionID
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",
@@ -54,7 +55,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		Secure:   true,
 		SameSite: "Strict",
 		Path:     "/",
-		Domain:   config.GetConfig().Server.CookieDomain, // ej: ".regionayacucho.gob.pe"
+		Domain:   config.GetConfig().Server.CookieDomain,
 		Expires:  accessToken.ExpiresAt,
 	})
 
@@ -67,6 +68,17 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		Path:     "/",
 		Domain:   config.GetConfig().Server.CookieDomain,
 		Expires:  refreshToken.ExpiresAt,
+	})
+
+	c.Cookie(&fiber.Cookie{
+		Name:     "session_id",
+		Value:    sessionID,
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "Strict",
+		Path:     "/",
+		Domain:   config.GetConfig().Server.CookieDomain,
+		Expires:  result.Session.ExpiresAt,
 	})
 
 	// 5. (Opcional) Limpiar los tokens del body para que solo vayan como cookies
