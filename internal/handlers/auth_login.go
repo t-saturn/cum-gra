@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/services"
@@ -43,51 +42,11 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		}
 	}
 
-	// 4. Establecer cookies (desde resultado del servicio)
-	accessToken := result.Tokens.AccessToken
-	refreshToken := result.Tokens.RefreshToken
-	sessionID := result.Session.SessionID
-
-	c.Cookie(&fiber.Cookie{
-		Name:     "access_token",
-		Value:    accessToken.Token,
-		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Strict",
-		Path:     "/",
-		Domain:   config.GetConfig().Server.CookieDomain,
-		Expires:  accessToken.ExpiresAt,
-	})
-
-	c.Cookie(&fiber.Cookie{
-		Name:     "refresh_token",
-		Value:    refreshToken.Token,
-		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Strict",
-		Path:     "/",
-		Domain:   config.GetConfig().Server.CookieDomain,
-		Expires:  refreshToken.ExpiresAt,
-	})
-
-	c.Cookie(&fiber.Cookie{
-		Name:     "session_id",
-		Value:    sessionID,
-		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Strict",
-		Path:     "/",
-		Domain:   config.GetConfig().Server.CookieDomain,
-		Expires:  result.Session.ExpiresAt,
-	})
-
-	// 5. (Opcional) Limpiar los tokens del body para que solo vayan como cookies
-	result.Tokens = dto.TokensDTO{}
-
-	// 6. Devolver respuesta sin tokens en el JSON
+	// 4. Devolver respuesta en JSON
 	return utils.JSONResponse(c, http.StatusOK, true, "Login exitoso", fiber.Map{
 		"user_id":    result.UserID,
 		"session":    result.Session,
+		"tokens":     result.Tokens,
 		"attempt_id": result.AttemptID,
 	}, nil)
 }
