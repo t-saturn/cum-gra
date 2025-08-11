@@ -80,9 +80,8 @@ type ListSessionsResponseDTO struct {
 // ─────────────────────────────────────────────────────────────────────────────
 
 type RevokeOwnSessionQueryDTO struct {
-	SessionID string  `query:"session_id" json:"session_id" validate:"required"`
-	Reason    *string `query:"reason" json:"reason,omitempty"`
-	// Si decides permitir que el cliente indique app que revoca:
+	SessionID    string  `query:"session_id" json:"session_id" validate:"required"`
+	Reason       *string `query:"reason" json:"reason,omitempty"`
 	RevokedByApp *string `query:"revoked_by_app" json:"revoked_by_app,omitempty"`
 }
 
