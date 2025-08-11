@@ -13,7 +13,32 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
+	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
 )
+
+var (
+	ErrInvalidCredentials = errors.New("credenciales inválidas")
+	ErrInactiveAccount    = errors.New("cuenta inactiva")
+)
+
+// AuthService gestiona la lógica de autenticación.
+type AuthService struct {
+	userRepo        *repositories.UserRepository
+	authAttemptRepo *repositories.AuthAttemptRepository
+	sessionRepo     *repositories.SessionRepository
+	tokenRepo       *repositories.TokenRepository
+}
+
+// NewAuthService construye un AuthService con Postgres y Mongo ya conectados.
+func NewAuthService(pgDB *gorm.DB, mongoDB *mongo.Database) *AuthService {
+	return &AuthService{
+		userRepo:        repositories.NewUserRepository(pgDB),
+		authAttemptRepo: repositories.NewAuthAttemptRepository(mongoDB),
+		sessionRepo:     repositories.NewSessionRepository(mongoDB),
+		tokenRepo:       repositories.NewTokenRepository(mongoDB),
+	}
+}
 
 // Login realiza el flujo completo de autenticación
 func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) (*dto.AuthLoginResponseDTO, error) {

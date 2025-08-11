@@ -15,57 +15,6 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
-// InsertVerify registra un intento de /auth/verify en la colección verify_attempts.
-// - status: "success" | "failed" | "locked" ...
-// - reason: "invalid_password" | "user_not_found" | "account_inactive" | ...
-// - userID: vacía si no se encontró usuario
-func (s *AuthService) InsertVerify(ctx context.Context, input dto.AuthVerifyRequestDTO, status, reason, userID string, validationTimeMs int64) (primitive.ObjectID, error) {
-	now := utils.NowUTC()
-
-	attempt := &models.VerifyAttempt{
-		Email:          deref(input.Email),
-		UserID:         userID,
-		ApplicationID:  input.ApplicationID,
-		Status:         status,
-		Reason:         reason,
-		Method:         models.AuthMethodCredentials,
-		CreatedAt:      now,
-		ValidatedAt:    &now,
-		ValidationTime: validationTimeMs,
-		DeviceInfo: models.DeviceInfo{
-			UserAgent:      input.DeviceInfo.UserAgent,
-			IP:             input.DeviceInfo.IP,
-			DeviceID:       input.DeviceInfo.DeviceID,
-			OS:             input.DeviceInfo.OS,
-			OSVersion:      input.DeviceInfo.OSVersion,
-			BrowserName:    input.DeviceInfo.BrowserName,
-			BrowserVersion: input.DeviceInfo.BrowserVersion,
-			DeviceType:     input.DeviceInfo.DeviceType,
-			Timezone:       input.DeviceInfo.Timezone,
-			Language:       input.DeviceInfo.Language,
-			Location: &models.LocationDetail{
-				Country:     input.DeviceInfo.Location.Country,
-				CountryCode: input.DeviceInfo.Location.CountryCode,
-				Region:      input.DeviceInfo.Location.Region,
-				City:        input.DeviceInfo.Location.City,
-				Coordinates: models.Coordinates{
-					input.DeviceInfo.Location.Coordinates[0],
-					input.DeviceInfo.Location.Coordinates[1]},
-				ISP:          input.DeviceInfo.Location.ISP,
-				Organization: input.DeviceInfo.Location.Organization,
-			},
-		},
-		ValidationResponse: &models.ValidationResponse{
-			UserID:          userID,
-			ServiceResponse: status,
-			ValidatedBy:     models.AuthMethodCredentials,
-			ValidationTime:  validationTimeMs,
-		},
-	}
-
-	return s.verifyAttemptRepo.Insert(ctx, attempt)
-}
-
 // InsertAttempt registra un AuthAttempt con status y reason.
 func (s *AuthService) InsertAttempt(ctx context.Context, input dto.AuthLoginRequestDTO, status, reason, userID string) (primitive.ObjectID, error) {
 	now := utils.NowUTC()
