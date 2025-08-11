@@ -16,6 +16,19 @@ type ResponseDTO[T any] struct {
 	Error   *ErrorDTO `json:"error"`
 }
 
+type JWKSResponseDTO struct {
+	Keys []RSAJWK `json:"keys"`
+}
+
+type RSAJWK struct {
+	Kty string `json:"kty"`           // "RSA"
+	Kid string `json:"kid,omitempty"` // p.ej. "key-2025-08"
+	Alg string `json:"alg,omitempty"` // "RS256"
+	Use string `json:"use,omitempty"` // "sig"
+	N   string `json:"n"`             // base64url modulus
+	E   string `json:"e"`             // base64url exponent (AQAB)
+}
+
 type IntrospectResponseDTO struct {
 	UserID          string `bson:"user_id,omitempty"`
 	ServiceResponse string `bson:"service_response,omitempty"`
