@@ -16,12 +16,13 @@ type TokenDetailDTO struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-// TokenValidationRequest representa el JSON recibido con el token.
+// TokenValidationRequestDTO representa el JSON recibido para validar un token.
 type TokenValidationRequestDTO struct {
-	TokenHash string `json:"token_hash" validate:"required"`
-	SessionID string `json:"session_id" validate:"required"`
+	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
+	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
 }
 
+// TokenValidationResponseDTO es la respuesta al validar un token.
 type TokenValidationResponseDTO struct {
 	UserID      string                            `json:"user_id"`
 	TokenID     string                            `json:"token_id"`
@@ -31,19 +32,21 @@ type TokenValidationResponseDTO struct {
 	TokenDetail TokenValidationDetailsResponseDTO `json:"token_detail"`
 }
 
+// TokenValidationDetailsResponseDTO contiene información detallada del token.
 type TokenValidationDetailsResponseDTO struct {
 	Valid     bool   `json:"valid"`
-	Message   string `json:"message,omitempty"`
+	Message   string `json:"message"`
 	Subject   string `json:"subject,omitempty"`
-	IssuedAt  string `json:"issued_at,omitempty"`  // formato ISO8601
-	ExpiresAt string `json:"expires_at,omitempty"` // formato ISO8601
-	ExpiresIn int64  `json:"expires_in,omitempty"`
+	IssuedAt  string `json:"issued_at,omitempty"`
+	ExpiresAt string `json:"expires_at,omitempty"`
+	ExpiresIn int64  `json:"expires_in,omitempty"` // segundos restantes
 }
 
 // AuthRefreshRequestDTO define la estructura de la petición para /auth/token/refresh
 type AuthRefreshRequestDTO struct {
-	RefreshToken string        `json:"refresh_token" validate:"required"`
-	DeviceInfo   DeviceInfoDTO `json:"device_info" validate:"required"`
+	RefreshToken string        `json:"token" validate:"required"` // JWS crudo
+	SessionID    string        `json:"session_id" validate:"required"`
+	DeviceInfo   DeviceInfoDTO `json:"device_info"` // opcional, si quieres actualizar metadata
 }
 
 // AuthRefreshResponseDTO define la parte "data" de la respuesta para /auth/token/refresh
