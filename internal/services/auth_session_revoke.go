@@ -14,7 +14,7 @@ var (
 )
 
 // RevokeSession revoca una sesión y todos sus tokens asociados.
-func (s *AuthService) RevokeSession(ctx context.Context, sessionID, reason, revokedBy, revokedByApp string) (*dto.SessionRevokeResponseDTO, error) {
+func (s *AuthService) RevokeSession(ctx context.Context, sessionID, reason, revokedBy, revokedByApp string) (*dto.RevokeOwnSessionQueryDTO, error) {
 	now := utils.NowUTC()
 
 	// 1) Buscar la sesión
@@ -50,11 +50,8 @@ func (s *AuthService) RevokeSession(ctx context.Context, sessionID, reason, revo
 	for i, oid := range tokenIDs {
 		hexIDs[i] = oid.Hex()
 	}
-	resp := &dto.SessionRevokeResponseDTO{
-		SessionID:        sessionID,
-		RevokedAt:        now,
-		RevocationReason: reason,
-		TokensRevoked:    hexIDs,
+	resp := &dto.RevokeOwnSessionQueryDTO{
+		SessionID: sessionID,
 	}
 	return resp, nil
 }
