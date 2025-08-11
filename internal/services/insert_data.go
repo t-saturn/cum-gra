@@ -12,6 +12,7 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/security"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 // InsertVerify registra un intento de /auth/verify en la colección verify_attempts.
@@ -171,16 +172,15 @@ func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequ
 // InsertToken encapsula la creación y persistencia de un token.
 // - recibe sólo lo mínimo necesario: userID, sessionID, deviceInfo, tipo y duración.
 // - devuelve el ObjectID recién insertado.
-
 func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID string, deviceInfo dto.DeviceInfoDTO, tokenType string, duration time.Duration, parentID *primitive.ObjectID) (primitive.ObjectID, string, error) {
-	// 1) Generar el JWT
+	// 1 Generar el JWT
 	var jwtStr string
 	var err error
 	switch tokenType {
 	case models.TokenTypeAccess:
-		jwtStr, err = security.GenerateAccessToken(userID)
+		jwtStr, err = security.GenerateAccessToken(userID, sessionID)
 	case models.TokenTypeRefresh:
-		jwtStr, err = security.GenerateRefreshToken(userID)
+		jwtStr, err = security.GenerateRefreshToken(userID, sessionID)
 	default:
 		return primitive.NilObjectID, "", errors.New("tipo de token no soportado")
 	}
@@ -188,15 +188,29 @@ func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID 
 		return primitive.NilObjectID, "", err
 	}
 
-	// 2) Calcular hash del token crudo
-	tokenHash := security.HashTokenHex(jwtStr) // asegúrate de usar el mismo algoritmo siempre
+	// 2 Extraer KID del header (si está presente)
+	kid := ""
+	if parsed, perr := jwt.ParseSigned(jwtStr); perr == nil {
+		// En go-jose v2, Headers() devuelve []jose.Header
+		hdrs := parsed.Headers
+		if len(hdrs) > 0 {
+			kid = hdrs[0].KeyID // jose.Header.KeyID
+		}
+	}
+	// Fallback por si no se pudo parsear: toma del ENV (mismo que usas al firmar)
+	if kid == "" {
+		kid = config.GetConfig().Server.JWTKid
+	}
+
+	// 3 Calcular hash del token crudo
+	tokenHash := security.HashTokenHex(jwtStr)
 
 	now := time.Now().UTC()
 	tokenUUID := uuid.New().String()
 
 	tokModel := &models.Token{
 		TokenID:       tokenUUID,
-		TokenHash:     tokenHash, // <-- GUARDAMOS EL HASH, NO EL TOKEN
+		TokenHash:     tokenHash, // guardamos el hash, NO el token
 		UserID:        userID,
 		SessionID:     sessionID,
 		Status:        models.TokenStatusActive,
@@ -207,12 +221,12 @@ func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID 
 		UpdatedAt:     now,
 		DeviceInfo:    deviceInfo.ToModel(),
 		ParentTokenID: parentID,
-		Alg:           config.GetConfig().Server.JWTAlg, // opcional
-		// Kid:        "current-key-id",   // opcional, si usas kid en el header
+		Alg:           config.GetConfig().Server.JWTAlg,
+		Kid:           kid, // <-- GUARDAR KID
 	}
 
 	oid, err := s.tokenRepo.Insert(ctx, tokModel)
-	return oid, jwtStr, err // retornas el token crudo al cliente
+	return oid, jwtStr, err
 }
 
 // deref convierte *string a string, devolviendo cadena vacía si es nil.
