@@ -19,4 +19,6 @@ func RegisterRoutes(app *fiber.App) {
 
 	// Registrar rutas de salud (sin parámetros adicionales)
 	RegisterHealthRoutes(app)
+
+	RegisterKeyRoutes(app)
 }
