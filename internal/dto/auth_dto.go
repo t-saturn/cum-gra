@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 // AuthLoginRequestDTO define la estructura de la petición para /auth/login.
 type AuthLoginRequestDTO struct {
@@ -29,4 +31,11 @@ type LogoutResponseDTO struct {
 	SessionID     string    `json:"session_id"`
 	RevokedAt     time.Time `json:"revoked_at"`
 	TokensRevoked []string  `json:"tokens_revoked"`
+}
+
+type SessionDTO struct {
+	SessionID string    `json:"session_id"`
+	Status    string    `json:"status"`
+	CreatedAt time.Time `json:"created_at"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
