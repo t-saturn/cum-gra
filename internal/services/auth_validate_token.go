@@ -10,7 +10,7 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/security"
 )
 
-// Convertir tus constantes de string a errores
+// Errores sentinela del service (sin cambios)
 var (
 	ErrInvalidToken    = errors.New("invalid_token")
 	ErrSessionNotFound = errors.New("session_not_found")
@@ -18,56 +18,77 @@ var (
 	ErrSessionInactive = errors.New("session_inactive")
 )
 
-// ValidateToken sirve para validar un access token y su sesión asociada.
 func (s *AuthService) ValidateToken(ctx context.Context, input dto.TokenValidationRequestDTO) (*dto.TokenValidationResponseDTO, error) {
-	// 1 Obtener token por hash
-	tokModel, err := s.tokenRepo.FindByHash(ctx, input.TokenHash)
+	// Validación mínima de entrada
+	if input.Token == "" || input.SessionID == "" {
+		return nil, ErrInvalidToken
+	}
+
+	// 1. Calcular hash del token crudo y buscar en DB (lookup rápido)
+	calcHash := security.HashTokenHex(input.Token)
+	tokModel, err := s.tokenRepo.FindByHash(ctx, calcHash)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
 
-	// 2 Estado del token debe ser activo
+	// 2. Estado del token debe ser activo
 	if tokModel.Status != models.TokenStatusActive {
 		return nil, ErrInvalidToken
 	}
 
-	// 3 Obtener sesión asociada
+	// 3. Obtener sesión asociada
 	sessModel, err := s.sessionRepo.FindBySessionID(ctx, tokModel.SessionID)
 	if err != nil {
 		return nil, ErrSessionNotFound
 	}
 
-	// 4 Coincidencia de session ID
+	// 4. Coincidencia de session ID
 	if sessModel.SessionID != input.SessionID {
 		return nil, ErrSessionMismatch
 	}
 
-	// 5 Verificar estado de sesión
+	// 5. Verificar estado de sesión
 	if sessModel.Status != models.SessionStatusActive || !sessModel.IsActive {
 		return nil, ErrSessionInactive
 	}
 
-	// 6 Validar JWE y extraer claims
-	val := security.ValidateToken(input.TokenHash)
-	details := dto.TokenValidationDetailsResponseDTO{}
-	switch val.Code {
-	case 0:
-		details.Valid = true
-		details.Message = "Token válido"
-		claims := val.Claims
-		details.Subject = claims.Subject
-		details.IssuedAt = claims.IssuedAt.Time().Format(time.RFC3339)
-		details.ExpiresAt = claims.Expiry.Time().Format(time.RFC3339)
-		details.ExpiresIn = int64(time.Until(claims.Expiry.Time()).Seconds())
-	case 2:
-		details.Valid = false
-		details.Message = "Token expirado"
-	default:
-		details.Valid = false
-		details.Message = val.Message
+	// 6. Confirmar que el hash recalculado coincida con el almacenado (defensa anti-swap)
+	if !security.CompareHash(calcHash, tokModel.TokenHash) {
+		return nil, ErrInvalidToken
 	}
 
-	// 7 Construir DTO de respuesta
+	// 7. Verificar JWS (RS256) y extraer claims sobre el token crudo
+	claims, vErr := security.VerifyTokenRS256(input.Token)
+
+	details := dto.TokenValidationDetailsResponseDTO{}
+	switch {
+	case vErr == nil:
+		details.Valid = true
+		details.Message = "Token válido"
+		details.Subject = claims.Subject
+		if claims.IssuedAt != nil {
+			details.IssuedAt = claims.IssuedAt.Time().Format(time.RFC3339)
+		}
+		if claims.Expiry != nil {
+			expTime := claims.Expiry.Time()
+			details.ExpiresAt = expTime.Format(time.RFC3339)
+			sec := int64(time.Until(expTime).Seconds())
+			if sec < 0 {
+				sec = 0
+			}
+			details.ExpiresIn = sec
+		}
+
+	case errors.Is(vErr, security.ErrTokenExpired):
+		details.Valid = false
+		details.Message = "Token expirado"
+
+	default:
+		details.Valid = false
+		details.Message = "Token inválido"
+	}
+
+	// 8. Respuesta
 	return &dto.TokenValidationResponseDTO{
 		UserID:      tokModel.UserID,
 		TokenID:     tokModel.TokenID,

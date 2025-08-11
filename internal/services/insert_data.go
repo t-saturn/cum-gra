@@ -170,8 +170,9 @@ func (s *AuthService) InsertSession(ctx context.Context, input dto.AuthLoginRequ
 // InsertToken encapsula la creación y persistencia de un token.
 // - recibe sólo lo mínimo necesario: userID, sessionID, deviceInfo, tipo y duración.
 // - devuelve el ObjectID recién insertado.
+
 func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID string, deviceInfo dto.DeviceInfoDTO, tokenType string, duration time.Duration, parentID *primitive.ObjectID) (primitive.ObjectID, string, error) {
-	// 1) Generar el JWT (hash)
+	// 1) Generar el JWT
 	var jwtStr string
 	var err error
 	switch tokenType {
@@ -186,26 +187,31 @@ func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID 
 		return primitive.NilObjectID, "", err
 	}
 
-	// 2) Armar el modelo
+	// 2) Calcular hash del token crudo
+	tokenHash := security.HashTokenHex(jwtStr) // asegúrate de usar el mismo algoritmo siempre
+
+	now := time.Now().UTC()
 	tokenUUID := uuid.New().String()
+
 	tokModel := &models.Token{
 		TokenID:       tokenUUID,
-		TokenHash:     jwtStr,
+		TokenHash:     tokenHash, // <-- GUARDAMOS EL HASH, NO EL TOKEN
 		UserID:        userID,
 		SessionID:     sessionID,
 		Status:        models.TokenStatusActive,
 		TokenType:     tokenType,
-		IssuedAt:      time.Now().UTC(),
-		ExpiresAt:     time.Now().UTC().Add(duration),
-		CreatedAt:     time.Now().UTC(),
-		UpdatedAt:     time.Now().UTC(),
+		IssuedAt:      now,
+		ExpiresAt:     now.Add(duration),
+		CreatedAt:     now,
+		UpdatedAt:     now,
 		DeviceInfo:    deviceInfo.ToModel(),
 		ParentTokenID: parentID,
+		Alg:           "RS256", // opcional
+		// Kid:        "current-key-id",   // opcional, si usas kid en el header
 	}
 
-	// 3) Persistir y devolver ID + el JWT generado
 	oid, err := s.tokenRepo.Insert(ctx, tokModel)
-	return oid, jwtStr, err
+	return oid, jwtStr, err // retornas el token crudo al cliente
 }
 
 // deref convierte *string a string, devolviendo cadena vacía si es nil.
