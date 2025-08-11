@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/internal/services"
@@ -11,6 +12,22 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
+
+// AuthHandler agrupa los handlers relacionados a autenticación.
+type AuthHandler struct {
+	authService *services.AuthService
+}
+
+// NewAuthHandler crea una nueva instancia de AuthHandler.
+func NewAuthHandler() *AuthHandler {
+	pgDB := config.GetPostgresDB()
+	mongoDB := config.MongoDB
+
+	service := services.NewAuthService(pgDB, mongoDB)
+	return &AuthHandler{
+		authService: service,
+	}
+}
 
 // Login maneja POST /auth/login: flujo completo de login.
 func (h *AuthHandler) Login(c fiber.Ctx) error {
