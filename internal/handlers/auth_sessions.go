@@ -32,7 +32,7 @@ func (h *AuthHandler) ListSessions(c fiber.Ctx) error {
 	// userID := claims.UserID // Ejemplo, ajusta según tu implementación
 
 	// 3. Parsear query params en el DTO
-	var q dto.ListSessionsRequestDTO
+	var q dto.ListSessionsQueryDTO
 	if err := c.Bind().Query(&q); err != nil {
 		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "cuerpo no válido")
 	}
