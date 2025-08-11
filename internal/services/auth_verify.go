@@ -83,7 +83,7 @@ func (s *AuthService) VerifyCredentials(ctx context.Context, input dto.AuthVerif
 		UserID:      userData.ID.String(),
 		Status:      models.AuthStatusSuccess,
 		ValidatedAt: now,
-		ValidationResponse: dto.ValidationResponseDTO{
+		ValidationResponse: dto.IntrospectResponseDTO{
 			UserID:          userData.ID.String(),
 			ServiceResponse: models.AuthStatusSuccess,
 			ValidatedBy:     models.AuthMethodCredentials,

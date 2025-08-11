@@ -18,7 +18,7 @@ var (
 	ErrSessionInactive = errors.New("session_inactive")
 )
 
-func (s *AuthService) ValidateToken(ctx context.Context, input dto.TokenValidationRequestDTO) (*dto.TokenValidationResponseDTO, error) {
+func (s *AuthService) Introspect(ctx context.Context, input dto.IntrospectRequestDTO) (*dto.TokenIntrospectResponseDTO, error) {
 	// Validación mínima de entrada
 	if input.Token == "" || input.SessionID == "" {
 		return nil, ErrInvalidToken
@@ -60,7 +60,7 @@ func (s *AuthService) ValidateToken(ctx context.Context, input dto.TokenValidati
 	// 7. Verificar JWS (RS256) y extraer claims sobre el token crudo
 	claims, vErr := security.VerifyTokenRS256(input.Token)
 
-	details := dto.TokenValidationDetailsResponseDTO{}
+	details := dto.IntrospectDetailsResponseDTO{}
 	switch {
 	case vErr == nil:
 		details.Valid = true
@@ -89,7 +89,7 @@ func (s *AuthService) ValidateToken(ctx context.Context, input dto.TokenValidati
 	}
 
 	// 8. Respuesta
-	return &dto.TokenValidationResponseDTO{
+	return &dto.TokenIntrospectResponseDTO{
 		UserID:      tokModel.UserID,
 		TokenID:     tokModel.TokenID,
 		SessionID:   tokModel.SessionID,
