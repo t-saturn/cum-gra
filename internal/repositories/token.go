@@ -202,19 +202,3 @@ func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, tokenIDs []prim
 	_, err := r.col.UpdateMany(ctx, filter, update)
 	return err
 }
-
-// // RevokeTokensByIDs actualiza el status y revocation info de un lote de tokens.
-// func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, ids []primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
-//     now := time.Now().UTC()
-//     update := bson.M{"$set": bson.M{
-//         "status":           models.TokenStatusRevoked,
-//         "revoked_at":       now,
-//         "validation_response": bson.M{
-//             "reason":         reason,
-//             "revoked_by":     revokedBy,
-//             "revoked_by_app": revokedByApp,
-//         },
-//     }}
-//     _, err := r.col.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": ids}}, update)
-//     return err
-// }

@@ -74,8 +74,7 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 	}
 
 	durRefresh := 7 * 24 * time.Hour
-
-	refreshID, refreshJWT, err := s.InsertToken(ctx, user.ID.String(), sessionDTO.SessionID, input.DeviceInfo, models.TokenTypeRefresh, durRefresh, &accessID)
+	refreshID, refreshJWT, err := s.InsertToken(ctx, user.ID.String(), sessionDTO.SessionID, input.DeviceInfo, models.TokenTypeRefresh, durRefresh, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +85,23 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 		ExpiresAt: now.Add(durRefresh),
 	}
 
-	// 6 Devolver respuesta
+	// 6 Vincular tokens (access y refresh)
+	if err := s.tokenRepo.SetPairedTokenID(ctx, refreshID, accessID); err != nil {
+		logger.Log.Errorf("Error al vincular refresh_token con access_token: %v", err)
+	}
+	if err := s.tokenRepo.SetPairedTokenID(ctx, accessID, refreshID); err != nil {
+		logger.Log.Errorf("Error al vincular access_token con refresh_token: %v", err)
+	}
+
+	// 7 Asociar tokens a la sesión
+	if err := s.sessionRepo.AddTokenToSession(ctx, sessionDTO.SessionID, accessID); err != nil {
+		logger.Log.Errorf("Error al asociar access_token a la sesión: %v", err)
+	}
+	if err := s.sessionRepo.AddTokenToSession(ctx, sessionDTO.SessionID, refreshID); err != nil {
+		logger.Log.Errorf("Error al asociar refresh_token a la sesión: %v", err)
+	}
+
+	// 8 Devolver respuesta
 	return &dto.AuthLoginResponseDTO{
 		UserID:    user.ID.String(),
 		Session:   sessionDTO,
