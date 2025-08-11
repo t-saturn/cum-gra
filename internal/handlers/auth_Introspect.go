@@ -12,8 +12,8 @@ import (
 )
 
 // Validate maneja POST /auth/token/validate: valida un access token.
-func (h *AuthHandler) Validate(c fiber.Ctx) error {
-	var input dto.TokenValidationRequestDTO
+func (h *AuthHandler) Introspect(c fiber.Ctx) error {
+	var input dto.IntrospectRequestDTO
 
 	// 1. Parsear JSON
 	if err := c.Bind().Body(&input); err != nil {
@@ -28,7 +28,7 @@ func (h *AuthHandler) Validate(c fiber.Ctx) error {
 	}
 
 	// 3. Llamar al servicio de validación
-	data, err := h.authService.ValidateToken(c, input)
+	data, err := h.authService.Introspect(c, input)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidToken:
