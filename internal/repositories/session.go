@@ -66,7 +66,7 @@ func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*model
 }
 
 // FindByUserID retorna todas las sesiones de un usuario según filtros.
-func (r *SessionRepository) FindByUserID(ctx context.Context, userID string, params dto.ListSessionsParamsDTO) ([]models.Session, error) {
+func (r *SessionRepository) FindByUserID(ctx context.Context, userID string, params dto.ListSessionsQueryDTO) ([]models.Session, error) {
 	// Construir filtro base
 	filter := bson.M{"user_id": userID}
 

@@ -24,20 +24,72 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// MODELOS / PROYECCIONES
+// ─────────────────────────────────────────────────────────────────────────────
+
 type User struct {
-	ID           uuid.UUID
-	Email        string
-	PasswordHash string
-	DNI          string
-	Status       string
-	IsDeleted    bool
+	ID                   uuid.UUID  `gorm:"type:uuid;primaryKey;column:id"`
+	Email                string     `gorm:"column:email"`
+	PasswordHash         string     `gorm:"column:password_hash"`
+	DNI                  string     `gorm:"column:dni"`
+	Status               string     `gorm:"column:status"`
+	IsDeleted            bool       `gorm:"column:is_deleted"`
+	StructuralPositionID *uuid.UUID `gorm:"type:uuid;column:structural_position_id"`
+	OrganicUnitID        *uuid.UUID `gorm:"type:uuid;column:organic_unit_id"`
 }
 
-// FindActiveByEmailOrDNI busca un usuario por email o DNI, sin filtrar is_deleted
-// para poder detectar usuarios eliminados. Después de cargarlo, comprueba:
-//   - si user.IsDeleted == true   → ErrUserDeleted
-//   - si user.Status != "active"  → ErrUserDisabled
-//   - si no existe                → ErrUserNotFound
+func (User) TableName() string { return "users" }
+
+// Proyección para devolver nombres de posición/unidad + nombre completo
+type UserOrgView struct {
+	ID                     uuid.UUID  `json:"id"`
+	Email                  string     `json:"email"`
+	FirstName              string     `json:"first_name"`
+	LastName               string     `json:"last_name"`
+	DNI                    string     `json:"dni"`             // <- NUEVO
+	Phone                  *string    `json:"phone,omitempty"` // <- NUEVO (nullable)
+	Status                 string     `json:"status"`
+	IsDeleted              bool       `json:"-"`
+	StructuralPositionID   *uuid.UUID `json:"structural_position_id,omitempty"`
+	StructuralPositionName *string    `json:"structural_position,omitempty"`
+	OrganicUnitID          *uuid.UUID `json:"organic_unit_id,omitempty"`
+	OrganicUnitName        *string    `json:"organic_unit,omitempty"`
+}
+
+// (Opcional) Si usas los modelos GORM de estas tablas en otro lado:
+type StructuralPosition struct {
+	ID   uuid.UUID `gorm:"type:uuid;primaryKey;column:id"`
+	Name string    `gorm:"column:name"`
+}
+
+func (StructuralPosition) TableName() string { return "structural_positions" }
+
+type OrganicUnit struct {
+	ID   uuid.UUID `gorm:"type:uuid;primaryKey;column:id"`
+	Name string    `gorm:"column:name"`
+}
+
+func (OrganicUnit) TableName() string { return "organic_units" }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUERIES
+// ─────────────────────────────────────────────────────────────────────────────
+
+// FindByID simple (opcional, por si te sirve en otros flujos)
+func (r *UserRepository) FindByID(ctx context.Context, id uuid.UUID) (*User, error) {
+	var u User
+	err := r.db.WithContext(ctx).First(&u, "id = ?", id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// FindActiveByEmailOrDNI busca un usuario por email o DNI (tu implementación existente, sin cambios)
 func (r *UserRepository) FindActiveByEmailOrDNI(ctx context.Context, email, dni *string) (*User, error) {
 	var user User
 
@@ -73,4 +125,47 @@ func (r *UserRepository) FindActiveByEmailOrDNI(ctx context.Context, email, dni 
 	}
 
 	return &user, nil
+}
+
+// FindActiveByIDWithOrgNames busca por ID y devuelve nombres de posición estructural y unidad orgánica.
+// - Valida usuario eliminado o deshabilitado.
+// - Hace LEFT JOIN con structural_positions y organic_units para traer los nombres.
+func (r *UserRepository) FindActiveByIDWithOrgNames(ctx context.Context, id uuid.UUID) (*UserOrgView, error) {
+	var row UserOrgView
+
+	q := r.db.WithContext(ctx).
+		Table("users AS u").
+		Select(`
+            u.id,
+            u.email,
+            u.first_name,
+            u.last_name,
+            u.dni,            -- <- NUEVO
+            u.phone,          -- <- NUEVO
+            u.status,
+            u.is_deleted,
+            u.structural_position_id,
+            sp.name AS structural_position_name,
+            u.organic_unit_id,
+            ou.name AS organic_unit_name
+        `).
+		Joins("LEFT JOIN structural_positions sp ON sp.id = u.structural_position_id").
+		Joins("LEFT JOIN organic_units ou ON ou.id = u.organic_unit_id").
+		Where("u.id = ?", id).
+		Limit(1)
+
+	if err := q.Scan(&row).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+	if row.IsDeleted {
+		return nil, ErrUserDeleted
+	}
+	if row.Status != "active" {
+		return nil, ErrUserDisabled
+	}
+
+	return &row, nil
 }
