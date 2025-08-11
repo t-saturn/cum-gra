@@ -39,7 +39,7 @@ func main() {
 	routes.RegisterRoutes(app)
 
 	// Iniciar servidor
-	port := config.GetConfig().Server.ServerPort
+	port := config.GetConfig().Server.Port
 	logger.Log.Infof("Servidor escuchando en http://localhost:%s", port)
 
 	if err := app.Listen(":" + port); err != nil {
