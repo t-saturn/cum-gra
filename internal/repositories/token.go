@@ -25,7 +25,38 @@ func NewTokenRepository(db *mongo.Database) *TokenRepository {
 }
 
 // ErrSessionNotFound indica que no hay ningún token registrado con ese valor.
-var ErrSessionNotFound = errors.New("session not found for given token")
+var (
+	ErrSessionNotFound = errors.New("session not found for given token")
+	ErrTokenNotFound   = errors.New("token not found")
+)
+
+// MarkExpired marca un token como expirado (status = expired) y actualiza updated_at.
+// Nota: usamos filtro por _id y evitamos tocar si ya está en expired.
+func (r *TokenRepository) MarkExpired(ctx context.Context, id primitive.ObjectID, at time.Time) error {
+	filter := bson.M{
+		"_id":    id,
+		"status": bson.M{"$ne": models.TokenStatusExpired},
+	}
+	update := bson.M{
+		"$set": bson.M{
+			"status":     models.TokenStatusExpired,
+			"updated_at": at,
+		},
+	}
+	res, err := r.col.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if res.MatchedCount == 0 {
+		// Verificamos si existe; si no existe -> ErrTokenNotFound, si existe ya estaba expirado -> OK
+		err := r.col.FindOne(ctx, bson.M{"_id": id}).Err()
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return ErrTokenNotFound
+		}
+		// ya estaba expirado: no es error
+	}
+	return nil
+}
 
 // FindByHash busca un token por su hash (token_hash) y lo devuelve.
 func (r *TokenRepository) FindByHash(ctx context.Context, hash string) (*models.Token, error) {
