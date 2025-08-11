@@ -25,11 +25,11 @@ type MongoConfig struct {
 
 // JWT + Server Configuración
 type ServerConfig struct {
-	JWTSecret     string
-	JWTExpMinutes string
-	ServerPort    string
-	CookieDomain  string
-	AppLandingURL string
+	JWTPrivateKeyPath string
+	JWTPublicKeyPath  string
+	JWTExpMinutes     string
+	Port              string
+	AppLandingURL     string
 }
 
 // App Configuración - NUEVO
@@ -66,11 +66,11 @@ func LoadConfig() {
 			DBName: getEnv("MONGO_DB_NAME", "mongo_db"),
 		},
 		Server: ServerConfig{
-			JWTSecret:     getEnv("JWT_SECRET", "my_secret_key"),
-			JWTExpMinutes: getEnv("JWT_EXP_MINUTES", "15"),
-			ServerPort:    getEnv("SERVER_PORT", "8000"),
-			CookieDomain:  getEnv("COOKIE_DOMAIN", "localhost"),
-			AppLandingURL: getEnv("APP_LANDING_URL", "http://localhost:8000"),
+			JWTPrivateKeyPath: getEnv("JWT_PRIVATE_KEY_PATH", "./keys/jwtRS256.key"),
+			JWTPublicKeyPath:  getEnv("JWT_PUBLIC_KEY_PATH", "./keys/jwtRS256.key.pub"),
+			JWTExpMinutes:     getEnv("JWT_EXP_MINUTES", "15"),
+			Port:              getEnv("SERVER_PORT", "9190"),
+			AppLandingURL:     getEnv("APP_LANDING_URL", "http://localhost:9190"),
 		},
 		// NUEVO: Configuración de la aplicación
 		App: AppConfig{
