@@ -28,6 +28,7 @@ type ServerConfig struct {
 	JWTPrivateKeyPath string
 	JWTPublicKeyPath  string
 	JWTExpMinutes     string
+	JWTAlg            string
 	Port              string
 	AppLandingURL     string
 }
@@ -69,6 +70,7 @@ func LoadConfig() {
 			JWTPrivateKeyPath: getEnv("JWT_PRIVATE_KEY_PATH", "./keys/jwtRS256.key"),
 			JWTPublicKeyPath:  getEnv("JWT_PUBLIC_KEY_PATH", "./keys/jwtRS256.key.pub"),
 			JWTExpMinutes:     getEnv("JWT_EXP_MINUTES", "15"),
+			JWTAlg:            getEnv("JWT_ALG", "RS256"),
 			Port:              getEnv("SERVER_PORT", "9190"),
 			AppLandingURL:     getEnv("APP_LANDING_URL", "http://localhost:9190"),
 		},
