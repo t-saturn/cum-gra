@@ -12,6 +12,7 @@ import (
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 
+	"github.com/google/uuid"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
@@ -43,16 +44,23 @@ func parseRSAPrivateKeyFromPEM(path string) (*rsa.PrivateKey, error) {
 }
 
 // GenerateToken crea un JWT firmado con RS256
-func GenerateToken(userID string, duration time.Duration) (string, error) {
-	privKey, err := parseRSAPrivateKeyFromPEM(config.GetConfig().Server.JWTPrivateKeyPath)
+func GenerateToken(userID, audience string, duration time.Duration) (string, error) {
+	cfg := config.GetConfig()
+
+	privKey, err := parseRSAPrivateKeyFromPEM(cfg.Server.JWTPrivateKeyPath)
 	if err != nil {
 		logger.Log.Errorf("Error leyendo clave privada: %v", err)
 		return "", err
 	}
 
+	// Header: typ=JWT + kid=ENV (go-jose v2)
+	opts := (&jose.SignerOptions{}).
+		WithType("JWT").
+		WithHeader("kid", cfg.Server.JWTKid)
+
 	signer, err := jose.NewSigner(
 		jose.SigningKey{Algorithm: jose.RS256, Key: privKey},
-		(&jose.SignerOptions{}).WithType("JWT"),
+		opts,
 	)
 	if err != nil {
 		logger.Log.Errorf("Error creando signer: %v", err)
@@ -61,36 +69,43 @@ func GenerateToken(userID string, duration time.Duration) (string, error) {
 
 	now := time.Now()
 	claims := jwt.Claims{
-		Issuer:   "auth-service",
+		Issuer:   cfg.Server.JWTIss, // <-- ISS del env
 		Subject:  userID,
+		Audience: jwt.Audience{audience}, // <-- AUD por app
 		IssuedAt: jwt.NewNumericDate(now),
 		Expiry:   jwt.NewNumericDate(now.Add(duration)),
+		// (opcional) NotBefore: jwt.NewNumericDate(now),
+		// (opcional extras propios)
 	}
 
-	raw, err := jwt.Signed(signer).Claims(claims).CompactSerialize()
+	// (opcional) claims personalizados
+	custom := map[string]any{
+		"sid": uuid.NewString(),
+		"jti": uuid.NewString(),
+	}
+
+	raw, err := jwt.Signed(signer).Claims(claims).Claims(custom).CompactSerialize()
 	if err != nil {
 		logger.Log.Errorf("Error firmando token: %v", err)
 		return "", err
 	}
-
 	return raw, nil
 }
 
 // GenerateAccessToken usa duración configurable en minutos
-func GenerateAccessToken(userID string) (string, error) {
+func GenerateAccessToken(userID, audience string) (string, error) {
 	expMinutesStr := config.GetConfig().Server.JWTExpMinutes
 	expMinutes, err := strconv.Atoi(expMinutesStr)
 	if err != nil {
-		logger.Log.Errorf("Valor inválido para JWT_EXP_MINUTES (%s): %v; usando 15 minutos por defecto", expMinutesStr, err)
+		logger.Log.Errorf("Valor inválido para JWT_EXP_MINUTES (%s): %v; usando 15", expMinutesStr, err)
 		expMinutes = 15
 	}
-	return GenerateToken(userID, time.Duration(expMinutes)*time.Minute)
+	return GenerateToken(userID, audience, time.Duration(expMinutes)*time.Minute)
 }
 
 // GenerateRefreshToken con duración de 7 días
-func GenerateRefreshToken(userID string) (string, error) {
-	const refreshDays = 7
-	return GenerateToken(userID, time.Duration(refreshDays)*24*time.Hour)
+func GenerateRefreshToken(userID, audience string) (string, error) {
+	return GenerateToken(userID, audience, 7*24*time.Hour)
 }
 
 func parseRSAPublicKeyFromPEM(path string) (*rsa.PublicKey, error) {
@@ -114,7 +129,9 @@ func parseRSAPublicKeyFromPEM(path string) (*rsa.PublicKey, error) {
 }
 
 func VerifyTokenRS256(tokenStr string) (jwt.Claims, error) {
-	pubKey, err := parseRSAPublicKeyFromPEM(config.GetConfig().Server.JWTPublicKeyPath)
+	cfg := config.GetConfig()
+
+	pubKey, err := parseRSAPublicKeyFromPEM(cfg.Server.JWTPublicKeyPath)
 	if err != nil {
 		return jwt.Claims{}, ErrTokenInvalid
 	}
@@ -129,18 +146,15 @@ func VerifyTokenRS256(tokenStr string) (jwt.Claims, error) {
 		return jwt.Claims{}, ErrTokenInvalid
 	}
 
-	// Validaciones estándar: exp/iat/nbf/iss (ajusta Expected según tu caso)
 	if err := claims.Validate(jwt.Expected{
 		Time:   time.Now(),
-		Issuer: "auth-service",
+		Issuer: cfg.Server.JWTIss, // <-- usar el mismo ISS con el que firmas
+		// opcional: Audience: jwt.Audience{expectedAud},
 	}); err != nil {
-		// go-jose no trae un tipo “ExpiredError” explícito; si quieres distinguir,
-		// puedes parsear el mensaje o validar manualmente claims.Expiry.
 		if claims.Expiry != nil && time.Now().After(claims.Expiry.Time()) {
 			return jwt.Claims{}, ErrTokenExpired
 		}
 		return jwt.Claims{}, ErrTokenInvalid
 	}
-
 	return claims, nil
 }
