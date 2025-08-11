@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/models"
 	"github.com/t-saturn/auth-service-server/pkg/security"
@@ -206,7 +207,7 @@ func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID 
 		UpdatedAt:     now,
 		DeviceInfo:    deviceInfo.ToModel(),
 		ParentTokenID: parentID,
-		Alg:           "RS256", // opcional
+		Alg:           config.GetConfig().Server.JWTAlg, // opcional
 		// Kid:        "current-key-id",   // opcional, si usas kid en el header
 	}
 
