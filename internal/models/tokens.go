@@ -12,6 +12,7 @@ type Token struct {
 	TokenID   string             `bson:"token_id"`      // UUID único del token
 	TokenHash string             `bson:"token_hash"`    // hash (p.ej. sha256 en hex/base64url)
 	Alg       string             `bson:"alg,omitempty"` // "RS256"
+	Kid       string             `bson:"kid,omitempty"` // <-- NUEVO
 
 	UserID    string `bson:"user_id"`
 	SessionID string `bson:"session_id,omitempty"`
