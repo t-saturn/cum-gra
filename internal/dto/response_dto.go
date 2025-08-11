@@ -16,14 +16,13 @@ type ResponseDTO[T any] struct {
 	Error   *ErrorDTO `json:"error"`
 }
 
-type ValidationResponseDTO struct {
+type IntrospectResponseDTO struct {
 	UserID          string `bson:"user_id,omitempty"`
 	ServiceResponse string `bson:"service_response,omitempty"`
 	ValidatedBy     string `bson:"validated_by,omitempty"`
 	ValidationTime  int64  `bson:"validation_time,omitempty"` // tiempo en ms
 }
 
-// ValidationErrorResponse representa una respuesta con errores de validación por campo.
 type ValidationErrorResponse struct {
 	Errors map[string]string `json:"errors"`
 }

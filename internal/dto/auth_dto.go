@@ -17,7 +17,7 @@ type AuthVerifyResponseDTO struct {
 	UserID             string                `json:"user_id,omitempty"`
 	Status             string                `json:"status"`
 	ValidatedAt        time.Time             `json:"validated_at"`
-	ValidationResponse ValidationResponseDTO `json:"validation_response"`
+	ValidationResponse IntrospectResponseDTO `json:"validation_response"`
 }
 
 // AuthLoginRequestDTO define la estructura de la petición para /auth/login.

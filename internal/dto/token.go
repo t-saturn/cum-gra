@@ -16,24 +16,24 @@ type TokenDetailDTO struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-// TokenValidationRequestDTO representa el JSON recibido para validar un token.
-type TokenValidationRequestDTO struct {
+// IntrospectRequestDTO representa el JSON recibido para validar un token.
+type IntrospectRequestDTO struct {
 	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
 	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
 }
 
-// TokenValidationResponseDTO es la respuesta al validar un token.
-type TokenValidationResponseDTO struct {
-	UserID      string                            `json:"user_id"`
-	TokenID     string                            `json:"token_id"`
-	SessionID   string                            `json:"session_id"`
-	Status      string                            `json:"status"`
-	TokenType   string                            `json:"token_type"`
-	TokenDetail TokenValidationDetailsResponseDTO `json:"token_detail"`
+// TokenIntrospectResponseDTO es la respuesta al validar un token.
+type TokenIntrospectResponseDTO struct {
+	UserID      string                       `json:"user_id"`
+	TokenID     string                       `json:"token_id"`
+	SessionID   string                       `json:"session_id"`
+	Status      string                       `json:"status"`
+	TokenType   string                       `json:"token_type"`
+	TokenDetail IntrospectDetailsResponseDTO `json:"token_detail"`
 }
 
-// TokenValidationDetailsResponseDTO contiene información detallada del token.
-type TokenValidationDetailsResponseDTO struct {
+// IntrospectDetailsResponseDTO contiene información detallada del token.
+type IntrospectDetailsResponseDTO struct {
 	Valid     bool   `json:"valid"`
 	Message   string `json:"message"`
 	Subject   string `json:"subject,omitempty"`
