@@ -15,9 +15,10 @@ func RegisterAuthRoutes(router fiber.Router) {
 	auth.Get("/logout", authHandler.Logout)
 	auth.Post("/refresh", authHandler.Refresh)
 	auth.Post("/introspect", authHandler.Introspect)
+	auth.Get("/me", authHandler.Me)
 
 	session := auth.Group("/session")
 	session.Get("/me", authHandler.Me)
 	session.Get("/list", authHandler.ListSessions)
-	session.Delete("/", authHandler.Revoke)
+	// session.Delete("/", authHandler.Revoke)
 }
