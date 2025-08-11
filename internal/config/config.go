@@ -29,6 +29,10 @@ type ServerConfig struct {
 	JWTPublicKeyPath  string
 	JWTExpMinutes     string
 	JWTAlg            string
+	JWTKid            string
+	JWTIss            string
+	JWKSURL           string
+	JWKSMaxAge        string
 	Port              string
 	AppLandingURL     string
 }
@@ -71,6 +75,10 @@ func LoadConfig() {
 			JWTPublicKeyPath:  getEnv("JWT_PUBLIC_KEY_PATH", "./keys/jwtRS256.key.pub"),
 			JWTExpMinutes:     getEnv("JWT_EXP_MINUTES", "15"),
 			JWTAlg:            getEnv("JWT_ALG", "RS256"),
+			JWTKid:            getEnv("JWT_KID", "rrhh-sso"),
+			JWTIss:            getEnv("JWT_ISS", "http://localhost:9190"),
+			JWKSMaxAge:        getEnv("JWKS_MAX_AGE", "60"),
+			JWKSURL:           getEnv("JWKS_URL", "http://localhost:9190/.well-known/jwks.json"),
 			Port:              getEnv("SERVER_PORT", "9190"),
 			AppLandingURL:     getEnv("APP_LANDING_URL", "http://localhost:9190"),
 		},
