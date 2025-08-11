@@ -123,3 +123,6 @@ tools/bin/
 test_suite_analysis/
 managed_context/
 .marscode
+
+# Claves privadas y públicas locales
+keys/

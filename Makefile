@@ -24,6 +24,9 @@ help:
 	@echo "  deps               - Descargar y limpiar dependencias"
 	@echo "  fmt                - Formatear código"
 	@echo "  lint               - Ejecutar linter"
+	@echo ""
+	@echo " Keys:"
+	@echo "  gen-keys           - Generar claves RSA para JWT"
 
 # COMPILACIÓN Y EJECUCIÓN
 build:
@@ -64,6 +67,13 @@ install-tools:
 	@echo "Instalando herramientas locales..."
 	@mkdir -p tools/bin
 	@GOBIN=$(PWD)/tools/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+gen-keys:
+	@echo "Generando claves RSA para JWT..."
+	@mkdir -p keys
+	@openssl genrsa -out keys/jwtRS256.key 2048
+	@openssl rsa -in keys/jwtRS256.key -pubout -out keys/jwtRS256.key.pub
+	@echo "Claves generadas en carpeta ./keys"
 
 # COMANDOS COMBINADOS
 setup: deps docker-up migrate-up seed
