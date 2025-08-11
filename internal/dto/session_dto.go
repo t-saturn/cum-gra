@@ -22,6 +22,11 @@ type SessionViewDTO struct {
 	TokensGenerated []string      `json:"tokens_generated,omitempty"` // ObjectIDs en hex
 }
 
+type AuthRequestDTO struct {
+	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
+	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
+}
+
 type PaginationMeta struct {
 	Page    int   `json:"page"`
 	Limit   int   `json:"limit"`
@@ -36,10 +41,7 @@ type PaginationMeta struct {
 
 // No hay query params requeridos para /auth/me
 type AuthMeQueryDTO struct{}
-type AuthRequestDTO struct {
-	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
-	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
-}
+
 type AuthMeResponseDTO struct {
 	UserID             string         `json:"user_id"`
 	Session            SessionViewDTO `json:"session"`

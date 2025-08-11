@@ -2,44 +2,54 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
+	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
+	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-// ListSessions maneja GET /auth/sessions: lista todas las sesiones del usuario.
+// ListSessions maneja POST /auth/sessions:
+// Body: { token, session_id }, Query: filtros/paginación.
 func (h *AuthHandler) ListSessions(c fiber.Ctx) error {
-	// 1. Extraer y validar JWT de Authorization
-	authHeader := c.Get("Authorization")
-	if authHeader == "" {
-		return utils.JSONError(c, http.StatusUnauthorized, "NO_AUTH_HEADER", "Encabezado de autorización requerido", "falta Authorization")
-	}
-	// Asumiendo que authHeader es "Bearer <token>", extraemos el token
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-	if tokenString == authHeader { // No se encontró "Bearer "
-		return utils.JSONError(c, http.StatusUnauthorized, "INVALID_AUTH_HEADER", "Formato de encabezado inválido", "cuerpo no válido")
-	}
-	logger.Log.Info("Validando token con Authorization=", authHeader)
-
-	// 2. Extraer claims para obtener userID y current sessionID
-	// claims, err := security.ValidateToken(tokenString)
-	// if err != nil {
-	// 	return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN", "Token inválido")
-	// }
-	// userID := claims.UserID // Ejemplo, ajusta según tu implementación
-
-	// 3. Parsear query params en el DTO
+	var auth dto.AuthRequestDTO
 	var q dto.ListSessionsQueryDTO
-	if err := c.Bind().Query(&q); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "cuerpo no válido")
+
+	// 1 Parse body (token + session_id)
+	if err := c.Bind().Body(&auth); err != nil {
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
+	}
+	if err := validator.Validate.Struct(&auth); err != nil {
+		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
+			Errors: validator.FormatValidationError(err),
+		})
 	}
 
-	// 4. Punto de integración pendiente: llamar a h.authService.ListSessions(...)
-	logger.Log.Info("Llamando al servicio ListSessions con query=", q)
+	// 2 Parse query (filtros, paginación)
+	if err := c.Bind().Query(&q); err != nil {
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "query no válido")
+	}
 
-	// 5. Responder placeholder con data = null
-	return utils.JSONResponse[*dto.ListSessionsResponseDTO](c, http.StatusOK, true, "Sesiones obtenidas", nil, nil)
+	// 3 Delegar en service
+	data, err := h.authService.ListSessions(c, auth, q)
+	if err != nil {
+		switch err {
+		case services.ErrInvalidToken:
+			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN", "Token inválido o inactivo", "Token no válido")
+		case services.ErrSessionNotFound:
+			return utils.JSONError(c, http.StatusNotFound, "SESSION_NOT_FOUND", "Sesión no encontrada", "No se pudo encontrar la sesión")
+		case services.ErrSessionMismatch:
+			return utils.JSONError(c, http.StatusBadRequest, "SESSION_MISMATCH", "Token no pertenece a la sesión proporcionada", "Token no válido")
+		case services.ErrSessionInactive:
+			return utils.JSONError(c, http.StatusForbidden, "SESSION_INACTIVE", "Sesión inactiva o revocada", "La sesión está inactiva o ha sido revocada")
+		default:
+			logger.Log.Errorf("Error en /auth/sessions: %v", err)
+			return utils.JSONError(c, http.StatusInternalServerError, "INTERNAL_ERROR", "Error interno al listar sesiones", "Error desconocido")
+		}
+	}
+
+	// 4 OK
+	return utils.JSONResponse(c, http.StatusOK, true, "OK", data, nil)
 }

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/t-saturn/auth-service-server/internal/dto"
@@ -134,4 +135,105 @@ func (r *SessionRepository) AddTokenToSession(ctx context.Context, sessionID str
 	update := bson.M{"$push": bson.M{"tokens_generated": tokenID}}
 	_, err := r.col.UpdateOne(ctx, filter, update)
 	return err
+}
+
+// FindByUserIDPaged lista sesiones de un usuario con filtros, orden y paginación.
+// Retorna (sesiones, totalFiltrado, error).
+func (r *SessionRepository) FindByUserIDPaged(ctx context.Context, userID string, q dto.ListSessionsQueryDTO) ([]models.Session, int64, error) {
+	filter := buildUserSessionsFilter(userID, q)
+
+	// Conteo total con el mismo filtro (para paginación)
+	total, err := r.col.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Defaults de paginación
+	page := q.Page
+	if page < 1 {
+		page = 1
+	}
+	limit := q.Limit
+	if limit <= 0 {
+		limit = 20
+	}
+	skip := int64((page - 1) * limit)
+
+	// Orden seguro
+	sortDoc := sanitizeSessionsSort(q)
+
+	findOpts := options.Find()
+	findOpts.SetSort(sortDoc)
+	findOpts.SetSkip(skip)
+	findOpts.SetLimit(int64(limit))
+
+	cur, err := r.col.Find(ctx, filter, findOpts)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer cur.Close(ctx)
+
+	list := make([]models.Session, 0, limit)
+	for cur.Next(ctx) {
+		var s models.Session
+		if err := cur.Decode(&s); err != nil {
+			return nil, 0, err
+		}
+		list = append(list, s)
+	}
+	if err := cur.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	return list, total, nil
+}
+
+// buildUserSessionsFilter arma el filtro Mongo para listar sesiones del usuario.
+func buildUserSessionsFilter(userID string, q dto.ListSessionsQueryDTO) bson.M {
+	filter := bson.M{
+		"user_id": userID,
+	}
+
+	if q.Status != nil {
+		filter["status"] = *q.Status
+	}
+	if q.IsActive != nil {
+		filter["is_active"] = *q.IsActive
+	}
+
+	// Rango por fecha de creación
+	if q.CreatedFrom != nil || q.CreatedTo != nil {
+		rng := bson.M{}
+		if q.CreatedFrom != nil {
+			// normaliza a UTC por si viene con otra zona
+			rng["$gte"] = q.CreatedFrom.In(time.UTC)
+		}
+		if q.CreatedTo != nil {
+			rng["$lte"] = q.CreatedTo.In(time.UTC)
+		}
+		filter["created_at"] = rng
+	}
+
+	return filter
+}
+
+// sanitizeSessionsSort valida y construye el documento de orden.
+// Campos permitidos: created_at, last_activity, expires_at, status, is_active
+func sanitizeSessionsSort(q dto.ListSessionsQueryDTO) bson.D {
+	field := strings.TrimSpace(q.SortBy)
+	order := strings.ToLower(strings.TrimSpace(q.SortOrder))
+
+	switch field {
+	case "last_activity", "expires_at", "status", "is_active", "created_at":
+		// ok
+	default:
+		field = "created_at"
+	}
+
+	val := -1 // desc por defecto
+	if order == "asc" {
+		val = 1
+	}
+
+	return bson.D{{Key: field, Value: val}}
 }
