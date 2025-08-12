@@ -247,6 +247,83 @@ func (r *TokenRepository) RevokeAllActiveBySessionID(ctx context.Context, sessio
 	return res.ModifiedCount, nil
 }
 
+// RevokeAllActiveBySessionIDReturn busca los tokens ACTIVOS de una sesión,
+// los marca como "revoked" (guardando metadatos) y devuelve la lista revocada + el conteo.
+func (r *TokenRepository) RevokeAllActiveBySessionIDReturn(ctx context.Context, sessionID string, revokedAt time.Time, reason, revokedBy, revokedByApp string) ([]models.Token, int64, error) {
+
+	// 1) Buscar tokens activos antes de actualizar (para poder retornarlos)
+	filter := bson.M{
+		"session_id": sessionID,
+		"status":     models.TokenStatusActive,
+	}
+
+	// Proyección mínima para armar la respuesta.
+	// Ajusta campos según tu struct models.Token/bson tags.
+	proj := bson.M{
+		"_id":               1,
+		"token_id":          1,
+		"token_type":        1,
+		"expires_at":        1,
+		"status":            1,
+		"revoked_at":        1,
+		"revocation_reason": 1,
+	}
+
+	cur, err := r.col.Find(ctx, filter, options.Find().SetProjection(proj))
+	if err != nil {
+		return nil, 0, err
+	}
+	defer cur.Close(ctx)
+
+	var tokens []models.Token
+	if err := cur.All(ctx, &tokens); err != nil {
+		return nil, 0, err
+	}
+
+	// Si no hay tokens activos, retornamos vacio + 0 sin error
+	if len(tokens) == 0 {
+		return []models.Token{}, 0, nil
+	}
+
+	// 2) Actualizar a "revoked" con metadata
+	set := bson.M{
+		"status":     models.TokenStatusRevoked,
+		"revoked_at": revokedAt,
+	}
+	if reason != "" {
+		set["revocation_reason"] = reason
+	}
+	if revokedBy != "" {
+		set["revoked_by"] = revokedBy
+	}
+	if revokedByApp != "" {
+		set["revoked_by_app"] = revokedByApp
+	}
+
+	update := bson.M{"$set": set}
+	res, err := r.col.UpdateMany(ctx, filter, update)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// 3) Enriquecer los tokens retornados con los campos de revocación aplicados
+	for i := range tokens {
+		tokens[i].Status = models.TokenStatusRevoked
+		tokens[i].RevokedAt = &revokedAt
+		if reason != "" {
+			tokens[i].Reason = reason
+		}
+		if revokedBy != "" {
+			tokens[i].RevokedBy = revokedBy
+		}
+		if revokedByApp != "" {
+			tokens[i].RevokedByApp = revokedByApp
+		}
+	}
+
+	return tokens, res.ModifiedCount, nil
+}
+
 // UpdateStatus actualiza el status y la fecha de revocación de una sesión.
 func (r *SessionRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time) error {
 	update := bson.M{"$set": bson.M{"status": status}}
