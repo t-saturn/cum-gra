@@ -22,11 +22,6 @@ type SessionViewDTO struct {
 	TokensGenerated []string      `json:"tokens_generated,omitempty"` // ObjectIDs en hex
 }
 
-type AuthRequestDTO struct {
-	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
-	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
-}
-
 type PaginationMeta struct {
 	Page    int   `json:"page"`
 	Limit   int   `json:"limit"`
@@ -36,11 +31,12 @@ type PaginationMeta struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /auth/me
+// GET /auth/me?session_id=<session_id>
 // ─────────────────────────────────────────────────────────────────────────────
 
-// No hay query params requeridos para /auth/me
-type AuthMeQueryDTO struct{}
+type AuthMeQueryDTO struct {
+	SessionID string `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
+}
 
 type AuthMeResponseDTO struct {
 	UserID             string         `json:"user_id"`
@@ -55,11 +51,12 @@ type AuthMeResponseDTO struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /auth/sessions?page=&limit=&sort_by=&sort_order= (del usuario autenticado)
+// GET /auth/sessions?session_id=<session_id>&page=<page>&limit=<limit>&sort_by=<sort_by>&sort_order=<sort_order> (del usuario autenticado)
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ListSessionsQueryDTO struct {
-	Status      *string        `query:"status" json:"status,omitempty"` // active|inactive|revoked|expired
+	SessionID   string         `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
+	Status      *string        `query:"status" json:"status,omitempty"`                   // active|inactive|revoked|expired
 	IsActive    *bool          `query:"is_active" json:"is_active,omitempty"`
 	CreatedFrom *time.Time     `query:"created_from" json:"created_from,omitempty"` // RFC3339
 	CreatedTo   *time.Time     `query:"created_to"   json:"created_to,omitempty"`
@@ -76,19 +73,29 @@ type ListSessionsResponseDTO struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DELETE /auth/sessions?reason=&revoked_by_app=
+// DELETE /auth/sessions?session_id=<session_id>&reason=<reason>&revoked_by_app=<revoked_by_app>
 // ─────────────────────────────────────────────────────────────────────────────
 
 type RevokeOwnSessionQueryDTO struct {
+	SessionID    string  `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
 	Reason       *string `query:"reason" json:"reason,omitempty" validate:"required,oneof=user_logout refresh_token session_expired admin_revoked forbidden_revoke"`
 	RevokedByApp *string `query:"revoked_by_app" json:"revoked_by_app,omitempty"`
 }
 
 type RevokeOwnSessionResponseDTO struct {
-	SessionID string     `json:"session_id"`
-	Status    string     `json:"status"` // "revoked" esperado
+	SessionID string                  `json:"session_id"`
+	Status    string                  `json:"status"` // "revoked" esperado
+	RevokedAt *time.Time              `json:"revoked_at,omitempty"`
+	Message   string                  `json:"message"`
+	Tokens    []RevokedTokenDetailDTO `json:"revoked_tokens,omitempty"`
+}
+
+type RevokedTokenDetailDTO struct {
+	TokenID   string     `json:"token_id"`
+	TokenType string     `json:"token_type"`
 	RevokedAt *time.Time `json:"revoked_at,omitempty"`
-	Message   string     `json:"message"`
+	Reason    string     `json:"reason,omitempty"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,7 +104,7 @@ type RevokeOwnSessionResponseDTO struct {
 
 type AdminListSessionsQueryDTO struct {
 	UserID           *string    `query:"user_id" json:"user_id,omitempty"`
-	SessionID        *string    `query:"session_id" json:"session_id,omitempty"`
+	SessionID        string     `query:"session_id" json:"session_id" validate:"required"`
 	Status           *string    `query:"status" json:"status,omitempty"` // active|inactive|revoked|expired
 	IsActive         *bool      `query:"is_active" json:"is_active,omitempty"`
 	CreatedFrom      *time.Time `query:"created_from" json:"created_from,omitempty"`
@@ -139,6 +146,7 @@ type AdminRevokeSessionResponseDTO struct {
 
 type AdminRevokeUserSessionsQueryDTO struct {
 	UserID           string   `query:"user_id" json:"user_id" validate:"required"`
+	SessionID        string   `query:"session_id" json:"session_id" validate:"required"`
 	Reason           *string  `query:"reason" json:"reason,omitempty"`
 	RevokedBy        *string  `query:"revoked_by" json:"revoked_by,omitempty"`
 	RevokedByApp     *string  `query:"revoked_by_app" json:"revoked_by_app,omitempty"`

@@ -16,13 +16,10 @@ type TokenDetailDTO struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-// IntrospectRequestDTO representa el JSON recibido para validar un token.
-type IntrospectRequestDTO struct {
-	Token     string `json:"token" validate:"required"`      // Token crudo (JWS completo)
-	SessionID string `json:"session_id" validate:"required"` // ID de la sesión asociada
+type IntrospectQueryDTO struct {
+	SessionID string `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
 }
 
-// TokenIntrospectResponseDTO es la respuesta al validar un token.
 type TokenIntrospectResponseDTO struct {
 	UserID      string                       `json:"user_id"`
 	TokenID     string                       `json:"token_id"`
@@ -42,14 +39,14 @@ type IntrospectDetailsResponseDTO struct {
 	ExpiresIn int64  `json:"expires_in,omitempty"` // segundos restantes
 }
 
-// AuthRefreshRequestDTO define la estructura de la petición para /auth/token/refresh
-type AuthRefreshRequestDTO struct {
-	RefreshToken string        `json:"token" validate:"required"` // JWS crudo
-	SessionID    string        `json:"session_id" validate:"required"`
-	DeviceInfo   DeviceInfoDTO `json:"device_info"` // opcional, si quieres actualizar metadata
+type AuthRefreshQueryDTO struct {
+	SessionID string `query:"session_id" json:"session_id" validate:"required"`
 }
 
-// AuthRefreshResponseDTO define la parte "data" de la respuesta para /auth/token/refresh
+type AuthRefreshResquestDTO struct {
+	DeviceInfo DeviceInfoDTO `json:"device_info"`
+}
+
 type AuthRefreshResponseDTO struct {
 	AccessToken  TokenDetailDTO `json:"access_token"`
 	RefreshToken TokenDetailDTO `json:"refresh_token"`
