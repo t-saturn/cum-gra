@@ -177,11 +177,3 @@ func (s *AuthService) InsertToken(ctx context.Context, userID string, sessionID 
 	oid, err := s.tokenRepo.Insert(ctx, tokModel)
 	return oid, jwtStr, err
 }
-
-// deref convierte *string a string, devolviendo cadena vacía si es nil.
-func deref(s *string) string {
-	if s == nil {
-		return ""
-	}
-	return *s
-}
