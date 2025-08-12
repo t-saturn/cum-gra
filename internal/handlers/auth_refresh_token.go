@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
@@ -12,23 +13,44 @@ import (
 )
 
 // Refresh maneja POST /auth/token/refresh: genera nuevos tokens usando un refresh token.
+// Header: Authorization: Bearer <refresh_token>
+// Query:  session_id (requerido)
+// Body:   { "device_info": { ... } }
 func (h *AuthHandler) Refresh(c fiber.Ctx) error {
-	var input dto.AuthRefreshRequestDTO
+	var q dto.AuthRefreshQueryDTO
+	var b dto.AuthRefreshResquestDTO
 
-	// 1. Parsear JSON
-	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
+	// 1. Parse query (session_id)
+	if err := c.Bind().Query(&q); err != nil {
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "query no válido")
 	}
 
-	// 2. Validar campos
-	if err := validator.Validate.Struct(&input); err != nil {
+	// 2. Validar query
+	if err := validator.Validate.Struct(&q); err != nil {
 		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	// 3. Llamar al servicio de refresh
-	resp, err := h.authService.RefreshToken(c, input)
+	// 3. Parse body (device_info)
+	if err := c.Bind().Body(&b); err != nil {
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
+	}
+	// (Opcional) si tienes validaciones para DeviceInfoDTO, actívalas aquí
+	// if err := validator.Validate.Struct(&b); err != nil { ... }
+
+	// 4. Extraer refresh token del header Authorization
+	authz := c.Get("Authorization")
+	var refreshToken string
+	if strings.HasPrefix(strings.ToLower(authz), "bearer ") {
+		refreshToken = strings.TrimSpace(authz[len("Bearer "):])
+	}
+	if refreshToken == "" {
+		return utils.JSONError(c, http.StatusUnauthorized, "NO_TOKEN", "No se encontró refresh token en Authorization", "Envíe Authorization: Bearer <refresh_token>")
+	}
+
+	// 5. Llamar al servicio de refresh
+	resp, err := h.authService.RefreshToken(c, refreshToken, q, b)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidToken, services.ErrInvalidTokenType:
@@ -45,6 +67,6 @@ func (h *AuthHandler) Refresh(c fiber.Ctx) error {
 		}
 	}
 
-	// 4. Responder con los nuevos tokens
+	// 6. Responder con los nuevos tokens
 	return utils.JSONResponse(c, http.StatusOK, true, "Token refrescado exitosamente", resp, nil)
 }
