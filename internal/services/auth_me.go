@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,53 +17,53 @@ import (
 // Me: GET /auth/me
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Me valida el access token y devuelve datos del usuario + sesión actual.
-func (s *AuthService) Me(ctx context.Context, input dto.AuthRequestDTO) (*dto.AuthMeResponseDTO, error) {
-	// 0) Validación mínima
-	if input.Token == "" || input.SessionID == "" {
+// Me valida el access token (desde Authorization) y devuelve datos del usuario + sesión actual.
+func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.AuthMeQueryDTO) (*dto.AuthMeResponseDTO, error) {
+	// 0. Validación mínima
+	if accessToken == "" || input.SessionID == "" {
 		return nil, ErrInvalidToken
 	}
 
-	// 1) Lookup rápido por hash
-	hash := security.HashTokenHex(input.Token)
+	fmt.Print("Me called with accessToken: ", accessToken, " and sessionID: ", input.SessionID, "\n")
+	// 1. Lookup rápido por hash del token crudo
+	hash := security.HashTokenHex(accessToken)
 	tokModel, err := s.tokenRepo.FindByHash(ctx, hash)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
 
-	// 2) Estado activo
+	// 2. Debe estar activo
 	if tokModel.Status != models.TokenStatusActive {
 		return nil, ErrInvalidToken
 	}
 
-	// 2.5) Expiración por DB
+	// 2.5. Expiración por DB
 	now := time.Now().UTC()
 	if now.After(tokModel.ExpiresAt) {
 		_ = s.tokenRepo.MarkExpired(ctx, tokModel.ID, now)
 		return nil, security.ErrTokenExpired
 	}
 
-	// 3) La sesión del token debe coincidir con la del request
+	// 3. La sesión del token debe coincidir con la solicitada
 	if tokModel.SessionID != input.SessionID {
 		return nil, ErrSessionMismatch
 	}
 
-	// 4) Cargar sesión
+	// 4. Cargar sesión
 	sessModel, err := s.sessionRepo.FindBySessionID(ctx, input.SessionID)
 	if err != nil || sessModel == nil {
 		return nil, ErrSessionNotFound
 	}
 
-	// 5) Verificar estado de sesión
+	// 5. Verificar estado de sesión
 	if sessModel.Status != models.SessionStatusActive || !sessModel.IsActive {
 		return nil, ErrSessionInactive
 	}
 
-	// 6) Verificar firma JWS RS256 (y exp del JWS)
-	claims, vErr := security.VerifyTokenRS256(input.Token)
+	// 6. Verificar firma JWS RS256 (y exp del JWS primero)
+	claims, vErr := security.VerifyTokenRS256(accessToken)
 	if vErr != nil {
 		if errors.Is(vErr, security.ErrTokenExpired) {
-			// marca expirada en DB si aún figura activa
 			if tokModel.Status == models.TokenStatusActive {
 				_ = s.tokenRepo.MarkExpired(ctx, tokModel.ID, time.Now().UTC())
 			}
@@ -71,12 +72,12 @@ func (s *AuthService) Me(ctx context.Context, input dto.AuthRequestDTO) (*dto.Au
 		return nil, security.ErrTokenInvalid
 	}
 
-	// 6.1) Defensa adicional: subject del JWS debe coincidir con el user del token en DB (si viene)
+	// 6.1. Defensa adicional: subject del JWS debe coincidir con el user del token en DB (si viene)
 	if claims.Subject != "" && claims.Subject != tokModel.UserID {
 		return nil, ErrInvalidToken
 	}
 
-	// 7) Cargar usuario (Postgres) con nombres de posición/unidad
+	// 7. Cargar usuario (Postgres) con nombres de posición/unidad
 	userUUID, err := uuid.Parse(sessModel.UserID)
 	if err != nil {
 		return nil, repositories.ErrUserNotFound
@@ -86,12 +87,12 @@ func (s *AuthService) Me(ctx context.Context, input dto.AuthRequestDTO) (*dto.Au
 		return nil, err
 	}
 
-	// 8) Mapear respuesta
+	// 8. Mapear respuesta
 	resp := &dto.AuthMeResponseDTO{
 		UserID:             uview.ID.String(),
 		Email:              uview.Email,
 		Name:               uview.FirstName + " " + uview.LastName,
-		DNI:                uview.DNI, // <- NUEVO
+		DNI:                uview.DNI,
 		Status:             uview.Status,
 		StructuralPosition: derefStr(uview.StructuralPositionName),
 		OrganicUnit:        derefStr(uview.OrganicUnitName),

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 
@@ -13,24 +14,32 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-// Me maneja POST /auth/me: recibe { token, session_id } en el body.
+// GET /auth/me?session_id=...
+// Header: Authorization: Bearer <access_token>
 func (h *AuthHandler) Me(c fiber.Ctx) error {
-	var input dto.AuthRequestDTO
+	var q dto.AuthMeQueryDTO
+	// 1. Leer query params
+	q.SessionID = c.Query("session_id")
 
-	// 1) Parsear JSON
-	if err := c.Bind().Body(&input); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
-	}
-
-	// 2) Validar campos
-	if err := validator.Validate.Struct(&input); err != nil {
+	// 2. Validar query
+	if err := validator.Validate.Struct(&q); err != nil {
 		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	// 3) Delegar en el service
-	data, err := h.authService.Me(c, input)
+	// 3. Extraer access token del header Authorization
+	authz := c.Get("Authorization")
+	var accessToken string
+	if strings.HasPrefix(strings.ToLower(authz), "bearer ") {
+		accessToken = strings.TrimSpace(authz[len("Bearer "):])
+	}
+	if accessToken == "" {
+		return utils.JSONError(c, http.StatusUnauthorized, "NO_TOKEN", "No se encontró access token en Authorization", "Envíe Authorization: Bearer <access_token>")
+	}
+
+	// 4. Delegar en el service
+	data, err := h.authService.Me(c, accessToken, q)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidToken:
@@ -54,6 +63,6 @@ func (h *AuthHandler) Me(c fiber.Ctx) error {
 		}
 	}
 
-	// 4) OK
+	// 5. OK
 	return utils.JSONResponse(c, http.StatusOK, true, "OK", data, nil)
 }
