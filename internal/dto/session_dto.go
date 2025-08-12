@@ -55,7 +55,7 @@ type AuthMeResponseDTO struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /auth/sessions  (del usuario autenticado)
+// GET /auth/sessions?page=&limit=&sort_by=&sort_order= (del usuario autenticado)
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ListSessionsQueryDTO struct {
@@ -76,16 +76,15 @@ type ListSessionsResponseDTO struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DELETE /auth/sessions?session_id=
+// DELETE /auth/sessions?reason=&revoked_by_app=
 // ─────────────────────────────────────────────────────────────────────────────
 
 type RevokeOwnSessionQueryDTO struct {
-	SessionID    string  `query:"session_id" json:"session_id" validate:"required"`
-	Reason       *string `query:"reason" json:"reason,omitempty"`
+	Reason       *string `query:"reason" json:"reason,omitempty" validate:"required,oneof=user_logout refresh_token session_expired admin_revoked forbidden_revoke"`
 	RevokedByApp *string `query:"revoked_by_app" json:"revoked_by_app,omitempty"`
 }
 
-type RevokeSessionResponseDTO struct {
+type RevokeOwnSessionResponseDTO struct {
 	SessionID string     `json:"session_id"`
 	Status    string     `json:"status"` // "revoked" esperado
 	RevokedAt *time.Time `json:"revoked_at,omitempty"`

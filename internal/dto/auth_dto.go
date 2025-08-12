@@ -22,7 +22,7 @@ type AuthLoginResponseDTO struct {
 
 // LogoutRequestDTO define la petición para /auth/logout
 type LogoutRequestDTO struct {
-	LogoutType string `validate:"required,oneof=user_logout refresh_token session_expired admin_revoked"`
+	LogoutType string `validate:"required,oneof=user_logout refresh_token session_expired admin_revoked forbidden_revoke"`
 	SessionID  string `json:"session_id" validate:"omitempty,uuid4"`
 }
 
