@@ -13,20 +13,20 @@ import (
 )
 
 // ListSessions valida el access token + session y retorna las sesiones del usuario autenticado.
-func (s *AuthService) ListSessions(ctx context.Context, auth dto.AuthRequestDTO, q dto.ListSessionsQueryDTO) (*dto.ListSessionsResponseDTO, error) {
-	// 0) Validación mínima
-	if auth.Token == "" || auth.SessionID == "" {
+func (s *AuthService) ListSessions(ctx context.Context, accessToken string, q dto.ListSessionsQueryDTO) (*dto.ListSessionsResponseDTO, error) {
+	// 0. Validación mínima
+	if accessToken == "" || q.SessionID == "" {
 		return nil, ErrInvalidToken
 	}
 
-	// 1) Lookup rápido por hash
-	hash := security.HashTokenHex(auth.Token)
+	// 1. Lookup rápido por hash del token crudo
+	hash := security.HashTokenHex(accessToken)
 	tokModel, err := s.tokenRepo.FindByHash(ctx, hash)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
 
-	// 2) Debe estar activo y ser access token
+	// 2. Debe estar activo y ser access token
 	if tokModel.Status != models.TokenStatusActive {
 		return nil, ErrInvalidToken
 	}
@@ -34,31 +34,31 @@ func (s *AuthService) ListSessions(ctx context.Context, auth dto.AuthRequestDTO,
 		return nil, ErrInvalidToken
 	}
 
-	// 2.5) Expiración por DB
+	// Expiración por DB
 	now := time.Now().UTC()
 	if now.After(tokModel.ExpiresAt) {
 		_ = s.tokenRepo.MarkExpired(ctx, tokModel.ID, now)
 		return nil, security.ErrTokenExpired
 	}
 
-	// 3) Coincidencia de session_id
-	if tokModel.SessionID != auth.SessionID {
+	// 3. Coincidencia de session_id
+	if tokModel.SessionID != q.SessionID {
 		return nil, ErrSessionMismatch
 	}
 
-	// 4) Cargar sesión
-	sessModel, err := s.sessionRepo.FindBySessionID(ctx, auth.SessionID)
+	// 4. Cargar sesión
+	sessModel, err := s.sessionRepo.FindBySessionID(ctx, q.SessionID)
 	if err != nil || sessModel == nil {
 		return nil, ErrSessionNotFound
 	}
 
-	// 5) Verificar estado de sesión
+	// 5. Verificar estado de sesión
 	if sessModel.Status != models.SessionStatusActive || !sessModel.IsActive {
 		return nil, ErrSessionInactive
 	}
 
-	// 6) Verificar firma JWS RS256 (y exp del JWS)
-	claims, vErr := security.VerifyTokenRS256(auth.Token)
+	// 6. Verificar firma JWS RS256 (y exp del JWS)
+	claims, vErr := security.VerifyTokenRS256(accessToken)
 	if vErr != nil {
 		if errors.Is(vErr, security.ErrTokenExpired) {
 			if tokModel.Status == models.TokenStatusActive {
@@ -73,11 +73,8 @@ func (s *AuthService) ListSessions(ctx context.Context, auth dto.AuthRequestDTO,
 		return nil, ErrInvalidToken
 	}
 
-	// 7) Listar sesiones del usuario
-	//    user_id sale de la sesión ya validada
-	//    (si prefieres usar claims.Subject, también es válido si coincide)
-	_, err = uuid.Parse(sessModel.UserID)
-	if err != nil {
+	// 7. Listar sesiones del usuario autenticado
+	if _, err := uuid.Parse(sessModel.UserID); err != nil {
 		return nil, repositories.ErrUserNotFound
 	}
 
@@ -86,13 +83,13 @@ func (s *AuthService) ListSessions(ctx context.Context, auth dto.AuthRequestDTO,
 		return nil, err
 	}
 
-	// 8) Mapear a DTO
+	// 8. Mapear a DTO
 	data := make([]dto.SessionViewDTO, 0, len(sessions))
 	for i := range sessions {
 		data = append(data, toSessionViewDTO(&sessions[i]))
 	}
 
-	// 9) Paginar
+	// 9. Paginar
 	page := q.Page
 	if page < 1 {
 		page = 1
