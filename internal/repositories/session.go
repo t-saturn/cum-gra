@@ -45,17 +45,6 @@ func (r *SessionRepository) FindBySessionID(ctx context.Context, sessionID strin
 	return &sess, nil
 }
 
-// SetRevocationInfo actualiza la sesión con información de revocación
-func (r *SessionRepository) SetRevocationInfo(ctx context.Context, id primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
-	update := bson.M{"$set": bson.M{
-		"revocation_reason": reason,
-		"revoked_by":        revokedBy,
-		"revoked_by_app":    revokedByApp,
-	}}
-	_, err := r.col.UpdateByID(ctx, id, update)
-	return err
-}
-
 // FindByUUID busca una sesión por su UUID.
 func (r *SessionRepository) FindByUUID(ctx context.Context, uuid string) (*models.Session, error) {
 	var sess models.Session
@@ -117,16 +106,6 @@ func (r *SessionRepository) CountByUserID(ctx context.Context, userID string, st
 		return 0, err
 	}
 	return count, nil
-}
-
-// UpdateStatus actualiza el status y la fecha de revocación de una sesión.
-func (r *SessionRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time) error {
-	update := bson.M{"$set": bson.M{"status": status}}
-	if revokedAt != nil {
-		update["$set"].(bson.M)["revoked_at"] = *revokedAt
-	}
-	_, err := r.col.UpdateByID(ctx, id, update)
-	return err
 }
 
 // AddTokenToSession añade el ObjectID de un token al campo TokensGenerated de una sesión.
@@ -236,4 +215,55 @@ func sanitizeSessionsSort(q dto.ListSessionsQueryDTO) bson.D {
 	}
 
 	return bson.D{{Key: field, Value: val}}
+}
+
+// RevokeAllActiveBySessionID marca como "revoked" todos los tokens ACTIVOS de una sesión.
+// Settea revoked_at y, si se proveen, razon y metadatos de quién revoca.
+func (r *TokenRepository) RevokeAllActiveBySessionID(ctx context.Context, sessionID string, revokedAt time.Time, reason, revokedBy, revokedByApp string) (int64, error) {
+	set := bson.M{
+		"status":     models.TokenStatusRevoked,
+		"revoked_at": revokedAt,
+	}
+	if reason != "" {
+		set["revocation_reason"] = reason
+	}
+	if revokedBy != "" {
+		set["revoked_by"] = revokedBy
+	}
+	if revokedByApp != "" {
+		set["revoked_by_app"] = revokedByApp
+	}
+
+	filter := bson.M{
+		"session_id": sessionID,
+		"status":     models.TokenStatusActive,
+	}
+	update := bson.M{"$set": set}
+
+	res, err := r.col.UpdateMany(ctx, filter, update)
+	if err != nil {
+		return 0, err
+	}
+	return res.ModifiedCount, nil
+}
+
+// UpdateStatus actualiza el status y la fecha de revocación de una sesión.
+func (r *SessionRepository) UpdateStatus(ctx context.Context, id primitive.ObjectID, status string, revokedAt *time.Time) error {
+	update := bson.M{"$set": bson.M{"status": status}}
+	if revokedAt != nil {
+		update["$set"].(bson.M)["revoked_at"] = *revokedAt
+	}
+	_, err := r.col.UpdateByID(ctx, id, update)
+	return err
+}
+
+// SetRevocationInfo actualiza la sesión con información de revocación
+func (r *SessionRepository) SetRevocationInfo(ctx context.Context, id primitive.ObjectID, reason, revokedBy, revokedByApp string) error {
+	update := bson.M{"$set": bson.M{
+		"revocation_reason": reason,
+		"revoked_by":        revokedBy,
+		"revoked_by_app":    revokedByApp,
+	}}
+	_, err := r.col.UpdateByID(ctx, id, update)
+	return err
 }
