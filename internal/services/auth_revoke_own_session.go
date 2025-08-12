@@ -14,38 +14,34 @@ var (
 	ErrForbiddenRevoke = errors.New("forbidden_revoke") // intentar revocar una sesión de otro usuario
 )
 
-// RevokeOwnSession valida token+sesión y revoca la sesión objetivo (más todos sus tokens activos).
-func (s *AuthService) RevokeOwnSession(
-	ctx context.Context,
-	auth dto.AuthRequestDTO, // body: token + session_id (OBJETIVO a revocar)
-	meta dto.RevokeOwnSessionQueryDTO, // body: reason / revoked_by_app (opcionales)
-) (*dto.RevokeOwnSessionResponseDTO, error) {
+// RevokeOwnSession valida token (Authorization) y revoca la sesión objetivo (meta.SessionID) + tokens activos.
+func (s *AuthService) RevokeOwnSession(ctx context.Context, accessToken string, meta dto.RevokeOwnSessionQueryDTO) (*dto.RevokeOwnSessionResponseDTO, error) {
 
-	// 0) Validación mínima
-	if auth.Token == "" || auth.SessionID == "" {
+	// 0. Validación mínima
+	if accessToken == "" || meta.SessionID == "" {
 		return nil, ErrInvalidToken
 	}
 
-	// 1) Lookup rápido por hash del token para obtener la sesión del ejecutor
-	hash := security.HashTokenHex(auth.Token)
+	// 1. Lookup por hash del token → sesión del ejecutor
+	hash := security.HashTokenHex(accessToken)
 	tokModel, err := s.tokenRepo.FindByHash(ctx, hash)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
 
-	// 2) Token debe estar activo y ser access
+	// 2. Token activo y de tipo access
 	if tokModel.Status != models.TokenStatusActive || tokModel.TokenType != models.TokenTypeAccess {
 		return nil, ErrInvalidToken
 	}
 
-	// 2.5) Expiración por DB
+	// 2.5. Expiración por DB
 	now := time.Now().UTC()
 	if now.After(tokModel.ExpiresAt) {
 		_ = s.tokenRepo.MarkExpired(ctx, tokModel.ID, now)
 		return nil, security.ErrTokenExpired
 	}
 
-	// 3) Cargar sesión del ejecutor (derivada del token)
+	// 3. Cargar sesión del ejecutor (derivada del token)
 	execSess, err := s.sessionRepo.FindBySessionID(ctx, tokModel.SessionID)
 	if err != nil || execSess == nil {
 		return nil, ErrSessionNotFound
@@ -54,8 +50,8 @@ func (s *AuthService) RevokeOwnSession(
 		return nil, ErrSessionInactive
 	}
 
-	// 4) Verificar firma JWS RS256 (y validez del JWS)
-	claims, vErr := security.VerifyTokenRS256(auth.Token)
+	// 4. Verificar firma JWS RS256
+	claims, vErr := security.VerifyTokenRS256(accessToken)
 	if vErr != nil {
 		if errors.Is(vErr, security.ErrTokenExpired) {
 			if tokModel.Status == models.TokenStatusActive {
@@ -65,24 +61,23 @@ func (s *AuthService) RevokeOwnSession(
 		}
 		return nil, security.ErrTokenInvalid
 	}
-	// Defensa: subject debe coincidir con user del token guardado
 	if claims.Subject != "" && claims.Subject != tokModel.UserID {
 		return nil, ErrInvalidToken
 	}
 
-	// 5) Cargar sesión objetivo a revocar (viene en el body como auth.SessionID)
-	targetSID := auth.SessionID
+	// 5. Cargar sesión objetivo (viene en meta.SessionID)
+	targetSID := meta.SessionID
 	targetSess, err := s.sessionRepo.FindBySessionID(ctx, targetSID)
 	if err != nil || targetSess == nil {
 		return nil, ErrSessionNotFound
 	}
 
-	// 6) La sesión objetivo debe pertenecer al mismo usuario que el ejecutor
+	// 6. Debe pertenecer al mismo usuario
 	if targetSess.UserID != execSess.UserID {
 		return nil, ErrForbiddenRevoke
 	}
 
-	// 7) Idempotencia: si ya está revocada, responde OK
+	// 7. Idempotencia
 	if targetSess.Status == models.SessionStatusRevoked {
 		return &dto.RevokeOwnSessionResponseDTO{
 			SessionID: targetSess.SessionID,
@@ -92,7 +87,7 @@ func (s *AuthService) RevokeOwnSession(
 		}, nil
 	}
 
-	// 8) Revocar: actualizar sesión + revocar tokens activos de esa sesión
+	// 8. Revocar sesión + tokens
 	revokedAt := time.Now().UTC()
 	reason := "user_revoked"
 	if meta.Reason != nil && *meta.Reason != "" {
@@ -108,13 +103,41 @@ func (s *AuthService) RevokeOwnSession(
 	if err := s.sessionRepo.UpdateStatus(ctx, targetSess.ID, models.SessionStatusRevoked, &revokedAt); err != nil {
 		return nil, err
 	}
+
 	// 8.2) Guardar metadata de revocación
 	if err := s.sessionRepo.SetRevocationInfo(ctx, targetSess.ID, reason, revokedBy, revokedByApp); err != nil {
 		return nil, err
 	}
-	// 8.3) Revocar todos los tokens activos de la sesión objetivo
-	if _, err := s.tokenRepo.RevokeAllActiveBySessionID(ctx, targetSess.SessionID, revokedAt, reason, revokedBy, revokedByApp); err != nil {
+
+	// 8.3) Revocar todos los tokens activos y obtener la lista
+	revokedTokens, _, err := s.tokenRepo.RevokeAllActiveBySessionIDReturn(ctx, targetSess.SessionID, revokedAt, reason, revokedBy, revokedByApp)
+	if err != nil {
 		return nil, err
+	}
+
+	// 8.4) Mapear tokens a DTO
+	tokensDTO := make([]dto.RevokedTokenDetailDTO, 0, len(revokedTokens))
+	for _, t := range revokedTokens {
+		// Nota: usa el campo que tengas disponible como "identificador visible".
+		// Si no tienes token_id poblado, usa el ObjectID:
+		tokenID := t.TokenID
+		if tokenID == "" && !t.ID.IsZero() {
+			tokenID = t.ID.Hex()
+		}
+
+		var expPtr *time.Time
+		if !t.ExpiresAt.IsZero() {
+			expCopy := t.ExpiresAt
+			expPtr = &expCopy
+		}
+
+		tokensDTO = append(tokensDTO, dto.RevokedTokenDetailDTO{
+			TokenID:   tokenID,
+			TokenType: t.TokenType,
+			RevokedAt: t.RevokedAt,
+			Reason:    t.Reason,
+			ExpiresAt: expPtr,
+		})
 	}
 
 	// 9) Respuesta
@@ -123,5 +146,6 @@ func (s *AuthService) RevokeOwnSession(
 		Status:    models.SessionStatusRevoked,
 		RevokedAt: &revokedAt,
 		Message:   "Sesión revocada exitosamente",
+		Tokens:    tokensDTO,
 	}, nil
 }

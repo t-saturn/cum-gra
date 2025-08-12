@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/t-saturn/auth-service-server/internal/dto"
@@ -12,39 +13,36 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-type revokeOwnSessionBody struct {
-	Token        string  `json:"token" validate:"required"`
-	SessionID    string  `json:"session_id" validate:"required"` // sesión OBJETIVO a revocar
-	Reason       *string `json:"reason,omitempty"`
-	RevokedByApp *string `json:"revoked_by_app,omitempty"`
-}
-
-// DELETE /auth/sessions  (body: token + session_id [+ reason, revoked_by_app])
+// DELETE /auth/sessions
+// Header: Authorization: Bearer <access_token>
+// Query: session_id (req), reason (req), revoked_by_app (opt)
 func (h *AuthHandler) RevokeOwnSession(c fiber.Ctx) error {
-	var body revokeOwnSessionBody
+	var meta dto.RevokeOwnSessionQueryDTO
 
-	// 1) Parse body
-	if err := c.Bind().Body(&body); err != nil {
-		return utils.JSONError(c, http.StatusBadRequest, "BAD_FORMAT", "Datos mal formateados", "cuerpo no válido")
+	// 1. Parse query
+	if err := c.Bind().Query(&meta); err != nil {
+		return utils.JSONError(c, http.StatusBadRequest, "BAD_QUERY", "Parámetros de consulta inválidos", "query no válido")
 	}
-	// 2) Validar requeridos
-	if err := validator.Validate.Struct(&body); err != nil {
+
+	// 2. Validar query (session_id requerido, reason requerido/oneof)
+	if err := validator.Validate.Struct(&meta); err != nil {
 		return utils.JSON(c, http.StatusBadRequest, dto.ValidationErrorResponse{
 			Errors: validator.FormatValidationError(err),
 		})
 	}
 
-	auth := dto.AuthRequestDTO{
-		Token:     body.Token,
-		SessionID: body.SessionID, // TARGET a revocar
+	// 3. Extraer access token del header Authorization
+	authz := c.Get("Authorization")
+	var accessToken string
+	if strings.HasPrefix(strings.ToLower(authz), "bearer ") {
+		accessToken = strings.TrimSpace(authz[len("Bearer "):])
 	}
-	meta := dto.RevokeOwnSessionQueryDTO{
-		Reason:       body.Reason,
-		RevokedByApp: body.RevokedByApp,
+	if accessToken == "" {
+		return utils.JSONError(c, http.StatusUnauthorized, "NO_TOKEN", "No se encontró access token en Authorization", "Envíe Authorization: Bearer <access_token>")
 	}
 
-	// 3) Delegar en service
-	resp, err := h.authService.RevokeOwnSession(c, auth, meta)
+	// 4. Delegar en service
+	resp, err := h.authService.RevokeOwnSession(c, accessToken, meta)
 	if err != nil {
 		switch err {
 		case services.ErrInvalidToken:
@@ -68,6 +66,6 @@ func (h *AuthHandler) RevokeOwnSession(c fiber.Ctx) error {
 		}
 	}
 
-	// 4) OK
+	// 5. OK
 	return utils.JSONResponse(c, http.StatusOK, true, "OK", resp, nil)
 }
