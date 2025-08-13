@@ -1,5 +1,6 @@
 import { DeviceInfo } from '@/types';
 
+// Interface que define la respuesta de ipwho.is (información de IP y ubicación)
 interface IpWhoResponse {
   success: boolean;
   ip: string;
@@ -18,19 +19,20 @@ interface IpWhoResponse {
   };
 }
 
+// Interface que define la respuesta de httpbun.com/get (información de headers HTTP)
 interface HttpbunResponse {
-  origin: string;
-  headers: Record<string, string>;
+  origin: string; // IP detectada por httpbun
+  headers: Record<string, string>; // Todos los headers enviados en la petición
 }
 
-// Helper to parse userAgent for browser and OS info
+// Helper: parsea el User-Agent para extraer información de navegador y sistema operativo
 function parseUA(ua: string) {
-  // Browser
+  // 1. Detectar navegador y versión
   const browserMatch = ua.match(/(Chrome|Firefox|Safari|Edge)\/([\d\.]+)/i);
   const browser_name = browserMatch ? browserMatch[1] : 'Unknown';
   const browser_version = browserMatch ? browserMatch[2] : '0';
 
-  // OS
+  // 2. Detectar sistema operativo y versión
   const osMatch = ua.match(/\(([^)]+)\)/);
   let os = 'Unknown';
   let os_version = '0';
@@ -43,21 +45,32 @@ function parseUA(ua: string) {
   return { browser_name, browser_version, os, os_version };
 }
 
+// Función principal: obtiene información del dispositivo y conexión del usuario
 export async function getDeviceInfo(): Promise<DeviceInfo> {
-  // Fetch IP and location data
+  // 1. Obtener datos de IP y ubicación desde ipwho.is
   const ipRes = await fetch('https://ipwho.is/');
   const ipJson = (await ipRes.json()) as IpWhoResponse;
 
-  // Fetch headers including User-Agent and Accept-Language
+  // 2. Obtener headers (incluyendo User-Agent y Accept-Language) desde httpbun.com
   const httpRes = await fetch('https://httpbun.com/get');
   const httpJson = (await httpRes.json()) as HttpbunResponse;
 
+  // 3. Determinar User-Agent desde httpbun o navegador
   const ua = httpJson.headers['user-agent'] || httpJson.headers['User-Agent'] || navigator.userAgent;
+
+  // 4. Determinar idioma preferido
   const language = httpJson.headers['accept-language'] || navigator.language;
+
+  // 5. Parsear User-Agent para extraer datos de navegador y sistema operativo
   const { browser_name, browser_version, os, os_version } = parseUA(ua);
+
+  // 6. Determinar tipo de dispositivo (mobile o desktop)
   const device_type = /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop';
+
+  // 7. Generar un identificador único para el dispositivo
   const device_id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2);
 
+  // 8. Construir y retornar el objeto DeviceInfo completo
   return {
     user_agent: ua,
     ip: ipJson.ip || httpJson.origin,
