@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/joho/godotenv"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/internal/middlewares"
@@ -34,6 +35,9 @@ func main() {
 	// Configurar middlewares
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
+	app.Use(recover.New(recover.Config{
+		EnableStackTrace: true,
+	}))
 
 	// Registrar rutas (sin dependencias adicionales)
 	routes.RegisterRoutes(app)
