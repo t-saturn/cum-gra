@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,7 +23,6 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 		return nil, ErrInvalidToken
 	}
 
-	fmt.Print("Me called with accessToken: ", accessToken, " and sessionID: ", input.SessionID, "\n")
 	// 1. Lookup rápido por hash del token crudo
 	hash := security.HashTokenHex(accessToken)
 	tokModel, err := s.tokenRepo.FindByHash(ctx, hash)
