@@ -48,9 +48,10 @@ export const Login: React.FC = () => {
           clearInterval(id);
           window.location.assign(json.redirect);
         }
-      } catch {}
-    }, 1000); // cada 1s
-
+      } catch (err) {
+        console.error('Error during introspect:', err);
+      }
+    }, 5000); // cada 5s
     return () => clearInterval(id);
   }, []);
 

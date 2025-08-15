@@ -27,15 +27,14 @@ export async function GET(req: NextRequest) {
 
   // 3. Preparar encabezados para propagar cookies al cliente
   const headers = new Headers();
-  const raw = (backendRes as any).headers?.raw?.()['set-cookie'] as string[] | undefined;
-
-  if (raw?.length) {
-    // Caso: múltiples cookies
-    for (const c of raw) headers.append('set-cookie', c);
-  } else {
-    // Caso: solo una cookie
-    const single = backendRes.headers.get('set-cookie');
-    if (single) headers.set('set-cookie', single);
+  // Obtener todas las cookies usando el método estándar
+  const setCookieHeaders = backendRes.headers.get('set-cookie');
+  if (setCookieHeaders) {
+    // Si hay múltiples cookies, estarán separadas por coma
+    const cookies = setCookieHeaders.split(/,(?=[^ ]*\=)/g);
+    for (const cookie of cookies) {
+      headers.append('set-cookie', cookie.trim());
+    }
   }
 
   // 4. Si el backend responde con un código 3xx (redirección)
