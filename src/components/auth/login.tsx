@@ -92,11 +92,13 @@ export const Login: React.FC = () => {
 
   // callback absoluto (ej: http://localhost:3000/home o lo que venga en ?callback)
   const callbackAbs = useMemo(() => {
-    const cb = sp.get('callback') || `${FRONT_BASE}/home`;
+    // const cb = sp.get('callback') || `${FRONT_BASE}/home`;
+    const cb = sp.get('callback') || `${FRONT_BASE}`;
     try {
       return new URL(cb, FRONT_BASE).toString();
     } catch {
-      return `${FRONT_BASE}/home`;
+      // return `${FRONT_BASE}/home`;
+      return `${FRONT_BASE}`;
     }
   }, [sp]);
 
@@ -108,78 +110,6 @@ export const Login: React.FC = () => {
     }
     setLoginFlowId(id);
   }, []);
-
-  // async function handle_login(e: React.FormEvent) {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   const form = e.currentTarget as HTMLFormElement;
-
-  //   const payload = {
-  //     email: (form.email as HTMLInputElement).value,
-  //     password: (form.password as HTMLInputElement).value,
-  //     login_flow_id: loginFlowId,
-  //     application_id: 'app_001',
-  //     callback_url: callbackAbs, // ABSOLUTA
-  //     device_info: {
-  //       user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-  //       ip: '203.0.113.42',
-  //       device_id: 'device-1234abcd',
-  //       browser_name: 'Chrome',
-  //       browser_version: '115.0.0.0',
-  //       os: 'Windows',
-  //       os_version: '10',
-  //       device_type: 'desktop',
-  //       timezone: 'America/New_York',
-  //       language: 'en-US',
-  //       location: {
-  //         country: 'United States',
-  //         country_code: 'US',
-  //         region: 'New York',
-  //         city: 'New York City',
-  //         coordinates: [-74.006, 40.7128],
-  //         isp: 'Example ISP',
-  //         organization: 'Example Organization',
-  //       },
-  //     },
-  //   };
-
-  //   try {
-  //     const res = await fetch('/api/auth/login', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       credentials: 'include',
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const json = await res.json().catch(() => ({}));
-
-  //     if (res.status === 401) {
-  //       // Modo fallback si el gateway devolviera 401 JSON
-  //       const msg = json?.error?.details || ERROR_MAP[json?.error?.code] || 'Credenciales inválidas';
-  //       // reemplaza el query param para que quede amigable al refrescar:
-  //       const url = new URL(window.location.href);
-  //       url.searchParams.set('error_code', json?.error?.code || 'UNAUTHORIZED');
-  //       window.history.replaceState(null, '', url.toString());
-  //       alert(msg);
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     if (json?.redirect) {
-  //       const finalURL = new URL(json.redirect, API_BASE).toString();
-  //       localStorage.removeItem('login_flow_id'); // flujo completo
-  //       window.location.assign(finalURL);
-  //       return;
-  //     }
-
-  //     alert('Respuesta inesperada del servidor.');
-  //   } catch {
-  //     alert('No se pudo contactar al servidor.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   const friendlyError = errorCode ? ERROR_MAP[errorCode] || 'Ocurrió un error' : '';
 

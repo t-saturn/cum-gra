@@ -10,10 +10,13 @@ export async function POST(req: NextRequest) {
   // 1. Leer y parsear el cuerpo de la petición
   const body = await req.json();
 
-  // 2. Si no se proporciona callback_url, usar una URL por defecto del frontend (/home)
+  console.log(body.callback_url);
+
+  // 2. Si no se proporciona callback_url, usar una URL por defecto del frontend (opcional - /home)
   if (!body.callback_url) {
     const FRONT_BASE = process.env.NEXT_PUBLIC_FRONT_BASE || 'http://localhost:3000';
-    body.callback_url = `${FRONT_BASE}/home`;
+    // body.callback_url = `${FRONT_BASE}/home`;
+    body.callback_url = `${FRONT_BASE}`;
   }
 
   // 3. Realizar la petición al backend
