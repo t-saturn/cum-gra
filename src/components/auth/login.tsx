@@ -36,6 +36,24 @@ export const Login: React.FC = () => {
   // error_code pasado por redirect del gateway
   const errorCode = sp.get('error_code') || '';
 
+  useEffect(() => {
+    const id = setInterval(async () => {
+      try {
+        const res = await fetch('/api/auth/introspect?redirect=true', {
+          credentials: 'include',
+          cache: 'no-store',
+        });
+        const json = await res.json().catch(() => ({}));
+        if (json?.redirect) {
+          clearInterval(id);
+          window.location.assign(json.redirect);
+        }
+      } catch {}
+    }, 1000); // cada 1s
+
+    return () => clearInterval(id);
+  }, []);
+
   async function handle_login(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setLoading(true);
