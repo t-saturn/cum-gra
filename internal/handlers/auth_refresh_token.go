@@ -12,7 +12,7 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-// Refresh maneja POST /auth/token/refresh: genera nuevos tokens usando un refresh token.
+// Refresh maneja POST /auth/refresh: genera nuevos tokens usando un refresh token.
 // Header: Authorization: Bearer <refresh_token>
 // Query:  session_id (requerido)
 // Body:   { "device_info": { ... } }

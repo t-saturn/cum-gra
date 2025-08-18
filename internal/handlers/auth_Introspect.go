@@ -12,7 +12,7 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/validator"
 )
 
-// Introspect maneja GET /auth/token/introspect: valida un access/refresh token.
+// Introspect maneja GET /auth/introspect: valida un access/refresh token.
 // Header: Authorization: Bearer <token>
 // Query:  session_id (requerido)
 func (h *AuthHandler) Introspect(c fiber.Ctx) error {
