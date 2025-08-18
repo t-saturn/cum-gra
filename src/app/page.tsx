@@ -6,7 +6,7 @@ const Home = () => {
       <header className="flex flex-row gap-2 justify-between items-center w-full">
         <div className="flex flex-row gap-2 items-center">
           <p>img</p>
-          <h1 className="text-sm font-bold">Gobierno Regional de Ayacucho</h1>
+          <h1 className="text-3xl  font-black text-red-500 dark:text-red-400">Gobierno Regional de Ayacucho</h1>
         </div>
         <ThemeToggle />
       </header>
