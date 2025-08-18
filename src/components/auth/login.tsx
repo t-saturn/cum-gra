@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Eye, EyeOff, GlobeLock, ScanFace } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '@radix-ui/react-label';
@@ -72,6 +72,7 @@ export const Login: React.FC = () => {
         application_id: 'app_001',
         callback_url: callbackAbs,
         device_info, // usamos la data real
+        redirect: true, // forzar redirección
       };
 
       const res = await fetch('/api/auth/login', {
@@ -176,11 +177,11 @@ export const Login: React.FC = () => {
       </CardContent>
 
       <CardFooter className="flex-col gap-8">
-        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/api/auth/login/google`)}>
+        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/auth/login/google`)}>
           <GlobeLock className="mr-2 w-5 h-5" />
           Continuar con Google
         </Button>
-        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/api/auth/login/facial`)}>
+        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/auth/login/facial`)}>
           <ScanFace className="mr-2 w-5 h-5" />
           Autenticación Facial
         </Button>

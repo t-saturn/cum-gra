@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   // 3. Realizar la petición al backend
   // - redirect: 'manual' → no seguir redirecciones automáticamente
   // - credentials: 'include' → permitir cookies del backend
-  const backendRes = await fetch(`${API_BASE}/web/auth/login`, {
+  const backendRes = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     redirect: 'manual', // capturar 303, 302, etc.
