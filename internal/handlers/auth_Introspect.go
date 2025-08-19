@@ -3,24 +3,21 @@ package handlers
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/auth-service-server/internal/dto"
 	"github.com/t-saturn/auth-service-server/internal/services"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 	"github.com/t-saturn/auth-service-server/pkg/utils"
 )
 
 // POST /auth/introspect
-// Precedencia de entrada: Cookies > Headers > Body JSON
-// Headers esperados desde el API Gateway:
-//
-//	Authorization: Bearer <access_token>
-//	Refresh-Token: <refresh_token>
-//	X-Session-Id: <session_id>
+// Fuente ÚNICA de credenciales: Cookies HttpOnly
+// Cookies esperadas:
+//   - session_id
+//   - access_token
+//   - refresh_token
 func (h *AuthHandler) Introspect(c fiber.Ctx) error {
-	sessionID, access, refresh, readErr := readIntrospectInputs(c)
+	sessionID, access, refresh, readErr := readIntrospectInputsCookiesOnly(c)
 	if readErr != nil {
 		return utils.JSONError(c, http.StatusBadRequest, "MISSING_FIELDS",
 			"Faltan credenciales para introspección (session_id, access_token, refresh_token)",
@@ -61,7 +58,6 @@ func (h *AuthHandler) Introspect(c fiber.Ctx) error {
 				"Inconsistencia entre token y sesión", "sid/sub no coinciden")
 
 		case errors.Is(err, services.ErrTokenNotFound):
-			// Puedes usar 401 (invalid) o 404; 401 es común para tokens desconocidos.
 			return utils.JSONError(c, http.StatusUnauthorized, "INVALID_TOKEN",
 				"Token inválido o inactivo", "Token no válido")
 
@@ -76,57 +72,17 @@ func (h *AuthHandler) Introspect(c fiber.Ctx) error {
 	return utils.JSONResponse(c, http.StatusOK, true, "Sesión válida", data, nil)
 }
 
-func readIntrospectInputs(c fiber.Ctx) (sessionID, access, refresh string, err error) {
-	cookieSID := c.Cookies("session_id")
-	cookieAT := c.Cookies("access_token")
-	cookieRT := c.Cookies("refresh_token")
+// Solo cookies. Sin headers ni body.
+func readIntrospectInputsCookiesOnly(c fiber.Ctx) (sessionID, access, refresh string, err error) {
+	sessionID = c.Cookies("session_id")
+	access = c.Cookies("access_token")
+	refresh = c.Cookies("refresh_token")
 
-	headerSID := c.Get("X-Session-Id")
-	headerAT := c.Get("Authorization")
-	headerRT := c.Get("Refresh-Token")
-
-	logger.Log.Infof("[introspect][inputs] cookies: sid=%q at.len=%d rt.len=%d", cookieSID, len(cookieAT), len(cookieRT))
-	logger.Log.Infof("[introspect][inputs] headers: sid=%q authz.present=%t rt.len=%d",
-		headerSID, headerAT != "", len(headerRT))
-
-	// 1) Cookies
-	sessionID = cookieSID
-	access = cookieAT
-	refresh = cookieRT
-
-	// 2) Headers
-	if sessionID == "" {
-		sessionID = headerSID
-	}
-	if access == "" {
-		if strings.HasPrefix(strings.ToLower(headerAT), "bearer ") {
-			access = strings.TrimSpace(headerAT[len("Bearer "):])
-		}
-	}
-	if refresh == "" {
-		refresh = headerRT
-	}
-
-	// 3) Body (fallback solo si POST/PUT/PATCH)
-	if sessionID == "" || access == "" || refresh == "" {
-		var in dto.IntrospectRequestDTO
-		if err := c.Bind().Body(&in); err == nil {
-			if sessionID == "" && in.SessionID != nil {
-				sessionID = *in.SessionID
-			}
-			if access == "" && in.AccessToken != nil {
-				access = *in.AccessToken
-			}
-			if refresh == "" && in.RefreshToken != nil {
-				refresh = *in.RefreshToken
-			}
-		}
-	}
-
-	logger.Log.Infof("[introspect][inputs] chosen: sid=%q at.len=%d rt.len=%d", sessionID, len(access), len(refresh))
+	logger.Log.Infof("[introspect][inputs] cookies: sid=%q at.len=%d rt.len=%d",
+		sessionID, len(access), len(refresh))
 
 	if sessionID == "" || access == "" || refresh == "" {
-		return "", "", "", errors.New("session_id, access_token y refresh_token son requeridos")
+		return "", "", "", errors.New("session_id, access_token y refresh_token son requeridos (cookies)")
 	}
 	return sessionID, access, refresh, nil
 }
