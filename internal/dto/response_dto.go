@@ -29,13 +29,6 @@ type RSAJWK struct {
 	E   string `json:"e"`             // base64url exponent (AQAB)
 }
 
-type IntrospectResponseDTO struct {
-	UserID          string `bson:"user_id,omitempty"`
-	ServiceResponse string `bson:"service_response,omitempty"`
-	ValidatedBy     string `bson:"validated_by,omitempty"`
-	ValidationTime  int64  `bson:"validation_time,omitempty"` // tiempo en ms
-}
-
 type ValidationErrorResponse struct {
 	Errors map[string]string `json:"errors"`
 }

@@ -91,7 +91,7 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 	if err != nil {
 		return nil, err
 	}
-	accessDetail := dto.TokenDetailDTO{
+	accessDetail := dto.TokenLoginDTO{
 		TokenID:   accessID.Hex(),
 		Token:     accessJWT,
 		TokenType: models.TokenTypeAccess,
@@ -103,7 +103,7 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 	if err != nil {
 		return nil, err
 	}
-	refreshDetail := dto.TokenDetailDTO{
+	refreshDetail := dto.TokenLoginDTO{
 		TokenID:   refreshID.Hex(),
 		Token:     refreshJWT,
 		TokenType: models.TokenTypeRefresh,
@@ -128,9 +128,12 @@ func (s *AuthService) Login(ctx context.Context, input dto.AuthLoginRequestDTO) 
 
 	// 8 Devolver respuesta
 	return &dto.AuthLoginResponseDTO{
-		UserID:    user.ID.String(),
-		Session:   sessionDTO,
-		Tokens:    dto.TokensDTO{AccessToken: accessDetail, RefreshToken: refreshDetail},
+		UserID:  user.ID.String(),
+		Session: sessionDTO,
+		Tokens: dto.TokensLoginDTO{
+			AccessToken:  accessDetail,
+			RefreshToken: refreshDetail,
+		},
 		AttemptID: authAttemptID.Hex(),
 	}, nil
 }

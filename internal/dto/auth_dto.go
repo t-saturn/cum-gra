@@ -12,12 +12,11 @@ type AuthLoginRequestDTO struct {
 	DeviceInfo    DeviceInfoDTO `json:"device_info" validate:"required"`
 }
 
-// AuthLoginResponseDTO define la parte "data" de la respuesta para /auth/login.
 type AuthLoginResponseDTO struct {
-	UserID    string     `json:"user_id"`
-	Session   SessionDTO `json:"session"`
-	Tokens    TokensDTO  `json:"tokens"`
-	AttemptID string     `json:"attempt_id"`
+	UserID    string         `json:"user_id"`
+	Session   SessionDTO     `json:"session"`
+	Tokens    TokensLoginDTO `json:"tokens"`
+	AttemptID string         `json:"attempt_id"`
 }
 
 // LogoutRequestDTO define la petición para /auth/logout
