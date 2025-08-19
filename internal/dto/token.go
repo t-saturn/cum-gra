@@ -12,14 +12,6 @@ const (
 	TokenTypeRefresh = "refresh"
 )
 
-// IntrospectRequestDTO permite recibir opcionalmente los datos por body JSON.
-// Nota: si usas cookies/headers, déjalos en omitempty y resuélvelos en el handler.
-type IntrospectRequestDTO struct {
-	SessionID    *string `query:"session_id" json:"session_id,omitempty"`
-	AccessToken  *string `json:"access_token,omitempty"`
-	RefreshToken *string `json:"refresh_token,omitempty"`
-}
-
 // IntrospectResponseDTO es la respuesta agregada de sesión + tokens.
 type IntrospectResponseDTO struct {
 	UserID           string    `json:"user_id"`
