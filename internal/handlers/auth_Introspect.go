@@ -40,6 +40,13 @@ func writeMappedError(c fiber.Ctx, err error) error {
 	return utils.JSONError(c, http.StatusInternalServerError, "INTROSPECTION_ERROR", "Error interno al validar tokens", "Error desconocido")
 }
 
+// estructura auxiliar para parsear el body
+type IntrospectBodyInput struct {
+	SessionID    string `json:"session_id"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 // POST /auth/introspect
 // SOLO cookies (HttpOnly) como fuente:
 //   - session_id
@@ -51,13 +58,11 @@ func (h *AuthHandler) Introspect(c fiber.Ctx) error {
 		return utils.JSONError(c, http.StatusBadRequest, "MISSING_FIELDS", "Faltan credenciales para introspección (session_id, access_token, refresh_token)", readErr.Error())
 	}
 
-	// Validar sesión + ambos tokens
 	data, err := h.authService.IntrospectSessionTokens(c, sessionID, access, refresh)
 	if err != nil {
 		return writeMappedError(c, err)
 	}
 
-	// OK: si algún token está expirado, ya vendrá como status="expired"
 	return utils.JSONResponse(c, http.StatusOK, true, "Sesión válida", data, nil)
 }
 
@@ -72,3 +77,16 @@ func readIntrospectInputsCookiesOnly(c fiber.Ctx) (sessionID, access, refresh st
 
 	return sessionID, access, refresh, nil
 }
+
+// func readIntrospectInputsBodyOnly(c fiber.Ctx) (sessionID, access, refresh string, err error) {
+// 	var body IntrospectBodyInput
+// 	if bindErr := c.Bind().Body(&body); bindErr != nil {
+// 		return "", "", "", bindErr
+// 	}
+
+// 	if body.SessionID == "" || body.AccessToken == "" || body.RefreshToken == "" {
+// 		return "", "", "", errors.New("session_id, access_token y refresh_token son requeridos (json body)")
+// 	}
+
+// 	return body.SessionID, body.AccessToken, body.RefreshToken, nil
+// }
