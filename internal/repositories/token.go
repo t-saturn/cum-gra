@@ -233,3 +233,25 @@ func (r *TokenRepository) RevokeTokensByIDs(ctx context.Context, tokenIDs []prim
 	_, err := r.col.UpdateMany(ctx, filter, update)
 	return err
 }
+
+func (r *TokenRepository) FindByHashAndType(ctx context.Context, hash, tokenType string) (*models.Token, error) {
+	var tok models.Token
+	err := r.col.FindOne(ctx, bson.M{"token_hash": hash, "token_type": tokenType}).Decode(&tok)
+	if err != nil {
+		return nil, err
+	}
+	return &tok, nil
+}
+
+func (r *TokenRepository) MarkRevoked(ctx context.Context, id primitive.ObjectID, reason string, at time.Time) error {
+	update := bson.M{
+		"$set": bson.M{
+			"status":      models.TokenStatusRevoked,
+			"revoked_at":  at,
+			"revoked_msg": reason,
+			"updated_at":  at,
+		},
+	}
+	_, err := r.col.UpdateByID(ctx, id, update)
+	return err
+}

@@ -12,7 +12,6 @@ import (
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 
-	"github.com/google/uuid"
 	"github.com/t-saturn/auth-service-server/internal/config"
 	"github.com/t-saturn/auth-service-server/pkg/logger"
 )
@@ -80,8 +79,8 @@ func GenerateToken(userID, audience string, duration time.Duration) (string, err
 
 	// (opcional) claims personalizados
 	custom := map[string]any{
-		"sid": uuid.NewString(),
-		"jti": uuid.NewString(),
+		"sid": audience,
+		"jti": audience,
 	}
 
 	raw, err := jwt.Signed(signer).Claims(claims).Claims(custom).CompactSerialize()

@@ -88,8 +88,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string, q d
 
 	// 7. Emitir nuevo refresh token (usando DeviceInfo del body)
 	refreshDuration := 7 * 24 * time.Hour
-	newRefreshID, newRefreshJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, b.DeviceInfo,
-		models.TokenTypeRefresh, refreshDuration, &oldTok.ID)
+	newRefreshID, newRefreshJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, b.DeviceInfo, models.TokenTypeRefresh, refreshDuration, &oldTok.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +98,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string, q d
 	// 8. Emitir nuevo access token (usando DeviceInfo del body)
 	expMin, _ := strconv.Atoi(config.GetConfig().Server.JWTExpMinutes)
 	accessDuration := time.Duration(expMin) * time.Minute
-	newAccessID, newAccessJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, b.DeviceInfo,
-		models.TokenTypeAccess, accessDuration, nil)
+	newAccessID, newAccessJWT, err := s.InsertToken(ctx, oldTok.UserID, sess.SessionID, b.DeviceInfo, models.TokenTypeAccess, accessDuration, nil)
 	if err != nil {
 		return nil, err
 	}
