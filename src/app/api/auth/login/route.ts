@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { callbackify } from 'util';
 
 // URL base del backend (API Gateway o servicio de autenticación)
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
@@ -9,8 +10,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
 export async function POST(req: NextRequest) {
   // 1. Leer y parsear el cuerpo de la petición
   const body = await req.json();
-
-  console.log(body.callback_url);
 
   // 2. Si no se proporciona callback_url, usar una URL por defecto del frontend (opcional - /home)
   if (!body.callback_url) {
