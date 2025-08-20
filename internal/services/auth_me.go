@@ -12,10 +12,7 @@ import (
 	"github.com/t-saturn/auth-service-server/pkg/security"
 )
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Me: GET /auth/me
-// ─────────────────────────────────────────────────────────────────────────────
-
 // Me valida el access token (desde Authorization) y devuelve datos del usuario + sesión actual.
 func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.AuthMeQueryDTO) (*dto.AuthMeResponseDTO, error) {
 	// 0. Validación mínima
@@ -95,6 +92,9 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 		StructuralPosition: derefStr(uview.StructuralPositionName),
 		OrganicUnit:        derefStr(uview.OrganicUnitName),
 		Session:            toSessionViewDTO(sessModel),
+		Role:               "admin",
+		ModulePermissions:  []string{"module1", "module2", "module3"},
+		ModuleRestriccions: []string{"module1"},
 	}
 	if uview.Phone != nil {
 		resp.Phone = *uview.Phone
@@ -103,10 +103,7 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 	return resp, nil
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Mapeadores a DTO
-// ─────────────────────────────────────────────────────────────────────────────
-
 func toSessionViewDTO(s *models.Session) dto.SessionViewDTO {
 	ids := make([]string, 0, len(s.TokensGenerated))
 	for _, id := range s.TokensGenerated {

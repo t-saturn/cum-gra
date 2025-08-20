@@ -31,11 +31,12 @@ type PaginationMeta struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /auth/me?session_id=<session_id>
+// GET /auth/me?session_id=<session_id>&app_id=<client_id>
 // ─────────────────────────────────────────────────────────────────────────────
 
 type AuthMeQueryDTO struct {
 	SessionID string `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
+	// AppID     string `query:"app_id" json:"app_id" validate:"required"`         // ID de la app cliente
 }
 
 type AuthMeResponseDTO struct {
@@ -48,6 +49,9 @@ type AuthMeResponseDTO struct {
 	Status             string         `json:"status,omitempty"`
 	StructuralPosition string         `json:"structural_position,omitempty"`
 	OrganicUnit        string         `json:"organic_unit,omitempty"`
+	Role               string         `json:"role"`
+	ModulePermissions  []string       `json:"module_permissions"`  // Permisos de módulos (ej. ["module1", "module2"])
+	ModuleRestriccions []string       `json:"module_restriccions"` // Restricciones de módulos (ej. ["module1", "module2"])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
