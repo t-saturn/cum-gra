@@ -36,24 +36,47 @@ export const Login: React.FC = () => {
   // error_code pasado por redirect del gateway
   const errorCode = sp.get('error_code') || '';
 
+  const b64urlEncode = (s: string) => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  const b64urlDecode = (s: string) => {
+    let t = s.replace(/-/g, '+').replace(/_/g, '/');
+    while (t.length % 4) t += '=';
+    return atob(t);
+  };
+
   useEffect(() => {
-    const id = setInterval(async () => {
+    const defaultTarget = 'http://localhost:6162/home';
+    const callbackB64 = sp.get('callback_url') || b64urlEncode(defaultTarget);
+
+    const run = async () => {
       try {
-        const res = await fetch('/api/auth/introspect?redirect=true', {
+        const apiUrl = `/api/auth/introspect-signin?redirect=true&callback_url=${encodeURIComponent(callbackB64)}`;
+
+        // clave: redirect:'manual' para detectar 3xx sin navegar automáticamente
+        const res = await fetch(apiUrl, {
           credentials: 'include',
           cache: 'no-store',
+          redirect: 'manual' as RequestRedirect,
         });
-        const json = await res.json().catch(() => ({}));
-        if (json?.redirect) {
-          clearInterval(id);
-          window.location.assign(json.redirect);
+
+        // si el mini-backend respondió 3xx, hacemos navegación real
+        if (res.type === 'opaqueredirect' || (res.status >= 300 && res.status < 400)) {
+          window.location.assign(apiUrl);
+          return;
         }
+
+        // si no hubo redirect → el backend devolvió JSON; solo mostramos (debug)
+        const json = await res.json().catch(() => ({}));
+        console.log('[introspect-signin][debug]', json);
       } catch (err) {
         console.error('Error during introspect:', err);
       }
-    }, 5000); // cada 5s
+    };
+
+    // correr una vez al montar y luego cada 5s
+    run();
+    const id = setInterval(run, 5000);
     return () => clearInterval(id);
-  }, []);
+  }, [sp]);
 
   async function handle_login(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
@@ -71,8 +94,8 @@ export const Login: React.FC = () => {
         login_flow_id: loginFlowId,
         application_id: 'app_001',
         callback_url: callbackAbs,
-        device_info, // usamos la data real
-        redirect: true, // forzar redirección
+        device_info,
+        redirect: true,
       };
 
       const res = await fetch('/api/auth/login', {
@@ -110,15 +133,14 @@ export const Login: React.FC = () => {
     }
   }
 
-  // callback absoluto (ej: http://localhost:3000/home o lo que venga en ?callback)
   const callbackAbs = useMemo(() => {
-    // const cb = sp.get('callback') || `${FRONT_BASE}/home`;
-    const cb = sp.get('callback') || `${FRONT_BASE}`;
+    const cb64 = sp.get('callback_url');
     try {
-      return new URL(cb, FRONT_BASE).toString();
+      const decoded = cb64 ? b64urlDecode(cb64) : `${FRONT_BASE}`;
+      // valida que sea absoluta
+      return new URL(decoded).toString();
     } catch {
-      // return `${FRONT_BASE}/home`;
-      return `${FRONT_BASE}`;
+      return `${FRONT_BASE}`; // fallback
     }
   }, [sp]);
 
