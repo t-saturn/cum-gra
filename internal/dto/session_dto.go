@@ -52,6 +52,10 @@ type AuthMeResponseDTO struct {
 	Role               string         `json:"role"`
 	ModulePermissions  []string       `json:"module_permissions"`  // Permisos de módulos (ej. ["module1", "module2"])
 	ModuleRestriccions []string       `json:"module_restriccions"` // Restricciones de módulos (ej. ["module1", "module2"])
+	AccessExpiresAt    string         `json:"access_expires_at"`   // <- Formato ISO8601
+	RefreshExpiresAt   string         `json:"refresh_expires_at"`  // <- Formato ISO8601
+	Exp                int64          `json:"exp"`                 // <- Timestamp Unix
+	RemainingSeconds   int64          `json:"remaining_seconds"`   // <- Tiempo restante en segundos
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
