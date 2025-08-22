@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math"
 	"time"
 
@@ -28,10 +27,6 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
-
-	fmt.Printf("-------------------------------------------------------------------------------------------------------")
-	fmt.Printf("Token details: %+v\n", tokModel)
-	fmt.Printf("-------------------------------------------------------------------------------------------------------")
 
 	// 2. Debe estar activo
 	if tokModel.Status != models.TokenStatusActive {
