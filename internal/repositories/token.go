@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // TokenRepository gestiona los tokens en MongoDB.
@@ -26,8 +27,11 @@ func NewTokenRepository(db *mongo.Database) *TokenRepository {
 
 // ErrSessionNotFound indica que no hay ningún token registrado con ese valor.
 var (
-	ErrSessionNotFound = errors.New("session not found for given token")
-	ErrTokenNotFound   = errors.New("token not found")
+	ErrSessionNotFound      = errors.New("session not found for given token")
+	ErrTokenNotFound        = errors.New("token not found")
+	ErrNoTokensInSession    = errors.New("no tokens_generated in session")
+	ErrAccessTokenNotFound  = errors.New("access token not found for session")
+	ErrRefreshTokenNotFound = errors.New("refresh token not found for session")
 )
 
 // MarkExpired marca un token como expirado (status = expired) y actualiza updated_at.
@@ -254,4 +258,91 @@ func (r *TokenRepository) MarkRevoked(ctx context.Context, id primitive.ObjectID
 	}
 	_, err := r.col.UpdateByID(ctx, id, update)
 	return err
+}
+
+// GetTokenExpiriesBySessionID:
+// 1. Lee la sesión -> tokens_generated
+// 2. Busca en "tokens" por esos _id y session_id
+// 3. Devuelve el expires_at más reciente para access y refresh (solo activos, opcional)
+func (r *SessionRepository) GetTokenExpiriesBySessionID(ctx context.Context, sessionID string) (accessExpiresAt time.Time, refreshExpiresAt time.Time, err error) {
+	// 1. Obtener tokens_generated
+	var s struct {
+		TokensGenerated []primitive.ObjectID `bson:"tokens_generated"`
+	}
+	if err = r.col.FindOne(
+		ctx,
+		bson.M{"session_id": sessionID},
+		options.FindOne().SetProjection(bson.M{"tokens_generated": 1, "_id": 0}),
+	).Decode(&s); err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+	if len(s.TokensGenerated) == 0 {
+		return time.Time{}, time.Time{}, ErrNoTokensInSession
+	}
+
+	// 2) Consultar tokens
+	tokensCol := r.col.Database().Collection("tokens")
+	cur, err := tokensCol.Find(
+		ctx,
+		bson.M{
+			"_id":        bson.M{"$in": s.TokensGenerated},
+			"session_id": sessionID,
+			// Si quieres solo activos, descomenta:
+			"status": "active",
+		},
+		options.Find().SetProjection(bson.M{
+			"token_type": 1,
+			"expires_at": 1,
+			"status":     1,
+			"_id":        0,
+		}),
+	)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+	defer cur.Close(ctx)
+
+	var (
+		accessFound, refreshFound bool
+		bestAccess, bestRefresh   time.Time
+	)
+	for cur.Next(ctx) {
+		var t struct {
+			TokenType string    `bson:"token_type"`
+			ExpiresAt time.Time `bson:"expires_at"`
+			Status    string    `bson:"status"`
+		}
+		if err := cur.Decode(&t); err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+		// Si activaste "status: active" en el filtro, esto sobra. Si no, añade defensa:
+		if t.Status != "active" {
+			continue
+		}
+
+		switch t.TokenType {
+		case "access":
+			if !accessFound || t.ExpiresAt.After(bestAccess) {
+				bestAccess = t.ExpiresAt.UTC()
+				accessFound = true
+			}
+		case "refresh":
+			if !refreshFound || t.ExpiresAt.After(bestRefresh) {
+				bestRefresh = t.ExpiresAt.UTC()
+				refreshFound = true
+			}
+		}
+	}
+	if err := cur.Err(); err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+
+	if !accessFound {
+		return time.Time{}, time.Time{}, ErrAccessTokenNotFound
+	}
+	if !refreshFound {
+		return time.Time{}, time.Time{}, ErrRefreshTokenNotFound
+	}
+
+	return bestAccess, bestRefresh, nil
 }
