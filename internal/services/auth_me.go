@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
+	"math"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,6 +28,10 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 	if err != nil {
 		return nil, ErrInvalidToken
 	}
+
+	fmt.Printf("-------------------------------------------------------------------------------------------------------")
+	fmt.Printf("Token details: %+v\n", tokModel)
+	fmt.Printf("-------------------------------------------------------------------------------------------------------")
 
 	// 2. Debe estar activo
 	if tokModel.Status != models.TokenStatusActive {
@@ -82,6 +88,14 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 		return nil, err
 	}
 
+	accessAt, refreshAt, err := s.sessionRepo.GetTokenExpiriesBySessionID(ctx, input.SessionID)
+	if err != nil {
+		return nil, ErrSessionNotFound // o mapea errores específicos
+	}
+
+	const isoMillis = "2006-01-02T15:04:05.000Z07:00"
+	time.Now().UTC()
+
 	// 8. Mapear respuesta
 	resp := &dto.AuthMeResponseDTO{
 		UserID:             uview.ID.String(),
@@ -95,6 +109,11 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 		Role:               "admin",
 		ModulePermissions:  []string{"module1", "module2", "module3"},
 		ModuleRestriccions: []string{"module1"},
+		AccessExpiresAt:    accessAt.Format(isoMillis),
+		RefreshExpiresAt:   refreshAt.Format(isoMillis),
+		Exp:                accessAt.Unix(), // JWT exp estándar (fijo)
+		// Opcional: tiempo restante en segundos si lo quieres dinámico en la respuesta:
+		RemainingSeconds: int64(math.Max(0, accessAt.Sub(now).Seconds())),
 	}
 	if uview.Phone != nil {
 		resp.Phone = *uview.Phone
