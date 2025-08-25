@@ -1,14 +1,5 @@
-'use client';
+import { Landing } from '@/components/landing';
 
-import { Logout } from '@/components/auth/logout';
+const Home = () => <Landing />;
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      SOO FRONTEND
-      <div>
-        <Logout />
-      </div>
-    </div>
-  );
-}
+export default Home;
