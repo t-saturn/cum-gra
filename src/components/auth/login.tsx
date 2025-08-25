@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Eye, EyeOff, GlobeLock, ScanFace } from 'lucide-react';
-import { redirect, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { Label } from '@radix-ui/react-label';
@@ -156,7 +156,7 @@ export const Login: React.FC = () => {
   const friendlyError = errorCode ? ERROR_MAP[errorCode] || 'Ocurrió un error' : '';
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader>
         <CardTitle>Iniciar sesión</CardTitle>
         <CardDescription>Ingrese su correo electrónico y contraseña</CardDescription>
@@ -166,15 +166,15 @@ export const Login: React.FC = () => {
         <form onSubmit={handle_login} className="flex flex-col gap-6">
           {friendlyError && <p className="text-red-600 text-sm">{friendlyError}</p>}
 
-          <div className="grid gap-2">
+          <div className="gap-2 grid">
             <Label htmlFor="email">correo electrónico</Label>
             <Input id="email" name="email" type="email" placeholder="nicola.tesla@gmail.com" required />
           </div>
 
-          <div className="grid gap-2">
+          <div className="gap-2 grid">
             <div className="flex items-center gap-4">
               <Label htmlFor="password">contraseña</Label>
-              <a href="/auth/forgot" className="ml-auto text-sm underline-offset-4 hover:underline text-red-500">
+              <a href="/auth/forgot" className="ml-auto text-red-500 text-sm hover:underline underline-offset-4">
                 ¿olvidaste tu contraseña?
               </a>
             </div>
@@ -183,7 +183,7 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setPasswordVisible((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 focus:outline-none"
+                className="top-1/2 right-3 absolute focus:outline-none text-gray-400 -translate-y-1/2"
                 aria-label={passwordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 title={passwordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               >
@@ -192,18 +192,18 @@ export const Login: React.FC = () => {
             </div>
           </div>
 
-          <Button variant="ghost" type="submit" className="w-full bg-red-600 font-bold text-white" disabled={loading}>
+          <Button variant="ghost" type="submit" className="bg-red-600 w-full font-bold text-white" disabled={loading}>
             {loading ? 'Logging in…' : 'Login'}
           </Button>
         </form>
       </CardContent>
 
       <CardFooter className="flex-col gap-8">
-        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/auth/login/google`)}>
+        <Button variant="outline" className="w-full" onClick={() => window.location.assign(`${API_BASE}/auth/login/google`)}>
           <GlobeLock className="mr-2 w-5 h-5" />
           Continuar con Google
         </Button>
-        <Button variant="outline" className="w-full " onClick={() => window.location.assign(`${API_BASE}/auth/login/facial`)}>
+        <Button variant="outline" className="w-full" onClick={() => window.location.assign(`${API_BASE}/auth/login/facial`)}>
           <ScanFace className="mr-2 w-5 h-5" />
           Autenticación Facial
         </Button>
