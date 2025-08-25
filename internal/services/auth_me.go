@@ -89,7 +89,6 @@ func (s *AuthService) Me(ctx context.Context, accessToken string, input dto.Auth
 	}
 
 	const isoMillis = "2006-01-02T15:04:05.000Z07:00"
-	time.Now().UTC()
 
 	// 8. Mapear respuesta
 	resp := &dto.AuthMeResponseDTO{
