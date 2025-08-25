@@ -47,7 +47,7 @@ export const GET = async (req: NextRequest) => {
   const setCookieHeader = backendRes.headers.get('set-cookie');
   if (setCookieHeader) {
     // dividir cookies múltiples en un solo header
-    const cookies = setCookieHeader.split(/,(?=[^ ]*\=)/g);
+    const cookies = setCookieHeader.split(/,(?=[^ ]*=)/g);
     for (const c of cookies) headers.append('set-cookie', c.trim());
   }
 
