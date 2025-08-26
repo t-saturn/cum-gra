@@ -15,9 +15,6 @@ type User struct {
 	LastName             *string    `gorm:"type:varchar(100)" json:"last_name"`
 	Phone                *string    `gorm:"type:varchar(20)" json:"phone"`
 	DNI                  string     `gorm:"type:varchar(8);unique;not null" json:"dni"`
-	EmailVerified        bool       `gorm:"default:false" json:"email_verified"`
-	PhoneVerified        bool       `gorm:"default:false" json:"phone_verified"`
-	TwoFactorEnabled     bool       `gorm:"default:false" json:"two_factor_enabled"`
 	Status               string     `gorm:"type:status_enum;default:'active'" json:"status"`
 	StructuralPositionID *uuid.UUID `gorm:"type:uuid" json:"structural_position_id"`
 	OrganicUnitID        *uuid.UUID `gorm:"type:uuid" json:"organic_unit_id"`
