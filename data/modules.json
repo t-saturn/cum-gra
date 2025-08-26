@@ -218,5 +218,86 @@
     "application_name": "central user manager",
     "sort_order": 22,
     "status": "active"
+  },
+
+  {
+    "item": "Menú",
+    "name": "Dashboard",
+    "route": "/dashboard",
+    "icon": "LayoutDashboard",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 1,
+    "status": "active"
+  },
+  {
+    "item": "Acciones",
+    "name": "Seguimiento",
+    "route": "/tracking",
+    "icon": "ClipboardList",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 2,
+    "status": "active"
+  },
+  {
+    "item": "Acciones",
+    "name": "Generar",
+    "route": "/generate",
+    "icon": "FilePlus",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 3,
+    "status": "active"
+  },
+  {
+    "item": "Acciones",
+    "name": "Aprobar",
+    "route": "/approve",
+    "icon": "CheckSquare",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 4,
+    "status": "active"
+  },
+  {
+    "item": "Acceso",
+    "name": "Usuarios",
+    "route": "/users",
+    "icon": "Users",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 5,
+    "status": "active"
+  },
+  {
+    "item": "Acceso",
+    "name": "Roles",
+    "route": "/roles",
+    "icon": "ShieldCheck",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 6,
+    "status": "active"
+  },
+  {
+    "item": "Configuración",
+    "name": "Ajustes",
+    "route": "/settings",
+    "icon": "Settings2",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 7,
+    "status": "active"
+  },
+  {
+    "item": "Configuración",
+    "name": "Cuenta",
+    "route": "/account",
+    "icon": "UserCircle",
+    "parent_name": null,
+    "application_name": "segres",
+    "sort_order": 8,
+    "status": "active"
   }
 ]
