@@ -187,13 +187,13 @@ func linkUserApplicationRoles() error {
 	}
 
 	for _, r := range input {
-		// 1) User
+		// 1. User
 		var user models.User
 		if err := config.DB.Where("LOWER(email) = LOWER(?)", r.UserEmail).First(&user).Error; err != nil {
 			return fmt.Errorf("no se encontró user con email '%s': %w", r.UserEmail, err)
 		}
 
-		// 2) GrantedBy (si no existe, usar el mismo user)
+		// 2. GrantedBy (si no existe, usar el mismo user)
 		var grantedBy models.User
 		if err := config.DB.Where("LOWER(email) = LOWER(?)", r.GrantedByEmail).First(&grantedBy).Error; err != nil {
 			grantedBy = user
@@ -201,7 +201,7 @@ func linkUserApplicationRoles() error {
 				r.GrantedByEmail, r.UserEmail)
 		}
 
-		// 3) Application
+		// 3. Application
 		var app models.Application
 		if strings.TrimSpace(r.ApplicationClientID) != "" {
 			if err := config.DB.Where("client_id = ?", r.ApplicationClientID).First(&app).Error; err != nil {
@@ -213,13 +213,13 @@ func linkUserApplicationRoles() error {
 			}
 		}
 
-		// 4) Role en esa app
+		// 4. Role en esa app
 		var role models.ApplicationRole
 		if err := config.DB.Where("LOWER(name) = LOWER(?) AND application_id = ?", r.ApplicationRoleName, app.ID).First(&role).Error; err != nil {
 			return fmt.Errorf("no se encontró role '%s' en app '%s': %w", r.ApplicationRoleName, app.Name, err)
 		}
 
-		// 5) Evitar duplicado activo exacto
+		// 5. Evitar duplicado activo exacto
 		var count int64
 		if err := config.DB.Model(&models.UserApplicationRole{}).
 			Where("user_id = ? AND application_id = ? AND application_role_id = ? AND is_deleted = false AND revoked_at IS NULL",
@@ -234,7 +234,7 @@ func linkUserApplicationRoles() error {
 			continue
 		}
 
-		// 6) ID opcional
+		// 6. ID opcional
 		var id uuid.UUID
 		if r.ID != nil && strings.TrimSpace(*r.ID) != "" {
 			parsed, pErr := uuid.Parse(*r.ID)
@@ -249,7 +249,7 @@ func linkUserApplicationRoles() error {
 
 		now := time.Now()
 
-		// 7) Crear UAR y "agregar relación" al usuario vía Association (setea user_id)
+		// 7. Crear UAR y "agregar relación" al usuario vía Association (setea user_id)
 		uar := models.UserApplicationRole{
 			ID:                id,
 			ApplicationID:     app.ID,
@@ -264,7 +264,7 @@ func linkUserApplicationRoles() error {
 			return fmt.Errorf("error asociando UAR con user '%s': %w", user.Email, err)
 		}
 
-		// 8) (Opcional) Tocar updated_at del usuario tras asignar rol
+		// 8. (Opcional) Tocar updated_at del usuario tras asignar rol
 		if err := config.DB.Model(&models.User{}).
 			Where("id = ?", user.ID).
 			Update("updated_at", now).Error; err != nil {
