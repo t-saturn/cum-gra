@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
@@ -20,6 +21,10 @@ type SeedPosition struct {
 
 // SeedStructuralPositions inserta posiciones estructurales en la base de datos desde un archivo JSON si no existen previamente.
 func SeedStructuralPositions() error {
+	logrus.Info("----------------------------------------------------------------------------------------------")
+	logrus.Info("Seeding posiciones estructurales desde JSON...")
+	logrus.Info("----------------------------------------------------------------------------------------------")
+
 	file, err := os.Open("data/structural_positions.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
@@ -45,7 +50,8 @@ func SeedStructuralPositions() error {
 		}
 
 		if count > 0 {
-			continue // ya existe, ignorar
+			logrus.Warnf("Posición estructural ya existe: %s (%s)", p.Name, p.Code)
+			continue
 		}
 
 		position := models.StructuralPosition{
@@ -61,8 +67,10 @@ func SeedStructuralPositions() error {
 		position.Level = &p.Level
 
 		if err := config.DB.Create(&position).Error; err != nil {
-			return fmt.Errorf("error al insertar %s: %w", p.Name, err)
+			return fmt.Errorf("error al insertar posición estructural '%s': %w", p.Name, err)
 		}
+
+		logrus.Infof("Posición estructural insertada: %s (%s)", p.Name, p.Code)
 	}
 
 	return nil

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
@@ -27,6 +27,10 @@ type SeedApplication struct {
 
 // SeedApplications inserta registros de aplicaciones en la base de datos desde un archivo JSON, evitando duplicados.
 func SeedApplications() error {
+	logrus.Info("----------------------------------------------------------------------------------------------")
+	logrus.Info("Seeding aplicaciones desde JSON...")
+	logrus.Info("----------------------------------------------------------------------------------------------")
+
 	file, err := os.Open("data/applications.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
@@ -44,15 +48,15 @@ func SeedApplications() error {
 
 	for _, a := range apps {
 		// Verificar si el ClientID ya existe
-		var exists bool
-		err := config.DB.Model(&models.Application{}).
-			Select("count(*) > 0").
+		var count int64
+		if err := config.DB.Model(&models.Application{}).
 			Where("client_id = ?", a.ClientID).
-			Find(&exists).Error
-		if err != nil {
+			Count(&count).Error; err != nil {
 			return fmt.Errorf("error al verificar existencia de client_id '%s': %w", a.ClientID, err)
 		}
-		if exists {
+
+		if count > 0 {
+			logrus.Warnf("Aplicación ya existe: %s", a.Name)
 			continue
 		}
 
@@ -64,7 +68,6 @@ func SeedApplications() error {
 			Domain:       a.Domain,
 			Logo:         &a.Logo,
 			Description:  &a.Description,
-			CallbackUrls: pq.StringArray(a.CallbackURLs),
 			Status:       a.Status,
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
@@ -74,6 +77,8 @@ func SeedApplications() error {
 		if err := config.DB.Create(&app).Error; err != nil {
 			return fmt.Errorf("error al insertar aplicación '%s': %w", a.Name, err)
 		}
+
+		logrus.Infof("Aplicación insertada: %s", a.Name)
 	}
 
 	return nil
