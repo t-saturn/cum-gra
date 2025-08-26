@@ -23,6 +23,7 @@ var (
 	ErrTokenRevoked          = errors.New("token_revoked")
 	ErrMalformedAccessToken  = errors.New("malformed_access_token")
 	ErrMalformedRefreshToken = errors.New("malformed_refresh_token")
+	ErrInvalidAppID          = errors.New("invalid_app_id")
 )
 
 // Introspect valida el token contra DB y JWS, y devuelve metadata del token.

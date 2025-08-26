@@ -26,6 +26,7 @@ func (h *AuthHandler) Me(c fiber.Ctx) error {
 
 	// 1. Leer parámetros de query (session_id)
 	q.SessionID = c.Query("session_id")
+	q.ClientID = c.Query("client_id")
 
 	// 2. Validar query
 	if err := validator.Validate.Struct(&q); err != nil {

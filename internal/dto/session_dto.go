@@ -31,12 +31,12 @@ type PaginationMeta struct {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /auth/me?session_id=<session_id>&app_id=<client_id>
+// GET /auth/me?session_id=<session_id>&client_id=<client_id>
 // ─────────────────────────────────────────────────────────────────────────────
 
 type AuthMeQueryDTO struct {
 	SessionID string `query:"session_id" json:"session_id" validate:"required"` // ID de la sesión asociada
-	// AppID     string `query:"app_id" json:"app_id" validate:"required"`         // ID de la app cliente
+	ClientID  string `query:"client_id" json:"client_id" validate:"required"`   // ID de la app cliente
 }
 
 type AuthMeResponseDTO struct {
