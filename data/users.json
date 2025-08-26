@@ -1,6 +1,5 @@
 [
   {
-    "id": "b5a1f3c2-7d8e-4d1a-9a77-0f1b2c3d4e50",
     "email": "alice.admin@regionayacucho.gob.pe",
     "password": "10101010",
     "first_name": "Alicia",
@@ -16,7 +15,6 @@
     ]
   },
   {
-    "id": "a2b3c4d5-6e7f-4812-9abc-def012345678",
     "email": "bob.user@regionayacucho.gob.pe",
     "password": "10101010",
     "first_name": "Bob",
@@ -29,7 +27,6 @@
     "user_application_role_ids": ["d9cf3a7e-2a35-4b62-8dc4-92a0d5321f5e"]
   },
   {
-    "id": "c3d4e5f6-7a8b-49c0-9123-4567abcdef89",
     "email": "carlos.rrhh@regionayacucho.gob.pe",
     "password": "10101010",
     "first_name": "Carlos",
@@ -42,7 +39,6 @@
     "user_application_role_ids": ["5f6a2b1e-f9a4-4a11-82b3-9a1dd4b7c8e2"]
   },
   {
-    "id": "d4e5f6a7-b8c9-40d1-a234-bcdef1234567",
     "email": "diana.aprove@regionayacucho.gob.pe",
     "password": "10101010",
     "first_name": "Diana",
@@ -55,7 +51,6 @@
     "user_application_role_ids": ["2c4f8b9a-0d12-4f7a-99cc-b2b71f4a6e83"]
   },
   {
-    "id": "e5f6a7b8-c9d0-41e2-b345-cdef23456789",
     "email": "erik.viewer@regionayacucho.gob.pe",
     "password": "10101010",
     "first_name": "Erik",
