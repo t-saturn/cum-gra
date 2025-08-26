@@ -1,0 +1,32 @@
+[
+  {
+    "name": "admin",
+    "description": "Acceso total a la aplicación Central User Manager",
+    "application_client_id": "cum",
+    "application_name": "central user manager"
+  },
+  {
+    "name": "user",
+    "description": "Acceso estándar de usuario en Central User Manager",
+    "application_client_id": "cum",
+    "application_name": "central user manager"
+  },
+  {
+    "name": "admin",
+    "description": "Acceso total a la aplicación Segres",
+    "application_client_id": "segres",
+    "application_name": "segres"
+  },
+  {
+    "name": "rrhh",
+    "description": "Rol de Recursos Humanos para Segres",
+    "application_client_id": "segres",
+    "application_name": "segres"
+  },
+  {
+    "name": "rrhh-aprove",
+    "description": "Rol de Recursos Humanos para Segres",
+    "application_client_id": "segres",
+    "application_name": "segres"
+  }
+]
