@@ -1,5 +1,13 @@
 [
   {
+    "id": "5f6a2b1e-f9a4-4a11-82b3-9a1dd4b7c8e2",
+    "user_email": "carlos.rrhh@regionayacucho.gob.pe",
+    "application_name": "rrhh-client",
+    "application_role_name": "user",
+    "granted_by_email": "alice.admin@regionayacucho.gob.pe"
+  },
+
+  {
     "id": "8a3c3d24-5b18-4c61-9a64-6ac1c5f9b201",
     "user_email": "alice.admin@regionayacucho.gob.pe",
     "application_name": "central user manager",

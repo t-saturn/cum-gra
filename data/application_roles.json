@@ -1,5 +1,12 @@
 [
   {
+    "name": "user",
+    "description": "Unico rol para esta pagina de presentacion",
+    "application_client_id": "sso-client",
+    "application_name": "rrhh-client"
+  },
+
+  {
     "name": "admin",
     "description": "Acceso total a la aplicación Central User Manager",
     "application_client_id": "cum",
