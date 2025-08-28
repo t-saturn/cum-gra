@@ -1,8 +1,8 @@
 'use client';
 
 import { NextPage } from 'next';
-import { Login } from '@/components/auth/login';
 import Image from 'next/image';
+import { RecoverAccount } from '@/components/auth/forgot';
 
 const Page: NextPage = () => {
   return (
@@ -15,7 +15,7 @@ const Page: NextPage = () => {
       {/* Right Side - Form centrado */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-xl">
-          <Login />
+          <RecoverAccount />
         </div>
       </div>
     </div>
