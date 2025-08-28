@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	"github.com/t-saturn/central-user-manager/internal/config"
 	"github.com/t-saturn/central-user-manager/internal/models"
 )
@@ -20,6 +21,10 @@ type SeedOrganicUnit struct {
 
 // SeedOrganicUnits inserta unidades orgánicas en la base de datos desde un archivo JSON si no existen previamente.
 func SeedOrganicUnits() error {
+	logrus.Info("----------------------------------------------------------------------------------------------")
+	logrus.Info("Seeding unidades orgánicas desde JSON...")
+	logrus.Info("----------------------------------------------------------------------------------------------")
+
 	file, err := os.Open("data/organic_units.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
@@ -45,6 +50,7 @@ func SeedOrganicUnits() error {
 		}
 
 		if count > 0 {
+			logrus.Warnf("Unidad orgánica ya existe: %s (%s)", u.Name, u.Acronym)
 			continue
 		}
 
@@ -62,6 +68,8 @@ func SeedOrganicUnits() error {
 		if err := config.DB.Create(&unit).Error; err != nil {
 			return fmt.Errorf("error al insertar unidad orgánica '%s': %w", u.Name, err)
 		}
+
+		logrus.Infof("Unidad orgánica insertada: %s (%s)", u.Name, u.Acronym)
 	}
 
 	return nil

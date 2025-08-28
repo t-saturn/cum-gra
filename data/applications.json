@@ -1,12 +1,31 @@
 [
   {
+    "name": "rrhh-client",
+    "client_id": "sso-client",
+    "client_secret": "nix-os-by-tsaturn-team-sponsored-by-rrhh",
+    "domain": "https://intranet.regionayacucho.gob.pe",
+    "logo": "https://files.regionayacucho.gob.pe/apps/intranet-logo.svg",
+    "description": "Intranet de la Region Ayacucho",
+    "status": "active"
+  },
+
+  {
     "name": "central user manager",
     "client_id": "cum",
     "client_secret": "nix-os-by-tsaturn-team-sponsored-by-rrhh",
     "domain": "https://cum.regionayacucho.gob.pe",
-    "logo": "https://files.regionayacucho.gob.pe/apps/segres-logo.svg",
+    "logo": "https://files.regionayacucho.gob.pe/apps/central-user-manager-logo.svg",
     "description": "Control central de usuarios",
-    "callback_urls": ["https://cum.regionayacucho.gob.pe/dashboard"],
+    "status": "active"
+  },
+
+  {
+    "name": "segres",
+    "client_id": "segres",
+    "client_secret": "nix-os-by-tsaturn-team-sponsored-by-rrhh",
+    "domain": "https://segres.regionayacucho.gob.pe",
+    "logo": "https://files.regionayacucho.gob.pe/apps/segres-logo.svg",
+    "description": "Seguimiento de Resoluciones",
     "status": "active"
   }
 ]

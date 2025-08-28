@@ -19,5 +19,17 @@ func Run() error {
 		return err
 	}
 
+	if err := SeedApplicationRoles(); err != nil {
+		return err
+	}
+
+	if err := SeedUsersAndUserApplicationRoles(); err != nil {
+		return err
+	}
+
+	if err := SeedUserModuleRestrictions(); err != nil {
+		return err
+	}
+
 	return nil
 }

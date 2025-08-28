@@ -27,7 +27,9 @@ type SeedModule struct {
 
 // SeedModules inserta registros de módulos en la base de datos desde un archivo JSON, asociándolos a sus aplicaciones y padres si corresponde.
 func SeedModules() error {
+	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding módulos desde JSON...")
+	logrus.Info("----------------------------------------------------------------------------------------------")
 
 	file, err := os.Open("data/modules.json")
 	if err != nil {
@@ -106,7 +108,7 @@ func SeedModules() error {
 		}
 
 		inserted[module.Name] = module.ID
-		logrus.Infof("Módulo insertado: %s", sm.Name)
+		logrus.Infof("Módulo insertado: %s -- %s", sm.ApplicationName, sm.Name)
 	}
 
 	return nil
