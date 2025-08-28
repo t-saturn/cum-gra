@@ -55,3 +55,6 @@ pnpm-lock.yaml
 
 #docker
 docker-compose.yml
+
+# others
+.marscode

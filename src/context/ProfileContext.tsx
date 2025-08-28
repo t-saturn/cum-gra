@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
-
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useSession } from '@/hooks/useSession';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface ProfileSchema {
   name: string;
@@ -18,26 +17,24 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
-  // mook simulated
+  const { role, userId, name } = useSession();
 
-  const { data: session } = {
-    data: {
-      user: {
-        id: '1',
-      },
-    },
-  };
-
-  const [profile, setProfile] = useState<ProfileSchema>({ name: '', role: '', avatar: '' });
+  const [profile, setProfile] = useState<ProfileSchema>({
+    name: '',
+    role: '',
+    avatar: '',
+  });
 
   const fetchProfile = async (userId: string) => {
     try {
+      // aquí luego podrías hacer un fetch real a tu API
       const result = {
         userId,
-        name: 'Miguel Ramirez',
-        role: 'admin',
+        name: name ?? 'Usuario',
+        role: role ?? 'invitado',
         avatar: 'https://i.pravatar.cc/150?img=7',
       };
+
       if (result) setProfile(result);
       else console.error('Error al traer el perfil:');
     } catch (error) {
@@ -46,9 +43,9 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!session?.user?.id) return;
-    fetchProfile(session.user.id);
-  }, [session?.user?.id]);
+    if (!userId) return; // espera a tener un userId válido
+    fetchProfile(userId);
+  }, [userId]);
 
   return <ProfileContext.Provider value={{ profile, fetchProfile }}>{children}</ProfileContext.Provider>;
 };
@@ -56,6 +53,5 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 export const useProfile = () => {
   const context = useContext(ProfileContext);
   if (!context) throw new Error('useProfile debe usarse dentro de un ProfileProvider');
-
   return context;
 };
