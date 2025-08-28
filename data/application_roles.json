@@ -18,6 +18,7 @@
     "application_client_id": "cum",
     "application_name": "central user manager"
   },
+
   {
     "name": "admin",
     "description": "Acceso total a la aplicación Segres",
