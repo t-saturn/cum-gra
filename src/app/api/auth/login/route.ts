@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { callbackify } from 'util';
 
 // URL base del backend (API Gateway o servicio de autenticación)
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
