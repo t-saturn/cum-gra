@@ -44,7 +44,7 @@ export const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    const defaultTarget = 'http://localhost:6162/home';
+    const defaultTarget = `${FRONT_BASE}/home`;
     const callbackB64 = sp.get('callback_url') || b64urlEncode(defaultTarget);
 
     const run = async () => {
