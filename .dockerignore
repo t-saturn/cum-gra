@@ -1,0 +1,19 @@
+node_modules
+.next
+out
+
+.git
+.gitignore
+.DS_Store
+
+# logs
+npm-debug.log*
+yarn-error.log*
+
+# no metas variables al contenedor
+.env
+.env.*
+
+# opcional: estos archivos no hacen falta en el contexto
+Dockerfile
+docker-compose.yaml
