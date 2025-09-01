@@ -9,11 +9,9 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		logger.Log.Warn("The .env file could not be loaded, using current environment")
-	}
-
+	_ = godotenv.Load()
 	logger.InitLogger()
+	logger.Log.Info("Iniciando seeder...")
 
 	config.LoadConfig()
 	config.ConnectDB()
