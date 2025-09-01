@@ -35,6 +35,7 @@ COPY --from=builder /out/seed    /app/seed
 
 # Archivos de migraciones/seeds (ajusta si tu repo los tiene en otra ruta)
 COPY internal/database /app/internal/database
+COPY internal/data /app/internal/data
 
 # Entrypoint: espera a Postgres, ejecuta migrate/seed y arranca el server
 COPY <<'SH' /entrypoint.sh
