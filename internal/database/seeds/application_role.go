@@ -28,9 +28,9 @@ func SeedApplicationRoles() error {
 	logrus.Info("Seeding application_roles desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	f, err := os.Open("data/application_roles.json")
+	f, err := os.Open("internal/data/application_roles.json")
 	if err != nil {
-		return fmt.Errorf("no se pudo abrir data/application_roles.json: %w", err)
+		return fmt.Errorf("no se pudo abrir internal/data/application_roles.json: %w", err)
 	}
 	defer func() {
 		if cerr := f.Close(); cerr != nil {

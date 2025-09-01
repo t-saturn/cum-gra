@@ -25,7 +25,7 @@ func SeedOrganicUnits() error {
 	logrus.Info("Seeding unidades orgánicas desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	file, err := os.Open("data/organic_units.json")
+	file, err := os.Open("internal/data/organic_units.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}

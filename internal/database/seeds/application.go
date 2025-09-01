@@ -31,7 +31,7 @@ func SeedApplications() error {
 	logrus.Info("Seeding aplicaciones desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	file, err := os.Open("data/applications.json")
+	file, err := os.Open("internal/data/applications.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}

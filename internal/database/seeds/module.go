@@ -31,7 +31,7 @@ func SeedModules() error {
 	logrus.Info("Seeding módulos desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	file, err := os.Open("data/modules.json")
+	file, err := os.Open("internal/data/modules.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}

@@ -33,7 +33,7 @@ func SeedUserModuleRestrictions() error {
 	logrus.Info("Seeding user_module_restrictions desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	entries, err := loadUMRJSON("data/user_module_restrictions.json")
+	entries, err := loadUMRJSON("internal/data/user_module_restrictions.json")
 	if err != nil {
 		return err
 	}

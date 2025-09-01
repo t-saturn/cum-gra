@@ -71,9 +71,9 @@ func seedUsersOnly() error {
 	logrus.Info("Seeding users desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	f, err := os.Open("data/users.json")
+	f, err := os.Open("internal/data/users.json")
 	if err != nil {
-		return fmt.Errorf("no se pudo abrir data/users.json: %w", err)
+		return fmt.Errorf("no se pudo abrir internal/data/users.json: %w", err)
 	}
 	defer func() {
 		if cerr := f.Close(); cerr != nil {
@@ -171,9 +171,9 @@ func linkUserApplicationRoles() error {
 	logrus.Info("Seeding user_application_roles desde JSON y agregando asociación al usuario...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	f, err := os.Open("data/user_application_roles.json")
+	f, err := os.Open("internal/data/user_application_roles.json")
 	if err != nil {
-		return fmt.Errorf("no se pudo abrir data/user_application_roles.json: %w", err)
+		return fmt.Errorf("no se pudo abrir internal/data/user_application_roles.json: %w", err)
 	}
 	defer func() {
 		if cerr := f.Close(); cerr != nil {
