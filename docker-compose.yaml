@@ -1,43 +1,49 @@
+# Compose para auth-service-server + Postgres + Mongo
+# - Las llaves JWT se inyectan como Docker secrets (montadas en /run/secrets/*).
+# - El contenedor usa distroless:nonroot (uid/gid 65532), por eso ponemos 'mode: 0444' en los secrets,
+#   garantizando lectura por "otros" (evita 'permission denied' sin tocar permisos del host).
+
 services:
-  # Servicio principal: auth-service-server
   auth-service-server:
     container_name: auth-service-server
+
     build:
       context: .
       dockerfile: Dockerfile
-    # Cargamos todas las variables desde el archivo .env
+
+    # Carga variables base desde .env (puerto, JWKS, etc.)
     env_file:
       - .env
-    environment:
-      # Override SOLO cuando se necesita ajustar para Docker (no para local dev).
-      # Ejemplo: "localhost" no sirve dentro de contenedores, usamos el nombre del servicio.
-      DB_HOST: postgres
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_SSLMODE: ${DB_SSLMODE}
 
-      # Mongo dentro de la red de Docker (en lugar de localhost)
-      MONGO_URI: mongodb://admin:password@mongo:27017/?authSource=admin
+    # Overrides para correr dentro de Docker (usar nombres de servicio en lugar de "localhost")
+    environment:
+      # PostgreSQL en la red de Docker
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      DB_NAME: ${DB_NAME:-localhost}
+      DB_SSLMODE: ${DB_SSLMODE:-disable}
+
+      # MongoDB en la red de Docker (authSource=admin porque el root se crea en DB "admin")
+      MONGO_URI: ${MONGO_URI}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
 
-      # Puerto interno del servidor
-      SERVER_PORT: ${SERVER_PORT}
+      # Puerto interno de la app
+      SERVER_PORT: ${SERVER_PORT:-9190}
 
-      # Montamos las llaves JWT como archivo dentro del contenedor
-      JWT_PRIVATE_KEY_PATH: /app/keys/jwtRS256.key
-      JWT_PUBLIC_KEY_PATH: /app/keys/jwtRS256.key.pub
+      # 👉 Rutas a las llaves (montadas como secrets en /run/secrets/*)
+      JWT_PRIVATE_KEY_PATH: /run/secrets/jwt_private_key
+      JWT_PUBLIC_KEY_PATH: /run/secrets/jwt_public_key
 
     ports:
-      - "9190:9190" # expone el puerto de la API hacia el host
+      - "9190:9190"
 
-    volumes:
-      # Montamos las llaves en modo solo lectura (para no sobrescribir desde dentro del contenedor)
-      - ./keys:/app/keys:ro
+    #  NO montamos ./keys como volumen cuando usamos secrets.
+    # volumes:
+    #   - ./keys:/app/keys:ro
 
     depends_on:
-      # Garantizamos que Postgres y Mongo estén listos antes de iniciar
       postgres:
         condition: service_healthy
       mongo:
@@ -47,7 +53,14 @@ services:
     networks:
       - backend
 
-  # PostgreSQL (base de datos relacional principal)
+    # Montaje de secrets.
+    user: "0:0" # ← root en dev
+    secrets:
+      - source: jwt_private_key
+        target: jwt_private_key
+      - source: jwt_public_key
+        target: jwt_public_key
+
   postgres:
     image: postgres:16
     container_name: postgres
@@ -56,15 +69,14 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432" # expone Postgres al host (útil para conectarse desde pgAdmin o cliente local)
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data # persistencia de datos
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      # Verificamos si Postgres está listo antes de levantar el servicio principal
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${DB_USER} -d ${DB_NAME} -h postgres -p ${DB_PORT}",
+          "pg_isready -U ${DB_USER} -d ${DB_NAME} -h postgres -p ${DB_PORT:-5432}",
         ]
       interval: 10s
       timeout: 5s
@@ -73,7 +85,6 @@ services:
     networks:
       - backend
 
-  # MongoDB (base de datos documental para autenticación / sesiones / logs)
   mongo:
     image: mongo:7
     container_name: mongo
@@ -82,11 +93,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
     ports:
-      - "27017:27017" # expone Mongo al host (para conectarse con Compass o cliente Mongo)
+      - "27017:27017"
     volumes:
-      - mongo_data:/data/db # persistencia de datos
+      - mongo_data:/data/db
     healthcheck:
-      # Verificamos que el servidor Mongo responda a un ping
       test:
         [
           "CMD",
@@ -105,12 +115,19 @@ services:
     networks:
       - backend
 
-# Volúmenes persistentes
+networks:
+  backend:
+    driver: bridge
+
 volumes:
   postgres_data:
   mongo_data:
 
-# Red interna para comunicación entre servicios
-networks:
-  backend:
-    driver: bridge
+# Definición de secrets
+# - Estos archivos DEBEN existir en el host (fuera del build context).
+# - .dockerignore puede ignorar 'keys/' para la build; no afecta a secrets (Compose los lee del host).
+secrets:
+  jwt_private_key:
+    file: ./keys/jwtRS256.key
+  jwt_public_key:
+    file: ./keys/jwtRS256.key.pub
