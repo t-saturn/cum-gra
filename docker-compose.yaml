@@ -1,0 +1,99 @@
+services:
+  auth-service-server:
+    container_name: auth-service-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Cargamos tu .env (mantiene JWT_ISS, JWKS_URL, etc.)
+    env_file:
+      - .env
+    environment:
+      # Override SOLO para funcionar dentro de la red de Docker
+      DB_HOST: postgres # en lugar de localhost
+      DB_PORT: "5432"
+      DB_USER: rahman
+      DB_PASSWORD: rahman
+      DB_NAME: cum
+      DB_SSLMODE: disable
+
+      # Mongo dentro de la red de Docker
+      MONGO_URI: mongodb://admin:password@mongo:27017/?authSource=admin
+      MONGO_DB_NAME: auth_db
+
+      # (Opcional) Si prefieres forzar rutas absolutas a llaves dentro del contenedor
+      # JWT_PRIVATE_KEY_PATH: /app/keys/jwtRS256.key
+      # JWT_PUBLIC_KEY_PATH: /app/keys/jwtRS256.key.pub
+
+      # Puerto interno de servidor
+      SERVER_PORT: "9190"
+    ports:
+      - "9190:9190"
+    volumes:
+      # Montamos las llaves como solo lectura
+      - ./keys:/app/keys:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: rahman
+      POSTGRES_PASSWORD: rahman
+      POSTGRES_DB: cum
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rahman -d cum -h localhost -p 5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: auth_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--username",
+          "admin",
+          "--password",
+          "password",
+          "--eval",
+          "db.adminCommand('ping')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  backend:
+    driver: bridge
