@@ -31,11 +31,11 @@ help:
 # COMPILACIÓN Y EJECUCIÓN
 build:
 	@echo "Compilando aplicación..."
-	@go build -o bin/$(APP_NAME) cmd/main.go
+	@go build -o bin/$(APP_NAME) cmd/server/main.go
 	@echo "Compilación completada: bin/$(APP_NAME)"
 run:
 	@echo "Ejecutando aplicación..."
-	@go run cmd/main.go
+	@go run cmd/server/main.go
 dev:
 	@echo "Iniciando desarrollo en caliente..."
 	@command -v air >/dev/null 2>&1 || { echo "Air no está instalado. Instala con: go install github.com/cosmtrek/air@latest"; exit 1; }
