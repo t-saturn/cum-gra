@@ -1,0 +1,32 @@
+# binarios / artefactos
+bin/
+build/
+dist/
+coverage*
+*.test
+*.out
+
+# cachés / IDE
+**/.cache
+**/*.log
+.vscode
+.idea
+.DS_Store
+
+# vendor (si no usas vendor)
+vendor/
+
+# VCS
+.git
+.gitignore
+
+# env/secretos (se pasan con env_file)
+.env
+.env.*
+
+# llaves: las montamos por volumen, no las horneamos
+keys/
+
+# opcional
+Dockerfile
+docker-compose.yaml

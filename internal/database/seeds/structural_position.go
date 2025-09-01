@@ -25,7 +25,7 @@ func SeedStructuralPositions() error {
 	logrus.Info("Seeding posiciones estructurales desde JSON...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	file, err := os.Open("data/structural_positions.json")
+	file, err := os.Open("internal/data/structural_positions.json")
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
 	}
