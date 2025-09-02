@@ -32,7 +32,7 @@ services:
       # Puerto interno de la app
       SERVER_PORT: ${SERVER_PORT:-9190}
 
-      # 👉 Rutas a las llaves (montadas como secrets en /run/secrets/*)
+      # Rutas a las llaves (montadas como secrets en /run/secrets/*)
       JWT_PRIVATE_KEY_PATH: /run/secrets/jwt_private_key
       JWT_PUBLIC_KEY_PATH: /run/secrets/jwt_public_key
 
