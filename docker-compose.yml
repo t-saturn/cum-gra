@@ -13,15 +13,15 @@ services:
     environment:
       # Overrides para entorno Docker
       # - SERVER_PORT: lo definimos igual que en .env, pero explícito aquí por claridad
-      SERVER_PORT: ${SERVER_PORT}
+      SERVER_PORT: ${SERVER_PORT:-9191}
 
       # - DB_HOST: en Docker usamos el hostname del servicio postgres (no localhost)
-      DB_HOST: postgres
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_SSLMODE: ${DB_SSLMODE}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      DB_NAME: ${DB_NAME:-cum}
+      DB_SSLMODE: ${DB_SSLMODE:-disable}
 
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}" # expone el puerto hacia el host
