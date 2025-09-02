@@ -3,22 +3,28 @@ FROM golang:1.24.4-bookworm AS builder
 
 ENV CGO_ENABLED=0 \
   GO111MODULE=on \
-  GOTOOLCHAIN=auto
+  GOTOOLCHAIN=auto \
+  GOPROXY=https://proxy.golang.org,direct \
+  GOFLAGS=-mod=mod
 
 WORKDIR /src
 
-# Cache de dependencias
+# 1) Pre-cache: solo go.mod (si tienes go.sum en el repo y quieres usarlo, puedes copiarlo también)
 COPY go.mod ./
-# COPY go.sum ./   # descomenta si lo tienes para cache más estable
-RUN go mod download
+# COPY go.sum ./
+# (opcional con BuildKit) cache de módulos
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-# Código
+# 2) Código
 COPY . .
 
-# Binarios: server, migrate y seed
-RUN go build -ldflags="-s -w" -o /out/server  ./cmd/server
-RUN go build -ldflags="-s -w" -o /out/migrate ./cmd/migrate
-RUN go build -ldflags="-s -w" -o /out/seed    ./cmd/seed
+# 3) Asegura que se resuelvan TODAS las dependencias transitivas y se genere go.sum
+RUN --mount=type=cache,target=/go/pkg/mod go mod tidy
+
+# 4) Binarios: server, migrate y seed (mejor por paquete que por archivo)
+RUN --mount=type=cache,target=/go/pkg/mod go build -ldflags="-s -w" -o /out/server  ./cmd/server
+RUN --mount=type=cache,target=/go/pkg/mod go build -ldflags="-s -w" -o /out/migrate ./cmd/migrate
+RUN --mount=type=cache,target=/go/pkg/mod go build -ldflags="-s -w" -o /out/seed    ./cmd/seed
 
 # ============ Runtime ============
 # Usamos Alpine para poder ejecutar un script de arranque (sh) y nc
@@ -35,7 +41,7 @@ COPY --from=builder /out/seed    /app/seed
 
 # Archivos de migraciones/seeds (ajusta si tu repo los tiene en otra ruta)
 COPY internal/database /app/internal/database
-COPY internal/data /app/internal/data
+COPY internal/data     /app/internal/data
 
 # Entrypoint: espera a Postgres, ejecuta migrate/seed y arranca el server
 COPY <<'SH' /entrypoint.sh
@@ -46,13 +52,11 @@ DB_HOST="${DB_HOST:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 
 echo "[entrypoint] Esperando a PostgreSQL en ${DB_HOST}:${DB_PORT}..."
-# Espera TCP
 until nc -z "$DB_HOST" "$DB_PORT"; do
   sleep 2
 done
 
 echo "[entrypoint] Ejecutando migraciones..."
-# Reintentos por si el motor acepta TCP pero aún no está listo
 for i in 1 2 3 4 5; do
   /app/migrate -cmd=up -path=/app/internal/database/migrations && break
   echo "[entrypoint] migrate fallo, reintento $i/5..."
