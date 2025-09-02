@@ -22,7 +22,7 @@ services:
       DB_PORT: ${DB_PORT:-5432}
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-admin}
-      DB_NAME: ${DB_NAME:-localhost}
+      DB_NAME: ${DB_NAME:-cum}
       DB_SSLMODE: ${DB_SSLMODE:-disable}
 
       # MongoDB en la red de Docker (authSource=admin porque el root se crea en DB "admin")

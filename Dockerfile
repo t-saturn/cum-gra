@@ -1,38 +1,41 @@
 # ============ Builder ============
 FROM golang:1.24-bookworm AS builder
-# Alternativa ultra exacta:
-# FROM golang:1.24.4-bookworm AS builder
 
 ENV CGO_ENABLED=0 \
   GO111MODULE=on \
-  GOTOOLCHAIN=auto
+  GOTOOLCHAIN=auto \
+  GOPROXY=https://proxy.golang.org,direct \
+  GOFLAGS=-mod=mod
+# asegura que go pueda escribir go.sum si hace falta
 
 WORKDIR /src
 
-# Cache de dependencias
+# 1. Pre-cache: solo go.mod (y go.sum si existiera en el repo)
 COPY go.mod ./
-# Si tienes go.sum, mejor incluirlo para cache más estable
+# Si tienes go.sum en el repo, INCLÚYELO para más cache:
 # COPY go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-# Copiamos el resto del código
+# 2. Copia el resto del código
 COPY . .
 
-# Compilar binario estatico
-RUN go build -o /out/server ./cmd/server/main.go
+# 3. Genera/actualiza go.sum con TODAS las dependencias (transitivas incluidas)
+RUN --mount=type=cache,target=/go/pkg/mod go mod tidy
+
+# 4. Compila
+RUN --mount=type=cache,target=/go/pkg/mod go build -o /out/server ./cmd/server/main.go
+
+# (opcional) crea carpeta de logs para runtime distroless:nonroot
+RUN mkdir -p /out/logs
 
 # ============ Runtime ============
-# Si tu app hace llamadas HTTPS, usa static-debian12; si no, puedes dejar "static"
 FROM gcr.io/distroless/static-debian12:nonroot
-# Alternativa minimalista sin CA certs:
-# FROM gcr.io/distroless/static:nonroot
-
 WORKDIR /app
 
-# Copiamos el binario
 COPY --from=builder /out/server /app/server
+# copia la carpeta logs con ownership nonroot
+COPY --from=builder --chown=nonroot:nonroot /out/logs /app/logs
 
-# El volumen montará /app/keys
 EXPOSE 9190
 USER nonroot:nonroot
 ENTRYPOINT ["/app/server"]
