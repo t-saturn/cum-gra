@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs'; // asegura acceso a headers.raw() en Node
-const AUTH_BASE_URL = process.env.AUTH_BASE_URL ?? 'http://localhost:5555';
+const AUTH_BASE_URL = process.env.AUTH_BASE_URL ?? 'http://10.10.10.43:5555';
 
 export async function GET(req: NextRequest) {
   // 1. Leer cookies requeridas

@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'; // Evita caché en rutas app (introspecc
 function getOrigin(req: NextRequest) {
   // 1. Resolver origen real (http/https + host) soportando reverse proxy
   const proto = req.headers.get('x-forwarded-proto') ?? 'http';
-  const host = req.headers.get('host') ?? 'localhost:5556';
+  const host = req.headers.get('host') ?? '10.10.10.43:5556';
   return `${proto}://${host}`;
 }
 
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   const callbackB64 = toBase64(targetUrl);
 
   // 6. Construir URL del backend /auth/introspect con redirect y callback_url (base64)
-  const backend = new URL('http://localhost:5555/auth/introspect');
+  const backend = new URL('http://10.10.10.43:5555/auth/introspect');
   backend.searchParams.set('redirect', 'true');
   backend.searchParams.set('callback_url', callbackB64);
 
@@ -73,11 +73,11 @@ export async function GET(req: NextRequest) {
     }
 
     // 11. Sin sesión → redirigir al Auth UI con callback_url (base64) para volver post-login
-    const authUI = `http://localhost:6160/auth/login?callback_url=${encodeURIComponent(callbackB64)}`;
+    const authUI = `http://10.10.10.43:6160/auth/login?callback_url=${encodeURIComponent(callbackB64)}`;
     return NextResponse.redirect(authUI, { status: 302 });
   } catch {
     // 12. Error de red/infra → fallback al Auth UI con callback
-    const authUI = `http://localhost:6160/auth/login?callback_url=${encodeURIComponent(callbackB64)}`;
+    const authUI = `http://10.10.10.43:6160/auth/login?callback_url=${encodeURIComponent(callbackB64)}`;
     return NextResponse.redirect(authUI, { status: 302 });
   }
 }
