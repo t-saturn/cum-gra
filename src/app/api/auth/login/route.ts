@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // URL base del backend (API Gateway o servicio de autenticación)
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://10.10.10.43:5555';
 
 // POST /api/auth/login
 // Body: { username, password, callback_url? }
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   // 2. Si no se proporciona callback_url, usar una URL por defecto del frontend (opcional - /home)
   if (!body.callback_url) {
-    const FRONT_BASE = process.env.NEXT_PUBLIC_FRONT_BASE || 'http://localhost:3000';
+    const FRONT_BASE = process.env.NEXT_PUBLIC_FRONT_BASE || 'http://10.10.10.43:3000';
     // body.callback_url = `${FRONT_BASE}/home`;
     body.callback_url = `${FRONT_BASE}`;
   }

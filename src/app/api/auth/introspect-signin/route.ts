@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://10.10.10.43:5555';
 
 // GET /api/auth/introspect-signin
 // Función: Reenvía cookies de sesión al gateway (/auth/introspect-signin) y controla la respuesta.

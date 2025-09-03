@@ -16,8 +16,8 @@ const genFlowIdHex = (len = 32) => {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:5555';
-const FRONT_BASE = process.env.NEXT_PUBLIC_FRONT_BASE ?? 'http://localhost:3000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://10.10.10.43:5555';
+const FRONT_BASE = process.env.NEXT_PUBLIC_FRONT_BASE ?? 'http://10.10.10.43:3000';
 
 const ERROR_MAP: Record<string, string> = {
   INVALID_CREDENTIALS: 'Credenciales inválidas',
