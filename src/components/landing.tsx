@@ -7,7 +7,7 @@ import { Login } from './auth/auth';
 
 const Logo = () => (
   <div className="flex items-center gap-2">
-    <Image src="/img/logo.png" alt="Logo Gobierno Regional de Ayacucho" width={32} height={32} className="rounded-full" priority />
+    <Image src="/img/gra.png" alt="Logo Gobierno Regional de Ayacucho" width={32} height={32} className="rounded-full" priority />
     <span className="font-bold text-xl tracking-tight">
       <span className="font-black text-[#d20f39] hover:text-red-400 text-2xl">Gobierno Regional de Ayacucho</span>
     </span>
