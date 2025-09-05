@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://10.10.10.43:5555';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
 
 // GET /api/auth/introspect-signin
 // Función: Reenvía cookies de sesión al gateway (/auth/introspect-signin) y controla la respuesta.
@@ -9,6 +9,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://10.10.10.43:5555';
 // - Siempre propaga los Set-Cookie que lleguen del backend.
 export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
+  console.log(API_BASE);
 
   // 1. Leer parámetros redirect y callback_url (base64 opcional)
   const redirect = url.searchParams.get('redirect') ?? 'true';
