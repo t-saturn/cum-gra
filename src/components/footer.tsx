@@ -7,17 +7,17 @@ const ORG_NAME = 'Gobierno Regional de Ayacucho';
 const ORG_SUBTITLE = 'Sistema de Gestión Interno';
 
 // TODO: Reemplaza con la dirección oficial
-const ORG_ADDRESS = 'Actualizar dirección oficial';
+const ORG_ADDRESS = 'Jr. Callao N 122, Ayacucho, Huamanga, Ayacucho';
 
 // TODO: Reemplaza con el teléfono oficial (formato internacional si corresponde)
-const ORG_PHONE = '+51 XXX XXX XXX';
+const ORG_PHONE = '066-303195';
 
 // TODO: Reemplaza con el correo oficial (por ejemplo, mesa de partes o soporte OTIC)
-const ORG_EMAIL = 'actualizar@regionayacucho.gob.pe';
+const ORG_EMAIL = 'kcalle@regionayacucho.gob.pe';
 
 // Enlaces conocidos/externos
 const LINKS = {
-  portalPrincipal: 'https://www.gob.pe/region-ayacucho', // Portal en gob.pe
+  portalPrincipal: 'https://www.gob.pe/regionayacucho', // Portal en gob.pe
   terminos: '#', // Si tienes una URL específica, colócala aquí
   privacidad: '#', // Si tienes una URL específica, colócala aquí
   contactoTecnico: '#', // mailto: se arma abajo si quieres usar ORG_EMAIL
