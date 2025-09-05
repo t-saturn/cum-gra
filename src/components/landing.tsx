@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { ShieldCheck, Users, Lock, ArrowRight } from 'lucide-react';
+import { Footer } from './footer';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
   <div className={`mx-auto w-full max-w-6xl px-6 ${className ?? ''}`}>{children}</div>
@@ -177,100 +178,82 @@ const AnimatedBars: React.FC = () => {
   );
 };
 
-// const Footer: React.FC = () => (
-//   <footer className="border-t">
-//     <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
-//       <p>© {new Date().getFullYear()} Gobierno Regional de Ayacucho [Oficina de Tecnologías de la Información y Comunicación] — SSO</p>
-//       <nav className="flex items-center gap-4">
-//         <a href="#" className="hover:text-foreground">
-//           Privacidad
-//         </a>
-//         <a href="#" className="hover:text-foreground">
-//           Términos
-//         </a>
-//         <a href="#" className="hover:text-foreground">
-//           Estado del servicio
-//         </a>
-//       </nav>
-//     </Container>
-//   </footer>
-// );
-const Footer: React.FC = () => {
-  const year = new Date().getFullYear();
+// const Footer: React.FC = () => {
+//   const year = new Date().getFullYear();
 
-  // Frases que se alternan con efecto de tipeo
-  const phrases = ['Gobierno Regional de Ayacucho', 'Oficina de Tecnologías de la Información y Comunicación'];
+//   // Frases que se alternan con efecto de tipeo
+//   const phrases = ['Gobierno Regional de Ayacucho', 'Oficina de Tecnologías de la Información y Comunicación'];
 
-  const [phraseIndex, setPhraseIndex] = React.useState(0);
-  const [subIndex, setSubIndex] = React.useState(0);
-  const [deleting, setDeleting] = React.useState(false);
-  const [blink, setBlink] = React.useState(true);
+//   const [phraseIndex, setPhraseIndex] = React.useState(0);
+//   const [subIndex, setSubIndex] = React.useState(0);
+//   const [deleting, setDeleting] = React.useState(false);
+//   const [blink, setBlink] = React.useState(true);
 
-  // Parpadeo del cursor
-  React.useEffect(() => {
-    const blinkInterval = setInterval(() => setBlink((v) => !v), 500);
-    return () => clearInterval(blinkInterval);
-  }, []);
+//   // Parpadeo del cursor
+//   React.useEffect(() => {
+//     const blinkInterval = setInterval(() => setBlink((v) => !v), 500);
+//     return () => clearInterval(blinkInterval);
+//   }, []);
 
-  // Efecto de escribir/borrar
-  React.useEffect(() => {
-    const current = phrases[phraseIndex];
-    const isComplete = subIndex === current.length;
+//   // Efecto de escribir/borrar
+//   React.useEffect(() => {
+//     const current = phrases[phraseIndex];
+//     const isComplete = subIndex === current.length;
 
-    const typeSpeed = 55;
-    const deleteSpeed = 38;
-    const pauseEnd = 1200; // pausa al terminar de escribir
-    const pauseStart = 400; // pausa antes de empezar a escribir la siguiente
+//     const typeSpeed = 55;
+//     const deleteSpeed = 38;
+//     const pauseEnd = 1200; // pausa al terminar de escribir
+//     const pauseStart = 400; // pausa antes de empezar a escribir la siguiente
 
-    let timeout: ReturnType<typeof setTimeout>;
+//     let timeout: ReturnType<typeof setTimeout>;
 
-    if (!deleting && isComplete) {
-      // Pausa y empieza a borrar
-      timeout = setTimeout(() => setDeleting(true), pauseEnd);
-    } else if (deleting && subIndex === 0) {
-      // Cambia a la siguiente frase y empieza a escribir
-      timeout = setTimeout(() => {
-        setDeleting(false);
-        setPhraseIndex((i) => (i + 1) % phrases.length);
-      }, pauseStart);
-    } else {
-      // Avanza un carácter (escritura o borrado)
-      timeout = setTimeout(() => setSubIndex((i) => i + (deleting ? -1 : 1)), deleting ? deleteSpeed : typeSpeed);
-    }
+//     if (!deleting && isComplete) {
+//       // Pausa y empieza a borrar
+//       timeout = setTimeout(() => setDeleting(true), pauseEnd);
+//     } else if (deleting && subIndex === 0) {
+//       // Cambia a la siguiente frase y empieza a escribir
+//       timeout = setTimeout(() => {
+//         setDeleting(false);
+//         setPhraseIndex((i) => (i + 1) % phrases.length);
+//       }, pauseStart);
+//     } else {
+//       // Avanza un carácter (escritura o borrado)
+//       timeout = setTimeout(() => setSubIndex((i) => i + (deleting ? -1 : 1)), deleting ? deleteSpeed : typeSpeed);
+//     }
 
-    return () => clearTimeout(timeout);
-  }, [subIndex, deleting, phraseIndex]);
+//     return () => clearTimeout(timeout);
+//   }, [subIndex, deleting, phraseIndex]);
 
-  // Reinicia el subIndex cuando cambiamos de frase
-  React.useEffect(() => {
-    if (!deleting) setSubIndex(0);
-  }, [phraseIndex, deleting]);
+//   // Reinicia el subIndex cuando cambiamos de frase
+//   React.useEffect(() => {
+//     if (!deleting) setSubIndex(0);
+//   }, [phraseIndex, deleting]);
 
-  const typed = phrases[phraseIndex].slice(0, subIndex);
+//   const typed = phrases[phraseIndex].slice(0, subIndex);
 
-  return (
-    <footer className="border-t">
-      <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
-        <p aria-live="polite" className="md:text-left text-center">
-          © {year} <span className="font-bold whitespace-nowrap">{typed}</span>
-          <span className={`ml-1 inline-block w-[1ch] select-none ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
-        </p>
+//   return (
+//     <footer className="border-t">
+//       <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
+//         <p aria-live="polite" className="md:text-left text-center">
+//           © {year} <span className="font-bold whitespace-nowrap">{typed}</span>
+//           <span className={`ml-1 inline-block w-[1ch] select-none ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
+//         </p>
 
-        <nav className="flex items-center gap-4">
-          <a href="#" className="hover:text-foreground">
-            Privacidad
-          </a>
-          <a href="#" className="hover:text-foreground">
-            Términos
-          </a>
-          <a href="#" className="hover:text-foreground">
-            Estado del servicio
-          </a>
-        </nav>
-      </Container>
-    </footer>
-  );
-};
+//         <nav className="flex items-center gap-4">
+//           <a href="#" className="hover:text-foreground">
+//             Privacidad
+//           </a>
+//           <a href="#" className="hover:text-foreground">
+//             Términos
+//           </a>
+//           <a href="#" className="hover:text-foreground">
+//             Estado del servicio
+//           </a>
+//         </nav>
+//       </Container>
+//     </footer>
+//   );
+// };
 
 const Landing = () => {
   return (
