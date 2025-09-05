@@ -49,7 +49,7 @@ const socialLinks = [
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-background mt-auto border-t border-border">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 container">
         {/* Sección principal del footer */}
         <div className="py-8">
           <div className="gap-8 grid grid-cols-1 md:grid-cols-4">

@@ -9,7 +9,7 @@ import { ShieldCheck, Users, Lock, ArrowRight } from 'lucide-react';
 import { Footer } from './footer';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <div className={`mx-auto w-full max-w-6xl px-6 ${className ?? ''}`}>{children}</div>
+  <div className={`mx-auto w-full container px-6 ${className ?? ''}`}>{children}</div>
 );
 
 const Logo: React.FC = () => (
