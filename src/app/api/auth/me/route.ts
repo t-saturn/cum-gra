@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://10.10.10.43:5555';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5555';
 
 // GET /api/auth/me
 // Función: Obtener información de la sesión/usuario desde el API Gateway (/auth/me).

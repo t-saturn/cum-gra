@@ -48,7 +48,6 @@ const Header: React.FC = () => {
   );
 };
 
-// Footer: aparece al hacer scroll
 const FooterReveal: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
@@ -74,7 +73,6 @@ const Landing = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      {/* Hero */}
       <main className="flex flex-1 justify-center items-center">
         <section className="w-full">
           <Container className="flex flex-col items-center text-center">
@@ -103,7 +101,6 @@ const Landing = () => {
         </section>
       </main>
 
-      {/* Footer con efecto */}
       <FooterReveal />
     </div>
   );
