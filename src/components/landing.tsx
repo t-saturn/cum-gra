@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Footer } from './footer';
+import { motion } from 'framer-motion';
 import { ThemeToggle } from './theme/theme-toggle';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
@@ -94,7 +95,27 @@ const Landing = () => {
 
               <div className="mx-auto mt-10 p-4 sm:p-6 border rounded-2xl w-full max-w-4xl">
                 <p className="mb-2 text-muted-foreground text-sm">Vista previa plataforma</p>
-                <div className="border border-border/50 rounded-xl h-[280px] sm:h-[360px]" />
+                <div className="flex justify-center items-center border border-border/50 rounded-xl h-[280px] sm:h-[360px] [perspective:1000px]">
+                  <motion.div
+                    className="relative w-30 h-30 [transform-style:preserve-3d]"
+                    initial={{ rotateX: 0, rotateY: 0 }}
+                    animate={{ rotateX: 360, rotateY: 360 }}
+                    transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
+                  >
+                    {/* Frente */}
+                    <div className="absolute inset-0 bg-[#d20f39]/60 border border-border [transform:translateZ(60px)]" />
+                    {/* Atrás */}
+                    <div className="absolute inset-0 bg-[#d20f39]/30 border border-border [transform:rotateY(180deg)_translateZ(60px)]" />
+                    {/* Derecha */}
+                    <div className="absolute inset-0 bg-[#d20f39]/50 border border-border [transform:rotateY(90deg)_translateZ(60px)]" />
+                    {/* Izquierda */}
+                    <div className="absolute inset-0 bg-[#d20f39]/40 border border-border [transform:rotateY(-90deg)_translateZ(60px)]" />
+                    {/* Arriba */}
+                    <div className="absolute inset-0 bg-[#d20f39]/45 border border-border [transform:rotateX(90deg)_translateZ(60px)]" />
+                    {/* Abajo */}
+                    <div className="absolute inset-0 bg-[#d20f39]/25 border border-border [transform:rotateX(-90deg)_translateZ(60px)]" />
+                  </motion.div>
+                </div>
               </div>
             </div>
           </Container>
