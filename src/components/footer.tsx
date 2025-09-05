@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, ExternalLink, Shield, FileText } from 'lucide-react';
+import { Mail, Phone, MapPin, ExternalLink, Shield, FileText, Globe, Facebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
@@ -42,8 +42,8 @@ const contactInfo = [
 ];
 
 const socialLinks = [
-  { name: 'Web', href: LINKS.portalPrincipal },
-  { name: 'Facebook', href: LINKS.facebook },
+  { name: 'Web', href: LINKS.portalPrincipal, icon: <Globe /> },
+  { name: 'Facebook', href: LINKS.facebook, icon: <Facebook /> },
 ];
 
 export const Footer: React.FC = () => {
@@ -165,7 +165,7 @@ export const Footer: React.FC = () => {
               {socialLinks.map((social) => (
                 <Button key={social.name} variant="ghost" size="sm" className="p-0 w-6 h-6 text-muted-foreground hover:text-foreground" asChild>
                   <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.name}>
-                    {social.name.charAt(0)}
+                    {social.icon}
                   </a>
                 </Button>
               ))}
