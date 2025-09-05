@@ -1,42 +1,55 @@
 'use client';
 
-import { ThemeToggle } from '@/components/theme/theme-toggle';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
 import React from 'react';
-import { Login } from './auth/auth';
-import { ArrowRight, Lock, ShieldCheck, Users } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { ShieldCheck, Users, Lock, ArrowRight } from 'lucide-react';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
   <div className={`mx-auto w-full max-w-6xl px-6 ${className ?? ''}`}>{children}</div>
 );
 
 const Logo: React.FC = () => (
-  <div className="flex items-center gap-3">
-    <Image src="/img/logo.png" alt="Logo Gobierno Regional de Ayacucho" width={40} height={40} className="rounded-full" priority />
-    <div className="leading-tight">
+  <div className="flex items-center gap-2 sm:gap-3" data-testid="logo">
+    <Image src="/img/logo.png" alt="Logo Gobierno Regional de Ayacucho" width={36} height={36} className="rounded-full" priority />
+    <div className="hidden sm:block leading-tight">
       <p className="font-bold tracking-tight">
-        <span className="font-black text-[#d20f39] text-xl">Gobierno Regional</span>
+        <span className="font-black text-[#d20f39] text-xl sm:text-2xl">Gobierno Regional</span>
       </p>
-      <p className="font-black text-[#d20f39] text-xl tracking-tight">de Ayacucho</p>
+      <p className="font-black text-[#d20f39] text-xl sm:text-2xl tracking-tight">de Ayacucho</p>
     </div>
   </div>
 );
 
 const Header: React.FC = () => (
-  <header className="z-20 relative bg-background">
-    <Container className="flex justify-between items-center py-4">
+  <header className="top-0 z-50 fixed inset-x-0 bg-background/80 backdrop-blur border-b">
+    <Container className="flex justify-between items-center py-3 sm:py-4">
       <Logo />
       <ThemeToggle />
     </Container>
   </header>
 );
 
+const LoginButton: React.FC<{ continueTo?: string }> = ({ continueTo }) => {
+  const href = continueTo ? `/auth/login?continue=${encodeURIComponent(continueTo)}` : '/auth/login';
+  return (
+    <Link
+      href={href}
+      data-testid="login-button"
+      className="group inline-flex items-center gap-2 bg-[#d20f39] shadow hover:shadow-md px-5 py-2.5 rounded-2xl focus:outline-none focus-visible:ring-[#d20f39]/60 focus-visible:ring-2 font-semibold text-white text-sm transition"
+    >
+      Iniciar sesión
+      <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" />
+    </Link>
+  );
+};
+
 const AnimatedBackdrop: React.FC = () => (
   <div className="-z-10 absolute inset-0 pointer-events-none">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(210,15,57,0.06),transparent_60%)]" />
     <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,rgba(210,15,57,0.06),transparent)]" />
-
     <motion.div
       className="-top-24 -left-24 absolute bg-[#d20f39]/20 blur-3xl rounded-full w-72 h-72"
       animate={{ x: [0, 20, -10, 0], y: [0, -10, 10, 0], rotate: [0, 15, -10, 0] }}
@@ -47,7 +60,6 @@ const AnimatedBackdrop: React.FC = () => (
       animate={{ x: [0, -15, 10, 0], y: [0, 10, -10, 0] }}
       transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
     />
-
     <div className="absolute inset-0 opacity-40 [mask-image:radial-gradient(circle_at_center,black,transparent_70%)]">
       <div className="bg-[radial-gradient(#000_1px,transparent_1px)] w-full h-full [background-size:12px_12px]" />
     </div>
@@ -55,26 +67,31 @@ const AnimatedBackdrop: React.FC = () => (
 );
 
 const Hero: React.FC = () => (
-  <section className="relative min-h-[70vh]">
+  <section className="relative py-10 sm:py-14 lg:min-h-[70vh]">
     <AnimatedBackdrop />
-    <Container className="items-center gap-10 grid grid-cols-1 lg:grid-cols-2 py-16 min-h-[70vh]">
-      <div className="space-y-7">
+    <Container className="items-center gap-8 sm:gap-12 grid grid-cols-1 lg:grid-cols-2">
+      <div className="space-y-6 sm:space-y-7">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="font-black text-4xl md:text-5xl leading-tight tracking-tight"
+          className="font-black text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight"
         >
           Plataforma Única de Autenticación
           <span className="block text-[#d20f39]">Gobierno Regional de Ayacucho</span>
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }} className="max-w-xl text-muted-foreground text-base">
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="max-w-xl text-muted-foreground text-sm sm:text-base"
+        >
           Accede de forma segura a los servicios institucionales con inicio de sesión único (SSO), cumplimiento, auditoría y protección de cuentas.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="flex flex-wrap items-center gap-3">
-          <Login />
+          <LoginButton />
 
           <a href="#beneficios" className="group inline-flex items-center gap-2 hover:shadow px-4 py-2 border rounded-2xl font-medium text-sm transition">
             Conoce más
@@ -86,7 +103,7 @@ const Hero: React.FC = () => (
           initial="hidden"
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
-          className="flex flex-wrap gap-4 mt-4 text-muted-foreground text-sm"
+          className="flex flex-wrap gap-3 sm:gap-4 mt-4 text-muted-foreground text-xs sm:text-sm"
         >
           {['Cifrado moderno', 'Auditoría de accesos', 'Integración con sistemas internos'].map((item) => (
             <motion.li key={item} variants={{ hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0 } }} className="inline-flex items-center gap-2 px-3 py-1 border rounded-full">
@@ -103,7 +120,7 @@ const Hero: React.FC = () => (
         transition={{ duration: 0.6, delay: 0.15 }}
         className="relative lg:justify-self-end mt-8 lg:mt-0 lg:max-w-none max-w-md sm:max-w-lg"
       >
-        <div className="relative bg-background/60 backdrop-blur p-5 sm:p-6 border rounded-3xl overflow-hidden">
+        <div className="relative bg-background/60 shadow-sm backdrop-blur p-5 sm:p-6 border rounded-3xl overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 via-transparent to-transparent" aria-hidden />
 
           <div className="relative gap-4 sm:gap-5 grid">
@@ -131,7 +148,7 @@ const Hero: React.FC = () => (
 );
 
 const Stat: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
-  <div className="p-4 border rounded-2xl">
+  <div className="p-4 border rounded-2xl" data-testid={`stat-${label}`}>
     <div className="flex justify-between items-center">
       <span className="text-muted-foreground">{label}</span>
       <div className="opacity-70">{icon}</div>
@@ -141,9 +158,12 @@ const Stat: React.FC<{ icon: React.ReactNode; label: string; value: string }> = 
 );
 
 const AnimatedBars: React.FC = () => {
+  // const bars = new Array(24).fill(0);
+  // const bars = Array.from({ length: 24 }, (_, i) => i);
   const bars = Array.from({ length: 24 }, () => 0);
+
   return (
-    <div className="flex items-end gap-1 p-2 h-full">
+    <div className="flex items-end gap-1 p-2 h-full" data-testid="animated-bars">
       {bars.map((_, i) => (
         <motion.div
           key={i}
@@ -157,72 +177,124 @@ const AnimatedBars: React.FC = () => {
   );
 };
 
-// Benefits section
-const Benefits: React.FC = () => (
-  <section id="beneficios" className="relative">
-    <Container className="py-16">
-      <motion.h2
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.5 }}
-        className="font-black text-3xl text-center tracking-tight"
-      >
-        Beneficios Clave
-      </motion.h2>
+// const Footer: React.FC = () => (
+//   <footer className="border-t">
+//     <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
+//       <p>© {new Date().getFullYear()} Gobierno Regional de Ayacucho [Oficina de Tecnologías de la Información y Comunicación] — SSO</p>
+//       <nav className="flex items-center gap-4">
+//         <a href="#" className="hover:text-foreground">
+//           Privacidad
+//         </a>
+//         <a href="#" className="hover:text-foreground">
+//           Términos
+//         </a>
+//         <a href="#" className="hover:text-foreground">
+//           Estado del servicio
+//         </a>
+//       </nav>
+//     </Container>
+//   </footer>
+// );
+const Footer: React.FC = () => {
+  const year = new Date().getFullYear();
 
-      <div className="gap-5 grid grid-cols-1 md:grid-cols-3 mt-10">
-        <BenefitCard title="Seguridad y Cumplimiento" desc="Políticas de acceso, auditoría y controles para proteger la información institucional." />
-        <BenefitCard title="Experiencia Unificada" desc="Un solo inicio de sesión para múltiples sistemas, con redirecciones confiables." />
-        <BenefitCard title="Escalable y Modular" desc="Arquitectura preparada para integrarse con nuevas aplicaciones y servicios." />
-      </div>
-    </Container>
-  </section>
-);
+  // Frases que se alternan con efecto de tipeo
+  const phrases = ['Gobierno Regional de Ayacucho', 'Oficina de Tecnologías de la Información y Comunicación'];
 
-const BenefitCard: React.FC<{ title: string; desc: string }> = ({ title, desc }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 8 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: '-80px' }}
-    transition={{ duration: 0.4 }}
-    className="relative shadow-sm p-6 border rounded-3xl overflow-hidden"
-  >
-    <div className="-top-10 -right-10 absolute bg-rose-500/10 blur-2xl rounded-full w-28 h-28" />
-    <h3 className="font-bold text-lg">{title}</h3>
-    <p className="mt-2 text-muted-foreground text-sm">{desc}</p>
-  </motion.div>
-);
+  const [phraseIndex, setPhraseIndex] = React.useState(0);
+  const [subIndex, setSubIndex] = React.useState(0);
+  const [deleting, setDeleting] = React.useState(false);
+  const [blink, setBlink] = React.useState(true);
 
-const Footer: React.FC = () => (
-  <footer className="border-t">
-    <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
-      <p>© {new Date().getFullYear()} Gobierno Regional de Ayacucho — SSO</p>
-      <nav className="flex items-center gap-4">
-        <a href="#" className="hover:text-foreground">
-          Privacidad
-        </a>
-        <a href="#" className="hover:text-foreground">
-          Términos
-        </a>
-        <a href="#" className="hover:text-foreground">
-          Estado del servicio
-        </a>
-      </nav>
-    </Container>
-  </footer>
-);
+  // Parpadeo del cursor
+  React.useEffect(() => {
+    const blinkInterval = setInterval(() => setBlink((v) => !v), 500);
+    return () => clearInterval(blinkInterval);
+  }, []);
 
-export default function Landing() {
+  // Efecto de escribir/borrar
+  React.useEffect(() => {
+    const current = phrases[phraseIndex];
+    const isComplete = subIndex === current.length;
+
+    const typeSpeed = 55;
+    const deleteSpeed = 38;
+    const pauseEnd = 1200; // pausa al terminar de escribir
+    const pauseStart = 400; // pausa antes de empezar a escribir la siguiente
+
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!deleting && isComplete) {
+      // Pausa y empieza a borrar
+      timeout = setTimeout(() => setDeleting(true), pauseEnd);
+    } else if (deleting && subIndex === 0) {
+      // Cambia a la siguiente frase y empieza a escribir
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setPhraseIndex((i) => (i + 1) % phrases.length);
+      }, pauseStart);
+    } else {
+      // Avanza un carácter (escritura o borrado)
+      timeout = setTimeout(() => setSubIndex((i) => i + (deleting ? -1 : 1)), deleting ? deleteSpeed : typeSpeed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [subIndex, deleting, phraseIndex]);
+
+  // Reinicia el subIndex cuando cambiamos de frase
+  React.useEffect(() => {
+    if (!deleting) setSubIndex(0);
+  }, [phraseIndex, deleting]);
+
+  const typed = phrases[phraseIndex].slice(0, subIndex);
+
   return (
-    <div className="bg-background min-h-screen text-foreground">
+    <footer className="border-t">
+      <Container className="flex md:flex-row flex-col justify-between items-center gap-3 py-6 text-muted-foreground text-sm">
+        <p aria-live="polite" className="md:text-left text-center">
+          © {year} <span className="font-bold whitespace-nowrap">{typed}</span>
+          <span className={`ml-1 inline-block w-[1ch] select-none ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
+        </p>
+
+        <nav className="flex items-center gap-4">
+          <a href="#" className="hover:text-foreground">
+            Privacidad
+          </a>
+          <a href="#" className="hover:text-foreground">
+            Términos
+          </a>
+          <a href="#" className="hover:text-foreground">
+            Estado del servicio
+          </a>
+        </nav>
+      </Container>
+    </footer>
+  );
+};
+
+const Landing = () => {
+  return (
+    <div className="relative min-h-screen text-foreground">
       <Header />
 
-      <Hero />
+      <main className="h-screen overflow-y-scroll snap-mandatory snap-wrapper snap-y no-scrollbar">
+        <section className="pt-20 sm:pt-24 min-h-screen snap-start">
+          <Hero />
+          <Footer />
+        </section>
+      </main>
 
-      <Benefits />
-
-      <Footer />
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
-}
+};
+
+export default Landing;
