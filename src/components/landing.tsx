@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { ThemeToggle } from './theme/theme-toggle';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <div className={`mx-auto w-full max-w-6xl px-6 ${className ?? ''}`}>{children}</div>
+  <div className={`mx-auto w-full container px-6 ${className ?? ''}`}>{children}</div>
 );
 
 const Logo: React.FC = () => (
