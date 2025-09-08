@@ -6,14 +6,14 @@ import Image from 'next/image';
 
 const Page: NextPage = () => {
   return (
-    <div className="min-h-screen w-full flex">
-      <div className="absolute top-8 left-8 z-10 flex items-center space-x-3">
-        <Image src="/img/logo.png" alt="logo" width={40} height={20} />
-        <span className="text-2xl font-bold text-[#d20f39]">Gobierno Regional de Ayacucho</span>
+    <div className="flex w-full min-h-screen">
+      <div className="top-8 left-8 z-10 absolute flex items-center space-x-3">
+        <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={40} height={20} />
+        <span className="font-bold text-[#d20f39] text-2xl">Gobierno Regional de Ayacucho</span>
       </div>
 
       {/* Right Side - Form centrado */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex flex-1 justify-center items-center p-4">
         <div className="w-full max-w-xl">
           <Login />
         </div>
