@@ -64,14 +64,14 @@ function shouldRefreshFromTokens(me: GatewayMeData | null): boolean {
 
 type SessionProviderProps = {
   children: React.ReactNode;
-  client_id: string; // requerido por /api/auth/me
+  client_id?: string; // requerido por /api/auth/me
   showWhileChecking?: React.ReactNode;
   defaultRedirect?: string; // adónde volver si no hay sesión (por defecto: ruta actual)
   /** Dev/testing: fuerza rotación cada N ms, ignorando exp (ej: 60_000) */
   forceRefreshEveryMs?: number;
 };
 
-export default function SessionProvider({ children, client_id, showWhileChecking = null, defaultRedirect, forceRefreshEveryMs = DEFAULT_FORCE_MS }: SessionProviderProps) {
+export default function SessionProvider({ children, client_id = 'cum', showWhileChecking = null, defaultRedirect, forceRefreshEveryMs = DEFAULT_FORCE_MS }: SessionProviderProps) {
   const [status, setStatus] = useState<AuthStatus>('checking');
   const [session, setSession] = useState<GatewayMeData | null>(null);
 
