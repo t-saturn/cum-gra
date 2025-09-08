@@ -14,7 +14,14 @@ const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ 
 
 const Logo: React.FC = () => (
   <div className="flex items-center gap-2 sm:gap-3" data-testid="logo">
-    <Image src="/img/logo.png" alt="Logo Gobierno Regional de Ayacucho" width={36} height={36} className="rounded-full" priority />
+    <Image
+      src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png"
+      alt="Logo Gobierno Regional de Ayacucho"
+      width={36}
+      height={36}
+      className="rounded-full"
+      priority
+    />
     <div className="hidden sm:block leading-tight">
       <p className="font-bold tracking-tight">
         <span className="font-black text-[#d20f39] text-xl sm:text-xl">Gobierno Regional</span>
