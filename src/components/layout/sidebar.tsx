@@ -7,20 +7,8 @@ import { usePathname } from 'next/navigation';
 import { useState, useRef } from 'react';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarRail,
-  useSidebar,
-} from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader } from '@/components/ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarRail, useSidebar } from '@/components/ui/sidebar';
 import { fn_get_sidebar_menu } from '@/helpers/sidebar-helper';
 import { useProfile } from '@/context/ProfileContext';
 import { SidebarItem, SidebarSubItem } from '@/types/sidebar-types';
@@ -53,26 +41,26 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
 
   return (
     <>
-      <Sidebar className="rounded-lg border border-border shadow-sm relative h-full overflow-hidden" collapsible="icon">
-        <SidebarHeader className="bg-card flex items-center border-b rounded-t-lg">
+      <Sidebar className="relative shadow-sm border border-border rounded-lg h-full overflow-hidden" collapsible="icon">
+        <SidebarHeader className="flex items-center bg-card border-b rounded-t-lg">
           {!isCollapsed ? (
-            <div className="flex items-center gap-4 font-semibold p-6">
-              <Image src="/img/logo.png" alt="logo" width={40} height={20} />
+            <div className="flex items-center gap-4 p-6 font-semibold">
+              <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={40} height={20} />
               <div className="flex flex-col">
-                <span className="text-xl font-bold">CUM</span>
-                <span className="text-sm font-light text-muted-foreground">Central User Manager</span>
+                <span className="font-bold text-xl">CUM</span>
+                <span className="font-light text-muted-foreground text-sm">Central User Manager</span>
               </div>
             </div>
           ) : (
             <div className="p-2">
-              <Image src="/img/logo.png" alt="logo" width={20} height={20} />
+              <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={20} height={20} />
             </div>
           )}
         </SidebarHeader>
         <SidebarContent className="bg-card rounded-b-lg">
           {sidebarMenus.map((menubar, index) => (
             <SidebarGroup key={index}>
-              {!isCollapsed && <SidebarGroupLabel className="px-6 text-xs font-semibold uppercase text-muted-foreground">{menubar.title}</SidebarGroupLabel>}
+              {!isCollapsed && <SidebarGroupLabel className="px-6 font-semibold text-muted-foreground text-xs uppercase">{menubar.title}</SidebarGroupLabel>}
               <SidebarMenu>
                 {menubar.menu.map((item: SidebarItem, i: number) => {
                   const isActive = item.url === pathname || (item.items && item.items.some((subitem: SidebarSubItem) => subitem.url === pathname));
@@ -103,7 +91,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                               >
                                 {item.icon && <item.icon width={16} />}
                                 {!isCollapsed && <span>{item.label}</span>}
-                                <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                                <ChevronDown className="ml-auto group-data-[state=open]/collapsible:rotate-180 transition-transform duration-200" />
                               </SidebarMenuButton>
                             </CollapsibleTrigger>
                             <CollapsibleContent>
@@ -162,7 +150,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
         <SidebarFooter className="bg-card">
           <SidebarMenuButton
             tooltip="Cerrar sesión"
-            className="w-full justify-center bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive rounded-lg h-11 font-medium hover:cursor-pointer"
+            className="justify-center bg-destructive/5 hover:bg-destructive/10 rounded-lg w-full h-11 font-medium text-destructive hover:text-destructive hover:cursor-pointer"
             onClick={handleCloseSession}
           >
             <LogOut width={16} className={`transition-all duration-150 ${isCollapsed ? 'rotate-180' : ''}`} />
@@ -174,7 +162,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
 
       {hoveredItem && isCollapsed && sidebarMenus.some((group) => group.menu.some((item: SidebarItem) => item.label === hoveredItem && item.items)) && (
         <div
-          className="absolute left-11 z-50 w-48 rounded-md border bg-card py-1 shadow-lg"
+          className="left-11 z-50 absolute bg-card shadow-lg py-1 border rounded-md w-48"
           style={{ top: `${hoverPosition}px` }}
           onMouseEnter={() => {
             const item = sidebarMenus.flatMap((group) => group.menu).find((i) => i.label === hoveredItem);
@@ -182,7 +170,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
           }}
           onMouseLeave={() => setHoveredItem(null)}
         >
-          <div className="px-3 py-2 text-sm font-medium text-muted-foreground">{hoveredItem}</div>
+          <div className="px-3 py-2 font-medium text-muted-foreground text-sm">{hoveredItem}</div>
           <div className="border-t"></div>
           {sidebarMenus
             .flatMap((group) => group.menu)
@@ -195,7 +183,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                   key={index}
                   className={`flex items-center gap-2 m-2 px-3 py-2 text-sm rounded-lg ${isSubItemActive ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'}`}
                 >
-                  {subitem.icon && <subitem.icon className="h-4 w-4" />}
+                  {subitem.icon && <subitem.icon className="w-4 h-4" />}
                   <span>{subitem.label}</span>
                 </Link>
               );
