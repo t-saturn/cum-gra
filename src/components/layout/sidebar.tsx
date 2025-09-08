@@ -45,7 +45,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
         <SidebarHeader className="flex items-center bg-card border-b rounded-t-lg">
           {!isCollapsed ? (
             <div className="flex items-center gap-4 p-6 font-semibold">
-              <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={40} height={20} />
+              <Image src="/img/logo.png" alt="logo" width={40} height={20} />
               <div className="flex flex-col">
                 <span className="font-bold text-xl">CUM</span>
                 <span className="font-light text-muted-foreground text-sm">Central User Manager</span>
@@ -53,7 +53,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
             </div>
           ) : (
             <div className="p-2">
-              <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={20} height={20} />
+              <Image src="/img/logo.png" alt="logo" width={20} height={20} />
             </div>
           )}
         </SidebarHeader>
