@@ -8,7 +8,7 @@ const Page: NextPage = () => {
   return (
     <div className="flex w-full min-h-screen">
       <div className="top-8 left-8 z-10 absolute flex items-center space-x-3">
-        <Image src="https://raw.githubusercontent.com/t-saturn/resources/gra/img/logo.png" alt="logo" width={40} height={20} />
+        <Image src="/img/logo.png" alt="logo" width={40} height={20} />
         <span className="font-bold text-[#d20f39] text-2xl">Gobierno Regional de Ayacucho</span>
       </div>
 
