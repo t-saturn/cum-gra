@@ -68,7 +68,7 @@ const AnimatedBackdrop: React.FC = () => (
 );
 
 const Hero: React.FC = () => (
-  <section className="relative py-10 sm:py-14 lg:min-h-[70vh]">
+  <section className="relativepy-10 sm:py-14 lg:min-h-[70vh]">
     <AnimatedBackdrop />
     <Container className="items-center gap-8 sm:gap-12 grid grid-cols-1 lg:grid-cols-2">
       <div className="space-y-6 sm:space-y-7">
