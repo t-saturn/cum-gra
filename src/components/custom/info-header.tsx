@@ -8,10 +8,10 @@ interface InfoHeaderProps {
 
 const InfoHeader = ({ title, description, children }: InfoHeaderProps) => {
   return (
-    <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
+    <div className="flex sm:flex-row flex-col justify-between items-center gap-4">
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">{title}</h1>
-        <p className="text-muted-foreground mt-2 text-lg">{description}</p>
+        <h1 className="bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground font-bold text-transparent text-3xl">{title}</h1>
+        <p className="mt-2 text-muted-foreground text-lg">{description}</p>
       </div>
       {children}
     </div>

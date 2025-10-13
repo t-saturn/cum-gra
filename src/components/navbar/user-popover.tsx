@@ -7,11 +7,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Settings, LogOut, User, Shield, Clock, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useProfile } from '@/context/ProfileContext';
+import { toBase64Url } from '@/helpers';
+
+const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!;  // p.ej. http://sso.localtest.me:30000
+const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!;   // p.ej. http://cum.localtest.me:30001
+
 
 export function UserPopover() {
   const { profile } = useProfile();
 
-  // Función para obtener las iniciales del nombre
+  const signoutUrl = new URL("/api/auth/signout", AUTH_ORIGIN);
+  signoutUrl.searchParams.set("cb64", toBase64Url(`${APP_ORIGIN}/`));
+
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -21,7 +29,6 @@ export function UserPopover() {
       .slice(0, 2);
   };
 
-  // Datos simulados adicionales para el perfil
   const userStats = {
     lastLogin: 'Hace 2 horas',
     location: 'Ayacucho, Perú',
@@ -32,102 +39,100 @@ export function UserPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-3 hover:bg-accent/50 px-3 py-2 h-auto rounded-xl transition-all duration-200 hover:scale-[1.02]">
-          <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+        <Button variant="ghost" className="flex items-center gap-3 hover:bg-accent/50 px-3 py-2 rounded-xl h-auto hover:scale-[1.02] transition-all duration-200">
+          <Avatar className="ring-2 ring-primary/20 ring-offset-2 ring-offset-background w-10 h-10">
             <AvatarImage src={profile.avatar || '/placeholder.svg?height=40&width=40'} alt={profile.name} />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-semibold">{getInitials(profile.name)}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 font-semibold text-primary-foreground">{getInitials(profile.name)}</AvatarFallback>
           </Avatar>
-          <div className="hidden text-left md:block">
-            <div className="font-medium text-sm text-foreground truncate max-w-32">{profile.name}</div>
-            <div className="text-xs text-muted-foreground">{userStats.role}</div>
+          <div className="hidden md:block text-left">
+            <div className="max-w-32 font-medium text-foreground text-sm truncate">{profile.name}</div>
+            <div className="text-muted-foreground text-xs">{userStats.role}</div>
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 bg-popover backdrop-blur-xl border-border/50 shadow-2xl shadow-black/10 mr-2" align="end">
+      <PopoverContent className="bg-popover shadow-2xl shadow-black/10 backdrop-blur-xl mr-2 border-border/50 w-80" align="end">
         <div className="space-y-6">
-          {/* User Profile Header */}
-          <div className="flex flex-col items-center text-center space-y-4">
+          <div className="flex flex-col items-center space-y-4 text-center">
             <div className="relative">
-              <Avatar className="h-20 w-20 ring-4 ring-primary/20 ring-offset-4 ring-offset-background">
+              <Avatar className="ring-4 ring-primary/20 ring-offset-4 ring-offset-background w-20 h-20">
                 <AvatarImage src={profile.avatar || '/placeholder.svg?height=80&width=80'} alt={profile.name} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl">{getInitials(profile.name)}</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-br from-primary to-chart-1 font-bold text-primary-foreground text-xl">{getInitials(profile.name)}</AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="-right-1 -bottom-1 absolute flex justify-center items-center bg-green-500 border-2 border-background rounded-full w-6 h-6">
+                <div className="bg-white rounded-full w-2 h-2"></div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg text-foreground">{profile.name}</h3>
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
-                <Shield className="h-3 w-3 mr-1" />
+              <h3 className="font-semibold text-foreground text-lg">{profile.name}</h3>
+              <Badge variant="secondary" className="bg-primary/10 border-primary/20 font-medium text-primary">
+                <Shield className="mr-1 w-3 h-3" />
                 {userStats.role}
               </Badge>
             </div>
           </div>
 
-          {/* User Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-muted/30 rounded-lg p-3 text-center">
-              <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                <Clock className="h-3 w-3" />
+          <div className="gap-3 grid grid-cols-2">
+            <div className="bg-muted/30 p-3 rounded-lg text-center">
+              <div className="flex justify-center items-center gap-1 mb-1 text-muted-foreground">
+                <Clock className="w-3 h-3" />
                 <span className="text-xs">Último acceso</span>
               </div>
-              <div className="text-sm font-medium">{userStats.lastLogin}</div>
+              <div className="font-medium text-sm">{userStats.lastLogin}</div>
             </div>
-            <div className="bg-muted/30 rounded-lg p-3 text-center">
-              <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                <MapPin className="h-3 w-3" />
+            <div className="bg-muted/30 p-3 rounded-lg text-center">
+              <div className="flex justify-center items-center gap-1 mb-1 text-muted-foreground">
+                <MapPin className="w-3 h-3" />
                 <span className="text-xs">Ubicación</span>
               </div>
-              <div className="text-sm font-medium">{userStats.location}</div>
+              <div className="font-medium text-sm">{userStats.location}</div>
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="space-y-2">
             <Link href="https://accounts.regionayacucho.gob.pe/user" target="_blank">
-              <Button variant="ghost" className="w-full justify-between hover:bg-accent/50 rounded-lg h-12">
+              <Button variant="ghost" className="justify-between hover:bg-accent/50 rounded-lg w-full h-12">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <User className="h-4 w-4 text-primary" />
+                  <div className="flex justify-center items-center bg-primary/10 rounded-lg w-8 h-8">
+                    <User className="w-4 h-4 text-primary" />
                   </div>
                   <div className="text-left">
                     <div className="font-medium text-sm">Mi Perfil</div>
-                    <div className="text-xs text-muted-foreground">Gestionar información personal</div>
+                    <div className="text-muted-foreground text-xs">Gestionar información personal</div>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </Button>
             </Link>
 
             <Link href="/dashboard/settings">
-              <Button variant="ghost" className="w-full justify-between hover:bg-accent/50 rounded-lg h-12">
+              <Button variant="ghost" className="justify-between hover:bg-accent/50 rounded-lg w-full h-12">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                    <Settings className="h-4 w-4 text-orange-600" />
+                  <div className="flex justify-center items-center bg-orange-500/10 rounded-lg w-8 h-8">
+                    <Settings className="w-4 h-4 text-orange-600" />
                   </div>
                   <div className="text-left">
                     <div className="font-medium text-sm">Configuración</div>
-                    <div className="text-xs text-muted-foreground">Preferencias del sistema</div>
+                    <div className="text-muted-foreground text-xs">Preferencias del sistema</div>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </Button>
             </Link>
           </div>
 
-          {/* Logout Button */}
-          <div className="pt-2 border-t border-border/50">
-            <Button variant="ghost" className="w-full justify-center bg-destructive/5 hover:bg-destructive/10 text-destructive hover:text-destructive rounded-lg h-11 font-medium">
-              <LogOut className="h-4 w-4 mr-2" />
-              Cerrar Sesión
-            </Button>
+          <div className="mt-2 pt-2 border-t border-border/50">
+            <a
+              href={signoutUrl.toString()}
+              className="flex items-center gap-2 hover:bg-red-600 px-3 py-2 rounded-lg w-full font-medium text-red-600 hover:text-white text-sm transition-colors duration-200"
+            >
+              <LogOut className="w-4 h-4" />
+              Cerrar sesión
+            </a>
           </div>
 
-          {/* Footer Info */}
           <div className="pt-2 border-t border-border/50">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex justify-between items-center text-muted-foreground text-xs">
               <span>Sesiones activas: {userStats.sessionsActive}</span>
               <Badge variant="outline" className="text-xs">
                 Conectado

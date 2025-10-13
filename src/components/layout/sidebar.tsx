@@ -1,14 +1,14 @@
 'use client';
 
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useRef } from 'react';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader } from '@/components/ui/sidebar';
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarRail, useSidebar } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader } from '@/components/ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, useSidebar } from '@/components/ui/sidebar';
 import { fn_get_sidebar_menu } from '@/helpers/sidebar-helper';
 import { useProfile } from '@/context/ProfileContext';
 import { SidebarItem, SidebarSubItem } from '@/types/sidebar-types';
@@ -23,10 +23,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
 
   const sidebarMenus = fn_get_sidebar_menu(profile.role);
 
-  const handleCloseSession = () => {
-    // simulated logout - redirect login page
-    window.location.href = '/login';
-  };
+
 
   const handleMouseEnter = (item: string, event: React.MouseEvent) => {
     if (isCollapsed && sidebarMenus.some((group) => group.menu.some((menuItem: SidebarItem) => menuItem.label === item && menuItem.items))) {
@@ -79,13 +76,12 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                             <CollapsibleTrigger asChild>
                               <SidebarMenuButton
                                 tooltip={item.items ? undefined : item.label}
-                                className={`hover:bg-primary hover:text-[#eff1f5] ${
-                                  isActive
-                                    ? isSubItemActive && !isCollapsed
-                                      ? 'bg-secondary group-data-[state=closed]/collapsible:bg-primary'
-                                      : 'bg-primary text-[#eff1f5]'
-                                    : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
-                                } hover:cursor-pointer`}
+                                className={`hover:bg-primary hover:text-[#eff1f5] ${isActive
+                                  ? isSubItemActive && !isCollapsed
+                                    ? 'bg-secondary group-data-[state=closed]/collapsible:bg-primary'
+                                    : 'bg-primary text-[#eff1f5]'
+                                  : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
+                                  } hover:cursor-pointer`}
                                 onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                                 onMouseLeave={handleMouseLeave}
                               >
@@ -102,9 +98,8 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                                     <Link
                                       href={subitem.url}
                                       key={j}
-                                      className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${
-                                        isSubItemActive ? 'bg-primary text-[#eff1f5]' : 'hover:bg-primary hover:text-[#eff1f5]'
-                                      }`}
+                                      className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${isSubItemActive ? 'bg-primary text-[#eff1f5]' : 'hover:bg-primary hover:text-[#eff1f5]'
+                                        }`}
                                       onClick={() => {
                                         if (isMobile) {
                                           setOpenMobile(false);
@@ -123,9 +118,8 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                       ) : (
                         <Link href={item.url}>
                           <SidebarMenuButton
-                            className={`hover:bg-primary hover:text-[#eff1f5] ${
-                              isActive ? 'bg-primary text-[#eff1f5]' : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
-                            } hover:cursor-pointer`}
+                            className={`hover:bg-primary hover:text-[#eff1f5] ${isActive ? 'bg-primary text-[#eff1f5]' : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
+                              } hover:cursor-pointer`}
                             onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                             onMouseLeave={handleMouseLeave}
                             onClick={() => {
@@ -147,17 +141,6 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
             </SidebarGroup>
           ))}
         </SidebarContent>
-        <SidebarFooter className="bg-card">
-          <SidebarMenuButton
-            tooltip="Cerrar sesión"
-            className="justify-center bg-destructive/5 hover:bg-destructive/10 rounded-lg w-full h-11 font-medium text-destructive hover:text-destructive hover:cursor-pointer"
-            onClick={handleCloseSession}
-          >
-            <LogOut width={16} className={`transition-all duration-150 ${isCollapsed ? 'rotate-180' : ''}`} />
-            {!isCollapsed && <span>Cerrar sesión</span>}
-          </SidebarMenuButton>
-        </SidebarFooter>
-        <SidebarRail />
       </Sidebar>
 
       {hoveredItem && isCollapsed && sidebarMenus.some((group) => group.menu.some((item: SidebarItem) => item.label === hoveredItem && item.items)) && (
