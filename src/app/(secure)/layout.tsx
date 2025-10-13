@@ -1,28 +1,34 @@
-'use client';
+import { ReactNode } from "react";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { getUserRoleForCurrentApp } from "@/lib/roles";
+import { RoleProvider } from "@/providers/role";
+import { toBase64Url } from "@/helpers";
+import { ProfileProvider } from "@/context/ProfileContext";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import LayoutClient from '@/components/layout/layout';
 
-import { useAuthGuard } from '@/hooks/useAuthGuard';
-import SessionProvider from '@/providers/SessionProvider';
-import { Suspense } from 'react';
+const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!;
+const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!;
 
-const Guard = () => {
-  useAuthGuard();
-  return null;
-};
+export default async function ProtectedLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Suspense fallback={null}>
-      <SessionProvider client_id="cum" showWhileChecking={<div>Cargando sesión…</div>}>
-        <div className="flex flex-col bg-background h-screen overflow-hidden">
-          <main className="flex-1 overflow-y-auto">
-            <Guard />
-            {children}
-          </main>
-        </div>
-        <div className="overflow-hidden"></div>
-      </SessionProvider>
-    </Suspense>
-  );
-};
+  if (!session?.user?.id) {
+    const callback = new URL("/dashboard", APP_ORIGIN).toString();
+    const cb64 = toBase64Url(callback);
+    console.log(session)
+    const signin = new URL("/auth/signin", AUTH_ORIGIN);
+    signin.searchParams.set("cb64", cb64);
+    redirect(signin.toString());
+  }
 
-export default Layout;
+  const role = await getUserRoleForCurrentApp(String(session.user.id));
+  if (!role) redirect("/unauthorized");
+
+  return (<RoleProvider value={role}> <ProfileProvider>
+    <SidebarProvider>
+      <LayoutClient>{children}</LayoutClient>
+    </SidebarProvider>
+  </ProfileProvider></RoleProvider>)
+}
