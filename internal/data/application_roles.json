@@ -1,11 +1,22 @@
 [
   {
-    "name": "user",
+    "name": "admin",
     "description": "Unico rol para esta pagina de presentacion",
     "application_client_id": "sso-client",
-    "application_name": "rrhh-client"
+    "application_name": "sso-client"
   },
-
+  {
+    "name": "user",
+    "description": "user role for sso-client",
+    "application_client_id": "sso-client",
+    "application_name": "sso-client"
+  },
+  {
+    "name": "default",
+    "description": "default role for sso-client",
+    "application_client_id": "sso-client",
+    "application_name": "sso-client"
+  },
   {
     "name": "admin",
     "description": "Acceso total a la aplicación Central User Manager",
@@ -18,7 +29,6 @@
     "application_client_id": "cum",
     "application_name": "central user manager"
   },
-
   {
     "name": "admin",
     "description": "Acceso total a la aplicación Segres",

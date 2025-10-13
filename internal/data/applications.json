@@ -1,14 +1,13 @@
 [
   {
-    "name": "rrhh-client",
+    "name": "sso-client",
     "client_id": "sso-client",
     "client_secret": "nix-os-by-tsaturn-team-sponsored-by-rrhh",
-    "domain": "https://intranet.regionayacucho.gob.pe",
-    "logo": "https://files.regionayacucho.gob.pe/apps/intranet-logo.svg",
-    "description": "Intranet de la Region Ayacucho",
+    "domain": "https://sso.regionayacucho.gob.pe",
+    "logo": "https://files.regionayacucho.gob.pe/apps/auth-logo.svg",
+    "description": "auth de la Region Ayacucho",
     "status": "active"
   },
-
   {
     "name": "central user manager",
     "client_id": "cum",
@@ -18,7 +17,6 @@
     "description": "Control central de usuarios",
     "status": "active"
   },
-
   {
     "name": "segres",
     "client_id": "segres",
