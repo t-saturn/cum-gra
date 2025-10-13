@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { useSession } from '@/hooks/useSession';
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useSession } from "next-auth/react";
+import { useRole } from "@/providers/role";
 
 interface ProfileSchema {
   name: string;
   role: string;
-  avatar: string;
+  avatar: string; // inicial del nombre
 }
 
 interface ProfileContextType {
@@ -16,42 +17,48 @@ interface ProfileContextType {
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
+function initialFromName(name?: string, emailFallback?: string) {
+  const base = (name && name.trim()) || (emailFallback && emailFallback.trim()) || "Usuario";
+  return base.charAt(0).toUpperCase();
+}
+
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
-  const { role, userId, name } = useSession();
+  const { data: session } = useSession();
+  const roleCtx = useRole(); // { id, name } | null
 
   const [profile, setProfile] = useState<ProfileSchema>({
-    name: '',
-    role: '',
-    avatar: '',
+    name: "Usuario",
+    role: "invitado",
+    avatar: "U",
   });
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      // aquí luego podrías hacer un fetch real a tu API
-      const result = {
-        userId,
-        name: name ?? 'Usuario',
-        role: role ?? 'invitado',
-        avatar: 'https://i.pravatar.cc/150?img=7',
-      };
-
-      if (result) setProfile(result);
-      else console.error('Error al traer el perfil:');
-    } catch (error) {
-      console.error('Error al traer el perfil: ' + error);
-    }
+  // Armar perfil desde session + role context
+  const computeProfile = () => {
+    const name = session?.user?.name ?? session?.user?.email ?? "Usuario";
+    const avatar = initialFromName(session?.user?.name ?? undefined, session?.user?.email ?? undefined);
+    const roleName = roleCtx?.name ?? "invitado";
+    return { name, role: roleName, avatar };
   };
 
   useEffect(() => {
-    if (!userId) return; // espera a tener un userId válido
-    fetchProfile(userId);
-  }, [userId]);
+    setProfile(computeProfile());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.name, session?.user?.email, roleCtx?.name]);
 
-  return <ProfileContext.Provider value={{ profile, fetchProfile }}>{children}</ProfileContext.Provider>;
+  // Mantén fetchProfile por compat; aquí simplemente re-sincroniza
+  const fetchProfile = async (_userId: string) => {
+    setProfile(computeProfile());
+  };
+
+  return (
+    <ProfileContext.Provider value={{ profile, fetchProfile }}>
+      {children}
+    </ProfileContext.Provider>
+  );
 };
 
 export const useProfile = () => {
-  const context = useContext(ProfileContext);
-  if (!context) throw new Error('useProfile debe usarse dentro de un ProfileProvider');
-  return context;
+  const ctx = useContext(ProfileContext);
+  if (!ctx) throw new Error("useProfile debe usarse dentro de un ProfileProvider");
+  return ctx;
 };
