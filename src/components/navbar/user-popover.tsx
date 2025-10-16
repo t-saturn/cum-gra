@@ -7,18 +7,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Settings, LogOut, User, Shield, Clock, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useProfile } from '@/context/ProfileContext';
-import { toBase64Url } from '@/helpers';
+import { to_cb64 } from '@/helpers';
 
-const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!;  // p.ej. http://sso.localtest.me:30000
-const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!;   // p.ej. http://cum.localtest.me:30001
-
+const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!; // p.ej. http://sso.localtest.me:30000
+const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!; // p.ej. http://cum.localtest.me:30001
 
 export function UserPopover() {
   const { profile } = useProfile();
 
-  const signoutUrl = new URL("/api/auth/signout", AUTH_ORIGIN);
-  signoutUrl.searchParams.set("cb64", toBase64Url(`${APP_ORIGIN}/`));
-
+  const signoutUrl = new URL('/api/auth/signout', AUTH_ORIGIN);
+  signoutUrl.searchParams.set('cb64', to_cb64(`${APP_ORIGIN}/`));
 
   const getInitials = (name: string) => {
     return name

@@ -1,19 +1,15 @@
-import { query } from "@/lib/database";
+import { query } from '@/lib/database';
 
 export type AppRole = { id: string; name: string };
 
 export async function getUserRoleForCurrentApp(userId: string): Promise<AppRole | null> {
-  const clientId = process.env.APP_CLIENT_ID;
+  const clientId = process.env.NEXT_PUBLIC_APP_CLIENT_ID;
   if (!clientId) {
-    console.error("APP_CLIENT_ID no configurado");
+    console.error('NEXT_PUBLIC_APP_CLIENT_ID no configurado');
     return null;
   }
 
-  const { rows } = await query<{
-    id: string;
-    name: string;
-    is_deleted: boolean;
-  }>(
+  const { rows } = await query<{ id: string; name: string; is_deleted: boolean }>(
     `
     SELECT ar.id, ar.name, ar.is_deleted
     FROM application_roles ar
@@ -23,7 +19,7 @@ export async function getUserRoleForCurrentApp(userId: string): Promise<AppRole 
       AND a.client_id = $2
     LIMIT 1
     `,
-    [userId, clientId]
+    [userId, clientId],
   );
 
   return rows[0] ?? null;

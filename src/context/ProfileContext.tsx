@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { useSession } from "next-auth/react";
-import { useRole } from "@/providers/role";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRole } from '@/providers/role';
 
 interface ProfileSchema {
   name: string;
@@ -18,47 +18,42 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 function initialFromName(name?: string, emailFallback?: string) {
-  const base = (name && name.trim()) || (emailFallback && emailFallback.trim()) || "Usuario";
+  const base = (name && name.trim()) || (emailFallback && emailFallback.trim()) || 'Usuario';
   return base.charAt(0).toUpperCase();
 }
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
-  const roleCtx = useRole(); // { id, name } | null
+  const roleCtx = useRole(); // { id: string; name: string } | null
 
   const [profile, setProfile] = useState<ProfileSchema>({
-    name: "Usuario",
-    role: "invitado",
-    avatar: "U",
+    name: 'Usuario',
+    role: 'invitado',
+    avatar: 'U',
   });
 
-  // Armar perfil desde session + role context
   const computeProfile = () => {
-    const name = session?.user?.name ?? session?.user?.email ?? "Usuario";
+    const name = session?.user?.name ?? session?.user?.email ?? 'Usuario';
     const avatar = initialFromName(session?.user?.name ?? undefined, session?.user?.email ?? undefined);
-    const roleName = roleCtx?.name ?? "invitado";
+    const roleName = roleCtx?.name ?? 'invitado';
     return { name, role: roleName, avatar };
   };
 
   useEffect(() => {
     setProfile(computeProfile());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // deps: cuando cambie nombre/email o el nombre del rol, recomputa
   }, [session?.user?.name, session?.user?.email, roleCtx?.name]);
 
-  // Mantén fetchProfile por compat; aquí simplemente re-sincroniza
+  // Compat: si pides “refrescar perfil”, re-sincroniza desde los contexts
   const fetchProfile = async (_userId: string) => {
     setProfile(computeProfile());
   };
 
-  return (
-    <ProfileContext.Provider value={{ profile, fetchProfile }}>
-      {children}
-    </ProfileContext.Provider>
-  );
+  return <ProfileContext.Provider value={{ profile, fetchProfile }}>{children}</ProfileContext.Provider>;
 };
 
 export const useProfile = () => {
   const ctx = useContext(ProfileContext);
-  if (!ctx) throw new Error("useProfile debe usarse dentro de un ProfileProvider");
+  if (!ctx) throw new Error('useProfile debe usarse dentro de un ProfileProvider');
   return ctx;
 };

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
-        pathname: '/t-saturn/resources/**', // <-- más seguro, solo tu repo
+        pathname: '/t-saturn/resources/**',
       },
       {
         protocol: 'https',
