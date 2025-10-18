@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
+
 	"github.com/sirupsen/logrus"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
 // SeedOrganicUnit representa una unidad orgánica utilizada para poblar la base de datos desde un archivo JSON.

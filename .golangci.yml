@@ -1,6 +1,14 @@
 run:
   timeout: 5m
 
+linters-settings:
+  revive:
+    rules:
+      - name: exported
+        disabled: true
+      - name: package-comments
+        disabled: true
+
 linters:
   enable:
     - govet

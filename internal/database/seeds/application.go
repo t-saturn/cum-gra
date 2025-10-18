@@ -6,10 +6,11 @@ import (
 	"os"
 	"time"
 
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
+
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
 // SeedApplication representa los datos necesarios para insertar una aplicación desde un archivo JSON.

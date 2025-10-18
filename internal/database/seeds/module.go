@@ -7,10 +7,11 @@ import (
 	"strings"
 	"time"
 
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
+
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
 // SeedModule representa la estructura de un módulo utilizada para poblar la base de datos desde un archivo JSON.

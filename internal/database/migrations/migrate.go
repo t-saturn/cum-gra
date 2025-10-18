@@ -11,9 +11,10 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 
 	// Se requiere para usar archivos `.sql` como fuente de migraciones
+	"central-user-manager/internal/config"
+	"central-user-manager/pkg/logger"
+
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 // HandleMigration ejecuta las migraciones según el comando proporcionado por flags.

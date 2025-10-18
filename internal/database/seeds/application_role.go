@@ -10,11 +10,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
 )
 
-// Estructura de entrada del JSON (data/application_roles.json)
 type SeedApplicationRole struct {
 	Name                string  `json:"name"`
 	Description         *string `json:"description"`
@@ -22,7 +21,6 @@ type SeedApplicationRole struct {
 	ApplicationName     string  `json:"application_name"`      // fallback si no hay client_id
 }
 
-// SeedApplicationRoles inserta roles de aplicación desde JSON, evitando duplicados.
 func SeedApplicationRoles() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding application_roles desde JSON...")

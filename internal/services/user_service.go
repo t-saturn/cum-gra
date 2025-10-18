@@ -4,11 +4,12 @@ package services
 import (
 	"time"
 
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/dto"
+	"central-user-manager/internal/models"
+	"central-user-manager/pkg/security"
+
 	"github.com/google/uuid"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/dto"
-	"github.com/t-saturn/central-user-manager/internal/models"
-	"github.com/t-saturn/central-user-manager/pkg/security"
 )
 
 // CreateUser crea un nuevo usuario con los datos proporcionados y lo guarda en la base de datos.

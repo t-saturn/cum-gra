@@ -1,8 +1,9 @@
 package routes
 
 import (
+	"central-user-manager/internal/handlers"
+
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/central-user-manager/internal/handlers"
 )
 
 // RegisterUserRoutes agrupa rutas relacionadas a usuarios.

@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
-	"github.com/t-saturn/central-user-manager/pkg/security"
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
+	"central-user-manager/pkg/security"
 )
 
 // -----------------------------------------------------------------------------

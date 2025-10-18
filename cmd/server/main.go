@@ -2,13 +2,14 @@
 package main
 
 import (
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/middlewares"
+	"central-user-manager/internal/routes"
+	"central-user-manager/pkg/logger"
+	"central-user-manager/pkg/validator"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/middlewares"
-	"github.com/t-saturn/central-user-manager/internal/routes"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
-	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
 func main() {

@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
+
 	"github.com/sirupsen/logrus"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
 )
 
 // SeedPosition representa la estructura de una posición estructural para el seed desde un archivo JSON.

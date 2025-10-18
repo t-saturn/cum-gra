@@ -1,15 +1,14 @@
-// Package handlers define los controladores HTTP que gestionan las peticiones del cliente.
 package handlers
 
 import (
+	"central-user-manager/internal/dto"
+	"central-user-manager/internal/services"
+	"central-user-manager/pkg/logger"
+	"central-user-manager/pkg/validator"
+
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/central-user-manager/internal/dto"
-	"github.com/t-saturn/central-user-manager/internal/services"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
-	"github.com/t-saturn/central-user-manager/pkg/validator"
 )
 
-// CreateUser maneja la solicitud POST /users, valida la entrada y crea un nuevo usuario en el sistema.
 func CreateUser(c fiber.Ctx) error {
 	var input dto.CreateUserDTO
 

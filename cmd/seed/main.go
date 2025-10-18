@@ -2,10 +2,11 @@
 package main
 
 import (
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/database/seeds"
+	"central-user-manager/pkg/logger"
+
 	"github.com/joho/godotenv"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/database/seeds"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 func main() {

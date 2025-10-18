@@ -11,8 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/models"
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/models"
 )
 
 type SeedUserModuleRestriction struct {
@@ -56,7 +56,7 @@ func loadUMRJSON(path string) ([]SeedUserModuleRestriction, error) {
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo abrir %s: %w", path, err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	var input []SeedUserModuleRestriction
 	if err := json.NewDecoder(f).Decode(&input); err != nil {

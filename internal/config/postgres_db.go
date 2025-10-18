@@ -4,7 +4,8 @@ package config
 import (
 	"fmt"
 
-	"github.com/t-saturn/central-user-manager/pkg/logger"
+	"central-user-manager/pkg/logger"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

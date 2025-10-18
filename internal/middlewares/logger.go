@@ -3,9 +3,10 @@ package middlewares
 import (
 	"time"
 
+	"central-user-manager/pkg/logger"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/sirupsen/logrus"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
 )
 
 // LoggerMiddleware registra cada solicitud HTTP entrante con información útil.

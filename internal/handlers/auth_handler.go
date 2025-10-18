@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"central-user-manager/internal/config"
+	"central-user-manager/internal/dto"
+	"central-user-manager/internal/models"
+	"central-user-manager/pkg/logger"
+	"central-user-manager/pkg/security"
+	"central-user-manager/pkg/validator"
+
 	"github.com/gofiber/fiber/v3"
-	"github.com/t-saturn/central-user-manager/internal/config"
-	"github.com/t-saturn/central-user-manager/internal/dto"
-	"github.com/t-saturn/central-user-manager/internal/models"
-	"github.com/t-saturn/central-user-manager/pkg/logger"
-	"github.com/t-saturn/central-user-manager/pkg/security"
-	"github.com/t-saturn/central-user-manager/pkg/validator"
 	"gorm.io/gorm"
 )
 
