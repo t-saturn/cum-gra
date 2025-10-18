@@ -7,5 +7,7 @@ type AuthVerifyRequest struct {
 }
 
 type AuthVerifyResponse struct {
-	UserID string `json:"user_id"`
+	UserID    string `json:"user_id"`
+	Status    string `json:"status"`
+	IsDeleted bool   `json:"is_deleted"`
 }

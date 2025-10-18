@@ -53,6 +53,8 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.AuthVerifyResponse{
-		UserID: user.ID.String(),
+		UserID:    user.ID.String(),
+		Status:    user.Status,
+		IsDeleted: user.IsDeleted,
 	})
 }
