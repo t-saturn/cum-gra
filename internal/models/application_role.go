@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// ApplicationRole define los roles específicos asignables dentro de una aplicación.
 type ApplicationRole struct {
 	ID            uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	Name          string     `gorm:"type:varchar(100);not null" json:"name"`

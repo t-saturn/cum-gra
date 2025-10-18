@@ -1,4 +1,3 @@
-// Package models contiene las definiciones de los modelos utilizados por GORM para mapear la base de datos.
 package models
 
 import (
@@ -7,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Application representa una aplicación o sistema registrado en la plataforma.
 type Application struct {
 	ID           uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	Name         string     `gorm:"type:varchar(100);not null" json:"name"`

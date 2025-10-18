@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// OrganicUnit representa una unidad orgánica o área funcional dentro de la organización.
 type OrganicUnit struct {
 	ID          uint       `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string     `gorm:"type:varchar(255);not null;unique" validate:"required" json:"name"`
@@ -21,7 +20,6 @@ type OrganicUnit struct {
 	DeletedAt   *time.Time `json:"deleted_at"`
 	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	Parent        *OrganicUnit  `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
 	Children      []OrganicUnit `gorm:"foreignKey:ParentID" json:"children,omitempty"`
 	DeletedByUser *User         `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`

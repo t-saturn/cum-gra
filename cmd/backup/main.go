@@ -1,4 +1,3 @@
-// Package main genera un respaldo de la base de datos actual del sistema.
 package main
 
 import "fmt"

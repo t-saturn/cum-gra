@@ -1,4 +1,3 @@
-// Package main inicia el servidor principal de la aplicación usando Fiber.
 package main
 
 import (
@@ -27,7 +26,6 @@ func main() {
 
 	app := fiber.New()
 
-	// Aplica logger personalizado
 	app.Use(middlewares.CORSMiddleware())
 	app.Use(middlewares.LoggerMiddleware())
 

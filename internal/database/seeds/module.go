@@ -14,7 +14,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// SeedModule representa la estructura de un módulo utilizada para poblar la base de datos desde un archivo JSON.
 type SeedModule struct {
 	Item            *string `json:"item"`
 	Name            string  `json:"name"`
@@ -26,7 +25,6 @@ type SeedModule struct {
 	Status          string  `json:"status"`
 }
 
-// SeedModules inserta registros de módulos en la base de datos desde un archivo JSON, asociándolos a sus aplicaciones y padres si corresponde.
 func SeedModules() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding módulos desde JSON...")
@@ -49,7 +47,6 @@ func SeedModules() error {
 
 	db := config.DB
 
-	// Indexar módulos insertados por nombre para posterior asignación de ParentID
 	inserted := make(map[string]uuid.UUID)
 
 	for _, sm := range seedData {
@@ -74,7 +71,6 @@ func SeedModules() error {
 			}
 		}
 
-		// Verificar existencia correctamente
 		var count int64
 		query := db.Model(&models.Module{}).Where("name = ? AND application_id = ?", sm.Name, app.ID)
 		if parentID == nil {

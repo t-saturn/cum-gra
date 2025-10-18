@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// UserModuleRestriction define restricciones específicas de acceso o permisos de un usuario sobre un módulo.
 type UserModuleRestriction struct {
 	ID                 uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	UserID             uuid.UUID  `gorm:"type:uuid;not null" json:"user_id"`
@@ -24,7 +23,6 @@ type UserModuleRestriction struct {
 	DeletedAt          *time.Time `json:"deleted_at"`
 	DeletedBy          *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	User          *User        `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Module        *Module      `gorm:"foreignKey:ModuleID" json:"module,omitempty"`
 	Application   *Application `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`

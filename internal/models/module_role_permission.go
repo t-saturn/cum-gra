@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// ModuleRolePermission define los permisos que un rol tiene sobre un módulo específico.
 type ModuleRolePermission struct {
 	ID                uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	ModuleID          uuid.UUID  `gorm:"type:uuid;not null" json:"module_id"`
@@ -17,7 +16,6 @@ type ModuleRolePermission struct {
 	DeletedAt         *time.Time `json:"deleted_at"`
 	DeletedBy         *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	Module          *Module          `gorm:"foreignKey:ModuleID" json:"module,omitempty"`
 	ApplicationRole *ApplicationRole `gorm:"foreignKey:ApplicationRoleID" json:"application_role,omitempty"`
 	DeletedByUser   *User            `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`

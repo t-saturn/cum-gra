@@ -42,7 +42,6 @@ func SeedApplicationRoles() error {
 	}
 
 	for _, r := range input {
-		// 1. Resolver Application
 		var app models.Application
 		var qErr error
 
@@ -60,7 +59,6 @@ func SeedApplicationRoles() error {
 				r.ApplicationClientID, r.ApplicationName, qErr)
 		}
 
-		// 2. Evitar duplicado por (name, application_id)
 		var count int64
 		if err := config.DB.Model(&models.ApplicationRole{}).
 			Where("LOWER(name) = LOWER(?) AND application_id = ?", r.Name, app.ID).
@@ -68,16 +66,12 @@ func SeedApplicationRoles() error {
 			return fmt.Errorf("error verificando duplicados para role '%s' en app '%s': %w",
 				r.Name, app.Name, err)
 		}
-		// 3. Preparar descripción (nil si viene vacía)
 		var desc *string
 		if r.Description != nil && strings.TrimSpace(*r.Description) != "" {
 			desc = r.Description
 		}
 
-		// if count > 0 {
-		// 	logrus.Warnf("ApplicationRole ya existe: role='%s' app='%s'", r.Name, app.Name)
-		// 	continue
-		// }
+
 
 		if count > 0 && desc != nil {
 			if err := config.DB.Model(&models.ApplicationRole{}).
@@ -89,7 +83,6 @@ func SeedApplicationRoles() error {
 			continue
 		}
 
-		// 4. Insertar
 		role := models.ApplicationRole{
 			ID:            uuid.New(),
 			Name:          r.Name,

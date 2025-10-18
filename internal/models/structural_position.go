@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// StructuralPosition representa un cargo o posición estructural dentro de la organización.
 type StructuralPosition struct {
 	ID          uint       `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string     `gorm:"type:varchar(255);unique;not null" json:"name"`
@@ -20,7 +19,6 @@ type StructuralPosition struct {
 	DeletedAt   *time.Time `json:"deleted_at"`
 	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	DeletedByUser *User  `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	Users         []User `gorm:"foreignKey:StructuralPositionID" json:"users,omitempty"`
 }

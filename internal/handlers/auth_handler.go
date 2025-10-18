@@ -12,7 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// VerifyCredentialsHandler maneja la solicitud POST para verificar credenciales de autenticación y retorna el ID del usuario si son válidas.
 func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var input dto.AuthVerifyRequest
 
@@ -31,7 +30,6 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	var user models.User
 	tx := config.DB
 
-	// Buscar por email o DNI
 	if *input.Email != "" {
 		tx = tx.Where("email = ?", input.Email)
 	} else if *input.DNI != "" {
