@@ -7,6 +7,7 @@ func Run() error {
 		SeedApplications,
 		SeedModules,
 		SeedApplicationRoles,
+		SeedModuleRolePermissions,
 		SeedUsersAndUserApplicationRoles,
 		SeedUserModuleRestrictions,
 	}

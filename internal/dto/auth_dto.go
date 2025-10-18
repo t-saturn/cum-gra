@@ -11,3 +11,13 @@ type AuthSinginResponse struct {
 	Status    string `json:"status"`
 	IsDeleted bool   `json:"is_deleted"`
 }
+
+type ModulesAccess struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type AuthRoleResponse struct {
+	RoleID  string          `json:"role_id"`
+	Modules []ModulesAccess `json:"modules"`
+}

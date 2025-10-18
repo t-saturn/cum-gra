@@ -17,7 +17,6 @@ type ApplicationRole struct {
 	DeletedAt     *time.Time `json:"deleted_at"`
 	DeletedBy     *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	Application           *Application           `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`
 	DeletedByUser         *User                  `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	UserApplicationRoles  []UserApplicationRole  `gorm:"foreignKey:ApplicationRoleID" json:"user_application_roles,omitempty"`
