@@ -8,7 +8,6 @@ const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ 
   <div className={`mx-auto w-full container px-6 ${className ?? ''}`}>{children}</div>
 );
 
-
 const Logo: React.FC = () => (
   <div className="flex items-center gap-2 sm:gap-3" data-testid="logo">
     <Image src="/img/logo.png" alt="Logo Gobierno Regional de Ayacucho" width={36} height={36} className="rounded-full" priority />

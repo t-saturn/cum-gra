@@ -19,13 +19,13 @@ function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card/70 p-6 rounded-t-lg backdrop-blur-sm">
+    <header className="top-0 z-10 sticky flex items-center gap-4 bg-card/70 backdrop-blur-sm p-6 border-b rounded-t-lg h-16">
       <SidebarTrigger className="hover:cursor-pointer" />
 
-      <div className="ml-auto flex items-center gap-4 text-muted-foreground">
+      <div className="flex items-center gap-4 ml-auto text-muted-foreground">
         <ThemeToggle />
         <Button variant="ghost" size="icon" className="hover:cursor-pointer" onClick={handleToggleFullscreen}>
-          <Fullscreen className="h-5 w-5" />
+          <Fullscreen className="w-5 h-5" />
           <span className="sr-only">Fullscreen</span>
         </Button>
         <AppsPopover />

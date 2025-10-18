@@ -23,8 +23,6 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
 
   const sidebarMenus = fn_get_sidebar_menu(profile.role);
 
-
-
   const handleMouseEnter = (item: string, event: React.MouseEvent) => {
     if (isCollapsed && sidebarMenus.some((group) => group.menu.some((menuItem: SidebarItem) => menuItem.label === item && menuItem.items))) {
       setHoveredItem(item);
@@ -76,12 +74,13 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                             <CollapsibleTrigger asChild>
                               <SidebarMenuButton
                                 tooltip={item.items ? undefined : item.label}
-                                className={`hover:bg-primary hover:text-[#eff1f5] ${isActive
-                                  ? isSubItemActive && !isCollapsed
-                                    ? 'bg-secondary group-data-[state=closed]/collapsible:bg-primary'
-                                    : 'bg-primary text-[#eff1f5]'
-                                  : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
-                                  } hover:cursor-pointer`}
+                                className={`hover:bg-primary hover:text-[#eff1f5] ${
+                                  isActive
+                                    ? isSubItemActive && !isCollapsed
+                                      ? 'bg-secondary group-data-[state=closed]/collapsible:bg-primary'
+                                      : 'bg-primary text-[#eff1f5]'
+                                    : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
+                                } hover:cursor-pointer`}
                                 onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                                 onMouseLeave={handleMouseLeave}
                               >
@@ -98,8 +97,9 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                                     <Link
                                       href={subitem.url}
                                       key={j}
-                                      className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${isSubItemActive ? 'bg-primary text-[#eff1f5]' : 'hover:bg-primary hover:text-[#eff1f5]'
-                                        }`}
+                                      className={`px-2 py-1 text-xs flex items-center gap-2 rounded-lg ${
+                                        isSubItemActive ? 'bg-primary text-[#eff1f5]' : 'hover:bg-primary hover:text-[#eff1f5]'
+                                      }`}
                                       onClick={() => {
                                         if (isMobile) {
                                           setOpenMobile(false);
@@ -118,8 +118,9 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                       ) : (
                         <Link href={item.url}>
                           <SidebarMenuButton
-                            className={`hover:bg-primary hover:text-[#eff1f5] ${isActive ? 'bg-primary text-[#eff1f5]' : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
-                              } hover:cursor-pointer`}
+                            className={`hover:bg-primary hover:text-[#eff1f5] ${
+                              isActive ? 'bg-primary text-[#eff1f5]' : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
+                            } hover:cursor-pointer`}
                             onMouseEnter={(e) => handleMouseEnter(item.label, e)}
                             onMouseLeave={handleMouseLeave}
                             onClick={() => {

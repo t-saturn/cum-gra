@@ -15,9 +15,9 @@ export default function Layout({ children }: LayoutProps) {
   const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
 
   return (
-    <div className="flex h-screen bg-background p-2 w-full gap-2">
+    <div className="flex gap-2 bg-background p-2 w-full h-screen">
       <AppSidebar hoveredItem={hoveredItem} setHoveredItem={setHoveredItem} />
-      <SidebarInset className="flex-1 rounded-lg border border-border bg-card shadow-sm overflow-y-auto">
+      <SidebarInset className="flex-1 bg-card shadow-sm border border-border rounded-lg overflow-y-auto">
         <Navbar />
         <div className="p-4">{children}</div>
       </SidebarInset>

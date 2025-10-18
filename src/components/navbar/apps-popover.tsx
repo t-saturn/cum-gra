@@ -98,31 +98,31 @@ export function AppsPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative hover:bg-accent/50 hover:scale-105 transition-all duration-200 rounded-xl">
-          <LayoutGrid className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="relative hover:bg-accent/50 rounded-xl hover:scale-105 transition-all duration-200">
+          <LayoutGrid className="w-5 h-5" />
           <span className="sr-only">Aplicaciones</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[480px] bg-popover backdrop-blur-xl border-border/50 shadow-2xl shadow-black/10 mr-2" align="end">
+      <PopoverContent className="bg-popover shadow-2xl shadow-black/10 backdrop-blur-xl mr-2 border-border/50 w-[480px]" align="end">
         <div className="space-y-4">
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-border/50">
+          <div className="flex justify-between items-center pb-3 border-b border-border/50">
             <div>
               <h3 className="font-semibold text-lg">Aplicaciones</h3>
-              <p className="text-sm text-muted-foreground">Accede a todos los módulos del sistema</p>
+              <p className="text-muted-foreground text-sm">Accede a todos los módulos del sistema</p>
             </div>
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+            <Badge variant="secondary" className="bg-primary/10 border-primary/20 text-primary">
               {modules.length} apps
             </Badge>
           </div>
 
           {/* Apps Grid */}
-          <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
+          <div className="gap-3 grid grid-cols-2 max-h-[400px] overflow-y-auto">
             {modules.map((module) => {
               const StatusBadge = statusConfig[module.status || 'active'];
               return (
                 <Link key={module.id} href={module.url} target="_blank" rel="noopener noreferrer" className="group">
-                  <div className="relative bg-gradient-to-br from-card to-card/50 border border-border/50 rounded-xl p-4 hover:shadow-lg hover:shadow-black/5 hover:border-border transition-all duration-300 hover:scale-[1.02] overflow-hidden">
+                  <div className="relative bg-gradient-to-br from-card to-card/50 hover:shadow-black/5 hover:shadow-lg p-4 border border-border/50 hover:border-border rounded-xl overflow-hidden hover:scale-[1.02] transition-all duration-300">
                     {/* Gradient Background */}
                     <div
                       className={cn(
@@ -132,37 +132,37 @@ export function AppsPopover() {
                     />
 
                     {/* Status Badge */}
-                    {module.status && <Badge className={cn('absolute top-2 right-2 text-xs px-2 py-0.5', StatusBadge.className)}>{StatusBadge.label}</Badge>}
+                    {module.status && <Badge className={cn('top-2 right-2 absolute px-2 py-0.5 text-xs', StatusBadge.className)}>{StatusBadge.label}</Badge>}
 
                     <div className="relative space-y-3">
                       {/* Icon */}
                       <div
                         className={cn(
-                          'w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300',
+                          'flex justify-center items-center bg-gradient-to-br shadow-lg rounded-xl w-12 h-12 group-hover:scale-110 transition-transform duration-300',
                           module.gradient,
                         )}
                       >
-                        <module.icon className="h-6 w-6 text-white" />
+                        <module.icon className="w-6 h-6 text-white" />
                       </div>
 
                       {/* Content */}
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-base group-hover:text-primary transition-colors">{module.title}</h4>
-                          <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <h4 className="font-semibold group-hover:text-primary text-base transition-colors">{module.title}</h4>
+                          <ExternalLink className="opacity-0 group-hover:opacity-100 w-3 h-3 text-muted-foreground transition-opacity" />
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
+                        <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{module.description}</p>
                       </div>
 
                       {/* Features Preview */}
                       <div className="flex flex-wrap gap-1">
                         {module.features.slice(0, 2).map((feature, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5 bg-muted/50 text-muted-foreground border-0">
+                          <Badge key={index} variant="secondary" className="bg-muted/50 px-2 py-0.5 border-0 text-muted-foreground text-xs">
                             {feature}
                           </Badge>
                         ))}
                         {module.features.length > 2 && (
-                          <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-muted/50 text-muted-foreground border-0">
+                          <Badge variant="secondary" className="bg-muted/50 px-2 py-0.5 border-0 text-muted-foreground text-xs">
                             +{module.features.length - 2}
                           </Badge>
                         )}
@@ -176,9 +176,9 @@ export function AppsPopover() {
 
           {/* Footer */}
           <div className="pt-3 border-t border-border/50">
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex justify-between items-center text-muted-foreground text-sm">
               <div className="flex items-center gap-1">
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="w-4 h-4" />
                 <span>Todas las aplicaciones están integradas</span>
               </div>
               <Badge variant="outline" className="text-xs">

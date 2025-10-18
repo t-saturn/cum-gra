@@ -14,7 +14,7 @@ interface CardCustomProps {
 
 const CardCustom = ({ title, description, order = 'auto', children, Icon }: CardCustomProps) => {
   return (
-    <Card className="border-border bg-card/50 backdrop-blur-sm">
+    <Card className="bg-card/50 backdrop-blur-sm border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {Icon && <Icon className="w-5 h-5" />}

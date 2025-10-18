@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool } from 'pg';
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -6,7 +6,7 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: process.env.DB_SSLMODE === "require" ? { rejectUnauthorized: false } : undefined,
+  ssl: process.env.DB_SSLMODE === 'require' ? { rejectUnauthorized: false } : undefined,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
