@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func VerifyCredentialsHandler(c fiber.Ctx) error {
-	var input dto.AuthVerifyRequest
+func SigninHandler(c fiber.Ctx) error {
+	var input dto.AuthSinginRequest
 
 	if err := c.Bind().Body(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Datos mal formateados"})
@@ -31,9 +31,7 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 	} else if input.DNI != nil && *input.DNI != "" {
 		tx = tx.Where("dni = ?", *input.DNI)
 	} else {
-		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
-			Error: "Debe proporcionar un email o DNI",
-		})
+		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Debe proporcionar un email o DNI"})
 	}
 
 	if err := tx.First(&user).Error; err != nil {
@@ -42,9 +40,7 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		}
 
 		logger.Log.Error("Error consultando usuario:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
-			Error: "Error interno del servidor",
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
 	argon := security.NewArgon2Service()
@@ -52,9 +48,5 @@ func VerifyCredentialsHandler(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(dto.ErrorResponse{Error: "Credenciales inválidas"})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dto.AuthVerifyResponse{
-		UserID:    user.ID.String(),
-		Status:    user.Status,
-		IsDeleted: user.IsDeleted,
-	})
+	return c.Status(fiber.StatusOK).JSON(dto.AuthSinginResponse{UserID: user.ID.String(), Status: user.Status, IsDeleted: user.IsDeleted})
 }
