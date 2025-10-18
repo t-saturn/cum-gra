@@ -23,7 +23,6 @@ function goToSignIn(returnToAbs: string) {
   const cb64 = to_cb64(returnToAbs);
   const signInUrl = `${AUTH_ORIGIN}/auth/signin?cb64=${cb64}`;
 
-  // Para navegación cross-origin es más fiable window.location.replace
   window.location.replace(signInUrl);
 }
 

@@ -3,25 +3,13 @@
 import Link from 'next/link';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Header } from './app/header';
-import { Footer } from './app/footer';
+import { Header } from './header';
+import { Footer } from './footer';
 
-import {
-  ArrowRight,
-  ShieldCheck,
-  Users,
-  KeyRound,
-  ServerCog,
-  Activity,
-  Link2,
-  CheckCircle2,
-  Lock,
-  Cloud,
-} from 'lucide-react';
+import { ArrowRight, ShieldCheck, Users, KeyRound, ServerCog, Activity, Link2, CheckCircle2, Lock, Cloud } from 'lucide-react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
   <div className={`mx-auto w-full container px-6 ${className ?? ''}`}>{children}</div>
@@ -31,19 +19,15 @@ export const Content = () => {
   return (
     <section className="w-full">
       <Container className="flex flex-col items-center text-center">
-        {/* HERO */}
         <div className="space-y-6 pt-28 sm:pt-32 max-w-3xl">
           <Badge variant="secondary" className="rounded-full">
             Plataforma SSO • Gestión de Usuarios
           </Badge>
 
-          <h1 className="font-extrabold text-foreground text-xl sm:text-3xl tracking-tight">
-            Plataforma Central de Gestión de Usuarios
-          </h1>
+          <h1 className="font-extrabold text-foreground text-xl sm:text-3xl tracking-tight">Plataforma Central de Gestión de Usuarios</h1>
 
           <p className="text-muted-foreground text-lg sm:text-xl">
-            Administra, autentica y supervisa usuarios en un sistema integral y seguro para optimizar los procesos
-            institucionales.
+            Administra, autentica y supervisa usuarios en un sistema integral y seguro para optimizar los procesos institucionales.
           </p>
 
           <div className="flex justify-center items-center gap-3 pt-2">
@@ -59,7 +43,6 @@ export const Content = () => {
             </Link>
           </div>
 
-          {/* PREVIEW 3D */}
           <div className="mx-auto mt-10 p-4 sm:p-6 border rounded-2xl w-full max-w-4xl">
             <p className="mb-2 text-muted-foreground text-sm">Vista previa plataforma</p>
             <div className="flex justify-center items-center bg-muted/30 border border-border/50 rounded-xl h-[280px] sm:h-[360px] [perspective:1000px]">
@@ -80,7 +63,6 @@ export const Content = () => {
           </div>
         </div>
 
-        {/* FEATURES */}
         <div id="features" className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto mt-14 w-full max-w-6xl">
           <Card className="hover:shadow-md transition">
             <CardHeader>
@@ -90,9 +72,7 @@ export const Content = () => {
               <CardTitle>Gestión Centralizada</CardTitle>
               <CardDescription>Usuarios, roles y permisos desde un solo lugar.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Administra altas, bajas y cambios con auditoría y trazabilidad.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Administra altas, bajas y cambios con auditoría y trazabilidad.</CardContent>
           </Card>
 
           <Card className="hover:shadow-md transition">
@@ -103,9 +83,7 @@ export const Content = () => {
               <CardTitle>Seguridad de Nivel Institucional</CardTitle>
               <CardDescription>Autenticación robusta y políticas de acceso.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Políticas de contraseña, bloqueo, y controles por unidad orgánica.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Políticas de contraseña, bloqueo, y controles por unidad orgánica.</CardContent>
           </Card>
 
           <Card className="hover:shadow-md transition">
@@ -116,9 +94,7 @@ export const Content = () => {
               <CardTitle>SSO y Federaciones</CardTitle>
               <CardDescription>Inicio de sesión único entre aplicaciones.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Callback seguro por dominio y sincronización de sesión en tiempo real.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Callback seguro por dominio y sincronización de sesión en tiempo real.</CardContent>
           </Card>
 
           <Card className="hover:shadow-md transition">
@@ -129,9 +105,7 @@ export const Content = () => {
               <CardTitle>Escalable y Modular</CardTitle>
               <CardDescription>Arquitectura lista para múltiples apps.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Módulos por aplicaciones, unidades, posiciones y restricciones.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Módulos por aplicaciones, unidades, posiciones y restricciones.</CardContent>
           </Card>
 
           <Card className="hover:shadow-md transition">
@@ -142,9 +116,7 @@ export const Content = () => {
               <CardTitle>Monitoreo y Auditoría</CardTitle>
               <CardDescription>Historial de cambios y eventos clave.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Registro de contraseñas, revocaciones y bitácora de acceso.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Registro de contraseñas, revocaciones y bitácora de acceso.</CardContent>
           </Card>
 
           <Card className="hover:shadow-md transition">
@@ -155,58 +127,42 @@ export const Content = () => {
               <CardTitle>Integraciones</CardTitle>
               <CardDescription>Conexiones con servicios internos.</CardDescription>
             </CardHeader>
-            <CardContent className="text-muted-foreground text-sm">
-              Enlace con intranet, módulos documentales y sistemas de RR.HH.
-            </CardContent>
+            <CardContent className="text-muted-foreground text-sm">Enlace con intranet, módulos documentales y sistemas de RR.HH.</CardContent>
           </Card>
         </div>
-
 
         <div className="mx-auto mt-16 w-full max-w-5xl text-left">
           <h3 className="mb-4 font-bold text-xl">¿Cómo funciona?</h3>
           <div className="gap-6 grid md:grid-cols-3">
             <Card className="relative">
               <CardHeader>
-                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">
-                  1
-                </div>
+                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">1</div>
                 <CardTitle>Autenticación</CardTitle>
                 <CardDescription>SSO centralizado (App SSO).</CardDescription>
               </CardHeader>
-              <CardContent className="text-muted-foreground text-sm">
-                El usuario inicia sesión en la app SSO; se emite la cookie de sesión por dominio.
-              </CardContent>
+              <CardContent className="text-muted-foreground text-sm">El usuario inicia sesión en la app SSO; se emite la cookie de sesión por dominio.</CardContent>
             </Card>
 
             <Card className="relative">
               <CardHeader>
-                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">
-                  2
-                </div>
+                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">2</div>
                 <CardTitle>Redirección Segura</CardTitle>
                 <CardDescription>cb64 y validación de origen.</CardDescription>
               </CardHeader>
-              <CardContent className="text-muted-foreground text-sm">
-                La app destino recibe el callback y sincroniza el contexto del usuario (ID/rol).
-              </CardContent>
+              <CardContent className="text-muted-foreground text-sm">La app destino recibe el callback y sincroniza el contexto del usuario (ID/rol).</CardContent>
             </Card>
 
             <Card className="relative">
               <CardHeader>
-                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">
-                  3
-                </div>
+                <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-bold text-primary">3</div>
                 <CardTitle>Acceso y Auditoría</CardTitle>
                 <CardDescription>Permisos y bitácora.</CardDescription>
               </CardHeader>
-              <CardContent className="text-muted-foreground text-sm">
-                Se controla el acceso a módulos y se registran eventos clave para auditoría.
-              </CardContent>
+              <CardContent className="text-muted-foreground text-sm">Se controla el acceso a módulos y se registran eventos clave para auditoría.</CardContent>
             </Card>
           </div>
         </div>
 
-        {/* SECURITY */}
         <div className="mx-auto mt-16 w-full max-w-5xl">
           <Card>
             <CardHeader className="text-left">
@@ -232,14 +188,16 @@ export const Content = () => {
                 </li>
               </ul>
               <div className="flex flex-wrap items-center gap-2 mt-4">
-                <Badge variant="outline" className="gap-1"><Cloud className="w-3.5 h-3.5" /> Alta disponibilidad</Badge>
-                <Badge variant="outline" className="gap-1"><ShieldCheck className="w-3.5 h-3.5" /> Buenas prácticas OWASP</Badge>
+                <Badge variant="outline" className="gap-1">
+                  <Cloud className="w-3.5 h-3.5" /> Alta disponibilidad
+                </Badge>
+                <Badge variant="outline" className="gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Buenas prácticas OWASP
+                </Badge>
               </div>
             </CardContent>
           </Card>
         </div>
-
-
       </Container>
     </section>
   );

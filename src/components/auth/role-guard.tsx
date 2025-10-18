@@ -3,16 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RoleProvider, type RoleValue } from '@/providers/role';
+import { to_cb64 } from '@/helpers';
 
-// Deben existir en el cliente (NEXT_PUBLIC_*)
-const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!; // p.ej. http://sso.localtest.me:30000
-const APP_CLIENT_ID = process.env.NEXT_PUBLIC_APP_CLIENT_ID!; // client_id de ESTA app
-const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!; // p.ej. http://cum.localtest.me:30001
-
-function toBase64Url(s: string) {
-  const b64 = typeof window !== 'undefined' ? btoa(s) : '';
-  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-}
+const AUTH_ORIGIN = process.env.NEXT_PUBLIC_AUTH_ORIGIN!;
+const APP_CLIENT_ID = process.env.NEXT_PUBLIC_APP_CLIENT_ID!;
+const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN!;
 
 const RoleGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -43,9 +38,8 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (res.status === 401) {
-          // Sin sesión: redirige al SSO signin con callback a la URL actual de ESTA app
           const here = typeof window !== 'undefined' ? window.location.href : `${APP_ORIGIN}/`;
-          const cb64 = toBase64Url(here);
+          const cb64 = to_cb64(here);
           router.replace(`${AUTH_ORIGIN}/auth/signin?cb64=${cb64}`);
           return;
         }
