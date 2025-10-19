@@ -13,7 +13,7 @@ import (
 )
 
 func GetOrganicUnitsHandler(c fiber.Ctx) error {
-	// Paginación (?page=1&page_size=20&is_deleted=true|false)
+	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
 	page := 1
 	pageSize := 20
 	if v := c.Query("page"); v != "" {

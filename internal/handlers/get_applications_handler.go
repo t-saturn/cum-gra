@@ -18,7 +18,7 @@ import (
 func GetApplicationsHandler(c fiber.Ctx) error {
 	db := config.DB
 
-	// Paginación
+	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
 	page := 1
 	pageSize := 20
 	if v := c.Query("page"); v != "" {
@@ -32,7 +32,6 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	// is_deleted: default false
 	isDeleted := false
 	if v := c.Query("is_deleted"); v != "" {
 		if b, err := strconv.ParseBool(v); err == nil {
@@ -40,11 +39,9 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	// Nombre del rol administrador (prefijo). Default: "administrator"
-	adminRoleName := c.Query("admin_role_name", "administrator")
+	adminRoleName := c.Query("admin_role_name", "admin")
 	adminRolePrefix := strings.TrimSpace(adminRoleName)
 
-	// Total de aplicaciones con filtro de borrado lógico
 	var total int64
 	base := db.Model(&models.Application{}).Where("is_deleted = ?", isDeleted)
 	if err := base.Count(&total).Error; err != nil {
@@ -53,7 +50,6 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
-	// Traer aplicaciones de la página
 	var apps []models.Application
 	if err := db.
 		Where("is_deleted = ?", isDeleted).
@@ -84,15 +80,11 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 		})
 	}
 
-	// Recolectar IDs de aplicaciones para consultas por lote
 	appIDs := make([]uuid.UUID, 0, len(apps))
 	for _, a := range apps {
 		appIDs = append(appIDs, a.ID)
 	}
 
-	// =========================
-	// 1) Conteo de usuarios por aplicación (UserApplicationRoles no eliminados y no revocados)
-	// =========================
 	type countRow struct {
 		ApplicationID uuid.UUID `gorm:"column:application_id"`
 		UsersCount    int64     `gorm:"column:users_count"`
@@ -116,11 +108,6 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 		usersCountByApp[r.ApplicationID] = r.UsersCount
 	}
 
-	// =========================
-	// 2) Usuarios administradores por aplicación
-	//    Roles de la app cuyo Name ILIKE 'adminRolePrefix%'
-	//    UAR no eliminados y no revocados, User no eliminado.
-	// =========================
 	type adminRow struct {
 		ApplicationID uuid.UUID `gorm:"column:application_id"`
 		UserID        uuid.UUID `gorm:"column:user_id"`
@@ -132,7 +119,6 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 
 	var admins []adminRow
 
-	// ILIKE con sufijo % (prefijo)
 	pattern := adminRolePrefix + "%"
 
 	if err := db.
@@ -172,7 +158,6 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 		adminsByApp[a.ApplicationID] = append(adminsByApp[a.ApplicationID], mapper.ToAdminUserDTO(u))
 	}
 
-	// Armar respuesta
 	out := make([]dto.ApplicationDTO, 0, len(apps))
 	for _, a := range apps {
 		adminList := adminsByApp[a.ID]
