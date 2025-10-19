@@ -19,12 +19,9 @@ type ModuleWithAppDTO struct {
 	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
 	DeletedBy     *string    `json:"deleted_by,omitempty"`
 
-	// Datos de la aplicación
 	ApplicationName     *string `json:"application_name,omitempty"`
 	ApplicationClientID *string `json:"application_client_id,omitempty"`
-
-	// Métrica
-	UsersCount int64 `json:"users_count"`
+	UsersCount          int64   `json:"users_count"`
 }
 
 type ModulesListResponse struct {
@@ -32,4 +29,11 @@ type ModulesListResponse struct {
 	Total    int64              `json:"total"`
 	Page     int                `json:"page"`
 	PageSize int                `json:"page_size"`
+}
+
+type ModulesStatsResponse struct {
+	TotalModules   int64 `json:"total_modules"`
+	ActiveModules  int64 `json:"active_modules"`
+	DeletedModules int64 `json:"deleted_modules"`
+	TotalUsers     int64 `json:"total_users"`
 }

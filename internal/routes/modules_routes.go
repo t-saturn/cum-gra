@@ -10,4 +10,5 @@ func RegisterModulesRoutes(router fiber.Router) {
 	app := router.Group("/modules")
 
 	app.Get("/", handlers.GetModulesHandler)
+	app.Get("/stats", handlers.GetModulesStatsHandler)
 }
