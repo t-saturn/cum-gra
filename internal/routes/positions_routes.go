@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterStructuralPositionRoutes(router fiber.Router) {
+func RegisterPositionRoutes(router fiber.Router) {
 	position := router.Group("/positions")
 
 	position.Get("/", handlers.GetPositionsHandler)
