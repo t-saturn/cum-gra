@@ -3,10 +3,9 @@ package handlers
 import (
 	"strconv"
 
-	"central-user-manager/internal/config"
 	"central-user-manager/internal/dto"
 	"central-user-manager/internal/mapper"
-	"central-user-manager/internal/models"
+	"central-user-manager/internal/services"
 	"central-user-manager/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
@@ -14,9 +13,7 @@ import (
 )
 
 func GetOrganicUnitsHandler(c fiber.Ctx) error {
-	db := config.DB
-
-	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
+	// Paginación (?page=1&page_size=20&is_deleted=true|false)
 	page := 1
 	pageSize := 20
 	if v := c.Query("page"); v != "" {
@@ -37,37 +34,8 @@ func GetOrganicUnitsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	var total int64
-	base := db.Model(&models.OrganicUnit{}).Where("is_deleted = ?", isDeleted)
-	if err := base.Count(&total).Error; err != nil {
-		logger.Log.Error("Error contando dependencias:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
-	}
-
-	type row struct {
-		models.OrganicUnit
-		UsersCount int64 `gorm:"column:users_count"`
-	}
-	var rows []row
-
-	q := db.
-		Table("organic_units ou").
-		Select(`
-			ou.*,
-			COUNT(u.id) AS users_count
-		`).
-		Joins(`
-			LEFT JOIN users u
-				ON u.organic_unit_id = ou.id
-				AND u.is_deleted = FALSE
-		`).
-		Where("ou.is_deleted = ?", isDeleted).
-		Group("ou.id").
-		Order("ou.created_at DESC").
-		Limit(pageSize).
-		Offset((page - 1) * pageSize)
-
-	if err := q.Scan(&rows).Error; err != nil {
+	rows, total, err := services.GetOrganicUnits(page, pageSize, isDeleted)
+	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusOK).JSON(dto.OrganicUnitsListResponse{
 				Data:     []dto.OrganicUnitItemDTO{},
@@ -77,7 +45,8 @@ func GetOrganicUnitsHandler(c fiber.Ctx) error {
 			})
 		}
 		logger.Log.Error("Error obteniendo dependencias:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
 	out := make([]dto.OrganicUnitItemDTO, 0, len(rows))
