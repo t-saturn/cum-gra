@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { UsersListResponse, UserListItem } from '@/types/users';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,81 +9,49 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2 } from 'lucide-react';
 import CardStatsContain from '@/components/custom/card/card-stats-contain';
 import { statsUsers } from '@/mocks/stats-mocks';
-
-// Mock data
-const users = [
-  {
-    id: '1',
-    email: 'juan.perez@empresa.com',
-    firstName: 'Juan',
-    lastName: 'Pérez',
-    dni: '12345678',
-    phone: '+51 999 888 777',
-    status: 'active',
-    emailVerified: true,
-    phoneVerified: false,
-    twoFactorEnabled: true,
-    structuralPosition: 'Gerente General',
-    organicUnit: 'Gerencia',
-    lastLogin: '2024-01-15 10:30:00',
-    createdAt: '2024-01-01 09:00:00',
-  },
-  {
-    id: '2',
-    email: 'maria.garcia@empresa.com',
-    firstName: 'María',
-    lastName: 'García',
-    dni: '87654321',
-    phone: '+51 888 777 666',
-    status: 'active',
-    emailVerified: true,
-    phoneVerified: true,
-    twoFactorEnabled: false,
-    structuralPosition: 'Analista Senior',
-    organicUnit: 'Sistemas',
-    lastLogin: '2024-01-15 08:15:00',
-    createdAt: '2024-01-02 14:30:00',
-  },
-  {
-    id: '3',
-    email: 'carlos.lopez@empresa.com',
-    firstName: 'Carlos',
-    lastName: 'López',
-    dni: '11223344',
-    phone: '+51 777 666 555',
-    status: 'suspended',
-    emailVerified: false,
-    phoneVerified: false,
-    twoFactorEnabled: false,
-    structuralPosition: 'Desarrollador',
-    organicUnit: 'Sistemas',
-    lastLogin: '2024-01-10 16:45:00',
-    createdAt: '2024-01-03 11:15:00',
-  },
-];
+import { fn_get_users } from '@/actions/users/fn_get_users';
 
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [users, setUsers] = useState<UserListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response: UsersListResponse = await fn_get_users(1, 20);
+        setUsers(response.data);
+        setTotal(response.total);
+      } catch (err) {
+        console.error('Error cargando usuarios:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(
     (user) =>
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.dni.includes(searchTerm),
   );
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30">Activo</Badge>;
+        return <Badge className="bg-chart-4/20 border-chart-4/30 text-chart-4">Activo</Badge>;
+      case 'inactive':
+        return <Badge className="bg-chart-5/20 border-chart-5/30 text-chart-5">Inactivo</Badge>;
       case 'suspended':
-        return <Badge className="bg-chart-5/20 text-chart-5 border-chart-5/30">Suspendido</Badge>;
-      case 'deleted':
-        return <Badge className="bg-destructive/20 text-destructive border-destructive/30">Eliminado</Badge>;
+        return <Badge className="bg-yellow-500/20 border-yellow-500/30 text-yellow-600">Suspendido</Badge>;
       default:
         return <Badge variant="secondary">Desconocido</Badge>;
     }
@@ -90,144 +59,132 @@ export default function UsersManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestión de Usuarios</h1>
-          <p className="text-muted-foreground mt-1">Administra todos los usuarios del sistema</p>
+          <h1 className="font-bold text-foreground text-3xl">Gestión de Usuarios</h1>
+          <p className="mt-1 text-muted-foreground">Administra todos los usuarios del sistema</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
+            <Download className="mr-2 w-4 h-4" />
             Exportar
           </Button>
-          <Button className="bg-gradient-to-r from-primary to-chart-1 hover:from-primary/90 hover:to-chart-1/90 shadow-lg shadow-primary/25">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button className="bg-gradient-to-r from-primary hover:from-primary/90 to-chart-1 hover:to-chart-1/90 shadow-lg shadow-primary/25">
+            <Plus className="mr-2 w-4 h-4" />
             Nuevo Usuario
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
       <CardStatsContain stats={statsUsers} />
 
-      {/* Filters and Search */}
-      <Card className="border-border bg-card/50">
+      <Card className="bg-card/50 border-border">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center">
             <div>
               <CardTitle>Lista de Usuarios</CardTitle>
-              <CardDescription>
-                {filteredUsers.length} de {users.length} usuarios
-              </CardDescription>
+              <CardDescription>{loading ? 'Cargando usuarios...' : `${filteredUsers.length} de ${total} usuarios`}</CardDescription>
             </div>
             <div className="flex gap-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Search className="top-1/2 left-3 absolute w-4 h-4 text-muted-foreground -translate-y-1/2 transform" />
                 <Input
                   placeholder="Buscar usuarios..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-80 bg-background/50 border-border focus:border-primary focus:ring-ring"
+                  className="bg-background/50 pl-10 focus:border-primary border-border focus:ring-ring w-80"
                 />
               </div>
               <Button variant="outline">
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="mr-2 w-4 h-4" />
                 Filtros
               </Button>
             </div>
           </div>
         </CardHeader>
+
         <CardContent>
-          <div className="rounded-lg border border-border">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-accent/50">
-                  <TableHead>Usuario</TableHead>
-                  <TableHead>DNI</TableHead>
-                  <TableHead>Teléfono</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Verificación</TableHead>
-                  <TableHead>Cargo</TableHead>
-                  <TableHead>Último Acceso</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-accent/30">
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={`/placeholder.svg?height=40&width=40`} />
-                          <AvatarFallback className="bg-gradient-to-r from-primary to-chart-1 text-primary-foreground font-semibold">
-                            {user.firstName[0]}
-                            {user.lastName[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {user.firstName} {user.lastName}
-                          </p>
-                          <p className="text-sm text-muted-foreground">{user.email}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">{user.dni}</TableCell>
-                    <TableCell className="text-sm">{user.phone}</TableCell>
-                    <TableCell>{getStatusBadge(user.status)}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Badge variant={user.emailVerified ? 'default' : 'secondary'} className="text-xs">
-                          {user.emailVerified ? '✓' : '✗'} Email
-                        </Badge>
-                        <Badge variant={user.phoneVerified ? 'default' : 'secondary'} className="text-xs">
-                          {user.phoneVerified ? '✓' : '✗'} Tel
-                        </Badge>
-                        {user.twoFactorEnabled && <Badge className="text-xs bg-chart-4/20 text-chart-4 border-chart-4/30">2FA</Badge>}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="text-sm font-medium">{user.structuralPosition}</p>
-                        <p className="text-xs text-muted-foreground">{user.organicUnit}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm">{new Date(user.lastLogin).toLocaleDateString('es-ES')}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-card/80 backdrop-blur-xl border-border">
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <Eye className="w-4 h-4 mr-2" />
-                            Ver Detalles
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="w-4 h-4 mr-2" />
-                            Editar
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Shield className="w-4 h-4 mr-2" />
-                            Gestionar Roles
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Eliminar
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+          {loading ? (
+            <div className="flex justify-center items-center py-16">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+          ) : (
+            <div className="border border-border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-accent/50">
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>DNI</TableHead>
+                    <TableHead>Teléfono</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Unidad Orgánica</TableHead>
+                    <TableHead>Cargo</TableHead>
+                    <TableHead>Creado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {filteredUsers.map((user) => (
+                    <TableRow key={user.id} className="hover:bg-accent/30">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarImage src={`/placeholder.svg?height=40&width=40`} />
+                            <AvatarFallback className="bg-gradient-to-r from-primary to-chart-1 font-semibold text-primary-foreground">
+                              {user.first_name?.[0] ?? '?'}
+                              {user.last_name?.[0] ?? ''}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-foreground">
+                              {user.first_name} {user.last_name}
+                            </p>
+                            <p className="text-muted-foreground text-sm">{user.email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">{user.dni}</TableCell>
+                      <TableCell className="text-sm">{user.phone ?? '-'}</TableCell>
+                      <TableCell>{getStatusBadge(user.status)}</TableCell>
+                      <TableCell className="text-sm">{user.organic_unit?.acronym ?? '—'}</TableCell>
+                      <TableCell className="text-sm">{user.structural_position?.name ?? '—'}</TableCell>
+                      <TableCell className="text-sm">{new Date(user.created_at).toLocaleDateString('es-ES')}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-card/80 backdrop-blur-xl border-border">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 w-4 h-4" />
+                              Ver Detalles
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Edit className="mr-2 w-4 h-4" />
+                              Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Shield className="mr-2 w-4 h-4" />
+                              Gestionar Roles
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive">
+                              <Trash2 className="mr-2 w-4 h-4" />
+                              Eliminar
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
