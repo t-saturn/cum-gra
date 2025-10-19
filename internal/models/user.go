@@ -15,8 +15,8 @@ type User struct {
 	Phone                *string    `gorm:"type:varchar(20)" json:"phone"`
 	DNI                  string     `gorm:"type:varchar(8);unique;not null" json:"dni"`
 	Status               string     `gorm:"type:status_enum;default:'active'" json:"status"`
-	StructuralPositionID *uuid.UUID `gorm:"type:uuid" json:"structural_position_id"`
-	OrganicUnitID        *uuid.UUID `gorm:"type:uuid" json:"organic_unit_id"`
+	StructuralPositionID *uint      `gorm:"type:uuid" json:"structural_position_id"`
+	OrganicUnitID        *uint      `gorm:"type:uuid" json:"organic_unit_id"`
 	CreatedAt            time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt            time.Time  `gorm:"default:now()" json:"updated_at"`
 	IsDeleted            bool       `gorm:"not null;default:false" json:"is_deleted"`

@@ -96,22 +96,22 @@ func seedUsersOnly() error {
 			id = uuid.New()
 		}
 
-		var spID *uuid.UUID
+		var spID *uint
 		if u.StructuralPositionID != nil && strings.TrimSpace(*u.StructuralPositionID) != "" {
-			p, perr := uuid.Parse(*u.StructuralPositionID)
-			if perr != nil {
-				return fmt.Errorf("user '%s' structural_position_id inválido '%s': %w", u.Email, *u.StructuralPositionID, perr)
+			var parsed uint
+			if _, err := fmt.Sscanf(*u.StructuralPositionID, "%d", &parsed); err != nil {
+				return fmt.Errorf("user '%s' structural_position_id inválido '%s': %w", u.Email, *u.StructuralPositionID, err)
 			}
-			spID = &p
+			spID = &parsed
 		}
 
-		var ouID *uuid.UUID
+		var ouID *uint
 		if u.OrganicUnitID != nil && strings.TrimSpace(*u.OrganicUnitID) != "" {
-			p, perr := uuid.Parse(*u.OrganicUnitID)
-			if perr != nil {
-				return fmt.Errorf("user '%s' organic_unit_id inválido '%s': %w", u.Email, *u.OrganicUnitID, perr)
+			var parsed uint
+			if _, err := fmt.Sscanf(*u.OrganicUnitID, "%d", &parsed); err != nil {
+				return fmt.Errorf("user '%s' organic_unit_id inválido '%s': %w", u.Email, *u.OrganicUnitID, err)
 			}
-			ouID = &p
+			ouID = &parsed
 		}
 
 		argon := security.NewArgon2Service()

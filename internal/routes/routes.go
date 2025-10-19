@@ -14,4 +14,5 @@ func RegisterRoutes(app *fiber.App) {
 	RegisterPositionRoutes(app)
 	RegisterOrganicUnitRoutes(app)
 	RegisterApplicationsRoutes(app)
+	RegisterModulesRoutes(app)
 }

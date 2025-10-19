@@ -12,7 +12,7 @@ type OrganicUnit struct {
 	Acronym     string     `gorm:"type:varchar(20);unique" validate:"required" json:"acronym"`
 	Brand       *string    `gorm:"type:varchar(100)" json:"brand"`
 	Description *string    `gorm:"type:text" json:"description"`
-	ParentID    *uuid.UUID `gorm:"type:uuid" json:"parent_id"`
+	ParentID    *uint      `gorm:"type:uuid" json:"parent_id"`
 	IsActive    bool       `gorm:"default:true" json:"is_active"`
 	CreatedAt   time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt   time.Time  `gorm:"default:now()" json:"updated_at"`
