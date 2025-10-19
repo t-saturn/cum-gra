@@ -17,9 +17,7 @@ export const fn_get_users = async (page = 1, pageSize = 20): Promise<UsersListRe
       // next: { revalidate: 10 },
     });
 
-    if (!res.ok) {
-      throw new Error(`Error fetching users: ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error(`Error fetching users: ${res.statusText}`);
 
     const data = (await res.json()) as UsersListResponse;
     return data;
