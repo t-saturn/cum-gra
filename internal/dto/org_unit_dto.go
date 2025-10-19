@@ -25,3 +25,10 @@ type OrganicUnitsListResponse struct {
 	Page     int                  `json:"page"`
 	PageSize int                  `json:"page_size"`
 }
+
+type OrganicUnitsStatsResponse struct {
+	TotalOrganicUnits   int64 `json:"total_organic_units"`
+	ActiveOrganicUnits  int64 `json:"active_organic_units"`
+	DeletedOrganicUnits int64 `json:"deleted_organic_units"`
+	TotalEmployees      int64 `json:"total_employees"`
+}
