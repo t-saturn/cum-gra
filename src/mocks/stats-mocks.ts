@@ -1,22 +1,17 @@
 import { CardStatType } from '@/types/card-types/card-stats-types';
 import {
   Activity,
-  ActivityIcon,
   AlertTriangle,
   Ban,
   BarChart2,
   BarChart3,
-  Briefcase,
-  Building,
   Building2,
   CheckCircle,
   CircleDot,
   Clock,
   Crown,
   Eye,
-  Grid3X3,
   Lock,
-  Plus,
   Settings,
   Shield,
   Smartphone,
@@ -24,7 +19,6 @@ import {
   TrendingUp,
   UserCheck,
   Users,
-  UserX,
   XCircle,
 } from 'lucide-react';
 
@@ -76,181 +70,6 @@ export const statsDashboard: CardStatType[] = [
     color: 'destructive',
     bgColor: 'bg-destructive/10',
     textColor: 'text-destructive',
-  },
-];
-
-export const statsUsers: CardStatType[] = [
-  {
-    title: 'Total Usuarios',
-    value: '2847',
-    change: '10%',
-    trend: 'up',
-    trendIcon: TrendingUp,
-    trendText: 'Último mes',
-    icon: Users,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Usuarios Activos',
-    value: '2684',
-    change: '5%',
-    trend: 'up',
-    trendIcon: TrendingUp,
-    trendText: 'Último mes',
-    icon: UserCheck,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Usuarios Suspendidos',
-    value: '156',
-    change: '5%',
-    trend: 'down',
-    trendIcon: TrendingDown,
-    trendText: 'Último mes',
-    icon: UserX,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-  {
-    title: 'Usuarios Nuevos',
-    value: '37',
-    change: '5%',
-    trend: 'down',
-    trendIcon: TrendingDown,
-    trendText: 'Último mes',
-    icon: Plus,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-];
-
-export const statsStructuralPositions: CardStatType[] = [
-  {
-    title: 'Total de Posiciones',
-    value: '45',
-    icon: Briefcase,
-    color: 'chart-4',
-    bgColor: 'bg-chart-2/20',
-    textColor: 'text-chart-2',
-  },
-  {
-    title: 'Posiciones Activas',
-    value: '42',
-    icon: Briefcase,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Empleados asignados',
-    value: '18',
-    icon: Users,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-];
-
-export const statsOrganicUnits: CardStatType[] = [
-  {
-    title: 'Total de Unidades Orgánicas',
-    value: '12',
-    icon: Building,
-    color: 'chart-4',
-    bgColor: 'bg-chart-2/20',
-    textColor: 'text-chart-2',
-  },
-  {
-    title: 'Unidades Orgánicas Activas',
-    value: '11',
-    icon: Building,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Total de empleados',
-    value: '356',
-    icon: Users,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-];
-
-export const statsApplications: CardStatType[] = [
-  {
-    title: 'Total de Aplicaciones',
-    value: '6',
-    icon: Building2,
-    color: 'chart-2',
-    bgColor: 'bg-chart-2/20',
-    textColor: 'text-chart-2',
-  },
-  {
-    title: 'Aplicaciones Activas',
-    value: '4',
-    icon: CheckCircle,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Total de usuarios',
-    value: '2',
-    icon: Users,
-    color: 'chart-3',
-    bgColor: 'bg-chart-3/20',
-    textColor: 'text-chart-3',
-  },
-  {
-    title: 'Total de accesos',
-    value: '10.5 K',
-    icon: ActivityIcon,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-];
-
-export const statsModules: CardStatType[] = [
-  {
-    title: 'Total de módulos',
-    value: '156',
-    icon: Grid3X3,
-    color: 'chart-2',
-    bgColor: 'bg-chart-2/20',
-    textColor: 'text-chart-2',
-  },
-  {
-    title: 'Módulos activos',
-    value: '142',
-    icon: CheckCircle,
-    color: 'chart-4',
-    bgColor: 'bg-chart-4/20',
-    textColor: 'text-chart-4',
-  },
-  {
-    title: 'Total de Usuarios',
-    value: '356',
-    icon: Users,
-    color: 'chart-5',
-    bgColor: 'bg-chart-5/20',
-    textColor: 'text-chart-5',
-  },
-  {
-    title: 'Requests Totales',
-    value: '67.9 K',
-    icon: BarChart2,
-    color: 'chart-1',
-    bgColor: 'bg-chart-1/20',
-    textColor: 'text-chart-1',
   },
 ];
 
