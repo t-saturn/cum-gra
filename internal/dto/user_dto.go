@@ -50,3 +50,10 @@ type UsersListResponse struct {
 	Page     int               `json:"page"`
 	PageSize int               `json:"page_size"`
 }
+
+type UsersStatsResponse struct {
+	TotalUsers        int64 `json:"total_users"`
+	ActiveUsers       int64 `json:"active_users"`
+	SuspendedUsers    int64 `json:"suspended_users"`
+	NewUsersLastMonth int64 `json:"new_users_last_month"`
+}
