@@ -10,4 +10,5 @@ func RegisterOrganicUnitRoutes(router fiber.Router) {
 	ou := router.Group("/units")
 
 	ou.Get("/", handlers.GetOrganicUnitsHandler)
+	ou.Get("/stats", handlers.GetOrganicUnitsStatsHandler)
 }
