@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterUserRoutes(app fiber.Router) {
-	user := app.Group("/users")
+func RegisterUserRoutes(router fiber.Router) {
+	user := router.Group("/users")
 	user.Get("/stats", handlers.GetUsersStatsHandler)
 
 	user.Get("/", handlers.GetUsersHandler)

@@ -22,3 +22,8 @@ type StructuralPosition struct {
 	DeletedByUser *User  `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	Users         []User `gorm:"foreignKey:StructuralPositionID" json:"users,omitempty"`
 }
+
+type StructuralPositionRow struct {
+	StructuralPosition
+	UsersCount int64 `gorm:"column:users_count"`
+}
