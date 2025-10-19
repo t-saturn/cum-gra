@@ -10,9 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2 } from 'lucide-react';
-import CardStatsContain from '@/components/custom/card/card-stats-contain';
-import { statsUsers } from '@/mocks/stats-mocks';
 import { fn_get_users } from '@/actions/users/fn_get_users';
+import { UsersStatsCards } from '@/components/custom/card/users-stats-cards';
 
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,7 +75,7 @@ export default function UsersManagement() {
         </div>
       </div>
 
-      <CardStatsContain stats={statsUsers} />
+      <UsersStatsCards />
 
       <Card className="bg-card/50 border-border">
         <CardHeader>
