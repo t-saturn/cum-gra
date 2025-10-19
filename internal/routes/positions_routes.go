@@ -10,4 +10,5 @@ func RegisterStructuralPositionRoutes(router fiber.Router) {
 	position := router.Group("/positions")
 
 	position.Get("/", handlers.GetPositionsHandler)
+	position.Get("/stats", handlers.GetPositionsStatsHandler)
 }

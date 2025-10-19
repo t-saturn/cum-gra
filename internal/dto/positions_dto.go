@@ -24,3 +24,10 @@ type StructuralPositionsListResponse struct {
 	Page     int                         `json:"page"`
 	PageSize int                         `json:"page_size"`
 }
+
+type StructuralPositionsStatsResponse struct {
+	TotalPositions    int64 `json:"total_positions"`
+	ActivePositions   int64 `json:"active_positions"`
+	DeletedPositions  int64 `json:"deleted_positions"`
+	AssignedEmployees int64 `json:"assigned_employees"`
+}
