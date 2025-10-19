@@ -33,3 +33,9 @@ type ApplicationsListResponse struct {
 	Page     int              `json:"page"`
 	PageSize int              `json:"page_size"`
 }
+
+type ApplicationsStatsResponse struct {
+	TotalApplications  int64 `json:"total_applications"`
+	ActiveApplications int64 `json:"active_applications"`
+	TotalUsers         int64 `json:"total_users"`
+}
