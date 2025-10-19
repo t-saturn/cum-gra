@@ -7,8 +7,8 @@ import (
 )
 
 func RegisterOrganicUnitRoutes(router fiber.Router) {
-	ou := router.Group("/units")
+	app := router.Group("/units")
 
-	ou.Get("/", handlers.GetOrganicUnitsHandler)
-	ou.Get("/stats", handlers.GetOrganicUnitsStatsHandler)
+	app.Get("/", handlers.GetOrganicUnitsHandler)
+	app.Get("/stats", handlers.GetOrganicUnitsStatsHandler)
 }

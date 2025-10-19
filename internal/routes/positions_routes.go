@@ -7,8 +7,8 @@ import (
 )
 
 func RegisterPositionRoutes(router fiber.Router) {
-	position := router.Group("/positions")
+	app := router.Group("/positions")
 
-	position.Get("/", handlers.GetPositionsHandler)
-	position.Get("/stats", handlers.GetPositionsStatsHandler)
+	app.Get("/", handlers.GetPositionsHandler)
+	app.Get("/stats", handlers.GetPositionsStatsHandler)
 }
