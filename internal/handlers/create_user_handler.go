@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func CreateUser(c fiber.Ctx) error {
+func CreateUserHandler(c fiber.Ctx) error {
 	var input dto.CreateUserDTO
 
 	if err := c.Bind().Body(&input); err != nil {
