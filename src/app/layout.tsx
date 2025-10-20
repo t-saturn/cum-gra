@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import AuthProvider from '@/providers/auth';
+import { auth } from '@/lib/auth';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,18 +20,17 @@ export const metadata: Metadata = {
   description: 'Aplicación para la gestión de usuarios',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>) => {
+  const session = await auth();
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <AuthProvider session={session}>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

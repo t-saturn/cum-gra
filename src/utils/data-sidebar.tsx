@@ -13,7 +13,7 @@ export const baseMenus: SidebarMenuGroup[] = [
         label: 'Dashboard',
         icon: LayoutDashboard,
         url: '/dashboard',
-        roles: ['admin'],
+        roles: ['user', 'admin'],
       },
     ],
   },
