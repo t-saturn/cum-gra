@@ -60,11 +60,6 @@ export const baseMenus: SidebarMenuGroup[] = [
         roles: ['admin'],
         items: [
           {
-            label: 'Usuarios Activos',
-            icon: TrendingUp,
-            url: '/dashboard/active-users',
-          },
-          {
             label: 'Accesos por Aplicación',
             icon: Eye,
             url: '/dashboard/app-access',
