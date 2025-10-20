@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, User2Icon, Users, ClockAlert } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, User2Icon, Users, ClockAlert, Boxes } from 'lucide-react';
 import type { ApplicationItem } from '@/types/applications';
 import { fn_get_applications } from '@/actions/applications/get_applications';
 import { ApplicationsStatsCards } from '@/components/custom/card/application-stats-card';
@@ -178,7 +178,10 @@ export default function Page() {
                   <TableRow key={app.id} className="hover:bg-accent/30">
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium text-foreground">{app.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Boxes className="w-4 h-4 text-primary" />
+                          <p className="font-medium text-foreground">{app.name}</p>
+                        </div>
                         {app.description && <p className="text-muted-foreground text-sm line-clamp-2">{app.description}</p>}
                         <div className="flex items-center gap-2 text-muted-foreground text-xs">
                           <Key className="w-3 h-3" />

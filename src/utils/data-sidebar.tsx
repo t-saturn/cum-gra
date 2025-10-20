@@ -1,9 +1,9 @@
 import { SidebarMenuGroup } from '@/types/sidebar-types';
-import { Layers, LayoutDashboard } from 'lucide-react';
+import { Boxes, Layers, LayoutDashboard, Package } from 'lucide-react';
 import { Eye, UserX, ScrollText, ShieldCheck, UserCog } from 'lucide-react';
-import { Briefcase, Building, Grid3X3, TrendingUp } from 'lucide-react';
+import { Briefcase, Building } from 'lucide-react';
 import { Settings2, UserCircle, UserCheck, Lock, Ban } from 'lucide-react';
-import { Users, Building2, BarChart3, Shield, Activity } from 'lucide-react';
+import { Users, BarChart3, Shield, Activity } from 'lucide-react';
 
 export const baseMenus: SidebarMenuGroup[] = [
   {
@@ -41,34 +41,16 @@ export const baseMenus: SidebarMenuGroup[] = [
       },
       {
         label: 'Aplicaciones',
-        icon: Building2,
+        icon: Layers,
         url: '/dashboard/applications',
         roles: ['admin'],
         items: [
           {
             label: 'Aplicaciones',
-            icon: Layers,
+            icon: Boxes,
             url: '/dashboard/applications',
           },
-          { label: 'Módulos', icon: Grid3X3, url: '/dashboard/modules' },
-        ],
-      },
-      {
-        label: 'Reportes',
-        icon: BarChart3,
-        url: '/dashboard/reports',
-        roles: ['admin'],
-        items: [
-          {
-            label: 'Accesos por Aplicación',
-            icon: Eye,
-            url: '/dashboard/app-access',
-          },
-          {
-            label: 'Permisos por Usuario',
-            icon: UserX,
-            url: '/dashboard/user-permissions',
-          },
+          { label: 'Módulos', icon: Package, url: '/dashboard/modules' },
         ],
       },
     ],
