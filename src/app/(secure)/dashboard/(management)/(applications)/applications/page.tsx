@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, User2Icon, Users, ClockAlert, Boxes } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, Users, ClockAlert, Boxes } from 'lucide-react';
 import type { ApplicationItem } from '@/types/applications';
 import { fn_get_applications } from '@/actions/applications/get_applications';
 import { ApplicationsStatsCards } from '@/components/custom/card/application-stats-card';
