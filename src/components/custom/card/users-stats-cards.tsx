@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, UserX, UserPlus, Loader2 } from 'lucide-react';
+import { Loader2, UsersRound, UserRoundCheck, UserRoundX, UserRoundPlus } from 'lucide-react';
 import { UsersStatsResponse } from '@/types/users';
 import { getUsersStats } from '@/actions/users/fn_get_user_stats';
 
 const cards = [
-  { key: 'total_users', title: 'Total de Usuarios', icon: Users, color: 'text-primary' },
-  { key: 'active_users', title: 'Activos', icon: UserCheck, color: 'text-green-600' },
-  { key: 'suspended_users', title: 'Suspendidos', icon: UserX, color: 'text-yellow-600' },
-  { key: 'new_users_last_month', title: 'Nuevos (último mes)', icon: UserPlus, color: 'text-blue-600' },
+  { key: 'total_users', title: 'Total de Usuarios', icon: UsersRound, color: 'text-primary' },
+  { key: 'active_users', title: 'Activos', icon: UserRoundCheck, color: 'text-green-600' },
+  { key: 'suspended_users', title: 'Suspendidos', icon: UserRoundX, color: 'text-yellow-600' },
+  { key: 'new_users_last_month', title: 'Nuevos (último mes)', icon: UserRoundPlus, color: 'text-blue-600' },
 ] as const;
 
 export const UsersStatsCards: React.FC = () => {

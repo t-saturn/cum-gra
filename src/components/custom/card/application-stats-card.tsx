@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { CheckCircle2, Users2, Loader2, Boxes } from 'lucide-react';
+import { Loader2, Boxes, UsersRound, CircleCheck } from 'lucide-react';
 import { fn_get_applications_stats } from '@/actions/applications/fn_get_applications_stats';
 import { ApplicationsStatsResponse } from '@/types/applications';
 
 const cards = [
   { key: 'total_applications', title: 'Total de Aplicaciones', icon: Boxes, color: 'text-primary' },
-  { key: 'active_applications', title: 'Activas', icon: CheckCircle2, color: 'text-green-600' },
-  { key: 'total_users', title: 'Usuarios Totales', icon: Users2, color: 'text-blue-600' },
+  { key: 'active_applications', title: 'Activas', icon: CircleCheck, color: 'text-green-600' },
+  { key: 'total_users', title: 'Usuarios Totales', icon: UsersRound, color: 'text-blue-600' },
 ] as const;
 
 export const ApplicationsStatsCards: React.FC = () => {

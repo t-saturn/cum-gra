@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Boxes, CheckCircle2, Trash2, Users, Loader2 } from 'lucide-react';
+import { Boxes, Loader2, UsersRound, CircleX, CircleCheck } from 'lucide-react';
 import { fn_get_modules_stats } from '@/actions/modules/fn_get_modules_stats';
 import { ModulesStatsResponse } from '@/types/modules';
 
 const cards = [
   { key: 'total_modules', title: 'Total de Módulos', icon: Boxes, color: 'text-primary' },
-  { key: 'active_modules', title: 'Activos', icon: CheckCircle2, color: 'text-green-600' },
-  { key: 'deleted_modules', title: 'Eliminados', icon: Trash2, color: 'text-red-600' },
-  { key: 'total_users', title: 'Usuarios Totales', icon: Users, color: 'text-blue-600' },
+  { key: 'active_modules', title: 'Activos', icon: CircleCheck, color: 'text-green-600' },
+  { key: 'deleted_modules', title: 'Eliminados', icon: CircleX, color: 'text-red-600' },
+  { key: 'total_users', title: 'Usuarios Totales', icon: UsersRound, color: 'text-blue-600' },
 ] as const;
 
 export const ModulesStatsCards: React.FC = () => {

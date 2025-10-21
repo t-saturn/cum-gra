@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Briefcase, BriefcaseBusiness, Trash2, Users, Loader2 } from 'lucide-react';
+import { Loader2, CircleQuestionMark, CircleCheck, CircleX, UsersRound } from 'lucide-react';
 import { fn_get_positions_stats } from '@/actions/positions/fn_get_positions_stats';
 
 type PositionsStatsResponse = {
@@ -13,10 +13,10 @@ type PositionsStatsResponse = {
 };
 
 const cards = [
-  { key: 'total_positions', title: 'Total de Cargos', icon: Briefcase, color: 'text-primary' },
-  { key: 'active_positions', title: 'Activos', icon: BriefcaseBusiness, color: 'text-green-600' },
-  { key: 'deleted_positions', title: 'Eliminados', icon: Trash2, color: 'text-red-600' },
-  { key: 'assigned_employees', title: 'Asignados', icon: Users, color: 'text-blue-600' },
+  { key: 'total_positions', title: 'Total de Cargos', icon: CircleQuestionMark, color: 'text-primary' },
+  { key: 'active_positions', title: 'Activos', icon: CircleCheck, color: 'text-green-600' },
+  { key: 'deleted_positions', title: 'Eliminados', icon: CircleX, color: 'text-red-600' },
+  { key: 'assigned_employees', title: 'Asignados', icon: UsersRound, color: 'text-blue-600' },
 ] as const;
 
 export const PositionsStatsCards: React.FC = () => {

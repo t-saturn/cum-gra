@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Briefcase, Users, Building, Crown, Star, Award, UsersRound } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Briefcase, Users, Building, Crown, Star, Award, UsersRound, CircleQuestionMark } from 'lucide-react';
 import { fn_get_positions } from '@/actions/positions/fn_get_positions';
 import type { StructuralPositionItem } from '@/types/structural_positions';
 import { PositionsStatsCards } from '@/components/custom/card/positions-stats-cards';
@@ -139,7 +139,7 @@ export default function StructuralPositionsManagement() {
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <UsersRound className="w-4 h-4 text-primary" />
+                          <CircleQuestionMark className="w-4 h-4 text-primary" />
                           <p className="font-medium text-foreground">{p.name}</p>
                         </div>
                         {p.description && <p className="text-muted-foreground text-sm line-clamp-2">{p.description}</p>}

@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2 } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2, Phone, Hexagon, Timer } from 'lucide-react';
 import { fn_get_users } from '@/actions/users/fn_get_users';
 import { UsersStatsCards } from '@/components/custom/card/users-stats-cards';
 
@@ -46,9 +46,9 @@ export default function UsersManagement() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-chart-4/20 border-chart-4/30 text-chart-4">Activo</Badge>;
+        return <Badge className="bg-chart-4/20 border-chart-4/30 text-chart-2">Activo</Badge>;
       case 'inactive':
-        return <Badge className="bg-chart-5/20 border-chart-5/30 text-chart-5">Inactivo</Badge>;
+        return <Badge className="bg-chart-5/20 border-chart-5/30 text-chart-1">Inactivo</Badge>;
       case 'suspended':
         return <Badge className="bg-yellow-500/20 border-yellow-500/30 text-yellow-600">Suspendido</Badge>;
       default:
@@ -143,11 +143,44 @@ export default function UsersManagement() {
                         </div>
                       </TableCell>
                       <TableCell className="font-mono text-sm">{user.dni}</TableCell>
-                      <TableCell className="text-sm">{user.phone ?? '-'}</TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.phone ? (
+                            <>
+                              <Phone className="w-4 h-4 text-chart-2" />
+                              {user.phone}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>{getStatusBadge(user.status)}</TableCell>
                       <TableCell className="text-sm">{user.organic_unit?.acronym ?? '—'}</TableCell>
-                      <TableCell className="text-sm">{user.structural_position?.name ?? '—'}</TableCell>
-                      <TableCell className="text-sm">{new Date(user.created_at).toLocaleDateString('es-ES')}</TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.structural_position?.name ? (
+                            <>
+                              <Hexagon className="w-4 h-4 text-chart-1" />
+                              {user.structural_position.name}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.created_at ? (
+                            <>
+                              <Timer className="w-4 h-4 text-chart-3" />
+                              {new Date(user.created_at).toLocaleDateString('es-ES')}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
