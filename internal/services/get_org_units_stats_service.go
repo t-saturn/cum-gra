@@ -1,13 +1,13 @@
 package services
 
 import (
+	"central-user-manager/internal/config"
 	"central-user-manager/internal/dto"
 	"central-user-manager/internal/models"
-
-	"gorm.io/gorm"
 )
 
-func GetOrganicUnitsStats(db *gorm.DB) (*dto.OrganicUnitsStatsResponse, error) {
+func GetOrganicUnitsStats() (*dto.OrganicUnitsStatsResponse, error) {
+	db := config.DB
 	var totalUnits, activeUnits, deletedUnits, totalEmployees int64
 
 	if err := db.Model(&models.OrganicUnit{}).Count(&totalUnits).Error; err != nil {

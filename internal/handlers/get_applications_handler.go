@@ -3,7 +3,6 @@ package handlers
 import (
 	"strconv"
 
-	"central-user-manager/internal/config"
 	"central-user-manager/internal/dto"
 	"central-user-manager/internal/services"
 	"central-user-manager/pkg/logger"
@@ -12,7 +11,7 @@ import (
 )
 
 func GetApplicationsHandler(c fiber.Ctx) error {
-	db := config.DB
+
 	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
 
 	page := 1
@@ -38,7 +37,7 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 
 	adminRoleName := c.Query("admin_role_name", "admin")
 
-	result, err := services.GetApplications(db, page, pageSize, isDeleted, adminRoleName)
+	result, err := services.GetApplications(page, pageSize, isDeleted, adminRoleName)
 	if err != nil {
 		logger.Log.Error("Error obteniendo aplicaciones:", err)
 		return c.Status(fiber.StatusInternalServerError).

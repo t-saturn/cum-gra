@@ -3,12 +3,12 @@ package services
 import (
 	"strings"
 
+	"central-user-manager/internal/config"
 	"central-user-manager/internal/dto"
 	"central-user-manager/internal/mapper"
 	"central-user-manager/internal/models"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type CountRow struct {
@@ -25,7 +25,8 @@ type AdminRow struct {
 	DNI           string    `gorm:"column:dni"`
 }
 
-func GetApplications(db *gorm.DB, page, pageSize int, isDeleted bool, adminRoleName string) (*dto.ApplicationsListResponse, error) {
+func GetApplications(page, pageSize int, isDeleted bool, adminRoleName string) (*dto.ApplicationsListResponse, error) {
+	db := config.DB
 	adminRolePrefix := strings.TrimSpace(adminRoleName)
 
 	var total int64

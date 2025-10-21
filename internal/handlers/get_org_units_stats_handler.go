@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"central-user-manager/internal/config"
 	"central-user-manager/internal/dto"
 	"central-user-manager/internal/services"
 	"central-user-manager/pkg/logger"
@@ -10,9 +9,8 @@ import (
 )
 
 func GetOrganicUnitsStatsHandler(c fiber.Ctx) error {
-	db := config.DB
 
-	stats, err := services.GetOrganicUnitsStats(db)
+	stats, err := services.GetOrganicUnitsStats()
 	if err != nil {
 		logger.Log.Error("Error obteniendo estadísticas de unidades orgánicas:", err)
 		return c.Status(fiber.StatusInternalServerError).
