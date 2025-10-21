@@ -24,3 +24,10 @@ type RolesAppResponse struct {
 	Roles   []RoleMinimalDTO   `json:"roles"`
 	Modules []ModuleMinimalDTO `json:"modules"`
 }
+
+type RolesAppStatsResponse struct {
+	TotalRoles    int64 `json:"total_roles"`
+	ActiveRoles   int64 `json:"active_roles"`
+	AdminRoles    int64 `json:"admin_roles"`
+	AssignedUsers int64 `json:"assigned_users"`
+}
