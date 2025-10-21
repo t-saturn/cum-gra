@@ -1,9 +1,6 @@
 import { SidebarMenuGroup } from '@/types/sidebar-types';
-import { Boxes, Hexagon, Layers, LayoutDashboard, Package, UsersRound } from 'lucide-react';
-import { Eye, UserX, ScrollText, ShieldCheck, UserCog } from 'lucide-react';
-import { Briefcase, Building } from 'lucide-react';
-import { Settings2, UserCircle, UserCheck, Lock, Ban } from 'lucide-react';
-import { Users, BarChart3, Shield, Activity } from 'lucide-react';
+import { Boxes, Hexagon, Layers, LayoutDashboard, Package, UserRound, UsersRound } from 'lucide-react';
+import { Settings2, UserCircle, Lock, Ban, Users, Shield, Activity, ScrollText, ShieldCheck, UserCog } from 'lucide-react';
 
 export const baseMenus: SidebarMenuGroup[] = [
   {
@@ -26,7 +23,7 @@ export const baseMenus: SidebarMenuGroup[] = [
         url: '/dashboard/users',
         roles: ['admin'],
         items: [
-          { label: 'Usuarios', icon: UserCheck, url: '/dashboard/users' },
+          { label: 'Usuarios', icon: UserRound, url: '/dashboard/users' },
           {
             label: 'Posiciones Estructurales',
             icon: UsersRound,
