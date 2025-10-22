@@ -1,31 +1,32 @@
-export type BasicModule = {
-  id: string;
-  name: string;
-  icon: string;
-};
-
-export type BasicApp = {
+export type AppMinimalDTO = {
   id: string;
   name: string;
   client_id: string;
 };
 
-export type BasicRole = {
+export type RoleMinimalDTO = {
   id: string;
   name: string;
 };
 
-export type RolesAppData = {
-  apps: Array<BasicApp>;
-  roles: Array<BasicRole>;
-  modules: Array<BasicModule>;
+export type ModuleMinimalDTO = {
+  id: string;
+  name: string;
+  icon: string | null;
+};
+
+export type RoleAppModulesItemDTO = {
+  role: RoleMinimalDTO;
+  app: AppMinimalDTO;
+  app_modules: ModuleMinimalDTO[];
+  role_modules: ModuleMinimalDTO[];
 };
 
 export interface RolesAppsResponse {
-  data: RolesAppData;
+  data: RoleAppModulesItemDTO[];
   total: number;
   page: number;
-  page_size: number;
+  page_size: number; // el backend devuelve page_size
 }
 
 export interface RolesAppsStatsResponse {
