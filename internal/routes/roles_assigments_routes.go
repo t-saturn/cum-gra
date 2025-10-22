@@ -7,8 +7,8 @@ import (
 )
 
 func RegisterRolesAssignmentsRoutes(router fiber.Router) {
-	app := router.Group("/role-assignments")
+	app := router.Group("/roles-assignments")
 
 	app.Get("/", handlers.GetRoleAssignmentsHandler)
-	// app.Get("/stats", handlers.GetRoleAssignmentsStatsHandler)
+	app.Get("/stats", handlers.GetRoleAssignmentsStatsHandler)
 }
