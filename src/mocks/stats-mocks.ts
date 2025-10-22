@@ -1,5 +1,5 @@
 import { CardStatType } from '@/types/card-types/card-stats-types';
-import { Activity, AlertTriangle, Ban, BarChart3, Building2, CheckCircle, Crown, Eye, Lock, Settings, Shield, Smartphone, TrendingUp, Users, XCircle } from 'lucide-react';
+import { Activity, AlertTriangle, Ban, CheckCircle, Crown, Lock, Settings, Shield, Smartphone, Users, XCircle } from 'lucide-react';
 
 export const statsSessions: CardStatType[] = [
   {
@@ -143,57 +143,6 @@ export const statsRoleManagement: CardStatType[] = [
   {
     title: 'Usuarios Asignados',
     value: '234',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Total de asignaciones',
-    trendIcon: Users,
-    icon: Users,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-];
-
-export const statsPermissions: CardStatType[] = [
-  {
-    title: 'Total Permisos',
-    value: '143',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Across all modules',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-  {
-    title: 'Permisos Activos',
-    value: '117',
-    change: '82%',
-    trend: 'static',
-    trendText: 'del total',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'green-600',
-    bgColor: 'bg-green-500/10',
-    textColor: 'text-green-600',
-  },
-  {
-    title: 'Alto Riesgo',
-    value: '9',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Requieren supervisión',
-    trendIcon: Lock,
-    icon: Lock,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
-  },
-  {
-    title: 'Usuarios Asignados',
-    value: '382',
     change: undefined,
     trend: 'static',
     trendText: 'Total de asignaciones',

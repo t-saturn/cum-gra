@@ -106,11 +106,6 @@ export const baseMenus: SidebarMenuGroup[] = [
             url: '/dashboard/security/user-roles',
           },
           {
-            label: 'Permisos de Módulos',
-            icon: Lock,
-            url: '/dashboard/security/module-permissions',
-          },
-          {
             label: 'Restricción de Usuario',
             icon: Ban,
             url: '/dashboard/security/user-restrictions',
