@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"central-user-manager/internal/dto"
 	"central-user-manager/internal/services"
 	"central-user-manager/pkg/logger"
 
@@ -15,8 +16,8 @@ func GetRolesAppHandler(c fiber.Ctx) error {
 	resp, err := services.GetRolesApp(page, pageSize, isDeleted)
 	if err != nil {
 		logger.Log.Error("GetRolesAppHandler.service", "err", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to fetch data",
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+			Error: "Error interno del servidor",
 		})
 	}
 

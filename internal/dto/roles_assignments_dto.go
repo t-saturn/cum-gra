@@ -20,8 +20,11 @@ type RoleAssignmentsDTO struct {
 	Assignments []UserAppRoleDTO `json:"assignments"`
 }
 
-type RolesAssignmentsResponseDTO struct {
-	Assignments []RoleAssignmentsDTO `json:"assignments"`
+type RolesAssigmentsResponseDTO struct {
+	Data     []RoleAssignmentsDTO `json:"data"`
+	Total    int64                `json:"total"`
+	Page     int                  `json:"page"`
+	PageSize int                  `json:"page_size"`
 }
 
 type UserRoleOverallStatsResponse struct {
