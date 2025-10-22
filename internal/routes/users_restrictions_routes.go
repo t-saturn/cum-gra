@@ -7,8 +7,8 @@ import (
 )
 
 func RegisterUserRestrictionsRoutes(router fiber.Router) {
-	app := router.Group("/user-restrictions")
+	app := router.Group("/users-restrictions")
 
-	app.Get("/", handlers.GetUserRestrictionsHandler)
-	// app.Get("/stats", handlers.GetUserRestrictionsStatsHandler)
+	app.Get("/", handlers.GetUsersRestrictionsHandler)
+	app.Get("/stats", handlers.GetUsersRestrictionsStatsHandler)
 }

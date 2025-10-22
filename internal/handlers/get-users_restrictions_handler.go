@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetUserRestrictionsHandler(c fiber.Ctx) error {
+func GetUsersRestrictionsHandler(c fiber.Ctx) error {
 	db := config.DB
 
 	page := 1
