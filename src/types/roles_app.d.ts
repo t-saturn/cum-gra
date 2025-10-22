@@ -26,7 +26,7 @@ export interface RolesAppsResponse {
   data: RoleAppModulesItemDTO[];
   total: number;
   page: number;
-  page_size: number; // el backend devuelve page_size
+  page_size: number;
 }
 
 export interface RolesAppsStatsResponse {

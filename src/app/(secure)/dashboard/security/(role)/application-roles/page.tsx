@@ -8,11 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Boxes, Shield, LayoutDashboard, Eye, Edit, Trash2, Key, ChevronLeft, ChevronRight, Loader2, Copy, Package } from 'lucide-react';
+import { Search, Boxes, Shield, Eye, Edit, Trash2, Key, ChevronLeft, ChevronRight, Loader2, Copy, Package } from 'lucide-react';
 
 import type { RolesAppsResponse, RoleAppModulesItemDTO, ModuleMinimalDTO } from '@/types/roles_app';
 import { fn_get_roles_apps } from '@/actions/roles_app/fn_get_roles_app';
-import { ApplicationsStatsCards } from '@/components/custom/card/application-stats-card';
+import { RolesAppsStatsCards } from '@/components/custom/card/roles-app-stats-cards';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
@@ -111,7 +111,7 @@ export default function Page() {
         </div>
       </div>
 
-      <ApplicationsStatsCards />
+      <RolesAppsStatsCards />
 
       <Card className="bg-card/50 border-border">
         <CardHeader>
@@ -185,7 +185,6 @@ export default function Page() {
                           <span className="text-muted-foreground text-sm">— Sin módulos asignados al rol —</span>
                         )}
                       </div>
-                      {/* Si quieres mostrar también cuántos módulos totales tiene la app: */}
                       {item.app_modules && item.app_modules.length > 0 && (
                         <div className="mt-2 text-muted-foreground text-xs">
                           Módulos totales de la app: <span className="font-medium">{item.app_modules.length}</span>
