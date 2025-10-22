@@ -28,6 +28,12 @@ func GetRolesApp(pageStr, pageSizeStr, isDeletedStr string) (*dto.RolesAppRespon
 		isDeleted = b
 	}
 
+	var total int64
+	totalQ := db.Model(&models.Application{}).Where("is_deleted = ?", isDeleted)
+	if err := totalQ.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
 	var apps []models.Application
 	if err := db.Model(&models.Application{}).
 		Select("id", "name", "client_id").
@@ -52,9 +58,14 @@ func GetRolesApp(pageStr, pageSizeStr, isDeletedStr string) (*dto.RolesAppRespon
 
 	if len(appIDs) == 0 {
 		return &dto.RolesAppResponse{
-			Apps:    []dto.AppMinimalDTO{},
-			Roles:   []dto.RoleMinimalDTO{},
-			Modules: []dto.ModuleMinimalDTO{},
+			Data: dto.RolesAppData{
+				Apps:    []dto.AppMinimalDTO{},
+				Roles:   []dto.RoleMinimalDTO{},
+				Modules: []dto.ModuleMinimalDTO{},
+			},
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
 		}, nil
 	}
 
@@ -64,13 +75,8 @@ func GetRolesApp(pageStr, pageSizeStr, isDeletedStr string) (*dto.RolesAppRespon
 		Where("application_id IN ?", appIDs).
 		Where("is_deleted = ?", isDeleted).
 		Order("created_at DESC").
-		Limit(pageSize).
-		Offset((page - 1) * pageSize).
-		Find(&roles).Error; err != nil {
-		if err != gorm.ErrRecordNotFound {
-			return nil, err
-		}
-		roles = []models.ApplicationRole{}
+		Find(&roles).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
 	}
 
 	roleDTOs := make([]dto.RoleMinimalDTO, 0, len(roles))
@@ -85,9 +91,7 @@ func GetRolesApp(pageStr, pageSizeStr, isDeletedStr string) (*dto.RolesAppRespon
 	qModules := db.Model(&models.Module{}).
 		Select("id", "name", "icon").
 		Where("application_id IN ?", appIDs).
-		Order("sort_order ASC, created_at DESC").
-		Limit(pageSize).
-		Offset((page - 1) * pageSize)
+		Order("sort_order ASC, created_at DESC")
 
 	if isDeleted {
 		qModules = qModules.Where("deleted_at IS NOT NULL")
@@ -109,9 +113,15 @@ func GetRolesApp(pageStr, pageSizeStr, isDeletedStr string) (*dto.RolesAppRespon
 	}
 
 	resp := &dto.RolesAppResponse{
-		Apps:    appDTOs,
-		Roles:   roleDTOs,
-		Modules: moduleDTOs,
+		Data: dto.RolesAppData{
+			Apps:    appDTOs,
+			Roles:   roleDTOs,
+			Modules: moduleDTOs,
+		},
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
 	}
+
 	return resp, nil
 }

@@ -19,10 +19,17 @@ type ModuleMinimalDTO struct {
 	Icon *string   `json:"icon"`
 }
 
-type RolesAppResponse struct {
+type RolesAppData struct {
 	Apps    []AppMinimalDTO    `json:"apps"`
 	Roles   []RoleMinimalDTO   `json:"roles"`
 	Modules []ModuleMinimalDTO `json:"modules"`
+}
+
+type RolesAppResponse struct {
+	Data     RolesAppData `json:"data"`
+	Total    int64        `json:"total"`
+	Page     int          `json:"page"`
+	PageSize int          `json:"page_size"`
 }
 
 type RolesAppStatsResponse struct {
