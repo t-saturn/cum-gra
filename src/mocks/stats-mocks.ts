@@ -1,5 +1,5 @@
 import { CardStatType } from '@/types/card-types/card-stats-types';
-import { Activity, AlertTriangle, Ban, CheckCircle, Crown, Lock, Settings, Shield, Smartphone, Users, XCircle } from 'lucide-react';
+import { Activity, AlertTriangle, Ban, CheckCircle, Shield, Smartphone, XCircle } from 'lucide-react';
 
 export const statsSessions: CardStatType[] = [
   {
@@ -103,57 +103,6 @@ export const statsAuditEvents: CardStatType[] = [
   },
 ];
 
-export const statsRoleManagement: CardStatType[] = [
-  {
-    title: 'Total Roles',
-    value: '58',
-    change: '+8',
-    trend: 'up',
-    trendText: 'este mes',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-  {
-    title: 'Roles Activos',
-    value: '41',
-    change: '71%',
-    trend: 'static',
-    trendText: 'del total',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'green-600',
-    bgColor: 'bg-green-500/10',
-    textColor: 'text-green-600',
-  },
-  {
-    title: 'Roles Admin',
-    value: '7',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Acceso privilegiado',
-    trendIcon: Settings,
-    icon: Settings,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
-  },
-  {
-    title: 'Usuarios Asignados',
-    value: '234',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Total de asignaciones',
-    trendIcon: Users,
-    icon: Users,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-];
-
 export const statsRestrictions: CardStatType[] = [
   {
     title: 'Total Restricciones',
@@ -197,57 +146,6 @@ export const statsRestrictions: CardStatType[] = [
     change: '+11',
     trend: 'up',
     trendText: 'esta semana',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
-  },
-];
-
-export const statsUsersAndRoles: CardStatType[] = [
-  {
-    title: 'Total Usuarios',
-    value: '1,072',
-    change: undefined,
-    trend: 'static',
-    trendText: '921 activos',
-    trendIcon: Users,
-    icon: Users,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-  {
-    title: 'Administradores',
-    value: '16',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Acceso privilegiado',
-    trendIcon: Crown,
-    icon: Crown,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
-  },
-  {
-    title: 'Roles Asignados',
-    value: '58',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Across all users',
-    trendIcon: Shield,
-    icon: Shield,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-  {
-    title: 'Alto Riesgo',
-    value: '7',
-    change: undefined,
-    trend: 'static',
-    trendText: 'Requieren supervisión',
     trendIcon: Shield,
     icon: Shield,
     color: 'red-600',
