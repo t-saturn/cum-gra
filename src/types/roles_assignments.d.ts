@@ -36,7 +36,7 @@ export interface RolesAssignmentsResponse {
   page_size: number;
 }
 
-export interface UserRoleOverallStatsResponse {
+export interface RolesAssignmentsStatsResponse {
   total_users: number;
   admin_users: number;
   users_with_roles: number;

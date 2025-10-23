@@ -11,6 +11,7 @@ import { Search, Eye, Edit, Trash2, ChevronLeft, ChevronRight, Loader2, Users, K
 
 import type { RolesAssignmentsResponse, RoleAssignmentsDTO } from '@/types/roles_assignments';
 import { fn_get_roles_assignments } from '@/actions/roles_assignments/fn_get_roles_assignments';
+import { RolesAssignmentsStatsCards } from '@/components/custom/card/roles-assignments-stats-cards';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
@@ -103,7 +104,7 @@ export default function Page() {
           </Select>
         </div>
       </div>
-
+      <RolesAssignmentsStatsCards />
       <Card className="bg-card/50 border-border">
         <CardHeader>
           <div className="flex justify-between items-center gap-3">
