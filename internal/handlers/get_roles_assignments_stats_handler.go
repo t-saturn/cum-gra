@@ -13,7 +13,6 @@ import (
 func GetRoleAssignmentsStatsHandler(c fiber.Ctx) error {
 	db := config.DB
 
-	// Filtro is_deleted para USERS (default: false)
 	isDeleted := false
 	if v := c.Query("is_deleted"); v != "" {
 		if b, err := strconv.ParseBool(v); err == nil {
@@ -61,7 +60,7 @@ func GetRoleAssignmentsStatsHandler(c fiber.Ctx) error {
 
 	usersWithoutRoles := max(totalUsers-usersWithRoles, 0)
 
-	return c.Status(fiber.StatusOK).JSON(dto.UserRoleOverallStatsResponse{
+	return c.Status(fiber.StatusOK).JSON(dto.RolesAssigmentsResponseResponse{
 		TotalUsers:        totalUsers,
 		AdminUsers:        adminUsers,
 		UsersWithRoles:    usersWithRoles,

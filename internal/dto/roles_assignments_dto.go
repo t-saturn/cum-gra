@@ -27,7 +27,7 @@ type RolesAssigmentsResponseDTO struct {
 	PageSize int                  `json:"page_size"`
 }
 
-type UserRoleOverallStatsResponse struct {
+type RolesAssigmentsResponseResponse struct {
 	TotalUsers        int64 `json:"total_users"`
 	AdminUsers        int64 `json:"admin_users"`
 	UsersWithRoles    int64 `json:"users_with_roles"`
