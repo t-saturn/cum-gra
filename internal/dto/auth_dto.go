@@ -45,6 +45,7 @@ type AuthRoleRequest struct {
 }
 
 type AuthRoleResponse struct {
-	RoleID  string      `json:"role_id"`
-	Modules []ModuleDTO `json:"modules"`
+	RoleID   string      `json:"role_id"`
+	RoleName string      `json:"role_name"`
+	Modules  []ModuleDTO `json:"modules"`
 }

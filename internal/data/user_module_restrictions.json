@@ -9,16 +9,5 @@
     "reason": "Solo administradores gestionan permisos de módulos (CUM).",
     "expires_at": null,
     "created_by_email": "alice.rashid@regionayacucho.gob.pe"
-  },
-  {
-    "user_email": "nicola.tesla@regionayacucho.gob.pe",
-    "application_name": "segres",
-    "module_name": "Roles",
-    "module_route": "/roles",
-    "restriction_type": "limit_permission",
-    "max_permission_level": "denied",
-    "reason": "Segregación de funciones: RRHH no administra Roles en SEGRES.",
-    "expires_at": null,
-    "created_by_email": "alice.rashid@regionayacucho.gob.pe"
   }
 ]

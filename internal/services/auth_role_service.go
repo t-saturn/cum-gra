@@ -73,7 +73,8 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 	}
 
 	return &dto.AuthRoleResponse{
-		RoleID:  role.ID.String(),
-		Modules: modules,
+		RoleID:   role.ID.String(),
+		RoleName: role.Name,
+		Modules:  modules,
 	}, nil
 }
