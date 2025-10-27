@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Users } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Users, Hexagon } from 'lucide-react';
 import { fn_get_organic_units } from '@/actions/units/fn_get_organic_units';
 import { OrganicUnitItemDTO } from '@/types/units';
 import { OrganicUnitsStatsCards } from '@/components/custom/card/organic-units-stats-cards';
@@ -155,7 +155,10 @@ export default function OrganicUnitsManagement() {
                   <TableRow key={unit.id} className="hover:bg-accent/30">
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium text-foreground">{unit.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Hexagon className="w-4 h-4 text-primary" />
+                          <p className="font-medium text-foreground">{unit.name}</p>
+                        </div>
                         {unit.description && <p className="text-muted-foreground text-sm line-clamp-2">{unit.description}</p>}
                       </div>
                     </TableCell>

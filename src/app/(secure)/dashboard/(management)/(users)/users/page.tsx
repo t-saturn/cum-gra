@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { UsersListResponse, UserListItem } from '@/types/users';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,15 +9,29 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2 } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Shield, Eye, Loader2, Phone, Hexagon, Timer } from 'lucide-react';
 import { fn_get_users } from '@/actions/users/fn_get_users';
 import { UsersStatsCards } from '@/components/custom/card/users-stats-cards';
+import { CreateUserDialog, UserActionMenu } from './options';
 
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+
+  const refetch = useCallback(async (page: number = 1, pageSize: number = 20) => {
+    try {
+      setLoading(true);
+      const response: UsersListResponse = await fn_get_users(page, pageSize);
+      setUsers(response.data);
+      setTotal(response.total);
+    } catch (err) {
+      console.error('Error recargando usuarios:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -46,9 +60,9 @@ export default function UsersManagement() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-chart-4/20 border-chart-4/30 text-chart-4">Activo</Badge>;
+        return <Badge className="bg-chart-4/20 border-chart-4/30 text-chart-2">Activo</Badge>;
       case 'inactive':
-        return <Badge className="bg-chart-5/20 border-chart-5/30 text-chart-5">Inactivo</Badge>;
+        return <Badge className="bg-chart-5/20 border-chart-5/30 text-chart-1">Inactivo</Badge>;
       case 'suspended':
         return <Badge className="bg-yellow-500/20 border-yellow-500/30 text-yellow-600">Suspendido</Badge>;
       default:
@@ -68,10 +82,8 @@ export default function UsersManagement() {
             <Download className="mr-2 w-4 h-4" />
             Exportar
           </Button>
-          <Button className="bg-gradient-to-r from-primary hover:from-primary/90 to-chart-1 hover:to-chart-1/90 shadow-lg shadow-primary/25">
-            <Plus className="mr-2 w-4 h-4" />
-            Nuevo Usuario
-          </Button>
+
+          <CreateUserDialog onCreated={refetch} />
         </div>
       </div>
 
@@ -91,7 +103,7 @@ export default function UsersManagement() {
                   placeholder="Buscar usuarios..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-background/50 pl-10 focus:border-primary border-border focus:ring-ring w-80"
+                  className="bg-background/50 pl-10 border-border focus:border-primary focus:ring-ring w-80"
                 />
               </div>
               <Button variant="outline">
@@ -143,40 +155,46 @@ export default function UsersManagement() {
                         </div>
                       </TableCell>
                       <TableCell className="font-mono text-sm">{user.dni}</TableCell>
-                      <TableCell className="text-sm">{user.phone ?? '-'}</TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.phone ? (
+                            <>
+                              <Phone className="w-4 h-4 text-chart-2" />
+                              {user.phone}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>{getStatusBadge(user.status)}</TableCell>
                       <TableCell className="text-sm">{user.organic_unit?.acronym ?? '—'}</TableCell>
-                      <TableCell className="text-sm">{user.structural_position?.name ?? '—'}</TableCell>
-                      <TableCell className="text-sm">{new Date(user.created_at).toLocaleDateString('es-ES')}</TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.structural_position?.name ? (
+                            <>
+                              <Hexagon className="w-4 h-4 text-chart-1" />
+                              {user.structural_position.name}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          {user.created_at ? (
+                            <>
+                              <Timer className="w-4 h-4 text-chart-3" />
+                              {new Date(user.created_at).toLocaleDateString('es-ES')}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-card/80 backdrop-blur-xl border-border">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 w-4 h-4" />
-                              Ver Detalles
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 w-4 h-4" />
-                              Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Shield className="mr-2 w-4 h-4" />
-                              Gestionar Roles
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">
-                              <Trash2 className="mr-2 w-4 h-4" />
-                              Eliminar
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <UserActionMenu user={user} onRefresh={refetch} />
                       </TableCell>
                     </TableRow>
                   ))}

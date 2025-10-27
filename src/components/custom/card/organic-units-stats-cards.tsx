@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Building2, Building, Trash2, Users, Loader2 } from 'lucide-react';
+import { Loader2, CircleCheck, CircleX, Hexagon, UsersRound } from 'lucide-react';
 import { fn_get_units_stats } from '@/actions/units/fn_get_units_stats';
 import { OrganicUnitsStatsResponse } from '@/types/units';
 
 const cards = [
-  { key: 'total_organic_units', title: 'Total de Unidades', icon: Building2, color: 'text-primary' },
-  { key: 'active_organic_units', title: 'Activas', icon: Building, color: 'text-green-600' },
-  { key: 'deleted_organic_units', title: 'Eliminadas', icon: Trash2, color: 'text-red-600' },
-  { key: 'total_employees', title: 'Empleados Totales', icon: Users, color: 'text-blue-600' },
+  { key: 'total_organic_units', title: 'Total de Unidades', icon: Hexagon, color: 'text-primary' },
+  { key: 'active_organic_units', title: 'Activas', icon: CircleCheck, color: 'text-green-600' },
+  { key: 'deleted_organic_units', title: 'Eliminadas', icon: CircleX, color: 'text-red-600' },
+  { key: 'total_employees', title: 'Empleados Totales', icon: UsersRound, color: 'text-blue-600' },
 ] as const;
 
 export const OrganicUnitsStatsCards: React.FC = () => {

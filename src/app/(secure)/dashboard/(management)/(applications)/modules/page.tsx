@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Grid3X3, Building2, Key, Loader2, Copy, Package, Boxes, Users } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Grid3X3, Building2, Key, Loader2, Copy, Package, Boxes, Users, Timer } from 'lucide-react';
 import { ModulesStatsCards } from '@/components/custom/card/modules-stats-card';
 import type { ModuleWithAppDTO } from '@/types/modules';
 import { fn_get_modules } from '@/actions/modules/fn_get_modules';
@@ -203,7 +203,18 @@ export default function ModulesManagement() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm">{new Date(m.created_at).toLocaleDateString('es-ES')}</TableCell>
+                    <TableCell className="text-sm">
+                      <div className="flex items-center gap-2">
+                        {m.created_at ? (
+                          <>
+                            <Timer className="w-4 h-4 text-chart-3" />
+                            {new Date(m.created_at).toLocaleDateString('es-ES')}
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <StatusBadge status={m.status} />
                     </TableCell>

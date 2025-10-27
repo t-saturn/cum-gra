@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, User2Icon, Users, ClockAlert } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Loader2, Copy, Globe, Key, Users, Boxes, ShieldUser, Clock } from 'lucide-react';
 import type { ApplicationItem } from '@/types/applications';
 import { fn_get_applications } from '@/actions/applications/get_applications';
 import { ApplicationsStatsCards } from '@/components/custom/card/application-stats-card';
@@ -178,7 +178,10 @@ export default function Page() {
                   <TableRow key={app.id} className="hover:bg-accent/30">
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium text-foreground">{app.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Boxes className="w-4 h-4 text-primary" />
+                          <p className="font-medium text-foreground">{app.name}</p>
+                        </div>
                         {app.description && <p className="text-muted-foreground text-sm line-clamp-2">{app.description}</p>}
                         <div className="flex items-center gap-2 text-muted-foreground text-xs">
                           <Key className="w-3 h-3" />
@@ -199,17 +202,22 @@ export default function Page() {
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        {(app.admins?.length ?? 0) > 0 ? (
-                          (app.admins ?? []).slice(0, 2).map((a, idx) => (
-                            <p key={idx} className="text-sm">
-                              <span className="font-medium">{a.full_name}</span>
-                              <span className="text-muted-foreground text-xs"> · {a.email}</span>
-                            </p>
-                          ))
-                        ) : (
-                          <p className="text-muted-foreground text-sm">—</p>
-                        )}
-                        {(app.admins?.length ?? 0) > 2 && <p className="text-muted-foreground text-xs">+{app.admins!.length - 2} más</p>}
+                        <div className="flex items-center gap-2">
+                          {(app.admins?.length ?? 0) > 0 ? (
+                            <>
+                              <ShieldUser className="w-4 h-4 text-chart-1" />
+                              {(app.admins ?? []).slice(0, 2).map((a, idx) => (
+                                <p key={idx} className="text-sm">
+                                  <span className="font-medium">{a.full_name}</span>
+                                  <span className="text-muted-foreground text-xs"> · {a.email}</span>
+                                </p>
+                              ))}
+                              {app.admins!.length > 2 && <p className="text-muted-foreground text-xs">+{app.admins!.length - 2} más</p>}
+                            </>
+                          ) : (
+                            <p className="text-muted-foreground text-sm">—</p>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
@@ -223,7 +231,7 @@ export default function Page() {
                     <TableCell className="text-sm">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <ClockAlert className="w-4 h-4 text-chart-5" />
+                          <Clock className="w-4 h-4 text-chart-2" />
                           <span className="font-medium">{new Date(app.created_at).toLocaleDateString('es-ES')}</span>
                         </div>
                       </div>

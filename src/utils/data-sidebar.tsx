@@ -1,9 +1,22 @@
 import { SidebarMenuGroup } from '@/types/sidebar-types';
-import { Layers, LayoutDashboard } from 'lucide-react';
-import { Eye, UserX, ScrollText, ShieldCheck, UserCog } from 'lucide-react';
-import { Briefcase, Building, Grid3X3, TrendingUp } from 'lucide-react';
-import { Settings2, UserCircle, UserCheck, Lock, Ban } from 'lucide-react';
-import { Users, Building2, BarChart3, Shield, Activity } from 'lucide-react';
+import {
+  Boxes,
+  CircleQuestionMark,
+  Hexagon,
+  Layers,
+  LayoutDashboard,
+  Package,
+  UsersRound,
+  Settings2,
+  UserCircle,
+  Lock,
+  Ban,
+  Shield,
+  Activity,
+  ScrollText,
+  ShieldCheck,
+  UserCog,
+} from 'lucide-react';
 
 export const baseMenus: SidebarMenuGroup[] = [
   {
@@ -22,58 +35,35 @@ export const baseMenus: SidebarMenuGroup[] = [
     menu: [
       {
         label: 'Usuarios',
-        icon: Users,
+        icon: UsersRound,
         url: '/dashboard/users',
         roles: ['admin'],
         items: [
-          { label: 'Usuarios', icon: UserCheck, url: '/dashboard/users' },
+          { label: 'Usuarios', icon: UsersRound, url: '/dashboard/users' },
           {
             label: 'Posiciones Estructurales',
-            icon: Briefcase,
+            icon: CircleQuestionMark,
             url: '/dashboard/structural-positions',
           },
           {
             label: 'Unidades Orgánicas',
-            icon: Building,
+            icon: Hexagon,
             url: '/dashboard/organic-units',
           },
         ],
       },
       {
         label: 'Aplicaciones',
-        icon: Building2,
+        icon: Layers,
         url: '/dashboard/applications',
         roles: ['admin'],
         items: [
           {
             label: 'Aplicaciones',
-            icon: Layers,
+            icon: Boxes,
             url: '/dashboard/applications',
           },
-          { label: 'Módulos', icon: Grid3X3, url: '/dashboard/modules' },
-        ],
-      },
-      {
-        label: 'Reportes',
-        icon: BarChart3,
-        url: '/dashboard/reports',
-        roles: ['admin'],
-        items: [
-          {
-            label: 'Usuarios Activos',
-            icon: TrendingUp,
-            url: '/dashboard/active-users',
-          },
-          {
-            label: 'Accesos por Aplicación',
-            icon: Eye,
-            url: '/dashboard/app-access',
-          },
-          {
-            label: 'Permisos por Usuario',
-            icon: UserX,
-            url: '/dashboard/user-permissions',
-          },
+          { label: 'Módulos', icon: Package, url: '/dashboard/modules' },
         ],
       },
     ],
@@ -114,11 +104,6 @@ export const baseMenus: SidebarMenuGroup[] = [
             label: 'Asignación de Roles',
             icon: UserCog,
             url: '/dashboard/security/user-roles',
-          },
-          {
-            label: 'Permisos de Módulos',
-            icon: Lock,
-            url: '/dashboard/security/module-permissions',
           },
           {
             label: 'Restricción de Usuario',

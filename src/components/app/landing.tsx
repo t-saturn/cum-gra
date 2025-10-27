@@ -1,12 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import { Header } from './header';
 import { Footer } from './footer';
-
-import { ArrowRight, ShieldCheck, Users, KeyRound, ServerCog, Activity, Link2, CheckCircle2, Lock, Cloud } from 'lucide-react';
+import { animate } from 'animejs';
+import { ArrowRight, ShieldCheck, Users, KeyRound, ServerCog, Activity, Link2, CheckCircle2, Lock, Cloud, Box, Boxes, Package } from 'lucide-react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +13,104 @@ import { Badge } from '@/components/ui/badge';
 const Container: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
   <div className={`mx-auto w-full container px-6 ${className ?? ''}`}>{children}</div>
 );
+
+const PreviewSSOAnimation: React.FC = () => {
+  const phase1Ref = useRef<HTMLDivElement>(null);
+  const phase2Ref = useRef<HTMLDivElement>(null);
+  const boxRefs = useRef<HTMLDivElement[]>([]);
+  const [phase, setPhase] = useState<'loading' | 'final'>('loading');
+
+  const setBoxRef = (el: HTMLDivElement | null, idx: number) => {
+    if (!el) return;
+    boxRefs.current[idx] = el;
+  };
+
+  useEffect(() => {
+    if (phase1Ref.current) {
+      phase1Ref.current.style.opacity = '1';
+      phase1Ref.current.style.pointerEvents = 'auto';
+    }
+    if (phase2Ref.current) {
+      phase2Ref.current.style.opacity = '0';
+      phase2Ref.current.style.pointerEvents = 'none';
+      phase2Ref.current.style.transform = 'scale(0.9)';
+    }
+
+    const highlight = (activeIndex: number) => {
+      boxRefs.current.forEach((el, i) => {
+        if (!el) return;
+        animate(el, { opacity: i === activeIndex ? 1 : 0.25, scale: i === activeIndex ? 1.1 : 0.95, duration: 350, ease: 'outQuad' });
+      });
+    };
+
+    let step = 0;
+    const cycles = 6; // 0,1,2,0,1,2...
+    const stepMs = 420;
+
+    highlight(0);
+    const interval = setInterval(() => {
+      step += 1;
+      if (step < cycles) {
+        highlight(step % 3);
+        return;
+      }
+      clearInterval(interval);
+
+      if (phase1Ref.current) {
+        animate(phase1Ref.current, { opacity: 0, duration: 400, ease: 'inOutQuad' });
+      }
+
+      setTimeout(() => {
+        if (!phase2Ref.current) return;
+        phase2Ref.current.style.pointerEvents = 'auto';
+        animate(phase2Ref.current, { opacity: 1, scale: 1, duration: 650, ease: 'outBack' });
+
+        animate('.pkg-rot', { rotate: [0, 360], duration: 5000, ease: 'linear', loop: true });
+
+        setPhase('final');
+      }, 420);
+    }, stepMs);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <div className="mx-auto mt-10 p-4 sm:p-6 border rounded-2xl w-full max-w-4xl">
+      <p className="mb-2 text-muted-foreground text-sm">Vista previa plataforma</p>
+
+      <div className="relative flex justify-center items-center bg-muted/30 border border-border/50 rounded-xl h-[280px] sm:h-[360px] overflow-hidden">
+        <div ref={phase1Ref} className="absolute inset-0 flex justify-center items-center gap-8" aria-hidden={phase !== 'loading'}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} ref={(el) => setBoxRef(el, i)} className="transition will-change-transform" style={{ opacity: i === 0 ? 1 : 0.25 }}>
+              <Box className="w-14 sm:w-16 h-14 sm:h-16 text-[#d20f39]" />
+            </div>
+          ))}
+        </div>
+
+        <div ref={phase2Ref} className="absolute inset-0" aria-hidden={phase !== 'final'}>
+          <div className="absolute inset-0 flex justify-center items-center">
+            <Boxes className="w-20 sm:w-24 h-20 sm:h-24 text-[#d20f39]" />
+          </div>
+
+          <div className="top-6 sm:top-8 left-6 sm:left-8 absolute pkg-rot">
+            <Package className="w-10 sm:w-12 h-10 sm:h-12 text-[#d20f39]" />
+          </div>
+          <div className="top-6 sm:top-8 right-6 sm:right-8 absolute pkg-rot">
+            <Package className="w-10 sm:w-12 h-10 sm:h-12 text-[#d20f39]" />
+          </div>
+          <div className="bottom-6 sm:bottom-8 left-6 sm:left-8 absolute pkg-rot">
+            <Package className="w-10 sm:w-12 h-10 sm:h-12 text-[#d20f39]" />
+          </div>
+          <div className="right-6 sm:right-8 bottom-6 sm:bottom-8 absolute pkg-rot">
+            <Package className="w-10 sm:w-12 h-10 sm:h-12 text-[#d20f39]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const Content = () => {
   return (
@@ -43,24 +140,7 @@ export const Content = () => {
             </Link>
           </div>
 
-          <div className="mx-auto mt-10 p-4 sm:p-6 border rounded-2xl w-full max-w-4xl">
-            <p className="mb-2 text-muted-foreground text-sm">Vista previa plataforma</p>
-            <div className="flex justify-center items-center bg-muted/30 border border-border/50 rounded-xl h-[280px] sm:h-[360px] [perspective:1000px]">
-              <motion.div
-                className="relative w-30 h-30 [transform-style:preserve-3d]"
-                initial={{ rotateX: 0, rotateY: 0 }}
-                animate={{ rotateX: 360, rotateY: 360 }}
-                transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
-              >
-                <div className="absolute inset-0 bg-[#d20f39]/60 border border-border [transform:translateZ(60px)]" />
-                <div className="absolute inset-0 bg-[#d20f39]/30 border border-border [transform:rotateY(180deg)_translateZ(60px)]" />
-                <div className="absolute inset-0 bg-[#d20f39]/50 border border-border [transform:rotateY(90deg)_translateZ(60px)]" />
-                <div className="absolute inset-0 bg-[#d20f39]/40 border border-border [transform:rotateY(-90deg)_translateZ(60px)]" />
-                <div className="absolute inset-0 bg-[#d20f39]/45 border border-border [transform:rotateX(90deg)_translateZ(60px)]" />
-                <div className="absolute inset-0 bg-[#d20f39]/25 border border-border [transform:rotateX(-90deg)_translateZ(60px)]" />
-              </motion.div>
-            </div>
-          </div>
+          <PreviewSSOAnimation />
         </div>
 
         <div id="features" className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto mt-14 w-full max-w-6xl">
@@ -207,11 +287,9 @@ const Landing = () => {
   return (
     <main className="flex flex-col bg-background min-h-screen text-foreground">
       <Header />
-
       <div className="flex flex-grow justify-center items-start px-4 min-h-[calc(100vh-4rem)]">
         <Content />
       </div>
-
       <div className="mt-20">
         <Footer />
       </div>

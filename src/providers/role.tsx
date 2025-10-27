@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react';
 
-export type RoleValue = { id: string; name: string } | null;
+export type RoleValue = { id: string; name: string; modules?: string[] } | null;
 
 const RoleContext = createContext<RoleValue>(null);
 

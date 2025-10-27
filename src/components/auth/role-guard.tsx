@@ -46,8 +46,9 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
 
         if (!res.ok) throw new Error('role fetch failed');
 
-        const data = await res.json();
-        if (!stop) setRole(data.role ?? null);
+        const data = (await res.json()) as { id: string; role?: string; modules?: string[] };
+        console.log('role data', data);
+        if (!stop) setRole(data?.role ? { id: data.id, name: data.role, modules: data.modules || [] } : null);
       } catch (e) {
         if (!stop) setRole(null);
       }
