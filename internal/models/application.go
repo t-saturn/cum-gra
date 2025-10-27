@@ -1,4 +1,3 @@
-// Package models contiene las definiciones de los modelos utilizados por GORM para mapear la base de datos.
 package models
 
 import (
@@ -7,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Application representa una aplicación o sistema registrado en la plataforma.
 type Application struct {
 	ID           uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	Name         string     `gorm:"type:varchar(100);not null" json:"name"`
@@ -23,7 +21,6 @@ type Application struct {
 	DeletedAt    *time.Time `json:"deleted_at"`
 	DeletedBy    *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	DeletedByUser          *User                   `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	ApplicationRoles       []ApplicationRole       `gorm:"foreignKey:ApplicationID" json:"application_roles,omitempty"`
 	UserApplicationRoles   []UserApplicationRole   `gorm:"foreignKey:ApplicationID" json:"user_application_roles,omitempty"`

@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-// RegisterAuthRoutes define las rutas relacionadas con autenticación dentro del grupo /auth.
 func RegisterAuthRoutes(router fiber.Router) {
-	auth := router.Group("/auth")
-	auth.Post("/verify", handlers.VerifyCredentialsHandler)
+	app := router.Group("/auth")
+	app.Post("/signin", handlers.SigninHandler)
+	app.Post("/role", handlers.AuthRoleHandler)
 }

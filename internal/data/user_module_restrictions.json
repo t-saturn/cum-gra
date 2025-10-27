@@ -1,24 +1,13 @@
 [
   {
-    "user_email": "nicola.tesla@muniecharati.gob.pe",
+    "user_email": "alice.rashid@regionayacucho.gob.pe",
     "application_name": "central user manager",
-    "module_name": "Permisos de Módulos",
-    "module_route": "/dashboard/security/module-permissions",
+    "module_name": "Dashboard",
+    "module_route": "/dashboard",
     "restriction_type": "limit_permission",
     "max_permission_level": "denied",
     "reason": "Solo administradores gestionan permisos de módulos (CUM).",
     "expires_at": null,
-    "created_by_email": "alice.rashid@muniecharati.gob.pe"
-  },
-  {
-    "user_email": "nicola.tesla@muniecharati.gob.pe",
-    "application_name": "segres",
-    "module_name": "Roles",
-    "module_route": "/roles",
-    "restriction_type": "limit_permission",
-    "max_permission_level": "denied",
-    "reason": "Segregación de funciones: RRHH no administra Roles en SEGRES.",
-    "expires_at": null,
-    "created_by_email": "alice.rashid@muniecharati.gob.pe"
+    "created_by_email": "alice.rashid@regionayacucho.gob.pe"
   }
 ]

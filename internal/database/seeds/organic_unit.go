@@ -12,7 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// SeedOrganicUnit representa una unidad orgánica utilizada para poblar la base de datos desde un archivo JSON.
 type SeedOrganicUnit struct {
 	Name        string `json:"name"`
 	Acronym     string `json:"acronym"`
@@ -20,7 +19,6 @@ type SeedOrganicUnit struct {
 	Description string `json:"description"`
 }
 
-// SeedOrganicUnits inserta unidades orgánicas en la base de datos desde un archivo JSON si no existen previamente.
 func SeedOrganicUnits() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding unidades orgánicas desde JSON...")

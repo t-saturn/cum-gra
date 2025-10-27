@@ -1,4 +1,3 @@
-// Package middlewares contiene middlewares HTTP reutilizables como CORS, logging y autenticación.
 package middlewares
 
 import (

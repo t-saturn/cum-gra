@@ -13,7 +13,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// SeedApplication representa los datos necesarios para insertar una aplicación desde un archivo JSON.
 type SeedApplication struct {
 	Name         string   `json:"name"`
 	ClientID     string   `json:"client_id"`
@@ -26,7 +25,6 @@ type SeedApplication struct {
 	Status       string   `json:"status"`
 }
 
-// SeedApplications inserta registros de aplicaciones en la base de datos desde un archivo JSON, evitando duplicados.
 func SeedApplications() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding aplicaciones desde JSON...")
@@ -48,7 +46,6 @@ func SeedApplications() error {
 	}
 
 	for _, a := range apps {
-		// Verificar si el ClientID ya existe
 		var count int64
 		if err := config.DB.Model(&models.Application{}).
 			Where("client_id = ?", a.ClientID).

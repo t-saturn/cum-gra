@@ -12,7 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// SeedPosition representa la estructura de una posición estructural para el seed desde un archivo JSON.
 type SeedPosition struct {
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -20,7 +19,6 @@ type SeedPosition struct {
 	Description string `json:"description"`
 }
 
-// SeedStructuralPositions inserta posiciones estructurales en la base de datos desde un archivo JSON si no existen previamente.
 func SeedStructuralPositions() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding posiciones estructurales desde JSON...")

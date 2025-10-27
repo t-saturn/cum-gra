@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// UserApplicationRole asocia un usuario con un rol específico dentro de una aplicación.
 type UserApplicationRole struct {
 	ID                uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	UserID            uuid.UUID  `gorm:"type:uuid;not null" json:"user_id"`
@@ -20,7 +19,6 @@ type UserApplicationRole struct {
 	DeletedAt         *time.Time `json:"deleted_at"`
 	DeletedBy         *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	User            *User            `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Application     *Application     `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`
 	ApplicationRole *ApplicationRole `gorm:"foreignKey:ApplicationRoleID" json:"application_role,omitempty"`

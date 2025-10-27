@@ -29,22 +29,35 @@
     "application_client_id": "cum",
     "application_name": "central user manager"
   },
+
   {
     "name": "admin",
-    "description": "Acceso total a la aplicación Segres",
-    "application_client_id": "segres",
-    "application_name": "segres"
+    "description": "Acceso total a la aplicación Resoluciones. Puede gestionar usuarios, resoluciones, observaciones y trazabilidad.",
+    "application_client_id": "resoluciones",
+    "application_name": "resoluciones"
   },
   {
-    "name": "rrhh",
-    "description": "Rol de Recursos Humanos para Segres",
-    "application_client_id": "segres",
-    "application_name": "segres"
+    "name": "proyectista",
+    "description": "Responsable de la elaboración y registro de nuevas resoluciones.",
+    "application_client_id": "resoluciones",
+    "application_name": "resoluciones"
   },
   {
-    "name": "rrhh-aprove",
-    "description": "Rol de Recursos Humanos para Segres",
-    "application_client_id": "segres",
-    "application_name": "segres"
+    "name": "visto_bueno",
+    "description": "Encargado de revisar, validar y aprobar las resoluciones antes de su firma.",
+    "application_client_id": "resoluciones",
+    "application_name": "resoluciones"
+  },
+  {
+    "name": "firmante",
+    "description": "Autoriza y firma electrónicamente las resoluciones aprobadas.",
+    "application_client_id": "resoluciones",
+    "application_name": "resoluciones"
+  },
+  {
+    "name": "atencion_ciudadano",
+    "description": "Atiende consultas y solicitudes relacionadas con las resoluciones, brindando soporte al ciudadano.",
+    "application_client_id": "resoluciones",
+    "application_name": "resoluciones"
   }
 ]

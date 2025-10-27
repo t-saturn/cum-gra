@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Module representa una funcionalidad o sección del sistema, usada para construir menús y permisos.
 type Module struct {
 	ID            uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	Item          *string    `gorm:"type:varchar(100)" json:"item"`
@@ -22,7 +21,6 @@ type Module struct {
 	DeletedAt     *time.Time `json:"deleted_at"`
 	DeletedBy     *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	Parent                 *Module                 `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
 	Children               []Module                `gorm:"foreignKey:ParentID" json:"children,omitempty"`
 	Application            *Application            `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`

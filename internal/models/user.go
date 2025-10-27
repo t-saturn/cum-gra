@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// User representa a un usuario del sistema, incluyendo su perfil, credenciales y relaciones.
 type User struct {
 	ID                   uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	Email                string     `gorm:"type:varchar(255);unique;not null" json:"email"`
@@ -16,15 +15,14 @@ type User struct {
 	Phone                *string    `gorm:"type:varchar(20)" json:"phone"`
 	DNI                  string     `gorm:"type:varchar(8);unique;not null" json:"dni"`
 	Status               string     `gorm:"type:status_enum;default:'active'" json:"status"`
-	StructuralPositionID *uuid.UUID `gorm:"type:uuid" json:"structural_position_id"`
-	OrganicUnitID        *uuid.UUID `gorm:"type:uuid" json:"organic_unit_id"`
+	StructuralPositionID *uint      `gorm:"type:uuid" json:"structural_position_id"`
+	OrganicUnitID        *uint      `gorm:"type:uuid" json:"organic_unit_id"`
 	CreatedAt            time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt            time.Time  `gorm:"default:now()" json:"updated_at"`
 	IsDeleted            bool       `gorm:"not null;default:false" json:"is_deleted"`
 	DeletedAt            *time.Time `json:"deleted_at"`
 	DeletedBy            *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	StructuralPosition     *StructuralPosition     `gorm:"foreignKey:StructuralPositionID" json:"structural_position,omitempty"`
 	OrganicUnit            *OrganicUnit            `gorm:"foreignKey:OrganicUnitID" json:"organic_unit,omitempty"`
 	DeletedByUser          *User                   `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`

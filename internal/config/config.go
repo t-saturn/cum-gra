@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Config contiene la configuración global de la aplicación cargada desde variables de entorno.
 type Config struct {
 	SERVERPort string
 	DBHost     string
@@ -20,7 +19,6 @@ type Config struct {
 
 var cfg Config
 
-// LoadConfig carga la configuración de la aplicación desde variables de entorno.
 func LoadConfig() {
 	viper.AutomaticEnv()
 
@@ -35,7 +33,6 @@ func LoadConfig() {
 	}
 }
 
-// GetConfig devuelve la configuración global cargada de la aplicación.
 func GetConfig() Config {
 	return cfg
 }

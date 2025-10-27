@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// PasswordHistory guarda un historial de contraseñas anteriores asociadas a un usuario.
 type PasswordHistory struct {
 	ID                   uint       `gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID               uuid.UUID  `gorm:"type:uuid;not null" json:"user_id"`
@@ -17,7 +16,6 @@ type PasswordHistory struct {
 	DeletedAt            *time.Time `json:"deleted_at"`
 	DeletedBy            *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// Relaciones
 	User          *User `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	ChangedByUser *User `gorm:"foreignKey:ChangedBy" json:"changed_by_user,omitempty"`
 	DeletedByUser *User `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`

@@ -1,4 +1,3 @@
-// Package services contiene la lógica de negocio para operaciones relacionadas a usuarios.
 package services
 
 import (
@@ -12,7 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreateUser crea un nuevo usuario con los datos proporcionados y lo guarda en la base de datos.
 func CreateUser(input dto.CreateUserDTO) (*models.User, error) {
 	argon := security.NewArgon2Service()
 	passwordHash, err := argon.HashPassword(input.Password)

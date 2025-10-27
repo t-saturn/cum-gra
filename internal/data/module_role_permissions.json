@@ -1,0 +1,37 @@
+[
+  {
+    "application_name": "central user manager",
+    "application_role_name": "admin",
+    "permission_type": "full_access",
+    "modules": [
+      "Dashboard",
+      "Usuarios",
+      "Manejar Usuarios",
+      "Posiciones Estructurales",
+      "Unidades Orgánicas",
+      "Aplicaciones",
+      "Apps",
+      "Módulos",
+      "Reportes",
+      "Usuarios Activos",
+      "Accesos por Aplicación",
+      "Permisos por Usuario",
+      "Seguridad",
+      "Sesiones Activas",
+      "Logs de Auditoría",
+      "Roles y Permisos",
+      "Roles de Aplicación",
+      "Asignación de Roles",
+      "Permisos de Módulos",
+      "Restricción de Usuario",
+      "Ajustes",
+      "Cuenta"
+    ]
+  },
+  {
+    "application_name": "central user manager",
+    "application_role_name": "user",
+    "permission_type": "read_only",
+    "modules": ["Dashboard", "Ajustes", "Cuenta"]
+  }
+]

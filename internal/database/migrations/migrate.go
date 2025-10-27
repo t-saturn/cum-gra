@@ -1,4 +1,3 @@
-// Package migrations proporciona funciones para ejecutar y administrar migraciones de base de datos.
 package migrations
 
 import (
@@ -10,16 +9,13 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 
-	// Se requiere para usar archivos `.sql` como fuente de migraciones
 	"central-user-manager/internal/config"
 	"central-user-manager/pkg/logger"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-// HandleMigration ejecuta las migraciones según el comando proporcionado por flags.
 func HandleMigration() {
-	// Parámetros CLI
 	migrationsPath := flag.String("path", "internal/database/migrations", "Directorio de migraciones")
 	cmd := flag.String("cmd", "up", "Comando: up, down, force, version, drop")
 	steps := flag.Int("steps", 0, "Cantidad de pasos para up/down")
@@ -41,7 +37,6 @@ func HandleMigration() {
 		logger.Log.Fatal("Error inicializando instancia de migración:", err)
 	}
 
-	// Acciones disponibles
 	commands := map[string]func(*migrate.Migrate) error{
 		"up": func(m *migrate.Migrate) error {
 			if *steps > 0 {
@@ -56,14 +51,12 @@ func HandleMigration() {
 			return m.Down()
 		},
 		"reset": func(_ *migrate.Migrate) error {
-			// Leer archivo SQL
 			var content []byte
 			content, err = os.ReadFile("internal/database/clean/reset_data.sql")
 			if err != nil {
 				return fmt.Errorf("no se pudo leer el script reset_data.sql: %w", err)
 			}
 
-			// Ejecutar SQL manualmente
 			sqlDB, err = config.DB.DB()
 			if err != nil {
 				return fmt.Errorf("error obteniendo instancia sql.DB: %w", err)

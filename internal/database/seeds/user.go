@@ -15,10 +15,6 @@ import (
 	"central-user-manager/pkg/security"
 )
 
-// -----------------------------------------------------------------------------
-// JSON structs esperados
-// -----------------------------------------------------------------------------
-
 type SeedUser struct {
 	ID                   *string `json:"id,omitempty"`
 	Email                string  `json:"email"`
@@ -30,7 +26,6 @@ type SeedUser struct {
 	Status               string  `json:"status"`
 	StructuralPositionID *string `json:"structural_position_id"`
 	OrganicUnitID        *string `json:"organic_unit_id"`
-	// Cualquier extra (p.ej. user_application_role_ids) será ignorado
 }
 
 type SeedUserApplicationRole struct {
@@ -41,10 +36,6 @@ type SeedUserApplicationRole struct {
 	ApplicationRoleName string  `json:"application_role_name"`
 	GrantedByEmail      string  `json:"granted_by_email"`
 }
-
-// -----------------------------------------------------------------------------
-// Seeder maestro (usuarios primero, luego relaciones de rol)
-// -----------------------------------------------------------------------------
 
 func SeedUsersAndUserApplicationRoles() error {
 	logrus.Info("==============================================================================================")
@@ -61,10 +52,6 @@ func SeedUsersAndUserApplicationRoles() error {
 	logrus.Info("Seeding completo: USERS y USER_APPLICATION_ROLES")
 	return nil
 }
-
-// -----------------------------------------------------------------------------
-// Paso 1: Insertar Users (sin relaciones)
-// -----------------------------------------------------------------------------
 
 func seedUsersOnly() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
@@ -87,7 +74,6 @@ func seedUsersOnly() error {
 	}
 
 	for _, u := range input {
-		// Evitar duplicados por email o dni
 		var count int64
 		if err := config.DB.Model(&models.User{}).
 			Where("LOWER(email) = LOWER(?) OR dni = ?", u.Email, u.DNI).
@@ -99,7 +85,6 @@ func seedUsersOnly() error {
 			continue
 		}
 
-		// Parse IDs opcionales
 		var id uuid.UUID
 		if u.ID != nil && strings.TrimSpace(*u.ID) != "" {
 			parsed, pErr := uuid.Parse(*u.ID)
@@ -111,22 +96,22 @@ func seedUsersOnly() error {
 			id = uuid.New()
 		}
 
-		var spID *uuid.UUID
+		var spID *uint
 		if u.StructuralPositionID != nil && strings.TrimSpace(*u.StructuralPositionID) != "" {
-			p, perr := uuid.Parse(*u.StructuralPositionID)
-			if perr != nil {
-				return fmt.Errorf("user '%s' structural_position_id inválido '%s': %w", u.Email, *u.StructuralPositionID, perr)
+			var parsed uint
+			if _, err := fmt.Sscanf(*u.StructuralPositionID, "%d", &parsed); err != nil {
+				return fmt.Errorf("user '%s' structural_position_id inválido '%s': %w", u.Email, *u.StructuralPositionID, err)
 			}
-			spID = &p
+			spID = &parsed
 		}
 
-		var ouID *uuid.UUID
+		var ouID *uint
 		if u.OrganicUnitID != nil && strings.TrimSpace(*u.OrganicUnitID) != "" {
-			p, perr := uuid.Parse(*u.OrganicUnitID)
-			if perr != nil {
-				return fmt.Errorf("user '%s' organic_unit_id inválido '%s': %w", u.Email, *u.OrganicUnitID, perr)
+			var parsed uint
+			if _, err := fmt.Sscanf(*u.OrganicUnitID, "%d", &parsed); err != nil {
+				return fmt.Errorf("user '%s' organic_unit_id inválido '%s': %w", u.Email, *u.OrganicUnitID, err)
 			}
-			ouID = &p
+			ouID = &parsed
 		}
 
 		argon := security.NewArgon2Service()
@@ -162,10 +147,6 @@ func seedUsersOnly() error {
 	return nil
 }
 
-// -----------------------------------------------------------------------------
-// Paso 2: Insertar UserApplicationRoles y "agregar la relación" al usuario
-// -----------------------------------------------------------------------------
-
 func linkUserApplicationRoles() error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
 	logrus.Info("Seeding user_application_roles desde JSON y agregando asociación al usuario...")
@@ -187,13 +168,11 @@ func linkUserApplicationRoles() error {
 	}
 
 	for _, r := range input {
-		// 1. User
 		var user models.User
 		if err := config.DB.Where("LOWER(email) = LOWER(?)", r.UserEmail).First(&user).Error; err != nil {
 			return fmt.Errorf("no se encontró user con email '%s': %w", r.UserEmail, err)
 		}
 
-		// 2. GrantedBy (si no existe, usar el mismo user)
 		var grantedBy models.User
 		if err := config.DB.Where("LOWER(email) = LOWER(?)", r.GrantedByEmail).First(&grantedBy).Error; err != nil {
 			grantedBy = user
@@ -201,7 +180,6 @@ func linkUserApplicationRoles() error {
 				r.GrantedByEmail, r.UserEmail)
 		}
 
-		// 3. Application
 		var app models.Application
 		if strings.TrimSpace(r.ApplicationClientID) != "" {
 			if err := config.DB.Where("client_id = ?", r.ApplicationClientID).First(&app).Error; err != nil {
@@ -213,13 +191,11 @@ func linkUserApplicationRoles() error {
 			}
 		}
 
-		// 4. Role en esa app
 		var role models.ApplicationRole
 		if err := config.DB.Where("LOWER(name) = LOWER(?) AND application_id = ?", r.ApplicationRoleName, app.ID).First(&role).Error; err != nil {
 			return fmt.Errorf("no se encontró role '%s' en app '%s': %w", r.ApplicationRoleName, app.Name, err)
 		}
 
-		// 5. Evitar duplicado activo exacto
 		var count int64
 		if err := config.DB.Model(&models.UserApplicationRole{}).
 			Where("user_id = ? AND application_id = ? AND application_role_id = ? AND is_deleted = false AND revoked_at IS NULL",
@@ -234,7 +210,6 @@ func linkUserApplicationRoles() error {
 			continue
 		}
 
-		// 6. ID opcional
 		var id uuid.UUID
 		if r.ID != nil && strings.TrimSpace(*r.ID) != "" {
 			parsed, pErr := uuid.Parse(*r.ID)
@@ -249,7 +224,6 @@ func linkUserApplicationRoles() error {
 
 		now := time.Now()
 
-		// 7. Crear UAR y "agregar relación" al usuario vía Association (setea user_id)
 		uar := models.UserApplicationRole{
 			ID:                id,
 			ApplicationID:     app.ID,
@@ -259,12 +233,10 @@ func linkUserApplicationRoles() error {
 			IsDeleted:         false,
 		}
 
-		// Usamos la asociación para que GORM asigne user_id y cree el registro
 		if err := config.DB.Model(&user).Association("UserApplicationRoles").Append(&uar); err != nil {
 			return fmt.Errorf("error asociando UAR con user '%s': %w", user.Email, err)
 		}
 
-		// 8. (Opcional) Tocar updated_at del usuario tras asignar rol
 		if err := config.DB.Model(&models.User{}).
 			Where("id = ?", user.ID).
 			Update("updated_at", now).Error; err != nil {

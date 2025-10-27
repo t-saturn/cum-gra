@@ -1,44 +1,46 @@
 [
   {
     "id": "5f6a2b1e-f9a4-4a11-82b3-9a1dd4b7c8e2",
-    "user_email": "alice.rashid@muniecharati.gob.pe",
+    "user_email": "alice.rashid@regionayacucho.gob.pe",
     "application_name": "sso-client",
     "application_role_name": "user",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
   {
     "id": "d9cf3a7e-2a35-4b62-8dc4-92a0d5321f5e",
-    "user_email": "nicola.tesla@muniecharati.gob.pe",
+    "user_email": "nicola.tesla@regionayacucho.gob.pe",
     "application_name": "sso-client",
     "application_role_name": "user",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
+
   {
     "id": "9f47a8d6-6c52-4b36-9b15-b5a9a72d33c1",
-    "user_email": "alice.rashid@muniecharati.gob.pe",
+    "user_email": "alice.rashid@regionayacucho.gob.pe",
     "application_name": "central user manager",
     "application_role_name": "user",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
   {
     "id": "8a3c3d24-5b18-4c61-9a64-6ac1c5f9b201",
-    "user_email": "nicola.tesla@muniecharati.gob.pe",
+    "user_email": "nicola.tesla@regionayacucho.gob.pe",
     "application_name": "central user manager",
     "application_role_name": "admin",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
+
   {
-    "id": "0d7caa0e-6f41-4a36-8c61-6f6b9d3e2a10",
-    "user_email": "alice.rashid@muniecharati.gob.pe",
-    "application_name": "segres",
+    "id": "b1d92d88-3b4c-4f2e-9e73-bc12a9b8a6d5",
+    "user_email": "nicola.tesla@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
     "application_role_name": "admin",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
   {
-    "id": "6c92f02b-05df-4650-a3d8-9a62a676cb77",
-    "user_email": "nicola.tesla@muniecharati.gob.pe",
-    "application_name": "segres",
-    "application_role_name": "rrhh",
-    "granted_by_email": "alice.rashid@muniecharati.gob.pe"
+    "id": "c4f31b57-9b92-4a20-a623-2d4e5a3f7c9e",
+    "user_email": "alice.rashid@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "proyectista",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   }
 ]
