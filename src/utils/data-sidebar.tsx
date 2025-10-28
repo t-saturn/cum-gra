@@ -9,7 +9,6 @@ import {
   UsersRound,
   Settings2,
   UserCircle,
-  Lock,
   Ban,
   Shield,
   Activity,
