@@ -42,5 +42,21 @@
     "application_name": "resoluciones",
     "application_role_name": "proyectista",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
+
+  {
+    "id": "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e",
+    "user_email": "nicola.tesla@regionayacucho.gob.pe",
+    "application_name": "certificados",
+    "application_role_name": "admin",
+    "granted_by_email": "nicola.tesla@regionayacucho.gob.pe"
+  },
+
+  {
+    "id": "b3c4d5a6-7f8e-4a20-a623-2d4e5a3f7c9e",
+    "user_email": "nicola.tesla@regionayacucho.gob.pe",
+    "application_name": "viaticos",
+    "application_role_name": "admin",
+    "granted_by_email": "nicola.tesla@regionayacucho.gob.pe"
   }
 ]
