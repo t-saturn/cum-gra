@@ -1,0 +1,31 @@
+services:
+  auth-service-client:
+    container_name: auth-service-client
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE}
+        NEXT_PUBLIC_FRONT_BASE: ${NEXT_PUBLIC_FRONT_BASE}
+    environment:
+      NODE_ENV: production
+      PORT: 6160
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE}
+      NEXT_PUBLIC_FRONT_BASE: ${NEXT_PUBLIC_FRONT_BASE}
+    ports:
+      - '6160:6160'
+    restart: unless-stopped
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    # (Opcional) Healthcheck para saber si Next ya levantó
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:6160/']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    name: sso-net
+    driver: bridge
