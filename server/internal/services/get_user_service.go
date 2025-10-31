@@ -1,8 +1,8 @@
 package services
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 )
 
 func GetUsers(page, pageSize int, isDeleted bool) ([]models.User, int64, error) {

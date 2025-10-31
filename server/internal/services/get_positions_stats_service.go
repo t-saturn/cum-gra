@@ -1,8 +1,8 @@
 package services
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 )
 
 func GetPositionsStats() (total, active, deleted, assigned int64, err error) {

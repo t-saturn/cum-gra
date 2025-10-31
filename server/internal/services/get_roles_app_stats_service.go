@@ -1,9 +1,9 @@
 package services
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
 )
 
 func GetRolesAppStats() (*dto.RolesAppStatsResponse, error) {

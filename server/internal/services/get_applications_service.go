@@ -3,10 +3,10 @@ package services
 import (
 	"strings"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/mapper"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/mapper"
+	"server/internal/models"
 
 	"github.com/google/uuid"
 )

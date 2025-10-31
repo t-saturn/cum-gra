@@ -1,8 +1,8 @@
 package services
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
+	"server/internal/config"
+	"server/internal/dto"
 	"strconv"
 	"strings"
 

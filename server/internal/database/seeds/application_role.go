@@ -10,8 +10,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 )
 
 type SeedApplicationRole struct {
@@ -70,8 +70,6 @@ func SeedApplicationRoles() error {
 		if r.Description != nil && strings.TrimSpace(*r.Description) != "" {
 			desc = r.Description
 		}
-
-
 
 		if count > 0 && desc != nil {
 			if err := config.DB.Model(&models.ApplicationRole{}).

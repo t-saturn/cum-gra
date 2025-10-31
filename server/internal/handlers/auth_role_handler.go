@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/services"
-	"central-user-manager/pkg/logger"
-	"central-user-manager/pkg/validator"
+	"server/internal/dto"
+	"server/internal/services"
+	"server/pkg/logger"
+	"server/pkg/validator"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"

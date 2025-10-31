@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
+	"server/internal/dto"
+	"server/internal/models"
 )
 
 func ToAdminUserDTO(u models.User) dto.AdminUserDTO {

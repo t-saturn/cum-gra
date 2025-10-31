@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
-	"central-user-manager/pkg/security"
+	"server/internal/config"
+	"server/internal/models"
+	"server/pkg/security"
 )
 
 type SeedUser struct {

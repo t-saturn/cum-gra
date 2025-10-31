@@ -3,10 +3,10 @@ package handlers
 import (
 	"strconv"
 
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/mapper"
-	"central-user-manager/internal/services"
-	"central-user-manager/pkg/logger"
+	"server/internal/dto"
+	"server/internal/mapper"
+	"server/internal/services"
+	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"

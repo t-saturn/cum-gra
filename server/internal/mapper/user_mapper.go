@@ -3,8 +3,8 @@ package mapper
 import (
 	"fmt"
 
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
+	"server/internal/dto"
+	"server/internal/models"
 )
 
 func ToSimpleStructuralPositionDTO(sp *models.StructuralPosition) *dto.SimpleStructuralPositionDTO {

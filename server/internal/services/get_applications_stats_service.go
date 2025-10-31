@@ -1,8 +1,8 @@
 package services
 
 import (
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
+	"server/internal/dto"
+	"server/internal/models"
 
 	"gorm.io/gorm"
 )

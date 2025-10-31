@@ -1,9 +1,9 @@
 package main
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/database/seeds"
-	"central-user-manager/pkg/logger"
+	"server/internal/config"
+	"server/internal/database/seeds"
+	"server/pkg/logger"
 
 	"github.com/joho/godotenv"
 )

@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/services"
+	"server/internal/dto"
+	"server/internal/services"
 
 	"github.com/gofiber/fiber/v3"
 )

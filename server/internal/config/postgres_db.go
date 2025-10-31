@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"central-user-manager/pkg/logger"
+	"server/pkg/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

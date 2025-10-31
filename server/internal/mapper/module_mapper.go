@@ -1,8 +1,8 @@
 package mapper
 
 import (
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
+	"server/internal/dto"
+	"server/internal/models"
 )
 
 // ToModuleDTO convierte un *models.Module en un dto.ModuleDTO

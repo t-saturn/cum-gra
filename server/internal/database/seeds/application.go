@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"

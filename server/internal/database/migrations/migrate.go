@@ -9,8 +9,8 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/pkg/logger"
+	"server/internal/config"
+	"server/pkg/logger"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )

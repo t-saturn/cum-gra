@@ -3,10 +3,10 @@ package services
 import (
 	"time"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
-	"central-user-manager/pkg/security"
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
+	"server/pkg/security"
 
 	"github.com/google/uuid"
 )

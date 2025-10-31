@@ -1,11 +1,11 @@
 package main
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/middlewares"
-	"central-user-manager/internal/routes"
-	"central-user-manager/pkg/logger"
-	"central-user-manager/pkg/validator"
+	"server/internal/config"
+	"server/internal/middlewares"
+	"server/internal/routes"
+	"server/pkg/logger"
+	"server/pkg/validator"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"

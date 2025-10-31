@@ -11,8 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 )
 
 type SeedUserModuleRestriction struct {

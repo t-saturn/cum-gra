@@ -3,7 +3,7 @@ package middlewares
 import (
 	"time"
 
-	"central-user-manager/pkg/logger"
+	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/sirupsen/logrus"

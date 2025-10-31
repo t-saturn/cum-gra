@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"strings"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
-	"central-user-manager/pkg/logger"
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
+	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"

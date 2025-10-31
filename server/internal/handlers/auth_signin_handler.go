@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/dto"
-	"central-user-manager/internal/models"
-	"central-user-manager/pkg/logger"
-	"central-user-manager/pkg/security"
-	"central-user-manager/pkg/validator"
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
+	"server/pkg/logger"
+	"server/pkg/security"
+	"server/pkg/validator"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"

@@ -3,8 +3,8 @@ package services
 import (
 	"time"
 
-	"central-user-manager/internal/config"
-	"central-user-manager/internal/models"
+	"server/internal/config"
+	"server/internal/models"
 )
 
 func GetUserStats() (total, active, suspended, newLastMonth int64, err error) {
