@@ -45,7 +45,7 @@
   },
   {
     "id": "2b5f9d33-9e2a-4d7b-a120-8a9dd7c1e211",
-    "user_email": "res.proyectista@regionayacuhco.gob.pe",
+    "user_email": "res.proyectista@regionayacucho.gob.pe",
     "application_name": "resoluciones",
     "application_role_name": "proyectista",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
@@ -61,14 +61,14 @@
     "id": "5e8f3066-5bb7-4a24-9a2f-2b991c64c444",
     "user_email": "res.sign@regionayacucho.gob.pe",
     "application_name": "resoluciones",
-    "application_role_name": "user",
+    "application_role_name": "sign",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
   {
     "id": "7a115288-3e21-4db9-9f13-0e8c3a2ee666",
     "user_email": "test.citizen@regionayacucho.gob.pe",
     "application_name": "resoluciones",
-    "application_role_name": "user",
+    "application_role_name": "citizen",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
   {
