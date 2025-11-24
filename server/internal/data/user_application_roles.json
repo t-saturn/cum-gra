@@ -43,6 +43,41 @@
     "application_role_name": "proyectista",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
   },
+  {
+    "id": "2b5f9d33-9e2a-4d7b-a120-8a9dd7c1e211",
+    "user_email": "res.proyectista@regionayacuhco.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "proyectista",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
+  {
+    "id": "4d7e2f55-1c2b-4f99-8d7a-55a0d91fb333",
+    "user_email": "res.approval@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "approval",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
+  {
+    "id": "5e8f3066-5bb7-4a24-9a2f-2b991c64c444",
+    "user_email": "res.sign@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "user",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
+  {
+    "id": "7a115288-3e21-4db9-9f13-0e8c3a2ee666",
+    "user_email": "test.citizen@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "user",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
+  {
+    "id": "9c3374aa-2d9a-4b9e-9f4b-1b5c2f1a0888",
+    "user_email": "test@regionayacucho.gob.pe",
+    "application_name": "resoluciones",
+    "application_role_name": "admin",
+    "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
+  },
 
   {
     "id": "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e",

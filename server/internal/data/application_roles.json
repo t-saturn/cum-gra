@@ -43,19 +43,19 @@
     "application_name": "resoluciones"
   },
   {
-    "name": "visto_bueno",
+    "name": "approval",
     "description": "Encargado de revisar, validar y aprobar las resoluciones antes de su firma.",
     "application_client_id": "resoluciones",
     "application_name": "resoluciones"
   },
   {
-    "name": "firmante",
+    "name": "sign",
     "description": "Autoriza y firma electrónicamente las resoluciones aprobadas.",
     "application_client_id": "resoluciones",
     "application_name": "resoluciones"
   },
   {
-    "name": "atencion_ciudadano",
+    "name": "citizen",
     "description": "Atiende consultas y solicitudes relacionadas con las resoluciones, brindando soporte al ciudadano.",
     "application_client_id": "resoluciones",
     "application_name": "resoluciones"
