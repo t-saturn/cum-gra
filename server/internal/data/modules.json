@@ -269,5 +269,16 @@
     "application_name": "resoluciones",
     "sort_order": 5,
     "status": "active"
+  },
+
+  {
+    "item": "Menú",
+    "name": "Dashboard",
+    "route": "/dashboard",
+    "icon": "LayoutDashboard",
+    "parent_name": null,
+    "application_name": "certificados",
+    "sort_order": 1,
+    "status": "active"
   }
 ]

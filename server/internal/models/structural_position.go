@@ -10,7 +10,7 @@ type StructuralPosition struct {
 	ID          uint       `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string     `gorm:"type:varchar(255);unique;not null" json:"name"`
 	Code        string     `gorm:"type:varchar(50);unique;not null" json:"code"`
-	Level       *int       `gorm:"type:integer; not null" json:"level"`
+	Level       *int       `gorm:"type:integer;not null" json:"level"`
 	Description *string    `gorm:"type:text" json:"description"`
 	IsActive    bool       `gorm:"default:true" json:"is_active"`
 	CreatedAt   time.Time  `gorm:"default:now()" json:"created_at"`
@@ -19,8 +19,8 @@ type StructuralPosition struct {
 	DeletedAt   *time.Time `json:"deleted_at"`
 	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	DeletedByUser *User  `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
-	Users         []User `gorm:"foreignKey:StructuralPositionID" json:"users,omitempty"`
+	DeletedByUser *User        `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
+	UserDetails   []UserDetail `gorm:"foreignKey:StructuralPositionID" json:"user_details,omitempty"`
 }
 
 type StructuralPositionRow struct {

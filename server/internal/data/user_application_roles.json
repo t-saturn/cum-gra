@@ -73,7 +73,7 @@
   },
   {
     "id": "9c3374aa-2d9a-4b9e-9f4b-1b5c2f1a0888",
-    "user_email": "test@regionayacucho.gob.pe",
+    "user_email": "test.citizen@regionayacucho.gob.pe",
     "application_name": "resoluciones",
     "application_role_name": "admin",
     "granted_by_email": "alice.rashid@regionayacucho.gob.pe"
@@ -81,7 +81,7 @@
 
   {
     "id": "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e",
-    "user_email": "nicola.tesla@regionayacucho.gob.pe",
+    "user_email": "test.citizen@regionayacucho.gob.pe",
     "application_name": "certificados",
     "application_role_name": "admin",
     "granted_by_email": "nicola.tesla@regionayacucho.gob.pe"

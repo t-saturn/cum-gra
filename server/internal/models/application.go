@@ -14,7 +14,7 @@ type Application struct {
 	Domain       string     `gorm:"type:varchar(255);not null" json:"domain"`
 	Logo         *string    `gorm:"type:varchar(255)" json:"logo"`
 	Description  *string    `gorm:"type:text" json:"description"`
-	Status       string     `gorm:"type:application_status_enum;default:'active'" json:"status"`
+	Status       string     `gorm:"type:varchar(20);default:'active'" json:"status"`
 	CreatedAt    time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt    time.Time  `gorm:"default:now()" json:"updated_at"`
 	IsDeleted    bool       `gorm:"not null;default:false" json:"is_deleted"`

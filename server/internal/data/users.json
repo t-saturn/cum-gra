@@ -84,7 +84,10 @@
     "status": "active",
     "structural_position_id": null,
     "organic_unit_id": null,
-    "user_application_role_ids": ["7a115288-3e21-4db9-9f13-0e8c3a2ee666"]
+    "user_application_role_ids": [
+      "7a115288-3e21-4db9-9f13-0e8c3a2ee666",
+      "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e"
+    ]
   },
   {
     "id": "584211ff-6e2a-4e59-a3bf-6738535ab5e0",
