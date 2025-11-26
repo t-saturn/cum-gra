@@ -1,0 +1,232 @@
+# CENTRAL USER MANAGER (cum)
+
+# Grupo: Menú
+- application_client_id: "cum-app"
+  item: "Menú"
+  name: "Dashboard"
+  route: "/dashboard"
+  icon: "LayoutDashboard"
+  sort_order: 1
+  status: "active"
+  roles:
+    - "default"
+    - "admin"
+
+# Grupo: Gestión
+# Módulo padre: Usuarios
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Usuarios"
+  route: "/dashboard/users"
+  icon: "UsersRound"
+  sort_order: 10
+  status: "active"
+  roles:
+    - "admin"
+
+# Submódulos de Usuarios
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Usuarios (lista)"
+  route: "/dashboard/users"
+  icon: "UsersRound"
+  parent_route: "/dashboard/users"
+  sort_order: 11
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Posiciones Estructurales"
+  route: "/dashboard/structural-positions"
+  icon: "CircleQuestionMark"
+  parent_route: "/dashboard/users"
+  sort_order: 12
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Unidades Orgánicas"
+  route: "/dashboard/organic-units"
+  icon: "Hexagon"
+  parent_route: "/dashboard/users"
+  sort_order: 13
+  status: "active"
+  roles:
+    - "admin"
+
+# Módulo padre: Aplicaciones
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Aplicaciones"
+  route: "/dashboard/applications"
+  icon: "Layers"
+  sort_order: 20
+  status: "active"
+  roles:
+    - "admin"
+
+# Submódulos de Aplicaciones
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Aplicaciones (lista)"
+  route: "/dashboard/applications"
+  icon: "Boxes"
+  parent_route: "/dashboard/applications"
+  sort_order: 21
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Módulos"
+  route: "/dashboard/modules"
+  icon: "Package"
+  parent_route: "/dashboard/applications"
+  sort_order: 22
+  status: "active"
+  roles:
+    - "admin"
+
+# Grupo: Seguridad
+# Módulo padre: Seguridad
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Seguridad"
+  route: "/dashboard/security"
+  icon: "Shield"
+  sort_order: 30
+  status: "active"
+  roles:
+    - "admin"
+
+# Submódulos de Seguridad
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Sesiones Activas"
+  route: "/dashboard/security/active-sessions"
+  icon: "Activity"
+  parent_route: "/dashboard/security"
+  sort_order: 31
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Logs de Auditoría"
+  route: "/dashboard/security/audit-logs"
+  icon: "ScrollText"
+  parent_route: "/dashboard/security"
+  sort_order: 32
+  status: "active"
+  roles:
+    - "admin"
+
+# Módulo padre: Roles y Permisos
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Roles y Permisos"
+  route: "/dashboard/security/roles-permissions"
+  icon: "ShieldCheck"
+  sort_order: 40
+  status: "active"
+  roles:
+    - "admin"
+
+# Submódulos de Roles y Permisos
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Roles de Aplicación"
+  route: "/dashboard/security/application-roles"
+  icon: "Shield"
+  parent_route: "/dashboard/security/roles-permissions"
+  sort_order: 41
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Asignación de Roles"
+  route: "/dashboard/security/user-roles"
+  icon: "UserCog"
+  parent_route: "/dashboard/security/roles-permissions"
+  sort_order: 42
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Seguridad"
+  name: "Restricción de Usuario"
+  route: "/dashboard/security/user-restrictions"
+  icon: "Ban"
+  parent_route: "/dashboard/security/roles-permissions"
+  sort_order: 43
+  status: "active"
+  roles:
+    - "admin"
+
+# Grupo: Configuración
+- application_client_id: "cum-app"
+  item: "Configuración"
+  name: "Ajustes"
+  route: "/dashboard/settings"
+  icon: "Settings2"
+  sort_order: 50
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Configuración"
+  name: "Cuenta"
+  route: "/dashboard/account"
+  icon: "UserCircle"
+  sort_order: 51
+  status: "active"
+  roles:
+    - "admin"
+
+# RESOLUCIONES
+
+- application_client_id: "res-app"
+  item: "Menú"
+  name: "Dashboard"
+  route: "/dashboard"
+  icon: "LayoutDashboard"
+  sort_order: 1
+  status: "active"
+  roles:
+    - "default"
+    - "admin"
+
+# CERTIFICADOS
+
+- application_client_id: "cert-app"
+  item: "Menú"
+  name: "Dashboard"
+  route: "/dashboard"
+  icon: "LayoutDashboard"
+  sort_order: 1
+  status: "active"
+  roles:
+    - "default"
+    - "admin"
+
+# VIATICOS
+
+- application_client_id: "viaticos-app"
+  item: "Menú"
+  name: "Dashboard"
+  route: "/dashboard"
+  icon: "LayoutDashboard"
+  sort_order: 1
+  status: "active"
+  roles:
+    - "default"
