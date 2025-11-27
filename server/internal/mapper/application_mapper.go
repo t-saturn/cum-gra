@@ -11,12 +11,6 @@ import (
 func ToAdminUserDTO(u models.User) dto.AdminUserDTO {
 	first := ""
 	last := ""
-	if u.FirstName != nil {
-		first = strings.TrimSpace(*u.FirstName)
-	}
-	if u.LastName != nil {
-		last = strings.TrimSpace(*u.LastName)
-	}
 
 	full := strings.TrimSpace(strings.Join([]string{first, last}, " "))
 	if full == "" {

@@ -235,11 +235,9 @@ func GetUsersRestrictionsHandler(c fiber.Ctx) error {
 
 	for _, u := range users {
 		userDTO := dto.UserMinimalDTO{
-			ID:        u.ID,
-			FirstName: u.FirstName,
-			LastName:  u.LastName,
-			Email:     u.Email,
-			DNI:       u.DNI,
+			ID:    u.ID,
+			Email: u.Email,
+			DNI:   u.DNI,
 		}
 
 		apps := []dto.UserAppAssignmentDTO{}

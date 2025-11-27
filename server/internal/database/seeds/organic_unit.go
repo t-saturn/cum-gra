@@ -1,47 +1,44 @@
 package seeds
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"time"
 
-	"server/internal/config"
 	"server/internal/models"
 
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
+	"gorm.io/gorm"
 )
 
 type SeedOrganicUnit struct {
-	Name        string `json:"name"`
-	Acronym     string `json:"acronym"`
-	Brand       string `json:"brand"`
-	Description string `json:"description"`
+	Name        string `yaml:"name"`
+	Acronym     string `yaml:"acronym"`
+	Brand       string `yaml:"brand"`
+	Description string `yaml:"description"`
 }
 
-func SeedOrganicUnits() error {
+func SeedOrganicUnits(db *gorm.DB) error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
-	logrus.Info("Seeding unidades orgánicas desde JSON...")
+	logrus.Info("Seeding unidades orgánicas desde YAML...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	file, err := os.Open("internal/data/organic_units.json")
+	filePath := "internal/database/seeds/data/organic_units.yml"
+
+	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return fmt.Errorf("no se pudo abrir el archivo JSON: %w", err)
+		return fmt.Errorf("no se pudo leer el archivo YAML (%s): %w", filePath, err)
 	}
-	defer func() {
-		if cerr := file.Close(); cerr != nil {
-			fmt.Fprintf(os.Stderr, "error al cerrar el archivo: %v\n", cerr)
-		}
-	}()
 
 	var units []SeedOrganicUnit
-	if err := json.NewDecoder(file).Decode(&units); err != nil {
-		return fmt.Errorf("error al decodificar JSON: %w", err)
+	if err := yaml.Unmarshal(data, &units); err != nil {
+		return fmt.Errorf("error al decodificar YAML: %w", err)
 	}
 
 	for _, u := range units {
 		var count int64
-		err := config.DB.Model(&models.OrganicUnit{}).
+		err := db.Model(&models.OrganicUnit{}).
 			Where("name = ? OR acronym = ?", u.Name, u.Acronym).
 			Count(&count).Error
 		if err != nil {
@@ -53,18 +50,31 @@ func SeedOrganicUnits() error {
 			continue
 		}
 
+		// Punteros para Brand y Description (porque en el modelo son *string)
+		var brand *string
+		var description *string
+
+		if u.Brand != "" {
+			b := u.Brand
+			brand = &b
+		}
+		if u.Description != "" {
+			d := u.Description
+			description = &d
+		}
+
 		unit := models.OrganicUnit{
 			Name:        u.Name,
 			Acronym:     u.Acronym,
-			Brand:       &u.Brand,
-			Description: &u.Description,
+			Brand:       brand,
+			Description: description,
 			IsActive:    true,
 			IsDeleted:   false,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		}
 
-		if err := config.DB.Create(&unit).Error; err != nil {
+		if err := db.Create(&unit).Error; err != nil {
 			return fmt.Errorf("error al insertar unidad orgánica '%s': %w", u.Name, err)
 		}
 

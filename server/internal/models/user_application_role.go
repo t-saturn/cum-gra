@@ -18,6 +18,8 @@ type UserApplicationRole struct {
 	IsDeleted         bool       `gorm:"not null;default:false" json:"is_deleted"`
 	DeletedAt         *time.Time `json:"deleted_at"`
 	DeletedBy         *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
+	CreatedAt         time.Time  `gorm:"default:now()" json:"created_at"`
+	UpdatedAt         time.Time  `gorm:"default:now()" json:"updated_at"`
 
 	User            *User            `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Application     *Application     `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`

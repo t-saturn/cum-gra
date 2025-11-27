@@ -15,7 +15,7 @@ type Module struct {
 	ParentID      *uuid.UUID `gorm:"type:uuid" json:"parent_id"`
 	ApplicationID *uuid.UUID `gorm:"type:uuid" json:"application_id"`
 	SortOrder     int        `gorm:"default:0" json:"sort_order"`
-	Status        string     `gorm:"type:module_status_enum;default:'active'" json:"status"`
+	Status        string     `gorm:"type:varchar(20);default:'active'" json:"status"`
 	CreatedAt     time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `gorm:"default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `json:"deleted_at"`

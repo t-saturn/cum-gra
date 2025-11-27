@@ -10,7 +10,7 @@ type ModuleRolePermission struct {
 	ID                uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
 	ModuleID          uuid.UUID  `gorm:"type:uuid;not null" json:"module_id"`
 	ApplicationRoleID uuid.UUID  `gorm:"type:uuid;not null" json:"application_role_id"`
-	PermissionType    string     `gorm:"type:permission_type_enum;not null" json:"permission_type"`
+	PermissionType    string     `gorm:"type:varchar(20);not null" json:"permission_type"`
 	CreatedAt         time.Time  `gorm:"default:now()" json:"created_at"`
 	IsDeleted         bool       `gorm:"not null;default:false" json:"is_deleted"`
 	DeletedAt         *time.Time `json:"deleted_at"`

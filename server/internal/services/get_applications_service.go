@@ -103,11 +103,9 @@ func GetApplications(page, pageSize int, isDeleted bool, adminRoleName string) (
 	adminsByApp := make(map[uuid.UUID][]dto.AdminUserDTO)
 	for _, a := range admins {
 		u := models.User{
-			ID:        a.UserID,
-			Email:     a.Email,
-			FirstName: a.FirstName,
-			LastName:  a.LastName,
-			DNI:       a.DNI,
+			ID:    a.UserID,
+			Email: a.Email,
+			DNI:   a.DNI,
 		}
 		adminsByApp[a.ApplicationID] = append(adminsByApp[a.ApplicationID], mapper.ToAdminUserDTO(u))
 	}

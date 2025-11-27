@@ -43,21 +43,15 @@ func ToUserListItemDTO(u models.User) dto.UserListItemDTO {
 		deletedBy = &s
 	}
 	return dto.UserListItemDTO{
-		ID:        fmt.Sprint(u.ID),
-		Email:     u.Email,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
-		Phone:     u.Phone,
-		DNI:       u.DNI,
-		Status:    u.Status,
+		ID:     fmt.Sprint(u.ID),
+		Email:  u.Email,
+		DNI:    u.DNI,
+		Status: u.Status,
 
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 		IsDeleted: u.IsDeleted,
 		DeletedAt: u.DeletedAt,
 		DeletedBy: deletedBy,
-
-		OrganicUnit:        ToSimpleOrganicUnitDTO(u.OrganicUnit),
-		StructuralPosition: ToSimpleStructuralPositionDTO(u.StructuralPosition),
 	}
 }

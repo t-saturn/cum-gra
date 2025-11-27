@@ -12,7 +12,7 @@ type OrganicUnit struct {
 	Acronym     string     `gorm:"type:varchar(20);unique" validate:"required" json:"acronym"`
 	Brand       *string    `gorm:"type:varchar(100)" json:"brand"`
 	Description *string    `gorm:"type:text" json:"description"`
-	ParentID    *uint      `gorm:"type:uuid" json:"parent_id"`
+	ParentID    *uint      `json:"parent_id"` // corregido: ya no type:uuid, coincide con ID uint
 	IsActive    bool       `gorm:"default:true" json:"is_active"`
 	CreatedAt   time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt   time.Time  `gorm:"default:now()" json:"updated_at"`
@@ -23,5 +23,5 @@ type OrganicUnit struct {
 	Parent        *OrganicUnit  `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
 	Children      []OrganicUnit `gorm:"foreignKey:ParentID" json:"children,omitempty"`
 	DeletedByUser *User         `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
-	Users         []User        `gorm:"foreignKey:OrganicUnitID" json:"users,omitempty"`
+	UserDetails   []UserDetail  `gorm:"foreignKey:OrganicUnitID" json:"user_details,omitempty"`
 }
