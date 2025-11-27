@@ -19,6 +19,9 @@ type StructuralPosition struct {
 	DeletedAt   *time.Time `json:"deleted_at"`
 	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
+	// code legacy sgd
+	CodCarSGD *string `gorm:"type:varchar(4)" json:"cod_car_sgd"`
+
 	DeletedByUser *User        `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
 	UserDetails   []UserDetail `gorm:"foreignKey:StructuralPositionID" json:"user_details,omitempty"`
 }

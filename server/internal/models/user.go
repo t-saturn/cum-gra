@@ -31,6 +31,9 @@ type UserDetail struct {
 	UserID uuid.UUID `gorm:"type:uuid;unique;not null" json:"user_id"`
 	User   User      `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"-"`
 
+	// code legacy sgd
+	CodEmpSGD *string `gorm:"type:varchar(5)" json:"cod_emp_sgd"`
+
 	FirstName *string `gorm:"type:varchar(100)" json:"first_name"`
 	LastName  *string `gorm:"type:varchar(100)" json:"last_name"`
 	Phone     *string `gorm:"type:varchar(20)" json:"phone"`

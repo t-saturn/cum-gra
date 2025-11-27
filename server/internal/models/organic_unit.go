@@ -20,6 +20,9 @@ type OrganicUnit struct {
 	DeletedAt   *time.Time `json:"deleted_at"`
 	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
+	// code legacy sgd
+	CodDepSGD *string `gorm:"type:varchar(5)" json:"cod_dep_sgd"`
+
 	Parent        *OrganicUnit  `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
 	Children      []OrganicUnit `gorm:"foreignKey:ParentID" json:"children,omitempty"`
 	DeletedByUser *User         `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
