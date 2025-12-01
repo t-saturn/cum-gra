@@ -11,9 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: { strategy: 'jwt' },
-
   trustHost: true,
-
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account) {
@@ -21,9 +19,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.idToken = account.id_token;
         token.refreshToken = account.refresh_token;
         token.expiresAt = account.expires_at;
-
-        //  este es el user_id de Keycloak
-        // profile.sub viene del id_token/userinfo
         token.userId = profile?.sub ?? token.sub;
       }
       return token;
@@ -31,7 +26,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     async session({ session, token }) {
       (session.user as any).id = token.userId;
-
       (session as any).accessToken = token.accessToken;
       (session as any).idToken = token.idToken;
 
