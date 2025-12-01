@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
+    "jose": "^6.1.2",
     "lucide-react": "^0.519.0",
     "next": "15.5.3",
     "next-auth": "^5.0.0-beta.29",
