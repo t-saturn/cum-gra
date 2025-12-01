@@ -287,7 +287,7 @@ const Landing = () => {
   return (
     <main className="flex flex-col bg-background min-h-screen text-foreground">
       <Header />
-      <div className="flex flex-grow justify-center items-start px-4 min-h-[calc(100vh-4rem)]">
+      <div className="flex grow justify-center items-start px-4 min-h-[calc(100vh-4rem)]">
         <Content />
       </div>
       <div className="mt-20">
