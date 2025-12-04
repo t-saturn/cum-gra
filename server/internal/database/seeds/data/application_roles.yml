@@ -42,11 +42,11 @@
   description: "Rol básico para acceso a la aplicación de certificados."
   application_client_id: "cert-app"
 
-- name: "admin"
+- name: "org"
   description: "Rol administrativo para gestión de certificados."
   application_client_id: "cert-app"
 
-- name: "super-admin"
+- name: "admin"
   description: "Rol con control total y configuración avanzada en certificados."
   application_client_id: "cert-app"
 
