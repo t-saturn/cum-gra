@@ -7,26 +7,17 @@ import (
 )
 
 type StructuralPosition struct {
-	ID          uint       `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name        string     `gorm:"type:varchar(255);unique;not null" json:"name"`
-	Code        string     `gorm:"type:varchar(50);unique;not null" json:"code"`
-	Level       *int       `gorm:"type:integer;not null" json:"level"`
-	Description *string    `gorm:"type:text" json:"description"`
-	IsActive    bool       `gorm:"default:true" json:"is_active"`
-	CreatedAt   time.Time  `gorm:"default:now()" json:"created_at"`
-	UpdatedAt   time.Time  `gorm:"default:now()" json:"updated_at"`
-	IsDeleted   bool       `gorm:"not null;default:false" json:"is_deleted"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
+    ID          uint       `gorm:"primaryKey;autoIncrement" json:"id"`
+    Name        string     `gorm:"type:varchar(255);unique;not null" json:"name"`
+    Code        string     `gorm:"type:varchar(50);unique;not null" json:"code"`
+    Level       *int       `gorm:"type:integer;not null" json:"level"`
+    Description *string    `gorm:"type:text" json:"description"`
+    IsActive    bool       `gorm:"default:true" json:"is_active"`
+    CreatedAt   time.Time  `gorm:"default:now()" json:"created_at"`
+    UpdatedAt   time.Time  `gorm:"default:now()" json:"updated_at"`
+    IsDeleted   bool       `gorm:"not null;default:false" json:"is_deleted"`
+    DeletedAt   *time.Time `json:"deleted_at"`
+    DeletedBy   *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	// code legacy sgd
-	CodCarSGD *string `gorm:"type:varchar(4)" json:"cod_car_sgd"`
-
-	DeletedByUser *User        `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
-	UserDetails   []UserDetail `gorm:"foreignKey:StructuralPositionID" json:"user_details,omitempty"`
-}
-
-type StructuralPositionRow struct {
-	StructuralPosition
-	UsersCount int64 `gorm:"column:users_count"`
+    CodCarSGD *string `gorm:"type:varchar(4)" json:"cod_car_sgd"`
 }
