@@ -10,6 +10,7 @@ func Run(db *gorm.DB) error {
 	seeders := []func(*gorm.DB) error{
 		SeedStructuralPositions,
 		SeedOrganicUnits,
+		SeedUbigeos,
 		SeedApplications,
 		SeedApplicationRoles,
 		SeedModules,
