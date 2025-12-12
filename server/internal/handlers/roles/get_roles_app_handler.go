@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"server/internal/dto"
-	"server/internal/services"
+	"server/internal/services/roles"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"

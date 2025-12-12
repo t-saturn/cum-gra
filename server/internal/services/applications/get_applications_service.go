@@ -1,4 +1,4 @@
-package srvapplications
+package services
 
 import (
 	"strings"

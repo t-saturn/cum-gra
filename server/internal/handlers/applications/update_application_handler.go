@@ -31,7 +31,7 @@ func UpdateApplicationHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "ID de usuario inválido"})
 	}
 
-	result, err := srvapplications.UpdateApplication(id, req, userID)
+	result, err := services.UpdateApplication(id, req, userID)
 	if err != nil {
 		if err.Error() == "aplicación no encontrada" || err.Error() == "ID inválido" {
 			return c.Status(fiber.StatusNotFound).

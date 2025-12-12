@@ -35,7 +35,7 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 
 	adminRoleName := c.Query("admin_role_name", "admin")
 
-	result, err := srvapplications.GetApplications(page, pageSize, isDeleted, adminRoleName)
+	result, err := services.GetApplications(page, pageSize, isDeleted, adminRoleName)
 	if err != nil {
 		logger.Log.Error("Error obteniendo aplicaciones:", err)
 		return c.Status(fiber.StatusInternalServerError).

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"server/internal/dto"
-	"server/internal/services"
+	"server/internal/services/users"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"

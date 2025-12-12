@@ -34,7 +34,7 @@ func CreateApplicationHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "ID de usuario inválido"})
 	}
 
-	result, err := srvapplications.CreateApplication(req, userID)
+	result, err := services.CreateApplication(req, userID)
 	if err != nil {
 		if err.Error() == "ya existe una aplicación con este client_id" {
 			return c.Status(fiber.StatusConflict).

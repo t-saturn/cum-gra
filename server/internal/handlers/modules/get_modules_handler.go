@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"server/internal/dto"
-	"server/internal/services"
+	"server/internal/services/modules"
 
 	"github.com/gofiber/fiber/v3"
 )

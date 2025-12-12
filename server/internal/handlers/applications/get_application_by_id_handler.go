@@ -11,7 +11,7 @@ import (
 func GetApplicationByIDHandler(c fiber.Ctx) error {
 	id := c.Params("id")
 
-	result, err := srvapplications.GetApplicationByID(id)
+	result, err := services.GetApplicationByID(id)
 	if err != nil {
 		if err.Error() == "aplicación no encontrada" || err.Error() == "ID inválido" {
 			return c.Status(fiber.StatusNotFound).

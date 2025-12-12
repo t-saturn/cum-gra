@@ -5,14 +5,14 @@ import (
 
 	"server/internal/dto"
 	"server/internal/mapper"
-	"server/internal/services"
+	"server/internal/services/users"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 )
 
-func GetPositionsHandler(c fiber.Ctx) error {
+func GetUsersHandler(c fiber.Ctx) error {
 	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
 	page := 1
 	pageSize := 20
@@ -35,27 +35,29 @@ func GetPositionsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	rows, total, err := services.GetPositions(page, pageSize, isDeleted)
+	users, total, err := services.GetUsers(page, pageSize, isDeleted)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusOK).JSON(dto.StructuralPositionsListResponse{
-				Data:     []dto.StructuralPositionItemDTO{},
+			return c.Status(fiber.StatusOK).JSON(dto.UsersListResponse{
+				Data:     []dto.UserListItemDTO{},
 				Total:    0,
 				Page:     page,
 				PageSize: pageSize,
 			})
 		}
-		logger.Log.Error("Error obteniendo cargos:", err)
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
+		logger.Log.Error("Error obteniendo usuarios:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
-	out := mapper.ToStructuralPositionListDTO(rows)
-	return c.Status(fiber.StatusOK).JSON(dto.StructuralPositionsListResponse{
+	out := make([]dto.UserListItemDTO, 0, len(users))
+	for _, u := range users {
+		out = append(out, mapper.ToUserListItemDTO(u))
+	}
+
+	return c.Status(fiber.StatusOK).JSON(dto.UsersListResponse{
 		Data:     out,
 		Total:    total,
 		Page:     page,
 		PageSize: pageSize,
 	})
-
 }

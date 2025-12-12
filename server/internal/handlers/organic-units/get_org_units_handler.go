@@ -5,7 +5,7 @@ import (
 
 	"server/internal/dto"
 	"server/internal/mapper"
-	"server/internal/services"
+	"server/internal/services/organic-units"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"

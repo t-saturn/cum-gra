@@ -10,7 +10,7 @@ import (
 
 func GetApplicationsStatsHandler(c fiber.Ctx) error {
 
-	stats, err := srvapplications.GetApplicationsStats()
+	stats, err := services.GetApplicationsStats()
 	if err != nil {
 		logger.Log.Error("Error obteniendo estadísticas de aplicaciones:", err)
 		return c.Status(fiber.StatusInternalServerError).
