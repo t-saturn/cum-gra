@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"server/internal/dto"
-	"server/internal/services"
+	"server/internal/services/applications"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
@@ -25,7 +25,7 @@ func DeleteApplicationHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "ID de usuario inválido"})
 	}
 
-	if err := services.DeleteApplication(id, userID); err != nil {
+	if err := srvapplications.DeleteApplication(id, userID); err != nil {
 		if err.Error() == "aplicación no encontrada" || err.Error() == "ID inválido" {
 			return c.Status(fiber.StatusNotFound).
 				JSON(dto.ErrorResponse{Error: err.Error()})
@@ -43,7 +43,7 @@ func DeleteApplicationHandler(c fiber.Ctx) error {
 func RestoreApplicationHandler(c fiber.Ctx) error {
 	id := c.Params("id")
 
-	if err := services.RestoreApplication(id); err != nil {
+	if err := srvapplications.RestoreApplication(id); err != nil {
 		if err.Error() == "aplicación no encontrada o no está eliminada" || err.Error() == "ID inválido" {
 			return c.Status(fiber.StatusNotFound).
 				JSON(dto.ErrorResponse{Error: err.Error()})
