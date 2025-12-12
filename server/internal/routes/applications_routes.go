@@ -18,7 +18,7 @@ func RegisterApplicationsRoutes(router fiber.Router) {
 	protected.Use(middlewares.RequireResourceRole("realm-management", "manage-clients"))
 
 	protected.Get("/", handlers.GetApplicationsHandler)
-	// protected.Get("/stats", handlers.GetApplicationsStatsHandler)
+	protected.Get("/stats", handlers.GetApplicationsStatsHandler)
 	protected.Get("/:id", handlers.GetApplicationByIDHandler)
 	protected.Post("/", handlers.CreateApplicationHandler)
 	protected.Put("/:id", handlers.UpdateApplicationHandler)

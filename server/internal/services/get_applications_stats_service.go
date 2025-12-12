@@ -1,40 +1,45 @@
 package services
 
-// import (
-// 	"server/internal/dto"
-// 	"server/internal/models"
+import (
+	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
+)
 
-// 	"gorm.io/gorm"
-// )
+func GetApplicationsStats() (*dto.ApplicationStatsResponse, error) {
+	db := config.DB
 
-// func GetApplicationsStats(db *gorm.DB) (*dto.ApplicationsStatsResponse, error) {
-// 	var totalApps int64
-// 	if err := db.Model(&models.Application{}).
-// 		Count(&totalApps).Error; err != nil {
-// 		return nil, err
-// 	}
+	var totalApps int64
+	if err := db.Model(&models.Application{}).
+		Count(&totalApps).Error; err != nil {
+		return nil, err
+	}
 
-// 	var activeApps int64
-// 	if err := db.Model(&models.Application{}).
-// 		Where("is_deleted = ? AND status = ?", false, "active").
-// 		Count(&activeApps).Error; err != nil {
-// 		return nil, err
-// 	}
+	var activeApps int64
+	if err := db.Model(&models.Application{}).
+		Where("is_deleted = ? AND status = ?", false, "active").
+		Count(&activeApps).Error; err != nil {
+		return nil, err
+	}
 
-// 	var totalUsers int64
-// 	sub := db.Table("user_application_roles uar").
-// 		Joins("JOIN users u ON u.id = uar.user_id").
-// 		Where("u.is_deleted = FALSE AND uar.is_deleted = FALSE AND uar.revoked_at IS NULL").
-// 		Select("DISTINCT u.id")
+	var inactiveApps int64
+	if err := db.Model(&models.Application{}).
+		Where("is_deleted = ? AND status = ?", false, "inactive").
+		Count(&inactiveApps).Error; err != nil {
+		return nil, err
+	}
 
-// 	if err := db.Table("(?) as distinct_users", sub).
-// 		Count(&totalUsers).Error; err != nil {
-// 		return nil, err
-// 	}
+	var deletedApps int64
+	if err := db.Model(&models.Application{}).
+		Where("is_deleted = ?", true).
+		Count(&deletedApps).Error; err != nil {
+		return nil, err
+	}
 
-// 	return &dto.ApplicationsStatsResponse{
-// 		TotalApplications:  totalApps,
-// 		ActiveApplications: activeApps,
-// 		TotalUsers:         totalUsers,
-// 	}, nil
-// }
+	return &dto.ApplicationStatsResponse{
+		TotalApplications:    totalApps,
+		ActiveApplications:   activeApps,
+		InactiveApplications: inactiveApps,
+		DeletedApplications:  deletedApps,
+	}, nil
+}
