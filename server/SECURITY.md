@@ -58,5 +58,3 @@ Security updates will be released as soon as possible after a vulnerability is c
 For security-related inquiries or to report a vulnerability, please contact the project maintainers directly.
 
 ---
-
-This security policy is subject to change and improvement over time. Check back regularly for updates.
