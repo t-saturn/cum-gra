@@ -65,11 +65,14 @@ var (
 
 // InitKeycloakMiddleware inicializa el middleware de Keycloak
 func InitKeycloakMiddleware() error {
+	fmt.Println("========== INICIANDO KEYCLOAK MIDDLEWARE ==========")
+	
 	var initErr error
 	once.Do(func() {
 		cfg := config.GetConfig()
 		
 		if cfg.KeycloakSSOURL == "" || cfg.KeycloakRealm == "" {
+			fmt.Println("ERROR: Variables de entorno no configuradas")
 			initErr = errors.New("KEYCLOAK_SSO_URL y KEYCLOAK_REALM son requeridos")
 			return
 		}
@@ -87,10 +90,16 @@ func InitKeycloakMiddleware() error {
 
 		// Obtener las claves públicas al inicializar
 		if err := keycloakMiddleware.fetchPublicKeys(); err != nil {
+			fmt.Printf("ERROR obteniendo claves: %v\n", err)
 			initErr = fmt.Errorf("error al obtener claves públicas: %w", err)
 			return
 		}
+		
 	})
+
+	if initErr != nil {
+		fmt.Printf("ERROR EN INICIALIZACIÓN: %v\n", initErr)
+	}
 
 	return initErr
 }
@@ -224,10 +233,10 @@ func (km *KeycloakMiddleware) ValidateToken(tokenString string) (*KeycloakClaims
 	return claims, nil
 }
 
-// KeycloakAuth middleware principal para validar tokens
 func KeycloakAuth() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
+		
 		if authHeader == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "Token de autorización requerido",
@@ -235,6 +244,7 @@ func KeycloakAuth() fiber.Handler {
 		}
 
 		parts := strings.Split(authHeader, " ")
+		
 		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "Formato de token inválido",
@@ -250,7 +260,7 @@ func KeycloakAuth() fiber.Handler {
 			})
 		}
 
-		// Guardar claims en el contexto
+
 		c.Locals("user", claims)
 		c.Locals("user_id", claims.Subject)
 		c.Locals("email", claims.Email)

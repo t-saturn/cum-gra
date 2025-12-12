@@ -77,24 +77,19 @@ func GetApplications(page, pageSize int, isDeleted bool, adminRoleName string) (
 
 	var admins []AdminRow
 	pattern := adminRolePrefix + "%"
-
 	if err := db.
 		Table("application_roles ar").
 		Select(`
 			ar.application_id,
 			uar.user_id,
 			u.email,
-			u.first_name,
-			u.last_name,
-			u.dni
+			u.dni,
+			ud.first_name,
+			ud.last_name
 		`).
-		Joins(`JOIN user_application_roles uar
-					ON uar.application_role_id = ar.id
-					AND uar.is_deleted = FALSE
-					AND uar.revoked_at IS NULL`).
-		Joins(`JOIN users u
-					ON u.id = uar.user_id
-					AND u.is_deleted = FALSE`).
+		Joins(`JOIN user_application_roles uar ON uar.application_role_id = ar.id AND uar.is_deleted = FALSE AND uar.revoked_at IS NULL`).
+		Joins(`JOIN users u ON u.id = uar.user_id AND u.is_deleted = FALSE`).
+		Joins(`LEFT JOIN user_details ud ON ud.user_id = u.id`).
 		Where("ar.is_deleted = FALSE AND ar.application_id IN ? AND ar.name ILIKE ?", appIDs, pattern).
 		Scan(&admins).Error; err != nil {
 		return nil, err
@@ -102,17 +97,33 @@ func GetApplications(page, pageSize int, isDeleted bool, adminRoleName string) (
 
 	adminsByApp := make(map[uuid.UUID][]dto.AdminUserDTO)
 	for _, a := range admins {
-		u := models.User{
-			ID:    a.UserID,
-			Email: a.Email,
-			DNI:   a.DNI,
+		fullName := ""
+		if a.FirstName != nil && a.LastName != nil {
+			fullName = strings.TrimSpace(*a.FirstName + " " + *a.LastName)
+		} else if a.FirstName != nil {
+			fullName = *a.FirstName
+		} else if a.LastName != nil {
+			fullName = *a.LastName
 		}
-		adminsByApp[a.ApplicationID] = append(adminsByApp[a.ApplicationID], mapper.ToAdminUserDTO(u))
+		
+		if fullName == "" {
+			fullName = a.Email
+		}
+
+		adminDTO := dto.AdminUserDTO{
+			FullName: fullName,
+			DNI:      a.DNI,
+			Email:    a.Email,
+		}
+		adminsByApp[a.ApplicationID] = append(adminsByApp[a.ApplicationID], adminDTO)
 	}
 
 	out := make([]dto.ApplicationDTO, 0, len(apps))
 	for _, a := range apps {
 		adminList := adminsByApp[a.ID]
+		if adminList == nil {
+			adminList = []dto.AdminUserDTO{}
+		}
 		usersCount := usersCountByApp[a.ID]
 		out = append(out, mapper.ToApplicationDTO(a, adminList, usersCount))
 	}

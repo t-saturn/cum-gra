@@ -11,9 +11,6 @@ import (
 )
 
 func GetApplicationsHandler(c fiber.Ctx) error {
-
-	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
-
 	page := 1
 	pageSize := 20
 
@@ -22,6 +19,7 @@ func GetApplicationsHandler(c fiber.Ctx) error {
 			page = n
 		}
 	}
+
 	if v := c.Query("page_size"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 && n <= 200 {
 			pageSize = n

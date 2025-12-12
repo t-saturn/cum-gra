@@ -4,10 +4,14 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import LayoutClient from '@/components/layout/layout';
 import SessionGuard from '@/components/auth/session-guard';
 import RoleGuard from '@/components/auth/role-guard';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProtectedLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
+  console.log({ session });
+  
   return (
     <SessionGuard>
       <RoleGuard>

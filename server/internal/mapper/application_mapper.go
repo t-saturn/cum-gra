@@ -2,24 +2,15 @@ package mapper
 
 import (
 	"fmt"
-	"strings"
 
 	"server/internal/dto"
 	"server/internal/models"
 )
 
 func ToAdminUserDTO(u models.User) dto.AdminUserDTO {
-	first := ""
-	last := ""
-
-	full := strings.TrimSpace(strings.Join([]string{first, last}, " "))
-	if full == "" {
-		// fallback si no hay nombres
-		full = u.Email
-	}
-
+	// Este método ya no se usa realmente, pero lo dejamos por compatibilidad
 	return dto.AdminUserDTO{
-		FullName: full,
+		FullName: u.Email,
 		DNI:      u.DNI,
 		Email:    u.Email,
 	}
@@ -44,14 +35,12 @@ func ToApplicationDTO(
 		Logo:        a.Logo,
 		Description: a.Description,
 		Status:      a.Status,
-
-		CreatedAt: a.CreatedAt,
-		UpdatedAt: a.UpdatedAt,
-		IsDeleted: a.IsDeleted,
-		DeletedAt: a.DeletedAt,
-		DeletedBy: deletedBy,
-
-		Admins:     admins,
-		UsersCount: usersCount,
+		CreatedAt:   a.CreatedAt,
+		UpdatedAt:   a.UpdatedAt,
+		IsDeleted:   a.IsDeleted,
+		DeletedAt:   a.DeletedAt,
+		DeletedBy:   deletedBy,
+		Admins:      admins,
+		UsersCount:  usersCount,
 	}
 }

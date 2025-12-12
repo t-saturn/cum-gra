@@ -9,11 +9,13 @@ func RegisterRoutes(app *fiber.App) {
 		return c.JSON(fiber.Map{"message": "Central User Manager API is running"})
 	})
 
+	api := app.Group("/api")
+
 	RegisterAuthRoutes(app)
 	RegisterUserRoutes(app)
 	RegisterPositionRoutes(app)
 	RegisterOrganicUnitRoutes(app)
-	RegisterApplicationsRoutes(app)
+	RegisterApplicationsRoutes(api)
 	RegisterModulesRoutes(app)
 	RegisterRolesAppRoutes(app)
 	RegisterRolesAssignmentsRoutes(app)
