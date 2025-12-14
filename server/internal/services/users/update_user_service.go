@@ -75,8 +75,8 @@ func UpdateUser(id string, req dto.UpdateUserRequest, updatedBy uuid.UUID) (*dto
 			userDetail = models.UserDetail{
 				UserID: userID,
 			}
-			if err := db.Create(&userDetail).Error; err != nil {
-				return nil, err
+			if errDB := db.Create(&userDetail).Error; errDB != nil {
+				return nil, errDB
 			}
 		} else {
 			return nil, err
