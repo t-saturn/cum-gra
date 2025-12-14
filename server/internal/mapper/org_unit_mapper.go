@@ -32,6 +32,7 @@ func ToOrganicUnitItemDTO(ou models.OrganicUnit, usersCount int64) dto.OrganicUn
 		IsDeleted:   ou.IsDeleted,
 		DeletedAt:   ou.DeletedAt,
 		DeletedBy:   deletedBy,
+		CodDepSGD:   ou.CodDepSGD,
 		UsersCount:  usersCount,
 	}
 }

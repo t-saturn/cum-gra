@@ -18,13 +18,6 @@ type SimpleStructuralPositionDTO struct {
 	Level *int   `json:"level,omitempty"`
 }
 
-type SimpleOrganicUnitDTO struct {
-	ID       string  `json:"id"`
-	Name     string  `json:"name"`
-	Acronym  string  `json:"acronym"`
-	ParentID *string `json:"parent_id,omitempty"`
-}
-
 type UserListItemDTO struct {
 	ID        string  `json:"id"`
 	Email     string  `json:"email"`
