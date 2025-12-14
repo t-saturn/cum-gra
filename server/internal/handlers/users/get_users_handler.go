@@ -4,16 +4,13 @@ import (
 	"strconv"
 
 	"server/internal/dto"
-	"server/internal/mapper"
-	"server/internal/services/users"
+	services "server/internal/services/users"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
-	"gorm.io/gorm"
 )
 
 func GetUsersHandler(c fiber.Ctx) error {
-	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
 	page := 1
 	pageSize := 20
 
@@ -22,6 +19,7 @@ func GetUsersHandler(c fiber.Ctx) error {
 			page = n
 		}
 	}
+
 	if v := c.Query("page_size"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 && n <= 200 {
 			pageSize = n
@@ -35,29 +33,27 @@ func GetUsersHandler(c fiber.Ctx) error {
 		}
 	}
 
-	users, total, err := services.GetUsers(page, pageSize, isDeleted)
+	var status *string
+	if v := c.Query("status"); v != "" {
+		status = &v
+	}
+
+	var organicUnitID *string
+	if v := c.Query("organic_unit_id"); v != "" {
+		organicUnitID = &v
+	}
+
+	var positionID *string
+	if v := c.Query("position_id"); v != "" {
+		positionID = &v
+	}
+
+	result, err := services.GetUsers(page, pageSize, isDeleted, status, organicUnitID, positionID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusOK).JSON(dto.UsersListResponse{
-				Data:     []dto.UserListItemDTO{},
-				Total:    0,
-				Page:     page,
-				PageSize: pageSize,
-			})
-		}
 		logger.Log.Error("Error obteniendo usuarios:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
-	out := make([]dto.UserListItemDTO, 0, len(users))
-	for _, u := range users {
-		out = append(out, mapper.ToUserListItemDTO(u))
-	}
-
-	return c.Status(fiber.StatusOK).JSON(dto.UsersListResponse{
-		Data:     out,
-		Total:    total,
-		Page:     page,
-		PageSize: pageSize,
-	})
+	return c.Status(fiber.StatusOK).JSON(result)
 }

@@ -10,8 +10,10 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func CreateUserHandler(c fiber.Ctx) error {
-	var req dto.CreateUserRequest
+func UpdateUserHandler(c fiber.Ctx) error {
+	id := c.Params("id")
+
+	var req dto.UpdateUserRequest
 	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(dto.ErrorResponse{Error: "Datos inválidos"})
@@ -32,8 +34,12 @@ func CreateUserHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "Usuario no encontrado en el sistema"})
 	}
 
-	result, err := services.CreateUser(req, user.ID)
+	result, err := services.UpdateUser(id, req, user.ID)
 	if err != nil {
+		if err.Error() == "usuario no encontrado" || err.Error() == "ID inválido" {
+			return c.Status(fiber.StatusNotFound).
+				JSON(dto.ErrorResponse{Error: err.Error()})
+		}
 		if err.Error() == "ya existe un usuario con este email" ||
 		   err.Error() == "ya existe un usuario con este DNI" {
 			return c.Status(fiber.StatusConflict).
@@ -48,10 +54,10 @@ func CreateUserHandler(c fiber.Ctx) error {
 			return c.Status(fiber.StatusBadRequest).
 				JSON(dto.ErrorResponse{Error: err.Error()})
 		}
-		logger.Log.Error("Error creando usuario:", err)
+		logger.Log.Error("Error actualizando usuario:", err)
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(result)
+	return c.Status(fiber.StatusOK).JSON(result)
 }

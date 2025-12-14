@@ -12,7 +12,7 @@ func RegisterRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
 	RegisterAuthRoutes(app)
-	RegisterUserRoutes(app)
+	RegisterUserRoutes(api)
 	RegisterPositionRoutes(api)
 	RegisterOrganicUnitsRoutes(api)
 	RegisterApplicationsRoutes(api)
