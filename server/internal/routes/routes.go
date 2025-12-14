@@ -20,4 +20,5 @@ func RegisterRoutes(app *fiber.App) {
 	RegisterModulesRoutes(api)
 	RegisterModuleRolePermissionsRoutes(api)
 	RegisterUserRestrictionsRoutes(app)
+	RegisterUserRestrictionsRoutes(api)
 }
