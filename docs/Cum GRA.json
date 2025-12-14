@@ -1,0 +1,2011 @@
+{
+  "name": "Cum GRA",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "1. Applications",
+      "filename": "1. Applications",
+      "seq": 1,
+      "examples": [],
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "1. Applications",
+          "seq": 1
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "List All",
+          "filename": "List All.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications?page=1&page_size=10&is_deleted=false",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "is_deleted",
+                "value": "false",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List by id",
+          "filename": "List by id.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/e0af8703-b3b0-4103-a0f6-64336111dc82",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create",
+          "filename": "Create.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Mi Nueva Aplicación\",\n  \"client_id\": \"mi-app-client-2025\",\n  \"client_secret\": \"super-secret-password-123\",\n  \"domain\": \"https://mi-app.regionayacucho.gob.pe\",\n  \"logo\": \"https://mi-app.regionayacucho.gob.pe/logo.png\",\n  \"description\": \"Esta es una aplicación de prueba para el sistema\",\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update",
+          "filename": "Update.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/778ad41f-39eb-4164-adfd-147c83747224",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Aplicación Actualizada\",\n  \"description\": \"Descripción actualizada de la aplicación\",\n  \"status\": \"inactive\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update partial",
+          "filename": "Update partial.bru",
+          "seq": 6,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/778ad41f-39eb-4164-adfd-147c83747224",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete soft",
+          "filename": "Delete soft.bru",
+          "seq": 7,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/778ad41f-39eb-4164-adfd-147c83747224",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Restore Delete soft",
+          "filename": "Restore Delete soft.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/778ad41f-39eb-4164-adfd-147c83747224/restore",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List Delete soft",
+          "filename": "List Delete soft.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications?page=1&page_size=10&is_deleted=true",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "is_deleted",
+                "value": "true",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Stats",
+          "filename": "Stats.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/applications/stats",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "2. Application Roles",
+      "filename": "2. Application Roles",
+      "seq": 2,
+      "examples": [],
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "2. Application Roles",
+          "seq": 2
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "List all not filter",
+          "filename": "List all not filter.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles?page=1&page_size=10",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all filter",
+          "filename": "List all filter.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles?page=1&page_size=10&application_id=e0af8703-b3b0-4103-a0f6-64336111dc82",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "application_id",
+                "value": "e0af8703-b3b0-4103-a0f6-64336111dc82",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all deleted",
+          "filename": "List all deleted.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles?page=1&page_size=10&is_deleted=true",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "is_deleted",
+                "value": "true",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List stats",
+          "filename": "List stats.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles/stats",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List app by id",
+          "filename": "List app by id.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles/416cac7b-8d7e-4e8a-bc65-bdeb0cb9eff1",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create",
+          "filename": "Create.bru",
+          "seq": 6,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"admin\",\n  \"description\": \"Administrador con acceso completo al sistema\",\n  \"application_id\": \"778ad41f-39eb-4164-adfd-147c83747224\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update",
+          "filename": "Update.bru",
+          "seq": 7,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles/058426d1-41a3-4137-83dd-aa9887051883",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"admin\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete",
+          "filename": "Delete.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles/058426d1-41a3-4137-83dd-aa9887051883",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Restore",
+          "filename": "Restore.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/application-roles/058426d1-41a3-4137-83dd-aa9887051883/restore",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "3. Modules",
+      "filename": "3. Modules",
+      "seq": 4,
+      "examples": [],
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "3. Modules",
+          "seq": 4
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "Update",
+          "filename": "Update.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"item\": \"dashboard-updated\",\n  \"name\": \"Dashboard Actualizado\",\n  \"route\": \"/dashboard/v2\",\n  \"icon\": \"new-dashboard-icon\",\n  \"sort_order\": 2,\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create",
+          "filename": "Create.bru",
+          "seq": 6,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"item\": \"dashboard\",\n  \"name\": \"Dashboard Principal\",\n  \"route\": \"/dashboard\",\n  \"icon\": \"dashboard-icon\",\n  \"application_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"parent_id\": null,\n  \"sort_order\": 1,\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete",
+          "filename": "Delete.bru",
+          "seq": 12,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Restore",
+          "filename": "Restore.bru",
+          "seq": 13,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003/restore",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List stats",
+          "filename": "List stats.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/stats",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List module by id",
+          "filename": "List module by id.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all not filter",
+          "filename": "List all not filter.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules?page=1&page_size=10",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all deleted",
+          "filename": "List all deleted.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules?page=1&page_size=10&is_deleted=true",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "is_deleted",
+                "value": "true",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all filter",
+          "filename": "List all filter.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules?page=1&page_size=10&application_id=550e8400-e29b-41d4-a716-446655440000",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "application_id",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create submodule",
+          "filename": "Create submodule.bru",
+          "seq": 7,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Reportes de Ventas\",\n  \"route\": \"/dashboard/sales-reports\",\n  \"icon\": \"report-icon\",\n  \"parent_id\": \"770e8400-e29b-41d4-a716-446655440003\",\n  \"application_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"sort_order\": 1,\n  \"status\": \"active\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update father",
+          "filename": "Update father.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"parent_id\": \"880e8400-e29b-41d4-a716-446655440004\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete father",
+          "filename": "Delete father.bru",
+          "seq": 10,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"parent_id\": \"\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update order and status",
+          "filename": "Update order and status.bru",
+          "seq": 11,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/modules/770e8400-e29b-41d4-a716-446655440003",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"sort_order\": 5,\n  \"status\": \"inactive\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "4. Module Role Permission",
+      "filename": "4. Module Role Permission",
+      "seq": 5,
+      "examples": [],
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "4. Module Role Permission",
+          "seq": 5
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "Bulk assign",
+          "filename": "Bulk assign.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/bulk-assign",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"application_role_id\": \"660e8400-e29b-41d4-a716-446655440001\",\n  \"module_ids\": [\n    \"770e8400-e29b-41d4-a716-446655440003\",\n    \"880e8400-e29b-41d4-a716-446655440004\",\n    \"990e8400-e29b-41d4-a716-446655440005\"\n  ],\n  \"permission_type\": \"read\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create",
+          "filename": "Create.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"module_id\": \"770e8400-e29b-41d4-a716-446655440003\",\n  \"application_role_id\": \"660e8400-e29b-41d4-a716-446655440001\",\n  \"permission_type\": \"read\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete",
+          "filename": "Delete.bru",
+          "seq": 11,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/990e8400-e29b-41d4-a716-446655440005",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List permission by module",
+          "filename": "List permission by module.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions?page=1&page_size=10&module_id=770e8400-e29b-41d4-a716-446655440003",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "module_id",
+                "value": "770e8400-e29b-41d4-a716-446655440003",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Restore",
+          "filename": "Restore.bru",
+          "seq": 12,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/990e8400-e29b-41d4-a716-446655440005/restore",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "json": "{\n  \"name\": \"Super Administrator\",\n  \"description\": \"Administrador con permisos especiales y acceso total\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update",
+          "filename": "Update.bru",
+          "seq": 10,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/990e8400-e29b-41d4-a716-446655440005",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"permission_type\": \"admin\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List permission by id",
+          "filename": "List permission by id.bru",
+          "seq": 7,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/990e8400-e29b-41d4-a716-446655440005",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all deleted",
+          "filename": "List all deleted.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions?page=1&page_size=10&is_deleted=true",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "is_deleted",
+                "value": "true",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List all not filter",
+          "filename": "List all not filter.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions?page=1&page_size=10",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List stats",
+          "filename": "List stats.bru",
+          "seq": 6,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions/stats",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List permission by role",
+          "filename": "List permission by role.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions?page=1&page_size=10&role_id=660e8400-e29b-41d4-a716-446655440001",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "role_id",
+                "value": "660e8400-e29b-41d4-a716-446655440001",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "List by module and role",
+          "filename": "List by module and role.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "examples": [],
+          "request": {
+            "url": "{{BASE_URL}}/api/module-role-permissions?page=1&page_size=10&module_id=770e8400-e29b-41d4-a716-446655440003&role_id=660e8400-e29b-41d4-a716-446655440001",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "module_id",
+                "value": "770e8400-e29b-41d4-a716-446655440003",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "role_id",
+                "value": "660e8400-e29b-41d4-a716-446655440001",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "tsdPVQcjUlhrBHk38JrlY",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "BASE_URL",
+          "value": "http://localhost:8080",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ACCESS_TOKEN",
+          "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0.eyJleHAiOjE3NjU1NzU5NzksImlhdCI6MTc2NTU3NTY3OSwiYXV0aF90aW1lIjoxNzY1NTc1MzUxLCJqdGkiOiJvbnJ0YWM6Y2RjMmVjMjctYWI0MS01ZmMxLTE3OGYtMjA1MzE5MGUzMjdmIiwiaXNzIjoiaHR0cHM6Ly9zc28ucmVnaW9uYXlhY3VjaG8uZ29iLnBlL3JlYWxtcy9ncmEiLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsInNnZC1kZW1vIiwiYnJva2VyIiwiYWNjb3VudCIsInNnZC1kZXYiXSwic3ViIjoiYTU0ZTk1NGQtMGM2MS00ODYxLWFiOTQtZDQ5ZWFmNTE2NjcyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY3VtLXRlc3QtZ3JhIiwic2lkIjoiOGRmZmNlYWYtMzUyYy1mZGYzLWRjOTEtNjJjZjRiZWUwZTBkIiwiYWNyIjoiMCIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMwMDAxIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWdyYSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbInZpZXctcmVhbG0iLCJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwicmVhbG0tYWRtaW4iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sInNnZC1kZW1vIjp7InJvbGVzIjpbInVtYV9wcm90ZWN0aW9uIl19LCJicm9rZXIiOnsicm9sZXMiOlsicmVhZC10b2tlbiJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsInZpZXctYXBwbGljYXRpb25zIiwidmlldy1jb25zZW50Iiwidmlldy1ncm91cHMiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsImRlbGV0ZS1hY2NvdW50IiwibWFuYWdlLWNvbnNlbnQiLCJ2aWV3LXByb2ZpbGUiXX0sInNnZC1kZXYiOnsicm9sZXMiOlsidW1hX3Byb3RlY3Rpb24iXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIEFkbWluaXN0cmFkb3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbi5ncmEiLCJnaXZlbl9uYW1lIjoiQWRtaW5pc3RyYWRvciIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYWRvciIsImVtYWlsIjoiYWRtaW5AcmVnaW9uYXlhY3VjaG8uZ29iLnBlIn0.a9_fCnOrUnKOXgeigYIu6V7IJgsRvOeOLk2TEcGTKWMz0fpvojn8JvPtnputoP0qtTCJneYMjLi1BiXETGKWtcFbUuS9dsjtoQFpW_ZZWBbfSvWkmgGdCRS7TIqTFI5H_1PE1Txi15JFYDpf8IKGuoYRmro-6Hhttwi_ZjRkEvEoVeu3kht94DvxSI-t7xUmoeQNGbxtZx_qfRxxxNKKid7SUgJE3G4UvZdFqM4sUbPozvnhrTkEnbjbeyO9nN1MO9crXC2tBZp6v04Nqx_AvW8Jn5Xwr1HAxwU3XwzZIMX4Jb-fk4iwxO4hBZl57oSoOP9kbZ_vj_3FbMfA7eR1BQ",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "Development"
+    }
+  ],
+  "brunoConfig": {
+    "version": "1",
+    "name": "Cum GRA",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0,
+    "filesCount": 0
+  }
+}
