@@ -4,16 +4,13 @@ import (
 	"strconv"
 
 	"server/internal/dto"
-	"server/internal/mapper"
-	"server/internal/services/positions"
+	services "server/internal/services/positions"
 	"server/pkg/logger"
 
 	"github.com/gofiber/fiber/v3"
-	"gorm.io/gorm"
 )
 
-func GetPositionsHandler(c fiber.Ctx) error {
-	// Parámetros (?page=1&page_size=20&is_deleted=true|false)
+func GetStructuralPositionsHandler(c fiber.Ctx) error {
 	page := 1
 	pageSize := 20
 
@@ -22,6 +19,7 @@ func GetPositionsHandler(c fiber.Ctx) error {
 			page = n
 		}
 	}
+
 	if v := c.Query("page_size"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 && n <= 200 {
 			pageSize = n
@@ -35,27 +33,19 @@ func GetPositionsHandler(c fiber.Ctx) error {
 		}
 	}
 
-	rows, total, err := services.GetPositions(page, pageSize, isDeleted)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusOK).JSON(dto.StructuralPositionsListResponse{
-				Data:     []dto.StructuralPositionItemDTO{},
-				Total:    0,
-				Page:     page,
-				PageSize: pageSize,
-			})
+	var level *int
+	if v := c.Query("level"); v != "" {
+		if l, err := strconv.Atoi(v); err == nil && l > 0 {
+			level = &l
 		}
-		logger.Log.Error("Error obteniendo cargos:", err)
+	}
+
+	result, err := services.GetStructuralPositions(page, pageSize, isDeleted, level)
+	if err != nil {
+		logger.Log.Error("Error obteniendo posiciones estructurales:", err)
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})
 	}
 
-	out := mapper.ToStructuralPositionListDTO(rows)
-	return c.Status(fiber.StatusOK).JSON(dto.StructuralPositionsListResponse{
-		Data:     out,
-		Total:    total,
-		Page:     page,
-		PageSize: pageSize,
-	})
-
+	return c.Status(fiber.StatusOK).JSON(result)
 }

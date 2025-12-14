@@ -2,35 +2,46 @@ package services
 
 import (
 	"server/internal/config"
+	"server/internal/dto"
 	"server/internal/models"
 )
 
-func GetPositionsStats() (total, active, deleted, assigned int64, err error) {
+func GetStructuralPositionsStats() (*dto.StructuralPositionsStatsResponse, error) {
 	db := config.DB
 
-	if e := db.Model(&models.StructuralPosition{}).Count(&total).Error; e != nil {
-		return 0, 0, 0, 0, e
+	var totalPositions int64
+	if err := db.Model(&models.StructuralPosition{}).
+		Count(&totalPositions).Error; err != nil {
+		return nil, err
 	}
 
-	if e := db.Model(&models.StructuralPosition{}).
-		Where("is_deleted = ? AND is_active = ?", false, true).
-		Count(&active).Error; e != nil {
-		return 0, 0, 0, 0, e
+	var activePositions int64
+	if err := db.Model(&models.StructuralPosition{}).
+		Where("is_deleted = FALSE AND is_active = TRUE").
+		Count(&activePositions).Error; err != nil {
+		return nil, err
 	}
 
-	if e := db.Model(&models.StructuralPosition{}).
-		Where("is_deleted = ?", true).
-		Count(&deleted).Error; e != nil {
-		return 0, 0, 0, 0, e
+	var deletedPositions int64
+	if err := db.Model(&models.StructuralPosition{}).
+		Where("is_deleted = TRUE").
+		Count(&deletedPositions).Error; err != nil {
+		return nil, err
 	}
 
-	if e := db.
-		Table("users u").
-		Joins("JOIN structural_positions sp ON sp.id = u.structural_position_id").
-		Where("u.is_deleted = FALSE AND sp.is_deleted = FALSE").
-		Count(&assigned).Error; e != nil {
-		return 0, 0, 0, 0, e
+	var assignedEmployees int64
+	if err := db.Table("user_details ud").
+		Joins("JOIN structural_positions sp ON sp.id = ud.structural_position_id").
+		Where("sp.is_deleted = FALSE").
+		Distinct("ud.user_id").
+		Count(&assignedEmployees).Error; err != nil {
+		return nil, err
 	}
 
-	return total, active, deleted, assigned, nil
+	return &dto.StructuralPositionsStatsResponse{
+		TotalPositions:    totalPositions,
+		ActivePositions:   activePositions,
+		DeletedPositions:  deletedPositions,
+		AssignedEmployees: assignedEmployees,
+	}, nil
 }

@@ -26,6 +26,7 @@ func ToStructuralPositionItemDTO(r models.StructuralPositionRow) dto.StructuralP
 		IsDeleted:   r.IsDeleted,
 		DeletedAt:   r.DeletedAt,
 		DeletedBy:   deletedByStr,
+		CodCarSGD:   r.CodCarSGD,
 		UsersCount:  r.UsersCount,
 	}
 }
@@ -36,4 +37,11 @@ func ToStructuralPositionListDTO(rows []models.StructuralPositionRow) []dto.Stru
 		out = append(out, ToStructuralPositionItemDTO(r))
 	}
 	return out
+}
+
+func StructuralPositionToRow(pos models.StructuralPosition, usersCount int64) models.StructuralPositionRow {
+	return models.StructuralPositionRow{
+		StructuralPosition: pos,
+		UsersCount:         usersCount,
+	}
 }
