@@ -2,15 +2,16 @@ export type OrganicUnitItemDTO = {
   id: string;
   name: string;
   acronym: string;
-  brand?: string;
-  description?: string;
-  parent_id?: string;
+  brand?: string | null;
+  description?: string | null;
+  parent_id?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
   is_deleted: boolean;
-  deleted_at?: string;
-  deleted_by?: string;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  cod_dep_sgd?: string | null;
   users_count: number;
 };
 
