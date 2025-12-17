@@ -159,7 +159,7 @@ export default function OrganicUnitsContent() {
             <Download className="mr-2 w-4 h-4" />
             Exportar
           </Button>
-          <Button className="bg-gradient-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
+          <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
             Nueva Unidad
           </Button>
