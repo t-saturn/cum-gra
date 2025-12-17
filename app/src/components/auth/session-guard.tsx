@@ -4,11 +4,16 @@ import { useSession, signIn } from 'next-auth/react';
 import { useEffect } from 'react';
 
 const SessionGuard = ({ children }: { children: React.ReactNode }) => {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (session?.error === 'RefreshAccessTokenError') {
+      signIn('keycloak', { callbackUrl: '/dashboard' });
+    }
+  }, [session]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      // dispara login Keycloak
       signIn('keycloak', { callbackUrl: '/dashboard' });
     }
   }, [status]);
