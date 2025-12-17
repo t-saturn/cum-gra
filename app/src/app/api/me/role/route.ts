@@ -27,12 +27,12 @@ type CumRoleResponse = {
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const API_CUM_URL = process.env.API_CUM_URL;
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export async function GET(req: NextRequest) {
   try {
-    if (!API_CUM_URL) {
-      return NextResponse.json({ error: 'API_CUM_URL no está configurado en variables de entorno' }, { status: 500 });
+    if (!API_BASE_URL) {
+      return NextResponse.json({ error: 'API_BASE_URL no está configurado en variables de entorno' }, { status: 500 });
     }
 
     // 1 sesión NextAuth (Keycloak)
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     if (!clientId) return NextResponse.json({ error: 'Falta el parámetro client_id' }, { status: 400 });
 
     // 3 llamada directa a CUM
-    const res = await fetch(`${API_CUM_URL}/auth/role`, {
+    const res = await fetch(`${API_BASE_URL}/auth/role`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
