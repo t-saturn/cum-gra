@@ -22,3 +22,20 @@ export interface UbigeosStatsResponse {
   total_provinces: number;
   total_districts: number;
 }
+
+export interface DepartmentItem {
+  name: string;
+}
+
+export interface ProvinceItem {
+  name: string;
+  department: string;
+}
+
+export interface DistrictItem {
+  id: string;
+  name: string;
+  department: string;
+  province: string;
+  ubigeo_code: string;
+}

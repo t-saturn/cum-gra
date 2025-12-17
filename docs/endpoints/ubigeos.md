@@ -1,5 +1,3 @@
-Aquí tienes los ejemplos para Bruno AI:
-
 **1. GET - Listar Ubigeos (sin filtros)**
 ```http
 GET http://localhost:8080/api/ubigeos?page=1&page_size=10
