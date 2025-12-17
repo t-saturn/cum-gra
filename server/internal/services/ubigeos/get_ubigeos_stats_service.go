@@ -23,21 +23,21 @@ func GetUbigeosStats() (*dto.UbigeoStatsResponse, error) {
 	}
 
 	var totalProvinces int64
-	if err := db.Model(&models.Ubigeo{}).
-		Distinct("department", "province").
+	if err := db.
+		Table("(SELECT DISTINCT department, province FROM ubigeos) as p").
 		Count(&totalProvinces).Error; err != nil {
 		return nil, err
 	}
 
 	var totalDistricts int64
-	if err := db.Model(&models.Ubigeo{}).
-		Distinct("department", "province", "district").
+	if err := db.
+		Table("(SELECT DISTINCT department, province, district FROM ubigeos) as d").
 		Count(&totalDistricts).Error; err != nil {
 		return nil, err
 	}
 
 	return &dto.UbigeoStatsResponse{
-		TotalUbigeos:     totalUbigeos,
+		TotalUbigeos:      totalUbigeos,
 		TotalDepartments: totalDepartments,
 		TotalProvinces:   totalProvinces,
 		TotalDistricts:   totalDistricts,
