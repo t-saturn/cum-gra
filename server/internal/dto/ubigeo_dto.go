@@ -37,8 +37,26 @@ type UpdateUbigeoRequest struct {
 }
 
 type UbigeoStatsResponse struct {
-	TotalUbigeos   int64 `json:"total_ubigeos"`
+	TotalUbigeos     int64 `json:"total_ubigeos"`
 	TotalDepartments int64 `json:"total_departments"`
 	TotalProvinces   int64 `json:"total_provinces"`
 	TotalDistricts   int64 `json:"total_districts"`
+}
+
+// Nuevos DTOs para selects
+type DepartmentDTO struct {
+	Name string `json:"name"`
+}
+
+type ProvinceDTO struct {
+	Name       string `json:"name"`
+	Department string `json:"department"`
+}
+
+type DistrictDTO struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Province   string `json:"province"`
+	Department string `json:"department"`
+	UbigeoCode string `json:"ubigeo_code"`
 }

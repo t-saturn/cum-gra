@@ -17,6 +17,12 @@ func RegisterUbigeosRoutes(router fiber.Router) {
 	protected := app.Group("")
 	protected.Use(middlewares.RequireResourceRole("realm-management", "manage-users"))
 	
+	// Endpoints para selects (sin paginación)
+	protected.Get("/departments", handlers.GetDepartmentsHandler)
+	protected.Get("/provinces", handlers.GetProvincesByDepartmentHandler)
+	protected.Get("/districts", handlers.GetDistrictsByProvinceHandler)
+	
+	// Endpoints CRUD regulares
 	protected.Get("/", handlers.GetUbigeosHandler)
 	protected.Get("/stats", handlers.GetUbigeosStatsHandler)
 	protected.Get("/:id", handlers.GetUbigeoByIDHandler)

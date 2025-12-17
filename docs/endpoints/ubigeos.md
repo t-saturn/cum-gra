@@ -278,3 +278,228 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 **Uso típico:**
 Los ubigeos se utilizan para:
 - Registro de direcciones de usuarios
+
+
+**Nuevos Endpoints para Selects:**
+
+**1. GET - Lista de Departamentos (para select)**
+```http
+GET http://localhost:8080/api/ubigeos/departments
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**2. GET - Lista de Provincias de Ayacucho**
+```http
+GET http://localhost:8080/api/ubigeos/provinces?department=Ayacucho
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**3. GET - Lista de Provincias de Lima**
+```http
+GET http://localhost:8080/api/ubigeos/provinces?department=Lima
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**4. GET - Lista de Distritos de Huamanga (Ayacucho)**
+```http
+GET http://localhost:8080/api/ubigeos/districts?department=Ayacucho&province=Huamanga
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**5. GET - Lista de Distritos de Lima (Lima)**
+```http
+GET http://localhost:8080/api/ubigeos/districts?department=Lima&province=Lima
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**GET /api/ubigeos/departments (200 OK):**
+```json
+[
+  {
+    "name": "Amazonas"
+  },
+  {
+    "name": "Áncash"
+  },
+  {
+    "name": "Apurímac"
+  },
+  {
+    "name": "Arequipa"
+  },
+  {
+    "name": "Ayacucho"
+  },
+  {
+    "name": "Cajamarca"
+  },
+  {
+    "name": "Callao"
+  },
+  {
+    "name": "Cusco"
+  },
+  {
+    "name": "Huancavelica"
+  },
+  {
+    "name": "Huánuco"
+  },
+  {
+    "name": "Ica"
+  },
+  {
+    "name": "Junín"
+  },
+  {
+    "name": "La Libertad"
+  },
+  {
+    "name": "Lambayeque"
+  },
+  {
+    "name": "Lima"
+  },
+  {
+    "name": "Loreto"
+  },
+  {
+    "name": "Madre de Dios"
+  },
+  {
+    "name": "Moquegua"
+  },
+  {
+    "name": "Pasco"
+  },
+  {
+    "name": "Piura"
+  },
+  {
+    "name": "Puno"
+  },
+  {
+    "name": "San Martín"
+  },
+  {
+    "name": "Tacna"
+  },
+  {
+    "name": "Tumbes"
+  },
+  {
+    "name": "Ucayali"
+  }
+]
+```
+
+**GET /api/ubigeos/provinces?department=Ayacucho (200 OK):**
+```json
+[
+  {
+    "name": "Cangallo",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Huamanga",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Huanca Sancos",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Huanta",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "La Mar",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Lucanas",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Parinacochas",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Páucar del Sara Sara",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Sucre",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Víctor Fajardo",
+    "department": "Ayacucho"
+  },
+  {
+    "name": "Vilcas Huamán",
+    "department": "Ayacucho"
+  }
+]
+```
+
+**GET /api/ubigeos/districts?department=Ayacucho&province=Huamanga (200 OK):**
+```json
+[
+  {
+    "id": "1",
+    "name": "Ayacucho",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050101"
+  },
+  {
+    "id": "2",
+    "name": "Acocro",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050102"
+  },
+  {
+    "id": "3",
+    "name": "Acos Vinchos",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050103"
+  },
+  {
+    "id": "4",
+    "name": "Carmen Alto",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050104"
+  },
+  {
+    "id": "5",
+    "name": "Chiara",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050105"
+  },
+  {
+    "id": "6",
+    "name": "Jesús Nazareno",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050113"
+  },
+  {
+    "id": "7",
+    "name": "San Juan Bautista",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050114"
+  },
+  {
+    "id": "8",
+    "name": "Santiago de Pischa",
+    "province": "Huamanga",
+    "department": "Ayacucho",
+    "ubigeo_code": "050115"
+  }
+]
