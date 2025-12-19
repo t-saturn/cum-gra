@@ -215,7 +215,6 @@ export default function StructuralPositionsContent() {
                 <TableRow className="bg-accent/50">
                   <TableHead>Posición</TableHead>
                   <TableHead>Código</TableHead>
-                  <TableHead>Nivel</TableHead>
                   <TableHead>Empleados</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
@@ -249,7 +248,6 @@ export default function StructuralPositionsContent() {
                       <TableCell>
                         <code className="text-xs bg-muted px-2 py-1 rounded">{p.code}</code>
                       </TableCell>
-                      <TableCell>{getLevelBadge(p.level)}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-chart-2" />
