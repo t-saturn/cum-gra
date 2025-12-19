@@ -1,59 +1,101 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, UsersRound, UserRoundCheck, UserRoundX, UserRoundPlus } from 'lucide-react';
-import { UsersStatsResponse } from '@/types/users';
-import { getUsersStats } from '@/actions/users/fn_get_user_stats';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, UserCheck, UserX, UserPlus } from 'lucide-react';
+import { fn_get_user_stats } from '@/actions/users/fn_get_user_stats';
+import type { UsersStatsResponse } from '@/types/users';
 
-const cards = [
-  { key: 'total_users', title: 'Total de Usuarios', icon: UsersRound, color: 'text-primary' },
-  { key: 'active_users', title: 'Activos', icon: UserRoundCheck, color: 'text-green-600' },
-  { key: 'suspended_users', title: 'Suspendidos', icon: UserRoundX, color: 'text-yellow-600' },
-  { key: 'new_users_last_month', title: 'Nuevos (último mes)', icon: UserRoundPlus, color: 'text-blue-600' },
-] as const;
-
-export const UsersStatsCards: React.FC = () => {
-  const [stats, setStats] = useState<UsersStatsResponse | null>(null);
+export function UsersStatsCards() {
+  const [stats, setStats] = useState<UsersStatsResponse>({
+    total_users: 0,
+    active_users: 0,
+    suspended_users: 0,
+    new_users_last_month: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const loadStats = async () => {
       try {
-        const data = await getUsersStats();
+        const data = await fn_get_user_stats();
         setStats(data);
-      } catch (err) {
-        console.error('Error al obtener estadísticas:', err);
+      } catch (error) {
+        console.error('Error loading users stats:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    loadStats();
   }, []);
+
+  const cards = [
+    {
+      title: 'Total Usuarios',
+      value: stats.total_users,
+      icon: Users,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
+    },
+    {
+      title: 'Usuarios Activos',
+      value: stats.active_users,
+      icon: UserCheck,
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10',
+    },
+    {
+      title: 'Usuarios Suspendidos',
+      value: stats.suspended_users,
+      icon: UserX,
+      color: 'text-red-500',
+      bgColor: 'bg-red-500/10',
+    },
+    {
+      title: 'Nuevos (Último Mes)',
+      value: stats.new_users_last_month,
+      icon: UserPlus,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+    },
+  ];
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="h-4 w-24 bg-muted rounded" />
+              <div className="h-8 w-8 bg-muted rounded" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-muted rounded" />
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
 
-  if (!stats) return <div className="py-12 text-muted-foreground text-center">No se pudieron cargar las estadísticas de usuarios.</div>;
-
   return (
-    <div className="gap-4 grid sm:grid-cols-2 lg:grid-cols-4">
-      {cards.map(({ key, title, icon: Icon, color }) => (
-        <Card key={key} className="bg-card/60 shadow-sm hover:shadow-md backdrop-blur-xl border-border transition-shadow">
-          <CardHeader className="flex flex-row justify-between items-center space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">{title}</CardTitle>
-            <Icon className={`w-5 h-5 ${color}`} />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats[key as keyof UsersStatsResponse]}</div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <Card key={card.title}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+              <div className={`${card.bgColor} p-2 rounded-lg`}>
+                <Icon className={`h-4 w-4 ${card.color}`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value.toLocaleString()}</div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
-};
+}

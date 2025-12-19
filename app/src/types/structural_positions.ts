@@ -10,6 +10,7 @@ export interface StructuralPositionItem {
   is_deleted: boolean;
   deleted_at?: string | null;
   deleted_by?: string | null;
+  cod_car_sgd?: string | null;
   users_count: number;
 }
 

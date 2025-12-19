@@ -1,24 +1,34 @@
 'use server';
 
-import { UsersStatsResponse } from '@/types/users';
-import { revalidateTag } from 'next/cache';
+import { auth } from '@/lib/auth';
+import type { UsersStatsResponse } from '@/types/users';
 
-const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:9191';
+const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:8080';
 
-export async function getUsersStats(): Promise<UsersStatsResponse> {
+export const fn_get_user_stats = async (): Promise<UsersStatsResponse> => {
   try {
-    const res = await fetch(`${API_BASE_URL}/users/stats`, {
+    const session = await auth();
+    if (!session?.accessToken) {
+      throw new Error('No hay sesión activa');
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/users/stats`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store', // o 'force-cache' si quieres caching
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      cache: 'no-store',
     });
 
-    if (!res.ok) throw new Error(`Error al obtener estadísticas de usuarios: ${res.statusText}`);
+    if (!res.ok) {
+      throw new Error(`Error al obtener estadísticas de usuarios: ${res.statusText}`);
+    }
 
-    const data = (await res.json()) as UsersStatsResponse;
+    const data: UsersStatsResponse = await res.json();
     return data;
-  } catch (error) {
-    console.error('Error al llamar al endpoint /users/stats:', error);
-    throw error;
+  } catch (err) {
+    console.error('Error en fn_get_user_stats:', err);
+    throw err;
   }
-}
+};

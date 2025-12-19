@@ -24,6 +24,10 @@ func main() {
 		logger.Log.Fatalf("Error al inicializar el validador: %v", err)
 	}
 
+	if err := middlewares.InitKeycloakMiddleware(); err != nil {
+		logger.Log.Fatalf("Error al inicializar Keycloak middleware: %v", err)
+	}
+
 	app := fiber.New()
 
 	app.Use(middlewares.CORSMiddleware())

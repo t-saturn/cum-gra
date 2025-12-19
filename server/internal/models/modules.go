@@ -15,16 +15,14 @@ type Module struct {
 	ParentID      *uuid.UUID `gorm:"type:uuid" json:"parent_id"`
 	ApplicationID *uuid.UUID `gorm:"type:uuid" json:"application_id"`
 	SortOrder     int        `gorm:"default:0" json:"sort_order"`
-	Status        string     `gorm:"type:module_status_enum;default:'active'" json:"status"`
+	Status        string     `gorm:"type:varchar(20);default:'active'" json:"status"`
 	CreatedAt     time.Time  `gorm:"default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `gorm:"default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `json:"deleted_at"`
 	DeletedBy     *uuid.UUID `gorm:"type:uuid" json:"deleted_by"`
 
-	Parent                 *Module                 `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
-	Children               []Module                `gorm:"foreignKey:ParentID" json:"children,omitempty"`
-	Application            *Application            `gorm:"foreignKey:ApplicationID" json:"application,omitempty"`
-	DeletedByUser          *User                   `gorm:"foreignKey:DeletedBy" json:"deleted_by_user,omitempty"`
-	ModuleRolePermissions  []ModuleRolePermission  `gorm:"foreignKey:ModuleID" json:"module_role_permissions,omitempty"`
-	UserModuleRestrictions []UserModuleRestriction `gorm:"foreignKey:ModuleID" json:"user_module_restrictions,omitempty"`
+	// Relaciones (NO crean columnas nuevas, solo usan ParentID)
+	Application *Application `gorm:"foreignKey:ApplicationID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"application,omitempty"`
+	Parent      *Module      `gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"parent,omitempty"`
+	Children    []Module     `gorm:"foreignKey:ParentID;references:ID" json:"children,omitempty"`
 }

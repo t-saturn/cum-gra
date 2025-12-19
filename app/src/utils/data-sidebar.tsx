@@ -15,6 +15,7 @@ import {
   ScrollText,
   ShieldCheck,
   UserCog,
+  Map
 } from 'lucide-react';
 
 export const baseMenus: SidebarMenuGroup[] = [
@@ -49,6 +50,11 @@ export const baseMenus: SidebarMenuGroup[] = [
             icon: Hexagon,
             url: '/dashboard/organic-units',
           },
+          {
+            label: 'Ubigeos',
+            icon: Map,
+            url: '/dashboard/ubigeos',
+          }
         ],
       },
       {

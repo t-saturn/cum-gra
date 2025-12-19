@@ -16,11 +16,15 @@ func main() {
 	config.LoadConfig()
 	config.ConnectDB()
 
-	logger.Log.Info("executing seeders")
-
-	if err := seeds.Run(); err != nil {
-		logger.Log.Fatalf("error when runing seeders: %v", err)
+	if config.DB == nil {
+		logger.Log.Fatal("La conexión a la base de datos es nil")
 	}
 
-	logger.Log.Info("seeders executed correctly")
+	logger.Log.Info("Ejecutando seeders...")
+
+	if err := seeds.Run(config.DB); err != nil {
+		logger.Log.Fatalf("Error al ejecutar los seeders: %v", err)
+	}
+
+	logger.Log.Info("Seeders ejecutados correctamente")
 }

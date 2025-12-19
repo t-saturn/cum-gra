@@ -1,0 +1,56 @@
+# Roles para intranet-app
+- name: "default"
+  description: "Rol por defecto para usuarios de la Intranet."
+  application_client_id: "intranet-app"
+
+# Roles para central user manager (cum)
+- name: "default"
+  description: "Rol por defecto para usuarios del Central User Manager."
+  application_client_id: "cum-app"
+
+- name: "admin"
+  description: "Rol administrativo con permisos avanzados en Central User Manager."
+  application_client_id: "cum-app"
+
+# Roles para resoluciones
+- name: "default"
+  description: "Rol básico para acceso a la aplicación de resoluciones."
+  application_client_id: "res-app"
+
+- name: "designer"
+  description: "Rol encargado del diseño y preparación de resoluciones."
+  application_client_id: "res-app"
+
+- name: "approval"
+  description: "Rol responsable de la revisión y aprobación de resoluciones."
+  application_client_id: "res-app"
+
+- name: "sign"
+  description: "Rol autorizado para la firma de resoluciones."
+  application_client_id: "res-app"
+
+- name: "citizen"
+  description: "Rol orientado a consulta y seguimiento por parte de ciudadanos."
+  application_client_id: "res-app"
+
+- name: "admin"
+  description: "Rol administrativo con control total sobre resoluciones."
+  application_client_id: "res-app"
+
+# Roles para certificados
+- name: "default"
+  description: "Rol básico para acceso a la aplicación de certificados."
+  application_client_id: "cert-app"
+
+- name: "admin"
+  description: "Rol administrativo para gestión de certificados."
+  application_client_id: "cert-app"
+
+- name: "super-admin"
+  description: "Rol con control total y configuración avanzada en certificados."
+  application_client_id: "cert-app"
+
+# Roles para viaticos
+- name: "default"
+  description: "Rol básico para acceso a la aplicación de viáticos."
+  application_client_id: "viaticos-app"

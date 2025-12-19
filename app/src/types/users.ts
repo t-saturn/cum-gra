@@ -1,36 +1,48 @@
-export interface SimpleStructuralPosition {
-  id: string;
-  name: string;
-  code: string;
-  level?: number;
-}
-
-export interface SimpleOrganicUnit {
-  id: string;
-  name: string;
-  acronym: string;
-  parent_id?: string;
-}
-
-export interface UserListItem {
+export interface UserItem {
   id: string;
   email: string;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
   dni: string;
-  status: string;
+  first_name: string;
+  last_name: string;
+  phone?: string | null;
+  status: 'active' | 'suspended' | 'inactive';
+  cod_emp_sgd?: string | null;
+  structural_position_id?: string | null;
+  organic_unit_id?: string | null;
+  ubigeo_id?: string | null;
   created_at: string;
   updated_at: string;
   is_deleted: boolean;
-  deleted_at?: string;
-  deleted_by?: string;
-  organic_unit?: SimpleOrganicUnit;
-  structural_position?: SimpleStructuralPosition;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  keycloak_id?: string | null; // Para sincronización
+  
+  // Relaciones expandidas
+  structural_position?: {
+    id: string;
+    name: string;
+    code: string;
+    level?: number | null;
+  } | null;
+  
+  organic_unit?: {
+    id: string;
+    name: string;
+    acronym: string;
+    parent_id?: string | null;
+  } | null;
+  
+  ubigeo?: {
+    id: string;
+    ubigeo_code: string;
+    department: string;
+    province: string;
+    district: string;
+  } | null;
 }
 
 export interface UsersListResponse {
-  data: UserListItem[];
+  data: UserItem[];
   total: number;
   page: number;
   page_size: number;

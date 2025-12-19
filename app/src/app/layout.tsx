@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import AuthProvider from '@/providers/auth';
 import { auth } from '@/lib/auth';
+import { Toaster } from '@/components/ui/sonner';
+import { Providers } from '@/providers/auth';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,12 +22,12 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>) => {
-  const session = await auth();
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <AuthProvider session={session}>{children}</AuthProvider>
+          <Providers>{children}</Providers>
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>

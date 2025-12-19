@@ -71,31 +71,15 @@ clean:
 # MIGRACIONES / SEEDS / BACKUP
 migrate-up:
 	@echo "Ejecutando migración UP..."
-	@$(MIGRATE_CMD) -cmd=up -path=internal/database/migrations
+	@$(MIGRATE_CMD) -cmd=up
 
 migrate-down:
 	@echo "Revirtiendo migración DOWN..."
-	@$(MIGRATE_CMD) -cmd=down -path=internal/database/migrations
-
-reset-data:
-	@echo "Vaciando datos de todas las tablas..."
-	@psql $(DB_URL) -f internal/database/clean/reset_data.sql
+	@$(MIGRATE_CMD) -cmd=down
 
 migrate-reset:
 	@echo "Ejecutando limpieza de datos (RESET)..."
-	@$(MIGRATE_CMD) -cmd=reset -path=internal/database/migrations
-
-migrate-force:
-	@echo "Forzando migración a versión $(VERSION)..."
-	@$(MIGRATE_CMD) -cmd=force -version=$(VERSION) -path=internal/database/migrations
-
-migrate-version:
-	@echo "Mostrando versión actual de migraciones..."
-	@$(MIGRATE_CMD) -cmd=version -path=internal/database/migrations
-
-migrate-drop:
-	@echo "Eliminando todas las tablas migradas..."
-	@$(MIGRATE_CMD) -cmd=drop -path=internal/database/migrations
+	@$(MIGRATE_CMD) -cmd=reset
 
 seed:
 	@echo "Ejecutando seeds..."

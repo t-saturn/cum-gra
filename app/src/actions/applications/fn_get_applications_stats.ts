@@ -1,18 +1,29 @@
 'use server';
 
-import { ApplicationsStatsResponse } from '@/types/applications';
+import { auth } from '@/lib/auth';
+import type { ApplicationsStatsResponse } from '@/types/applications';
 
-const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:9191';
+const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:8000';
 
 export const fn_get_applications_stats = async (): Promise<ApplicationsStatsResponse> => {
   try {
-    const res = await fetch(`${API_BASE_URL}/applications/stats`, {
+    const session = await auth();
+    if (!session?.accessToken) {
+      throw new Error('No hay sesión activa');
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/stats`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.accessToken}`,
+      },
       cache: 'no-store',
     });
 
-    if (!res.ok) throw new Error(`Error al obtener estadísticas de aplicaciones: ${res.statusText}`);
+    if (!res.ok) {
+      throw new Error(`Error al obtener estadísticas: ${res.statusText}`);
+    }
 
     const data: ApplicationsStatsResponse = await res.json();
     return data;

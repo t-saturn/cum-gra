@@ -1,86 +1,89 @@
 package seeds
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
+	"server/internal/models"
+
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-
-	"server/internal/config"
-	"server/internal/models"
+	"gopkg.in/yaml.v3"
+	"gorm.io/gorm"
 )
 
 type SeedApplicationRole struct {
-	Name                string  `json:"name"`
-	Description         *string `json:"description"`
-	ApplicationClientID string  `json:"application_client_id"` // preferido para resolver la app
-	ApplicationName     string  `json:"application_name"`      // fallback si no hay client_id
+	Name                string  `yaml:"name"`
+	Description         *string `yaml:"description"`
+	ApplicationClientID string  `yaml:"application_client_id"`
 }
 
-func SeedApplicationRoles() error {
+func SeedApplicationRoles(db *gorm.DB) error {
 	logrus.Info("----------------------------------------------------------------------------------------------")
-	logrus.Info("Seeding application_roles desde JSON...")
+	logrus.Info("Seeding application_roles desde YAML...")
 	logrus.Info("----------------------------------------------------------------------------------------------")
 
-	f, err := os.Open("internal/data/application_roles.json")
+	filePath := "internal/database/seeds/data/application_roles.yml"
+
+	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return fmt.Errorf("no se pudo abrir internal/data/application_roles.json: %w", err)
+		return fmt.Errorf("no se pudo leer %s: %w", filePath, err)
 	}
-	defer func() {
-		if cerr := f.Close(); cerr != nil {
-			fmt.Fprintf(os.Stderr, "error al cerrar archivo: %v\n", cerr)
-		}
-	}()
 
 	var input []SeedApplicationRole
-	if err := json.NewDecoder(f).Decode(&input); err != nil {
-		return fmt.Errorf("error al decodificar JSON de roles: %w", err)
+	if err := yaml.Unmarshal(data, &input); err != nil {
+		return fmt.Errorf("error al decodificar YAML de roles: %w", err)
 	}
 
 	for _, r := range input {
+		if strings.TrimSpace(r.ApplicationClientID) == "" {
+			logrus.Warnf("SeedApplicationRole sin application_client_id, se omite: role='%s'", r.Name)
+			continue
+		}
+
+		// Buscar la aplicación por client_id
 		var app models.Application
-		var qErr error
-
-		if strings.TrimSpace(r.ApplicationClientID) != "" {
-			qErr = config.DB.
-				Where("client_id = ?", r.ApplicationClientID).
-				First(&app).Error
-		} else {
-			qErr = config.DB.
-				Where("LOWER(name) = LOWER(?)", r.ApplicationName).
-				First(&app).Error
-		}
-		if qErr != nil {
-			return fmt.Errorf("no se encontró la aplicación (client_id='%s', name='%s'): %w",
-				r.ApplicationClientID, r.ApplicationName, qErr)
+		if err := db.
+			Where("client_id = ?", r.ApplicationClientID).
+			First(&app).Error; err != nil {
+			return fmt.Errorf("no se encontró Application con client_id='%s' para role='%s': %w",
+				r.ApplicationClientID, r.Name, err)
 		}
 
+		// Verificar si el rol ya existe para esa aplicación
 		var count int64
-		if err := config.DB.Model(&models.ApplicationRole{}).
+		if err := db.Model(&models.ApplicationRole{}).
 			Where("LOWER(name) = LOWER(?) AND application_id = ?", r.Name, app.ID).
 			Count(&count).Error; err != nil {
 			return fmt.Errorf("error verificando duplicados para role '%s' en app '%s': %w",
 				r.Name, app.Name, err)
 		}
+
+		// Normalizar descripción
 		var desc *string
 		if r.Description != nil && strings.TrimSpace(*r.Description) != "" {
-			desc = r.Description
+			d := strings.TrimSpace(*r.Description)
+			desc = &d
 		}
 
+		// Si ya existe y hay descripción nueva, actualizamos
 		if count > 0 && desc != nil {
-			if err := config.DB.Model(&models.ApplicationRole{}).
+			if err := db.Model(&models.ApplicationRole{}).
 				Where("LOWER(name) = LOWER(?) AND application_id = ?", r.Name, app.ID).
-				Updates(map[string]any{"description": desc, "updated_at": time.Now()}).Error; err != nil {
-				return fmt.Errorf("error actualizando descripción de role '%s' app '%s': %w", r.Name, app.Name, err)
+				Updates(map[string]any{
+					"description": desc,
+					"updated_at":  time.Now(),
+				}).Error; err != nil {
+				return fmt.Errorf("error actualizando descripción de role '%s' app '%s': %w",
+					r.Name, app.Name, err)
 			}
 			logrus.Infof("ApplicationRole actualizado: role='%s' app='%s'", r.Name, app.Name)
 			continue
 		}
 
+		// Crear nuevo rol
 		role := models.ApplicationRole{
 			ID:            uuid.New(),
 			Name:          r.Name,
@@ -91,7 +94,7 @@ func SeedApplicationRoles() error {
 			IsDeleted:     false,
 		}
 
-		if err := config.DB.Create(&role).Error; err != nil {
+		if err := db.Create(&role).Error; err != nil {
 			return fmt.Errorf("error al insertar role '%s' en app '%s': %w", r.Name, app.Name, err)
 		}
 

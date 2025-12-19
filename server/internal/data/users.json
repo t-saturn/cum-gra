@@ -32,5 +32,74 @@
       "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e",
       "b3c4d5a6-7f8e-4a20-a623-2d4e5a3f7c9e"
     ]
+  },
+
+  {
+    "id": "e6779431-8783-4bc8-ab97-07d2e0bb2c12",
+    "email": "res.proyectista@regionayacucho.gob.pe",
+    "password": "10101010",
+    "first_name": "user test",
+    "last_name": "user test",
+    "phone": "+51 90000011",
+    "dni": "70000011",
+    "status": "active",
+    "structural_position_id": null,
+    "organic_unit_id": null,
+    "user_application_role_ids": ["2b5f9d33-9e2a-4d7b-a120-8a9dd7c1e211"]
+  },
+  {
+    "id": "91f8360c-7f5f-4bde-a149-2a7aff766d4a",
+    "email": "res.approval@regionayacucho.gob.pe",
+    "password": "10101010",
+    "first_name": "user test",
+    "last_name": "user test",
+    "phone": "+51 900000012",
+    "dni": "70000012",
+    "status": "active",
+    "structural_position_id": null,
+    "organic_unit_id": null,
+    "user_application_role_ids": ["4d7e2f55-1c2b-4f99-8d7a-55a0d91fb333"]
+  },
+  {
+    "id": "032a0a16-c67f-49b0-8781-cebd4c8e45f8",
+    "email": "res.sign@regionayacucho.gob.pe",
+    "password": "10101010",
+    "first_name": "user test",
+    "last_name": "user test",
+    "phone": "+51 900000013",
+    "dni": "70000013",
+    "status": "active",
+    "structural_position_id": null,
+    "organic_unit_id": null,
+    "user_application_role_ids": ["5e8f3066-5bb7-4a24-9a2f-2b991c64c444"]
+  },
+  {
+    "id": "5b4802e1-3a8e-4ba6-b274-8ff2367c1288",
+    "email": "test.citizen@regionayacucho.gob.pe",
+    "password": "10101010",
+    "first_name": "user test",
+    "last_name": "user test",
+    "phone": "+51 900000014",
+    "dni": "70000014",
+    "status": "active",
+    "structural_position_id": null,
+    "organic_unit_id": null,
+    "user_application_role_ids": [
+      "7a115288-3e21-4db9-9f13-0e8c3a2ee666",
+      "a2b3c4d5-6e7f-4a20-a623-2d4e5a3f7c9e"
+    ]
+  },
+  {
+    "id": "584211ff-6e2a-4e59-a3bf-6738535ab5e0",
+    "email": "test@regionayacucho.gob.pe",
+    "password": "10101010",
+    "first_name": "user test",
+    "last_name": "user test",
+    "phone": "+51 900000015",
+    "dni": "70000015",
+    "status": "active",
+    "structural_position_id": null,
+    "organic_unit_id": null,
+    "user_application_role_ids": ["9c3374aa-2d9a-4b9e-9f4b-1b5c2f1a0888"]
   }
 ]

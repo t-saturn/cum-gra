@@ -36,28 +36,92 @@ func ToSimpleOrganicUnitDTO(ou *models.OrganicUnit) *dto.SimpleOrganicUnitDTO {
 	}
 }
 
-func ToUserListItemDTO(u models.User) dto.UserListItemDTO {
+func ToSimpleUbigeoDTO(ub *models.Ubigeo) *dto.SimpleUbigeoDTO {
+	if ub == nil {
+		return nil
+	}
+	return &dto.SimpleUbigeoDTO{
+		ID:         fmt.Sprint(ub.ID),
+		UbigeoCode: ub.UbigeoCode,
+		Department: ub.Department,
+		Province:   ub.Province,
+		District:   ub.District,
+	}
+}
+
+func ToUserListItemDTO(u models.User, detail *models.UserDetail) dto.UserListItemDTO {
 	var deletedBy *string
 	if u.DeletedBy != nil {
 		s := fmt.Sprint(*u.DeletedBy)
 		deletedBy = &s
 	}
-	return dto.UserListItemDTO{
+
+	result := dto.UserListItemDTO{
 		ID:        fmt.Sprint(u.ID),
 		Email:     u.Email,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
-		Phone:     u.Phone,
 		DNI:       u.DNI,
 		Status:    u.Status,
-
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 		IsDeleted: u.IsDeleted,
 		DeletedAt: u.DeletedAt,
 		DeletedBy: deletedBy,
-
-		OrganicUnit:        ToSimpleOrganicUnitDTO(u.OrganicUnit),
-		StructuralPosition: ToSimpleStructuralPositionDTO(u.StructuralPosition),
 	}
+
+	if detail != nil {
+		result.FirstName = detail.FirstName
+		result.LastName = detail.LastName
+		result.Phone = detail.Phone
+		result.StructuralPosition = ToSimpleStructuralPositionDTO(detail.StructuralPosition)
+		result.OrganicUnit = ToSimpleOrganicUnitDTO(detail.OrganicUnit)
+		result.Ubigeo = ToSimpleUbigeoDTO(detail.Ubigeo)
+	}
+
+	return result
+}
+
+func ToUserDetailDTO(u models.User, detail *models.UserDetail) dto.UserDetailDTO {
+	var deletedBy *string
+	if u.DeletedBy != nil {
+		s := fmt.Sprint(*u.DeletedBy)
+		deletedBy = &s
+	}
+
+	result := dto.UserDetailDTO{
+		ID:        fmt.Sprint(u.ID),
+		Email:     u.Email,
+		DNI:       u.DNI,
+		Status:    u.Status,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
+		IsDeleted: u.IsDeleted,
+		DeletedAt: u.DeletedAt,
+		DeletedBy: deletedBy,
+	}
+
+	if detail != nil {
+		result.FirstName = detail.FirstName
+		result.LastName = detail.LastName
+		result.Phone = detail.Phone
+		result.CodEmpSGD = detail.CodEmpSGD
+
+		if detail.StructuralPositionID != nil {
+			s := fmt.Sprint(*detail.StructuralPositionID)
+			result.StructuralPositionID = &s
+		}
+		if detail.OrganicUnitID != nil {
+			s := fmt.Sprint(*detail.OrganicUnitID)
+			result.OrganicUnitID = &s
+		}
+		if detail.UbigeoID != nil {
+			s := fmt.Sprint(*detail.UbigeoID)
+			result.UbigeoID = &s
+		}
+
+		result.StructuralPosition = ToSimpleStructuralPositionDTO(detail.StructuralPosition)
+		result.OrganicUnit = ToSimpleOrganicUnitDTO(detail.OrganicUnit)
+		result.Ubigeo = ToSimpleUbigeoDTO(detail.Ubigeo)
+	}
+
+	return result
 }
