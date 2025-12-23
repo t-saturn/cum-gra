@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, Legend } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
@@ -16,6 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { fn_get_users_growth } from '@/actions/users/fn_get_users_growth';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 const chartConfig = {
   total: {
@@ -35,30 +37,28 @@ const chartConfig = {
 export function UsersGrowthChart() {
   const [timeRange, setTimeRange] = useState('90d');
   const [chartData, setChartData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Generar datos simulados basados en el rango de tiempo
-    const generateData = () => {
-      const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const data = [];
-      const today = new Date();
-
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
         
-        data.push({
-          date: date.toISOString().split('T')[0],
-          total: Math.floor(100 + Math.random() * 50 + (days - i) * 2),
-          active: Math.floor(80 + Math.random() * 40 + (days - i) * 1.5),
-          new: Math.floor(Math.random() * 10),
-        });
+        const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+        const data = await fn_get_users_growth(days);
+        
+        setChartData(data);
+      } catch (err: any) {
+        console.error('Error loading users growth:', err);
+        setError(err.message || 'Error al cargar datos');
+      } finally {
+        setLoading(false);
       }
-
-      return data;
     };
 
-    setChartData(generateData());
+    loadData();
   }, [timeRange]);
 
   return (
@@ -70,7 +70,7 @@ export function UsersGrowthChart() {
             Evolución de usuarios en el sistema
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        <Select value={timeRange} onValueChange={setTimeRange} disabled={loading}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Seleccionar rango"
@@ -91,85 +91,114 @@ export function UsersGrowthChart() {
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[300px] w-full"
-        >
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-total)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-total)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillActive" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-active)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-active)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString('es-PE', {
-                  month: 'short',
-                  day: 'numeric',
-                });
-              }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString('es-PE', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    });
-                  }}
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="active"
-              type="monotone"
-              fill="url(#fillActive)"
-              stroke="var(--color-active)"
-              strokeWidth={2}
-              stackId="a"
-            />
-            <Area
-              dataKey="total"
-              type="monotone"
-              fill="url(#fillTotal)"
-              stroke="var(--color-total)"
-              strokeWidth={2}
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+        {loading ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-[300px] text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+            <p className="text-sm text-muted-foreground">{error}</p>
+          </div>
+        ) : chartData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[300px] text-center">
+            <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-sm text-muted-foreground">
+              No hay datos disponibles para este período
+            </p>
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[300px] w-full"
+          >
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-total)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-total)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+                <linearGradient id="fillActive" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-active)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-active)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+                <linearGradient id="fillNew" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-new)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-new)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString('es-PE', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                }}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString('es-PE', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      });
+                    }}
+                    indicator="dot"
+                  />
+                }
+              />
+              <Area
+                dataKey="total"
+                type="monotone"
+                fill="url(#fillTotal)"
+                stroke="var(--color-total)"
+                strokeWidth={2}
+              />
+              <Area
+                dataKey="active"
+                type="monotone"
+                fill="url(#fillActive)"
+                stroke="var(--color-active)"
+                strokeWidth={2}
+              />
+              <Legend />
+            </AreaChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
