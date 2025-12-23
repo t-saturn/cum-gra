@@ -12,7 +12,6 @@ import {
   Ban,
   Shield,
   Activity,
-  ScrollText,
   ShieldCheck,
   UserCog,
   Map
@@ -86,11 +85,6 @@ export const baseMenus: SidebarMenuGroup[] = [
             label: 'Sesiones Activas',
             icon: Activity,
             url: '/dashboard/security/active-sessions',
-          },
-          {
-            label: 'Logs de Auditoria',
-            icon: ScrollText,
-            url: '/dashboard/security/audit-logs',
           },
         ],
       },
