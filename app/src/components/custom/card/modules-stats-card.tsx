@@ -1,61 +1,101 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Boxes, Loader2, UsersRound, CircleX, CircleCheck } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LayoutGrid, Check, Trash2, Users } from 'lucide-react';
 import { fn_get_modules_stats } from '@/actions/modules/fn_get_modules_stats';
-import { ModulesStatsResponse } from '@/types/modules';
+import type { ModulesStatsResponse } from '@/types/modules';
 
-const cards = [
-  { key: 'total_modules', title: 'Total de Módulos', icon: Boxes, color: 'text-primary' },
-  { key: 'active_modules', title: 'Activos', icon: CircleCheck, color: 'text-green-600' },
-  { key: 'deleted_modules', title: 'Eliminados', icon: CircleX, color: 'text-red-600' },
-  { key: 'total_users', title: 'Usuarios Totales', icon: UsersRound, color: 'text-blue-600' },
-] as const;
-
-export const ModulesStatsCards: React.FC = () => {
-  const [stats, setStats] = useState<ModulesStatsResponse | null>(null);
+export function ModulesStatsCards() {
+  const [stats, setStats] = useState<ModulesStatsResponse>({
+    total_modules: 0,
+    active_modules: 0,
+    deleted_modules: 0,
+    total_users: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const loadStats = async () => {
       try {
         const data = await fn_get_modules_stats();
         setStats(data);
-      } catch (err) {
-        console.error('Error al obtener estadísticas de módulos:', err);
+      } catch (error) {
+        console.error('Error loading modules stats:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    loadStats();
   }, []);
+
+  const cards = [
+    {
+      title: 'Total Módulos',
+      value: stats.total_modules,
+      icon: LayoutGrid,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
+    },
+    {
+      title: 'Módulos Activos',
+      value: stats.active_modules,
+      icon: Check,
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10',
+    },
+    {
+      title: 'Módulos Eliminados',
+      value: stats.deleted_modules,
+      icon: Trash2,
+      color: 'text-red-500',
+      bgColor: 'bg-red-500/10',
+    },
+    {
+      title: 'Total Usuarios',
+      value: stats.total_users,
+      icon: Users,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+    },
+  ];
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="h-4 w-24 bg-muted rounded" />
+              <div className="h-8 w-8 bg-muted rounded" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-muted rounded" />
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
 
-  if (!stats) {
-    return <div className="py-12 text-muted-foreground text-center">No se pudieron cargar las estadísticas de módulos.</div>;
-  }
-
   return (
-    <div className="gap-4 grid sm:grid-cols-2 lg:grid-cols-4">
-      {cards.map(({ key, title, icon: Icon, color }) => (
-        <Card key={key} className="bg-card/60 shadow-sm hover:shadow-md backdrop-blur-xl border-border transition-shadow">
-          <CardHeader className="flex flex-row justify-between items-center space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">{title}</CardTitle>
-            <Icon className={`w-5 h-5 ${color}`} />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats[key as keyof ModulesStatsResponse]}</div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <Card key={card.title}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+              <div className={`${card.bgColor} p-2 rounded-lg`}>
+                <Icon className={`h-4 w-4 ${card.color}`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value.toLocaleString()}</div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
-};
+}
