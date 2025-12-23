@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Boxes, UsersRound, CircleCheck } from 'lucide-react';
+import { Loader2, Boxes, UsersRound, CircleCheck, Trash, AlertCircle } from 'lucide-react';
 import { fn_get_applications_stats } from '@/actions/applications/fn_get_applications_stats';
 import { ApplicationsStatsResponse } from '@/types/applications';
 
 const cards = [
   { key: 'total_applications', title: 'Total de Aplicaciones', icon: Boxes, color: 'text-primary' },
   { key: 'active_applications', title: 'Activas', icon: CircleCheck, color: 'text-green-600' },
-  { key: 'total_users', title: 'Usuarios Totales', icon: UsersRound, color: 'text-blue-600' },
+  { key: 'inactive_applications', title: 'Inactivas', icon: AlertCircle, color: 'text-orange-400' },
+  { key: 'deleted_applications', title: 'Eliminadas', icon: Trash, color: 'text-red-600' },
 ] as const;
 
 export const ApplicationsStatsCards: React.FC = () => {
@@ -20,6 +21,8 @@ export const ApplicationsStatsCards: React.FC = () => {
     const fetchStats = async () => {
       try {
         const data = await fn_get_applications_stats();
+        console.log('Estadísticas de aplicaciones:', data);
+        
         setStats(data);
       } catch (err) {
         console.error('Error al obtener estadísticas de aplicaciones:', err);
