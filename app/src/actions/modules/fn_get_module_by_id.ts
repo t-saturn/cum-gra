@@ -1,18 +1,18 @@
 'use server';
 
 import { auth } from '@/lib/auth';
-import type { ModulesStatsResponse } from '@/types/modules';
+import type { ModuleItem } from '@/types/modules';
 
 const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:8080';
 
-export const fn_get_modules_stats = async (): Promise<ModulesStatsResponse> => {
+export const fn_get_module_by_id = async (id: string): Promise<ModuleItem> => {
   try {
     const session = await auth();
     if (!session?.accessToken) {
       throw new Error('No hay sesión activa');
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/modules/stats`, {
+    const res = await fetch(`${API_BASE_URL}/api/modules/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -22,13 +22,13 @@ export const fn_get_modules_stats = async (): Promise<ModulesStatsResponse> => {
     });
 
     if (!res.ok) {
-      throw new Error(`Error al obtener estadísticas de módulos: ${res.statusText}`);
+      throw new Error(`Error al obtener módulo: ${res.statusText}`);
     }
 
-    const data: ModulesStatsResponse = await res.json();
+    const data: ModuleItem = await res.json();
     return data;
   } catch (err) {
-    console.error('Error en fn_get_modules_stats:', err);
+    console.error('Error en fn_get_module_by_id:', err);
     throw err;
   }
 };

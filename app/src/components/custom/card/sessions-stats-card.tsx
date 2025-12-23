@@ -2,26 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutGrid, Check, Trash2, Users } from 'lucide-react';
-import { fn_get_modules_stats } from '@/actions/modules/fn_get_modules_stats';
-import type { ModulesStatsResponse } from '@/types/modules';
+import { Activity, Users, Clock, TrendingUp } from 'lucide-react';
+import { fn_get_sessions_stats } from '@/actions/keycloak/sessions/fn_get_sessions_stats';
+import type { SessionsStatsResponse } from '@/types/sessions';
 
-export function ModulesStatsCards() {
-  const [stats, setStats] = useState<ModulesStatsResponse>({
-    total_modules: 0,
-    active_modules: 0,
-    deleted_modules: 0,
-    total_users: 0,
+export function SessionsStatsCards() {
+  const [stats, setStats] = useState<SessionsStatsResponse>({
+    total_sessions: 0,
+    unique_users: 0,
+    active_last_hour: 0,
+    sessions_by_client: {},
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const data = await fn_get_modules_stats();
+        const data = await fn_get_sessions_stats();
         setStats(data);
       } catch (error) {
-        console.error('Error loading modules stats:', error);
+        console.error('Error loading sessions stats:', error);
       } finally {
         setLoading(false);
       }
@@ -29,34 +29,41 @@ export function ModulesStatsCards() {
     loadStats();
   }, []);
 
+  // Obtener el cliente con más sesiones
+  const topClient = Object.keys(stats.sessions_by_client).length > 0
+    ? Object.entries(stats.sessions_by_client)
+        .sort((a, b) => b[1] - a[1])[0]
+    : null;
+
   const cards = [
     {
-      title: 'Total Módulos',
-      value: stats.total_modules,
-      icon: LayoutGrid,
+      title: 'Sesiones Activas',
+      value: stats.total_sessions,
+      icon: Activity,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
     },
     {
-      title: 'Módulos Activos',
-      value: stats.active_modules,
-      icon: Check,
+      title: 'Usuarios Únicos',
+      value: stats.unique_users,
+      icon: Users,
       color: 'text-green-500',
       bgColor: 'bg-green-500/10',
     },
     {
-      title: 'Módulos Eliminados',
-      value: stats.deleted_modules,
-      icon: Trash2,
-      color: 'text-red-500',
-      bgColor: 'bg-red-500/10',
+      title: 'Activos (Última Hora)',
+      value: stats.active_last_hour,
+      icon: Clock,
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-500/10',
     },
     {
-      title: 'Total Usuarios',
-      value: stats.total_users,
-      icon: Users,
+      title: 'Cliente Principal',
+      value: topClient ? `${topClient[0]} (${topClient[1]})` : 'N/A',
+      icon: TrendingUp,
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10',
+      isText: true,
     },
   ];
 
@@ -91,7 +98,9 @@ export function ModulesStatsCards() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{card.value.toLocaleString()}</div>
+              <div className={`${card.isText ? 'text-lg' : 'text-2xl'} font-bold truncate`}>
+                {card.isText ? card.value : (card.value as number).toLocaleString()}
+              </div>
             </CardContent>
           </Card>
         );

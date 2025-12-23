@@ -77,7 +77,7 @@ export default function AppSidebar({ hoveredItem, setHoveredItem }: { hoveredIte
                                 className={`hover:bg-primary hover:text-[#eff1f5] ${
                                   isActive
                                     ? isSubItemActive && !isCollapsed
-                                      ? 'bg-secondary group-data-[state=closed]/collapsible:bg-primary'
+                                      ? 'bg-primary text-[#eff1f5] group-data-[state=closed]/collapsible:bg-primary'
                                       : 'bg-primary text-[#eff1f5]'
                                     : 'data-[active=true]:bg-primary data-[active=true]:text-[#eff1f5]'
                                 } hover:cursor-pointer`}

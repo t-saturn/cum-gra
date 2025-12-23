@@ -1,5 +1,5 @@
 import { CardStatType } from '@/types/card-types/card-stats-types';
-import { Activity, AlertTriangle, Ban, CheckCircle, Shield, Smartphone, XCircle } from 'lucide-react';
+import { AlertTriangle, Ban, Shield, Smartphone } from 'lucide-react';
 
 export const statsSessions: CardStatType[] = [
   {
@@ -49,57 +49,6 @@ export const statsSessions: CardStatType[] = [
     color: 'muted-foreground',
     bgColor: 'bg-muted/20',
     textColor: 'text-muted-foreground',
-  },
-];
-
-export const statsAuditEvents: CardStatType[] = [
-  {
-    title: 'Total Eventos',
-    value: '9,240',
-    change: '+142',
-    trend: 'up',
-    trendText: 'hoy',
-    trendIcon: Activity,
-    icon: Activity,
-    color: 'muted-foreground',
-    bgColor: 'bg-muted/20',
-    textColor: 'text-muted-foreground',
-  },
-  {
-    title: 'Eventos Exitosos',
-    value: '8,970',
-    change: '97%',
-    trend: 'static',
-    trendText: 'del total',
-    trendIcon: CheckCircle,
-    icon: CheckCircle,
-    color: 'green-600',
-    bgColor: 'bg-green-500/10',
-    textColor: 'text-green-600',
-  },
-  {
-    title: 'Eventos Fallidos',
-    value: '270',
-    change: '3%',
-    trend: 'static',
-    trendText: 'del total',
-    trendIcon: XCircle,
-    icon: XCircle,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
-  },
-  {
-    title: 'Alertas Críticas',
-    value: '19',
-    change: '+5',
-    trend: 'up',
-    trendText: 'requieren atención inmediata',
-    trendIcon: AlertTriangle,
-    icon: AlertTriangle,
-    color: 'red-600',
-    bgColor: 'bg-red-500/10',
-    textColor: 'text-red-600',
   },
 ];
 
