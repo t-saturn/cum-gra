@@ -15,7 +15,7 @@ export interface UserItem {
   is_deleted: boolean;
   deleted_at?: string | null;
   deleted_by?: string | null;
-  keycloak_id?: string | null; // Para sincronización
+  keycloak_id?: string | null;
   
   // Relaciones expandidas
   structural_position?: {
@@ -53,4 +53,19 @@ export interface UsersStatsResponse {
   active_users: number;
   suspended_users: number;
   new_users_last_month: number;
+}
+
+// Para carga masiva
+export interface BulkCreateUserResult {
+  dni: string;
+  email: string;
+  success: boolean;
+  user?: UserItem;
+  error?: string;
+}
+
+export interface BulkCreateUsersResponse {
+  success_count: number;
+  failure_count: number;
+  results: BulkCreateUserResult[];
 }

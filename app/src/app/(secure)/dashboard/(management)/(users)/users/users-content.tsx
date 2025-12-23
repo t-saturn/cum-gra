@@ -10,16 +10,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, User, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, User, RefreshCw, AlertCircle, ChevronLeft, ChevronRight, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { fn_get_users } from '@/actions/users/fn_get_users';
 import { fn_delete_user } from '@/actions/users/fn_delete_user';
 import { fn_restore_user } from '@/actions/users/fn_restore_user';
+import { fn_download_users_template } from '@/actions/users/fn_download_template';
 import { fn_get_keycloak_users, KeycloakUserSimple } from '@/actions/keycloak/users/fn_get_keycloak_users';
 import type { UserItem } from '@/types/users';
 import { UsersStatsCards } from '@/components/custom/card/users-stats-cards';
 import UserModal from './user-modal';
 import SyncKeycloakUsersModal from './sync-keycloak-users-modal';
+import BulkUploadModal from './bulk-upload-modal';
 
 export default function UsersContent() {
   const router = useRouter();
@@ -36,6 +38,7 @@ export default function UsersContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
+  const [downloadingTemplate, setDownloadingTemplate] = useState(false);
 
   // Filtros
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -53,6 +56,7 @@ export default function UsersContent() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
 
   const loadUsers = async () => {
@@ -95,6 +99,29 @@ export default function UsersContent() {
       toast.error('Error al verificar sincronización con Keycloak');
     } finally {
       setCheckingSync(false);
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      setDownloadingTemplate(true);
+      const blob = await fn_download_users_template();
+      
+      // Crear URL temporal y descargar
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `plantilla_usuarios_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Plantilla descargada correctamente');
+    } catch (err: any) {
+      toast.error(err.message || 'Error al descargar plantilla');
+    } finally {
+      setDownloadingTemplate(false);
     }
   };
 
@@ -231,9 +258,20 @@ export default function UsersContent() {
             <Filter className="mr-2 w-4 h-4" />
             {showDeleted ? 'Ver Activos' : 'Ver Eliminados'}
           </Button>
-          <Button variant="outline">
+          <Button 
+            variant="outline" 
+            onClick={handleDownloadTemplate}
+            disabled={downloadingTemplate}
+          >
             <Download className="mr-2 w-4 h-4" />
-            Exportar
+            {downloadingTemplate ? 'Descargando...' : 'Descargar Plantilla'}
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => setIsBulkUploadModalOpen(true)}
+          >
+            <Upload className="mr-2 w-4 h-4" />
+            Carga Masiva
           </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
@@ -451,6 +489,9 @@ export default function UsersContent() {
 
       {/* Modal Editar */}
       <UserModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} user={selectedUser} onSuccess={loadUsers} />
+
+      {/* Modal Carga Masiva */}
+      <BulkUploadModal open={isBulkUploadModalOpen} onOpenChange={setIsBulkUploadModalOpen} onSuccess={loadUsers} />
 
       {/* Modal Sincronizar Keycloak */}
       <SyncKeycloakUsersModal open={isSyncModalOpen} onOpenChange={setIsSyncModalOpen} unsyncedUsers={unsyncedUsers} onSuccess={loadUsers} />
