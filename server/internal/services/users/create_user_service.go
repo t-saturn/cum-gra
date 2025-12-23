@@ -61,8 +61,9 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID, accessToken stri
 			Password:  req.Password,
 		}
 
-		kcResult, err := keycloakService.CreateKeycloakUser(accessToken, kcInput)
-		if err != nil {
+		kcResult, errKC := keycloakService.CreateKeycloakUser(accessToken, kcInput)
+
+		if errKC != nil {
 			return nil, fmt.Errorf("error creando usuario en keycloak: %w", err)
 		}
 
