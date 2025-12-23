@@ -1,0 +1,202 @@
+// internal/services/users/generate_template_service.go
+package services
+
+import (
+	"fmt"
+	"server/internal/config"
+	"server/internal/models"
+
+	"github.com/xuri/excelize/v2"
+)
+
+func GenerateUsersTemplateExcel() (*excelize.File, error) {
+	db := config.DB
+	f := excelize.NewFile()
+
+	// Crear las 4 hojas
+	sheetNames := []string{"Usuarios", "Posiciones", "Unidades Orgánicas", "Ubigeos"}
+
+	// Crear hojas
+	f.SetSheetName("Sheet1", sheetNames[0])
+	for i := 1; i < len(sheetNames); i++ {
+		_, err := f.NewSheet(sheetNames[i])
+		if err != nil {
+			return nil, fmt.Errorf("error creando hoja %s: %w", sheetNames[i], err)
+		}
+	}
+
+	// === HOJA 1: PLANTILLA DE USUARIOS ===
+	usersSheet := sheetNames[0]
+
+	// Encabezados
+	headers := []string{"email", "dni", "first_name", "last_name", "password", "phone", "status", "cod_emp_sgd", "structural_position_id", "organic_unit_id", "ubigeo_id"}
+	for i, header := range headers {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+		f.SetCellValue(usersSheet, cell, header)
+	}
+
+	// Ejemplo de fila
+	exampleData := []interface{}{
+		"juan.perez@regionayacucho.gob.pe",
+		"12345678",
+		"Juan",
+		"Pérez García",
+		"MiClave123",
+		"+51987654321",
+		"active",
+		"EMP01",
+		"1",
+		"1",
+		"1",
+	}
+	for i, val := range exampleData {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 2)
+		f.SetCellValue(usersSheet, cell, val)
+	}
+
+	// Aplicar estilos a encabezados
+	headerStyle, _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold:  true,
+			Size:  11,
+			Color: "FFFFFF",
+		},
+		Fill: excelize.Fill{
+			Type:    "pattern",
+			Color:   []string{"4472C4"},
+			Pattern: 1,
+		},
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+	f.SetCellStyle(usersSheet, "A1", "K1", headerStyle)
+
+	// Ajustar anchos de columnas
+	columnWidths := map[string]float64{
+		"A": 35, // email
+		"B": 12, // dni
+		"C": 20, // first_name
+		"D": 25, // last_name
+		"E": 15, // password
+		"F": 18, // phone
+		"G": 12, // status
+		"H": 15, // cod_emp_sgd
+		"I": 25, // structural_position_id
+		"J": 23, // organic_unit_id
+		"K": 15, // ubigeo_id
+	}
+	for col, width := range columnWidths {
+		f.SetColWidth(usersSheet, col, col, width)
+	}
+
+	// === HOJA 2: POSICIONES ESTRUCTURALES ===
+	positionsSheet := sheetNames[1]
+
+	var positions []models.StructuralPosition
+	if err := db.Where("is_deleted = FALSE AND is_active = TRUE").
+		Order("code ASC").
+		Find(&positions).Error; err != nil {
+		return nil, fmt.Errorf("error obteniendo posiciones: %w", err)
+	}
+
+	// Encabezados
+	posHeaders := []string{"ID", "Código", "Nombre", "Nivel"}
+	for i, header := range posHeaders {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+		f.SetCellValue(positionsSheet, cell, header)
+	}
+	f.SetCellStyle(positionsSheet, "A1", "D1", headerStyle)
+
+	// Datos
+	for idx, pos := range positions {
+		row := idx + 2
+		f.SetCellValue(positionsSheet, fmt.Sprintf("A%d", row), pos.ID)
+		f.SetCellValue(positionsSheet, fmt.Sprintf("B%d", row), pos.Code)
+		f.SetCellValue(positionsSheet, fmt.Sprintf("C%d", row), pos.Name)
+		if pos.Level != nil {
+			f.SetCellValue(positionsSheet, fmt.Sprintf("D%d", row), *pos.Level)
+		}
+	}
+
+	// Ajustar anchos
+	f.SetColWidth(positionsSheet, "A", "A", 8)
+	f.SetColWidth(positionsSheet, "B", "B", 20)
+	f.SetColWidth(positionsSheet, "C", "C", 50)
+	f.SetColWidth(positionsSheet, "D", "D", 10)
+
+	// === HOJA 3: UNIDADES ORGÁNICAS ===
+	unitsSheet := sheetNames[2]
+
+	var organicUnits []models.OrganicUnit
+	if err := db.Where("is_deleted = FALSE AND is_active = TRUE").
+		Order("name ASC").
+		Find(&organicUnits).Error; err != nil {
+		return nil, fmt.Errorf("error obteniendo unidades orgánicas: %w", err)
+	}
+
+	// Encabezados
+	unitHeaders := []string{"ID", "Nombre", "Acrónimo", "ID Padre"}
+	for i, header := range unitHeaders {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+		f.SetCellValue(unitsSheet, cell, header)
+	}
+	f.SetCellStyle(unitsSheet, "A1", "D1", headerStyle)
+
+	// Datos
+	for idx, unit := range organicUnits {
+		row := idx + 2
+		f.SetCellValue(unitsSheet, fmt.Sprintf("A%d", row), unit.ID)
+		f.SetCellValue(unitsSheet, fmt.Sprintf("B%d", row), unit.Name)
+		f.SetCellValue(unitsSheet, fmt.Sprintf("C%d", row), unit.Acronym)
+		if unit.ParentID != nil {
+			f.SetCellValue(unitsSheet, fmt.Sprintf("D%d", row), *unit.ParentID)
+		}
+	}
+
+	// Ajustar anchos
+	f.SetColWidth(unitsSheet, "A", "A", 8)
+	f.SetColWidth(unitsSheet, "B", "B", 55)
+	f.SetColWidth(unitsSheet, "C", "C", 15)
+	f.SetColWidth(unitsSheet, "D", "D", 12)
+
+	// === HOJA 4: UBIGEOS ===
+	ubigeosSheet := sheetNames[3]
+
+	var ubigeos []models.Ubigeo
+	if err := db.Order("department ASC, province ASC, district ASC").
+		Find(&ubigeos).Error; err != nil {
+		return nil, fmt.Errorf("error obteniendo ubigeos: %w", err)
+	}
+
+	// Encabezados
+	ubigeoHeaders := []string{"ID", "Código Ubigeo", "Departamento", "Provincia", "Distrito"}
+	for i, header := range ubigeoHeaders {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+		f.SetCellValue(ubigeosSheet, cell, header)
+	}
+	f.SetCellStyle(ubigeosSheet, "A1", "E1", headerStyle)
+
+	// Datos
+	for idx, ubigeo := range ubigeos {
+		row := idx + 2
+		f.SetCellValue(ubigeosSheet, fmt.Sprintf("A%d", row), ubigeo.ID)
+		f.SetCellValue(ubigeosSheet, fmt.Sprintf("B%d", row), ubigeo.UbigeoCode)
+		f.SetCellValue(ubigeosSheet, fmt.Sprintf("C%d", row), ubigeo.Department)
+		f.SetCellValue(ubigeosSheet, fmt.Sprintf("D%d", row), ubigeo.Province)
+		f.SetCellValue(ubigeosSheet, fmt.Sprintf("E%d", row), ubigeo.District)
+	}
+
+	// Ajustar anchos
+	f.SetColWidth(ubigeosSheet, "A", "A", 8)
+	f.SetColWidth(ubigeosSheet, "B", "B", 15)
+	f.SetColWidth(ubigeosSheet, "C", "C", 20)
+	f.SetColWidth(ubigeosSheet, "D", "D", 20)
+	f.SetColWidth(ubigeosSheet, "E", "E", 25)
+
+	// Activar primera hoja
+	f.SetActiveSheet(0)
+
+	return f, nil
+}
