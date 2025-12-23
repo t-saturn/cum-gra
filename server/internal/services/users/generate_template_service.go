@@ -1,4 +1,3 @@
-// internal/services/users/generate_template_service.go
 package services
 
 import (
@@ -25,6 +24,34 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		}
 	}
 
+	// Estilo para encabezados
+	headerStyle, _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold:  true,
+			Size:  11,
+			Color: "FFFFFF",
+		},
+		Fill: excelize.Fill{
+			Type:    "pattern",
+			Color:   []string{"4472C4"},
+			Pattern: 1,
+		},
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+
+	// Estilo para texto (para preservar ceros a la izquierda)
+	textStyle, _ := f.NewStyle(&excelize.Style{
+		CustomNumFmt: strPtr("@"), // Formato de texto
+	})
+
+	// Estilo para números
+	numberStyle, _ := f.NewStyle(&excelize.Style{
+		CustomNumFmt: strPtr("0"),
+	})
+
 	// === HOJA 1: PLANTILLA DE USUARIOS ===
 	usersSheet := sheetNames[0]
 
@@ -34,6 +61,7 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
 		f.SetCellValue(usersSheet, cell, header)
 	}
+	f.SetCellStyle(usersSheet, "A1", "K1", headerStyle)
 
 	// Ejemplo de fila
 	exampleData := []interface{}{
@@ -54,24 +82,31 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		f.SetCellValue(usersSheet, cell, val)
 	}
 
-	// Aplicar estilos a encabezados
-	headerStyle, _ := f.NewStyle(&excelize.Style{
-		Font: &excelize.Font{
-			Bold:  true,
-			Size:  11,
-			Color: "FFFFFF",
-		},
-		Fill: excelize.Fill{
-			Type:    "pattern",
-			Color:   []string{"4472C4"},
-			Pattern: 1,
-		},
-		Alignment: &excelize.Alignment{
-			Horizontal: "center",
-			Vertical:   "center",
-		},
+	// Aplicar formato de TEXTO a columnas que necesitan preservar ceros
+	// DNI (B), Password (E), Phone (F), cod_emp_sgd (H)
+	f.SetCellStyle(usersSheet, "B2", "B1001", textStyle) // DNI
+	f.SetCellStyle(usersSheet, "E2", "E1001", textStyle) // Password
+	f.SetCellStyle(usersSheet, "F2", "F1001", textStyle) // Phone
+	f.SetCellStyle(usersSheet, "H2", "H1001", textStyle) // cod_emp_sgd
+
+	// Aplicar formato de NÚMERO a columnas de IDs
+	f.SetCellStyle(usersSheet, "I2", "I1001", numberStyle) // structural_position_id
+	f.SetCellStyle(usersSheet, "J2", "J1001", numberStyle) // organic_unit_id
+	f.SetCellStyle(usersSheet, "K2", "K1001", numberStyle) // ubigeo_id
+
+	// Crear tabla de Excel para la hoja de Usuarios
+	err := f.AddTable(usersSheet, &excelize.Table{
+		Range:             "A1:K1001",
+		Name:              "TablaUsuarios",
+		StyleName:         "TableStyleMedium2",
+		ShowFirstColumn:   false,
+		ShowLastColumn:    false,
+		ShowRowStripes:    boolPtr(true),
+		ShowColumnStripes: false,
 	})
-	f.SetCellStyle(usersSheet, "A1", "K1", headerStyle)
+	if err != nil {
+		return nil, fmt.Errorf("error creando tabla de usuarios: %w", err)
+	}
 
 	// Ajustar anchos de columnas
 	columnWidths := map[string]float64{
@@ -91,12 +126,20 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		f.SetColWidth(usersSheet, col, col, width)
 	}
 
+	// Agregar nota explicativa
+	f.SetCellValue(usersSheet, "A1002", "INSTRUCCIONES:")
+	f.SetCellValue(usersSheet, "A1003", "1. Completa los datos en las filas superiores (máximo 1000 usuarios)")
+	f.SetCellValue(usersSheet, "A1004", "2. El DNI debe ser de 8 dígitos")
+	f.SetCellValue(usersSheet, "A1005", "3. Si no ingresas contraseña, se usará el DNI como contraseña")
+	f.SetCellValue(usersSheet, "A1006", "4. Status válidos: active, suspended, inactive")
+	f.SetCellValue(usersSheet, "A1007", "5. Consulta las otras hojas para ver los IDs disponibles")
+
 	// === HOJA 2: POSICIONES ESTRUCTURALES ===
 	positionsSheet := sheetNames[1]
 
 	var positions []models.StructuralPosition
 	if err := db.Where("is_deleted = FALSE AND is_active = TRUE").
-		Order("code ASC").
+		Order("id ASC"). // CAMBIADO: Ordenar por ID ascendente
 		Find(&positions).Error; err != nil {
 		return nil, fmt.Errorf("error obteniendo posiciones: %w", err)
 	}
@@ -120,6 +163,24 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		}
 	}
 
+	// Crear tabla para Posiciones
+	if len(positions) > 0 {
+		lastRow := len(positions) + 1
+		tableRange := fmt.Sprintf("A1:D%d", lastRow)
+		err := f.AddTable(positionsSheet, &excelize.Table{
+			Range:             tableRange,
+			Name:              "TablaPosiciones",
+			StyleName:         "TableStyleMedium9",
+			ShowFirstColumn:   false,
+			ShowLastColumn:    false,
+			ShowRowStripes:    boolPtr(true),
+			ShowColumnStripes: false,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("error creando tabla de posiciones: %w", err)
+		}
+	}
+
 	// Ajustar anchos
 	f.SetColWidth(positionsSheet, "A", "A", 8)
 	f.SetColWidth(positionsSheet, "B", "B", 20)
@@ -131,7 +192,7 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 
 	var organicUnits []models.OrganicUnit
 	if err := db.Where("is_deleted = FALSE AND is_active = TRUE").
-		Order("name ASC").
+		Order("id ASC"). // CAMBIADO: Ordenar por ID ascendente
 		Find(&organicUnits).Error; err != nil {
 		return nil, fmt.Errorf("error obteniendo unidades orgánicas: %w", err)
 	}
@@ -155,6 +216,24 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		}
 	}
 
+	// Crear tabla para Unidades
+	if len(organicUnits) > 0 {
+		lastRow := len(organicUnits) + 1
+		tableRange := fmt.Sprintf("A1:D%d", lastRow)
+		err := f.AddTable(unitsSheet, &excelize.Table{
+			Range:             tableRange,
+			Name:              "TablaUnidades",
+			StyleName:         "TableStyleMedium13",
+			ShowFirstColumn:   false,
+			ShowLastColumn:    false,
+			ShowRowStripes:    boolPtr(true),
+			ShowColumnStripes: false,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("error creando tabla de unidades: %w", err)
+		}
+	}
+
 	// Ajustar anchos
 	f.SetColWidth(unitsSheet, "A", "A", 8)
 	f.SetColWidth(unitsSheet, "B", "B", 55)
@@ -165,7 +244,7 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 	ubigeosSheet := sheetNames[3]
 
 	var ubigeos []models.Ubigeo
-	if err := db.Order("department ASC, province ASC, district ASC").
+	if err := db.Order("id ASC"). // CAMBIADO: Ordenar por ID ascendente
 		Find(&ubigeos).Error; err != nil {
 		return nil, fmt.Errorf("error obteniendo ubigeos: %w", err)
 	}
@@ -188,6 +267,24 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 		f.SetCellValue(ubigeosSheet, fmt.Sprintf("E%d", row), ubigeo.District)
 	}
 
+	// Crear tabla para Ubigeos
+	if len(ubigeos) > 0 {
+		lastRow := len(ubigeos) + 1
+		tableRange := fmt.Sprintf("A1:E%d", lastRow)
+		err := f.AddTable(ubigeosSheet, &excelize.Table{
+			Range:             tableRange,
+			Name:              "TablaUbigeos",
+			StyleName:         "TableStyleMedium6",
+			ShowFirstColumn:   false,
+			ShowLastColumn:    false,
+			ShowRowStripes:    boolPtr(true),
+			ShowColumnStripes: false,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("error creando tabla de ubigeos: %w", err)
+		}
+	}
+
 	// Ajustar anchos
 	f.SetColWidth(ubigeosSheet, "A", "A", 8)
 	f.SetColWidth(ubigeosSheet, "B", "B", 15)
@@ -199,4 +296,13 @@ func GenerateUsersTemplateExcel() (*excelize.File, error) {
 	f.SetActiveSheet(0)
 
 	return f, nil
+}
+
+// Helper functions
+func strPtr(s string) *string {
+	return &s
+}
+
+func boolPtr(b bool) *bool {
+	return &b
 }
