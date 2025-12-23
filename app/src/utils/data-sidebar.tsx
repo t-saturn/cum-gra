@@ -113,21 +113,21 @@ export const baseMenus: SidebarMenuGroup[] = [
       },
     ],
   },
-  {
-    title: 'Configuración',
-    menu: [
-      {
-        label: 'Ajustes',
-        icon: Settings2,
-        url: '/dashboard/settings',
-        roles: ['admin'],
-      },
-      {
-        label: 'Cuenta',
-        icon: UserCircle,
-        url: '/dashboard/account',
-        roles: ['admin'],
-      },
-    ],
-  },
+  // {
+  //   title: 'Configuración',
+  //   menu: [
+  //     {
+  //       label: 'Ajustes',
+  //       icon: Settings2,
+  //       url: '/dashboard/settings',
+  //       roles: ['admin'],
+  //     },
+  //     {
+  //       label: 'Cuenta',
+  //       icon: UserCircle,
+  //       url: '/dashboard/account',
+  //       roles: ['admin'],
+  //     },
+  //   ],
+  // },
 ];
