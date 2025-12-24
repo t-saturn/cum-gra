@@ -100,6 +100,11 @@ export const baseMenus: SidebarMenuGroup[] = [
             url: '/dashboard/security/application-roles',
           },
           {
+            label: 'Roles por módulo',
+            icon: Layers,
+            url: '/dashboard/security/module-roles',
+          },
+          {
             label: 'Asignación de Roles',
             icon: UserCog,
             url: '/dashboard/security/user-roles',
