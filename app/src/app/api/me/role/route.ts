@@ -68,6 +68,8 @@ export async function GET(req: NextRequest) {
 
     const data = (await res.json()) as CumRoleResponse;
 
+    console.log('data', data);
+
     const payload = { id: data.role_id, role: data.role_name, modules: data.modules ?? [] };
 
     return NextResponse.json(payload, { status: 200 });
