@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Users, Building2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Users, Building2, AlertCircle, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { fn_get_organic_units } from '@/actions/units/fn_get_organic_units';
 import { fn_delete_organic_unit } from '@/actions/units/fn_delete_organic_unit';
@@ -18,6 +18,7 @@ import { fn_restore_organic_unit } from '@/actions/units/fn_restore_organic_unit
 import type { OrganicUnitItemDTO } from '@/types/units';
 import { OrganicUnitsStatsCards } from '@/components/custom/card/organic-units-stats-cards';
 import OrganicUnitModal from './organic-unit-modal';
+import BulkUploadOrganicUnitsModal from './bulk-upload-modal';
 
 export default function OrganicUnitsContent() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function OrganicUnitsContent() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<OrganicUnitItemDTO | null>(null);
+  const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
 
   const loadUnits = async () => {
     try {
@@ -155,9 +157,9 @@ export default function OrganicUnitsContent() {
           <p className="mt-1 text-muted-foreground">Gestiona la estructura organizacional de la entidad</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
-            <Download className="mr-2 w-4 h-4" />
-            Exportar
+          <Button variant="outline" onClick={() => setIsBulkUploadModalOpen(true)}>
+            <Upload className="mr-2 w-4 h-4" />
+            Carga Masiva
           </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
@@ -323,6 +325,13 @@ export default function OrganicUnitsContent() {
       {/* Modal Editar */}
       <OrganicUnitModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} unit={selectedUnit} onSuccess={loadUnits} />
 
+      {/* Modal Subir Masivo */}
+      <BulkUploadOrganicUnitsModal
+        open={isBulkUploadModalOpen}
+        onOpenChange={setIsBulkUploadModalOpen}
+        onSuccess={loadUnits}
+      />
+
       {/* Modal Detalles */}
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
         <DialogContent className="sm:max-w-[600px]">
@@ -344,30 +353,30 @@ export default function OrganicUnitsContent() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-  <div>
-    <p className="text-sm text-muted-foreground">Marca</p>
-    {selectedUnit.brand ? (
-      selectedUnit.brand.startsWith('http') ? (
-        <a 
-          href={selectedUnit.brand} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-sm text-primary hover:underline break-all"
-        >
-          {selectedUnit.brand}
-        </a>
-      ) : (
-        <p className="font-medium break-all">{selectedUnit.brand}</p>
-      )
-    ) : (
-      <p className="font-medium">N/A</p>
-    )}
-  </div>
-  <div>
-    <p className="text-sm text-muted-foreground">Código SGD</p>
-    <p className="font-medium">{selectedUnit.cod_dep_sgd || 'N/A'}</p>
-  </div>
-</div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Marca</p>
+                  {selectedUnit.brand ? (
+                    selectedUnit.brand.startsWith('http') ? (
+                      <a
+                        href={selectedUnit.brand}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline break-all"
+                      >
+                        {selectedUnit.brand}
+                      </a>
+                    ) : (
+                      <p className="font-medium break-all">{selectedUnit.brand}</p>
+                    )
+                  ) : (
+                    <p className="font-medium">N/A</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Código SGD</p>
+                  <p className="font-medium">{selectedUnit.cod_dep_sgd || 'N/A'}</p>
+                </div>
+              </div>
 
               <div>
                 <p className="text-sm text-muted-foreground">Descripción</p>

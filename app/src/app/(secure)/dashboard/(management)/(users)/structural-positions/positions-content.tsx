@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Users, CircleQuestionMark, AlertCircle, ChevronLeft, ChevronRight, Crown, BadgeCheck, Briefcase, Award, Shield } from 'lucide-react';
+import { Search, Plus, Filter, Download, MoreHorizontal, Edit, Trash2, Eye, Users, CircleQuestionMark, AlertCircle, ChevronLeft, ChevronRight, Crown, BadgeCheck, Briefcase, Award, Shield, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { fn_get_positions } from '@/actions/positions/fn_get_positions';
 import { fn_delete_position } from '@/actions/positions/fn_delete_position';
@@ -18,6 +18,7 @@ import { fn_restore_position } from '@/actions/positions/fn_restore_position';
 import type { StructuralPositionItem } from '@/types/structural_positions';
 import { PositionsStatsCards } from '@/components/custom/card/positions-stats-cards';
 import PositionModal from './position-modal';
+import BulkUploadPositionsModal from './bulk-upload-modal';
 
 export default function StructuralPositionsContent() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function StructuralPositionsContent() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<StructuralPositionItem | null>(null);
+  const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
 
   const loadPositions = async () => {
     try {
@@ -73,7 +75,7 @@ export default function StructuralPositionsContent() {
   // Funciones de navegación con search params
   const updateSearchParams = (updates: Record<string, string | number | boolean>) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     Object.entries(updates).forEach(([key, value]) => {
       if (value === '' || value === false || value === null || value === undefined) {
         params.delete(key);
@@ -112,17 +114,17 @@ export default function StructuralPositionsContent() {
   };
 
   const getPositionIcon = (level?: number | null) => {
-  if (!level) return <Briefcase className="w-4 h-4 text-primary" />;
-  
-  switch (level) {
-    case 1: return <Crown className="w-4 h-4 text-amber-500" />; // Directivo
-    case 2: return <Award className="w-4 h-4 text-blue-500" />; // Ejecutivo
-    case 3: return <Briefcase className="w-4 h-4 text-purple-500" />; // Profesional
-    case 4: return <Shield className="w-4 h-4 text-green-500" />; // Técnico
-    case 5: return <Users className="w-4 h-4 text-gray-500" />; // Apoyo
-    default: return <Briefcase className="w-4 h-4 text-primary" />;
-  }
-};
+    if (!level) return <Briefcase className="w-4 h-4 text-primary" />;
+
+    switch (level) {
+      case 1: return <Crown className="w-4 h-4 text-amber-500" />; // Directivo
+      case 2: return <Award className="w-4 h-4 text-blue-500" />; // Ejecutivo
+      case 3: return <Briefcase className="w-4 h-4 text-purple-500" />; // Profesional
+      case 4: return <Shield className="w-4 h-4 text-green-500" />; // Técnico
+      case 5: return <Users className="w-4 h-4 text-gray-500" />; // Apoyo
+      default: return <Briefcase className="w-4 h-4 text-primary" />;
+    }
+  };
 
   const handleEdit = (p: StructuralPositionItem) => {
     setSelectedPosition(p);
@@ -173,9 +175,9 @@ export default function StructuralPositionsContent() {
           <p className="mt-1 text-muted-foreground">Gestiona los cargos y posiciones de la estructura organizacional</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
-            <Download className="mr-2 w-4 h-4" />
-            Exportar
+          <Button variant="outline" onClick={() => setIsBulkUploadModalOpen(true)}>
+            <Upload className="mr-2 w-4 h-4" />
+            Carga Masiva
           </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
@@ -341,6 +343,13 @@ export default function StructuralPositionsContent() {
       {/* Modal Editar */}
       <PositionModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} position={selectedPosition} onSuccess={loadPositions} />
 
+      {/* Modal Subir Masivo */}
+      <BulkUploadPositionsModal
+        open={isBulkUploadModalOpen}
+        onOpenChange={setIsBulkUploadModalOpen}
+        onSuccess={loadPositions}
+      />
+      
       {/* Modal Detalles */}
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
         <DialogContent className="sm:max-w-[600px]">

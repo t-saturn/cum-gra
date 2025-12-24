@@ -1,3 +1,4 @@
+// internal/dto/user_dto.go
 package dto
 
 import "time"
@@ -87,6 +88,7 @@ type UserDetailDTO struct {
 type CreateUserRequest struct {
 	Email                string  `json:"email" validate:"required,email"`
 	DNI                  string  `json:"dni" validate:"required,len=8,numeric"`
+	Password             string  `json:"password" validate:"required,min=4,max=50"` // Ahora requerido
 	FirstName            string  `json:"first_name" validate:"required,min=2,max=100"`
 	LastName             string  `json:"last_name" validate:"required,min=2,max=100"`
 	Phone                *string `json:"phone" validate:"omitempty,max=20"`
@@ -108,4 +110,23 @@ type UpdateUserRequest struct {
 	StructuralPositionID *string `json:"structural_position_id" validate:"omitempty"`
 	OrganicUnitID        *string `json:"organic_unit_id" validate:"omitempty"`
 	UbigeoID             *string `json:"ubigeo_id" validate:"omitempty"`
+}
+
+// Para carga masiva
+type BulkCreateUsersRequest struct {
+	Users []CreateUserRequest `json:"users" validate:"required,dive"`
+}
+
+type BulkCreateUsersResponse struct {
+	SuccessCount int                      `json:"success_count"`
+	FailureCount int                      `json:"failure_count"`
+	Results      []BulkCreateUserResult   `json:"results"`
+}
+
+type BulkCreateUserResult struct {
+	DNI     string          `json:"dni"`
+	Email   string          `json:"email"`
+	Success bool            `json:"success"`
+	User    *UserDetailDTO  `json:"user,omitempty"`
+	Error   string          `json:"error,omitempty"`
 }

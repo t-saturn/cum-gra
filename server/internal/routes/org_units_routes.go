@@ -9,14 +9,16 @@ import (
 
 func RegisterOrganicUnitsRoutes(router fiber.Router) {
 	app := router.Group("/organic-units")
-	
-	// Aplicar KeycloakAuth a todas las rutas
 	app.Use(middlewares.KeycloakAuth())
 
-	// Rutas protegidas
 	protected := app.Group("")
 	protected.Use(middlewares.RequireResourceRole("realm-management", "manage-users"))
-	
+
+	// Plantilla y carga masiva
+	protected.Get("/template", handlers.DownloadOrganicUnitsTemplateHandler)
+	protected.Post("/bulk", handlers.BulkCreateOrganicUnitsHandler)
+
+	// CRUD
 	protected.Get("/", handlers.GetOrganicUnitsHandler)
 	protected.Get("/stats", handlers.GetOrganicUnitsStatsHandler)
 	protected.Get("/:id", handlers.GetOrganicUnitByIDHandler)

@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -9,15 +10,16 @@ import (
 	"server/internal/dto"
 	"server/internal/mapper"
 	"server/internal/models"
+	keycloakService "server/internal/services/keycloak"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetailDTO, error) {
+func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID, accessToken string) (*dto.UserDetailDTO, error) {
 	db := config.DB
 
-	// Verificar email único
+	// 1. Verificar email único en BD local
 	var exists int64
 	if err := db.Model(&models.User{}).
 		Where("email = ? AND is_deleted = FALSE", req.Email).
@@ -28,7 +30,7 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		return nil, errors.New("ya existe un usuario con este email")
 	}
 
-	// Verificar DNI único
+	// 2. Verificar DNI único en BD local
 	if err := db.Model(&models.User{}).
 		Where("dni = ? AND is_deleted = FALSE", req.DNI).
 		Count(&exists).Error; err != nil {
@@ -38,12 +40,48 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		return nil, errors.New("ya existe un usuario con este DNI")
 	}
 
+	// 3. Verificar si existe en Keycloak
+	existsInKC, existingKCUserID, err := keycloakService.UserExistsInKeycloak(accessToken, req.Email, req.DNI)
+	if err != nil {
+		return nil, fmt.Errorf("error verificando usuario en keycloak: %w", err)
+	}
+
+	var keycloakUserID string
+
+	if existsInKC {
+		// Usuario ya existe en Keycloak, usar ese UUID
+		keycloakUserID = existingKCUserID
+	} else {
+		// 4. Crear usuario en Keycloak primero
+		kcInput := keycloakService.CreateKeycloakUserInput{
+			Email:     req.Email,
+			FirstName: req.FirstName,
+			LastName:  req.LastName,
+			DNI:       req.DNI,
+			Password:  req.Password,
+		}
+
+		kcResult, errKC := keycloakService.CreateKeycloakUser(accessToken, kcInput)
+
+		if errKC != nil {
+			return nil, fmt.Errorf("error creando usuario en keycloak: %w", err)
+		}
+
+		keycloakUserID = kcResult.UserID
+	}
+
+	// 5. Parsear UUID de Keycloak
+	userUUID, err := uuid.Parse(keycloakUserID)
+	if err != nil {
+		return nil, fmt.Errorf("uuid inválido de keycloak: %w", err)
+	}
+
+	// 6. Validaciones de relaciones
 	status := "active"
 	if req.Status != nil {
 		status = *req.Status
 	}
 
-	// Validar structural position si se proporciona
 	var structuralPositionID *uint
 	if req.StructuralPositionID != nil && *req.StructuralPositionID != "" {
 		posID, err := strconv.ParseUint(*req.StructuralPositionID, 10, 32)
@@ -62,7 +100,6 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		structuralPositionID = &pid
 	}
 
-	// Validar organic unit si se proporciona
 	var organicUnitID *uint
 	if req.OrganicUnitID != nil && *req.OrganicUnitID != "" {
 		ouID, err := strconv.ParseUint(*req.OrganicUnitID, 10, 32)
@@ -81,7 +118,6 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		organicUnitID = &oid
 	}
 
-	// Validar ubigeo si se proporciona
 	var ubigeoID *uint
 	if req.UbigeoID != nil && *req.UbigeoID != "" {
 		ubID, err := strconv.ParseUint(*req.UbigeoID, 10, 32)
@@ -100,9 +136,9 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		ubigeoID = &uid
 	}
 
-	// Crear usuario
+	// 7. Crear usuario en BD local con UUID de Keycloak
 	user := models.User{
-		ID:        uuid.New(),
+		ID:        userUUID, // UUID de Keycloak
 		Email:     req.Email,
 		DNI:       req.DNI,
 		Status:    status,
@@ -115,7 +151,7 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		return nil, err
 	}
 
-	// Crear user detail
+	// 8. Crear user detail
 	userDetail := models.UserDetail{
 		UserID:               user.ID,
 		FirstName:            &req.FirstName,
@@ -131,12 +167,13 @@ func CreateUser(req dto.CreateUserRequest, createdBy uuid.UUID) (*dto.UserDetail
 		return nil, err
 	}
 
-	// Cargar relaciones
+	// 9. Cargar relaciones
 	db.Preload("StructuralPosition").
 		Preload("OrganicUnit").
 		Preload("Ubigeo").
 		First(&userDetail, userDetail.ID)
 
-	result := mapper.ToUserDetailDTO(user, &userDetail)
-	return &result, nil
+	userDTO := mapper.ToUserDetailDTO(user, &userDetail)
+
+	return &userDTO, nil
 }

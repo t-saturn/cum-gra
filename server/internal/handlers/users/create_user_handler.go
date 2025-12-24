@@ -6,6 +6,7 @@ import (
 	"server/internal/models"
 	services "server/internal/services/users"
 	"server/pkg/logger"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -32,22 +33,39 @@ func CreateUserHandler(c fiber.Ctx) error {
 			JSON(dto.ErrorResponse{Error: "Usuario no encontrado en el sistema"})
 	}
 
-	result, err := services.CreateUser(req, user.ID)
+	// Obtener access token del header Authorization
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(dto.ErrorResponse{Error: "Token no proporcionado"})
+	}
+
+	accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+	if accessToken == authHeader {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(dto.ErrorResponse{Error: "Formato de token inválido"})
+	}
+
+	result, err := services.CreateUser(req, user.ID, accessToken)
 	if err != nil {
+		// Manejo de errores específicos de Keycloak
+		if strings.Contains(err.Error(), "keycloak") {
+			return c.Status(fiber.StatusBadGateway).
+				JSON(dto.ErrorResponse{Error: "Error de comunicación con el sistema de autenticación"})
+		}
+
 		if err.Error() == "ya existe un usuario con este email" ||
-		   err.Error() == "ya existe un usuario con este DNI" {
+			err.Error() == "ya existe un usuario con este DNI" {
 			return c.Status(fiber.StatusConflict).
 				JSON(dto.ErrorResponse{Error: err.Error()})
 		}
-		if err.Error() == "posición estructural no encontrada" ||
-		   err.Error() == "unidad orgánica no encontrada" ||
-		   err.Error() == "ubigeo no encontrado" ||
-		   err.Error() == "structural_position_id inválido" ||
-		   err.Error() == "organic_unit_id inválido" ||
-		   err.Error() == "ubigeo_id inválido" {
+
+		if strings.Contains(err.Error(), "no encontrada") ||
+			strings.Contains(err.Error(), "inválido") {
 			return c.Status(fiber.StatusBadRequest).
 				JSON(dto.ErrorResponse{Error: err.Error()})
 		}
+
 		logger.Log.Error("Error creando usuario:", err)
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(dto.ErrorResponse{Error: "Error interno del servidor"})

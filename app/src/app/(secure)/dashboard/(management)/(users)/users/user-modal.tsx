@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 import { fn_create_user, CreateUserInput } from '@/actions/users/fn_create_user';
 import { fn_update_user, UpdateUserInput } from '@/actions/users/fn_update_user';
@@ -29,6 +29,7 @@ interface UserModalProps {
 export default function UserModal({ open, onOpenChange, user, onSuccess }: UserModalProps) {
     const [loading, setLoading] = useState(false);
     const [isHydrating, setIsHydrating] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     
     const [options, setOptions] = useState<UserFormOptions>({
         positions: [],
@@ -38,6 +39,7 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
     const initialFormState: CreateUserInput = {
         email: '',
         dni: '',
+        password: '', // NUEVO campo requerido
         first_name: '',
         last_name: '',
         phone: '',
@@ -46,7 +48,6 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
         structural_position_id: '',
         organic_unit_id: '',
         ubigeo_id: '',
-        sync_to_keycloak: true,
     };
 
     const [formData, setFormData] = useState<CreateUserInput>(initialFormState);
@@ -65,6 +66,7 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
             setSelectedProvince('');
             setProvinces([]);
             setDistricts([]);
+            setShowPassword(false);
             return;
         }
 
@@ -84,6 +86,7 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
                     setFormData({
                         email: user.email || '',
                         dni: user.dni || '',
+                        password: user.dni || '', // Por defecto usar DNI como contraseña
                         first_name: user.first_name || '',
                         last_name: user.last_name || '',
                         phone: user.phone || '',
@@ -92,7 +95,6 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
                         structural_position_id: user.structural_position_id || '',
                         organic_unit_id: user.organic_unit_id || '',
                         ubigeo_id: existingUbigeoId || '',
-                        sync_to_keycloak: true,
                     });
 
                     if (user.ubigeo) {
@@ -124,30 +126,36 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
         setLoading(true);
 
         try {
-            const payload = {
-                email: formData.email,
-                dni: formData.dni,
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                phone: formData.phone || undefined,
-                status: formData.status,
-                cod_emp_sgd: formData.cod_emp_sgd || undefined,
-                structural_position_id: formData.structural_position_id || undefined,
-                organic_unit_id: formData.organic_unit_id || undefined,
-                ubigeo_id: formData.ubigeo_id || undefined,
-                sync_to_keycloak: true,
-            };
-
             if (user) {
-                const { dni, ...updatePayload } = payload;
+                // Modo edición - NO se envía password
+                const { dni, password, ...updatePayload } = formData;
                 await fn_update_user(user.id, {
                     ...updatePayload,
                     keycloak_id: user.keycloak_id ?? undefined,
                 } as UpdateUserInput);
                 toast.success('Usuario actualizado correctamente');
             } else {
-                await fn_create_user(payload);
-                toast.success('Usuario creado correctamente');
+                // Modo creación - SE REQUIERE password
+                if (!formData.password || formData.password.trim() === '') {
+                    toast.error('La contraseña es requerida');
+                    setLoading(false);
+                    return;
+                }
+                
+                await fn_create_user({
+                    email: formData.email,
+                    dni: formData.dni,
+                    password: formData.password, // NUEVO campo requerido
+                    first_name: formData.first_name,
+                    last_name: formData.last_name,
+                    phone: formData.phone || undefined,
+                    status: formData.status,
+                    cod_emp_sgd: formData.cod_emp_sgd || undefined,
+                    structural_position_id: formData.structural_position_id || undefined,
+                    organic_unit_id: formData.organic_unit_id || undefined,
+                    ubigeo_id: formData.ubigeo_id || undefined,
+                });
+                toast.success('Usuario creado correctamente en el sistema y Keycloak');
             }
             onSuccess();
             onOpenChange(false);
@@ -204,7 +212,8 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
     const isFormValid = (formData.email || '').trim() !== '' && 
                         validateDNI(formData.dni || '') && 
                         (formData.first_name || '').trim() !== '' && 
-                        (formData.last_name || '').trim() !== '';
+                        (formData.last_name || '').trim() !== '' &&
+                        (user || (formData.password || '').trim() !== ''); // Password solo requerido en creación
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -212,7 +221,7 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
                 <DialogHeader>
                     <DialogTitle>{user ? 'Editar Usuario' : 'Crear Nuevo Usuario'}</DialogTitle>
                     <DialogDescription>
-                        {user ? 'Actualiza la información del usuario.' : 'Registra un nuevo usuario en el sistema y Keycloak.'}
+                        {user ? 'Actualiza la información del usuario.' : 'Registra un nuevo usuario en el sistema y Keycloak automáticamente.'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -245,6 +254,40 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
                                 <Input id="email" type="email" value={formData.email || ''} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="usuario@regionayacucho.gob.pe" required />
                             </div>
                         </div>
+
+                        {/* Campo de contraseña - SOLO en modo creación */}
+                        {!user && (
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Contraseña <span className="text-destructive">*</span></Label>
+                                <div className="relative">
+                                    <Input 
+                                        id="password" 
+                                        type={showPassword ? "text" : "password"}
+                                        value={formData.password || ''} 
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
+                                        placeholder="Ingrese contraseña" 
+                                        required 
+                                        className="pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Mínimo 4 caracteres. Si no se ingresa, se usará el DNI como contraseña.
+                                </p>
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -398,15 +441,18 @@ export default function UserModal({ open, onOpenChange, user, onSuccess }: UserM
                             )}
                         </div>
 
-                        <div className="bg-muted/50 p-4 rounded-lg">
-                            <p className="text-sm font-medium mb-2">Sincronización con Keycloak:</p>
-                            <ul className="text-sm text-muted-foreground space-y-1">
-                                <li>✓ Se creará/actualizará automáticamente en Keycloak</li>
-                                <li>✓ El DNI se usará como username en Keycloak</li>
-                                <li>✓ Se generará una contraseña temporal (cambio obligatorio en primer login)</li>
-                                <li>✓ El estado se sincronizará (activo/suspendido/inactivo)</li>
-                            </ul>
-                        </div>
+                        {!user && (
+                            <div className="bg-muted/50 p-4 rounded-lg">
+                                <p className="text-sm font-medium mb-2">Creación automática en Keycloak:</p>
+                                <ul className="text-sm text-muted-foreground space-y-1">
+                                    <li>✓ Usuario se creará automáticamente en Keycloak y en la base de datos</li>
+                                    <li>✓ El DNI se usará como username en Keycloak</li>
+                                    <li>✓ La contraseña ingresada será permanente (no temporal)</li>
+                                    <li>✓ El email se marcará como verificado</li>
+                                    <li>✓ El estado se sincronizará automáticamente</li>
+                                </ul>
+                            </div>
+                        )}
 
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>

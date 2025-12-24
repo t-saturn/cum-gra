@@ -41,7 +41,6 @@ export const fn_get_modules = async (
     }
 
     const data: ModulesListResponse = await res.json();
-    console.log('Módulos obtenidos:', data);
     
     return data;
   } catch (err) {

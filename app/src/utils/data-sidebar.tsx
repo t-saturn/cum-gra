@@ -100,6 +100,11 @@ export const baseMenus: SidebarMenuGroup[] = [
             url: '/dashboard/security/application-roles',
           },
           {
+            label: 'Roles por módulo',
+            icon: Layers,
+            url: '/dashboard/security/module-roles',
+          },
+          {
             label: 'Asignación de Roles',
             icon: UserCog,
             url: '/dashboard/security/user-roles',
@@ -113,21 +118,21 @@ export const baseMenus: SidebarMenuGroup[] = [
       },
     ],
   },
-  {
-    title: 'Configuración',
-    menu: [
-      {
-        label: 'Ajustes',
-        icon: Settings2,
-        url: '/dashboard/settings',
-        roles: ['admin'],
-      },
-      {
-        label: 'Cuenta',
-        icon: UserCircle,
-        url: '/dashboard/account',
-        roles: ['admin'],
-      },
-    ],
-  },
+  // {
+  //   title: 'Configuración',
+  //   menu: [
+  //     {
+  //       label: 'Ajustes',
+  //       icon: Settings2,
+  //       url: '/dashboard/settings',
+  //       roles: ['admin'],
+  //     },
+  //     {
+  //       label: 'Cuenta',
+  //       icon: UserCircle,
+  //       url: '/dashboard/account',
+  //       roles: ['admin'],
+  //     },
+  //   ],
+  // },
 ];

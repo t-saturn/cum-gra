@@ -58,7 +58,7 @@ GET http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
 ```
 
-**11. POST - Crear Usuario (completo)**
+**11. POST - Crear Usuario (completo con contraseña)**
 ```http
 POST http://localhost:8080/api/users
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -67,6 +67,7 @@ Content-Type: application/json
 {
   "email": "juan.perez@regionayacucho.gob.pe",
   "dni": "12345678",
+  "password": "MiClaveSegura123",
   "first_name": "Juan",
   "last_name": "Pérez García",
   "phone": "+51987654321",
@@ -78,7 +79,7 @@ Content-Type: application/json
 }
 ```
 
-**12. POST - Crear Usuario (mínimo requerido)**
+**12. POST - Crear Usuario (mínimo requerido, contraseña = DNI)**
 ```http
 POST http://localhost:8080/api/users
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -87,6 +88,7 @@ Content-Type: application/json
 {
   "email": "maria.lopez@regionayacucho.gob.pe",
   "dni": "87654321",
+  "password": "87654321",
   "first_name": "María",
   "last_name": "López Quispe"
 }
@@ -101,6 +103,7 @@ Content-Type: application/json
 {
   "email": "carlos.garcia@regionayacucho.gob.pe",
   "dni": "11223344",
+  "password": "Carlos2024!",
   "first_name": "Carlos",
   "last_name": "García Rojas",
   "phone": "+51912345678",
@@ -118,13 +121,23 @@ Content-Type: application/json
 {
   "email": "temporal@regionayacucho.gob.pe",
   "dni": "55667788",
+  "password": "55667788",
   "first_name": "Temporal",
   "last_name": "Usuario",
   "status": "suspended"
 }
 ```
 
-**15. PUT - Actualizar Usuario (completo)**
+**15. POST - Carga Masiva de Usuarios desde Excel**
+```http
+POST http://localhost:8080/api/users/bulk
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+Content-Type: multipart/form-data
+
+file: usuarios.xlsx
+```
+
+**16. PUT - Actualizar Usuario (completo)**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -142,7 +155,7 @@ Content-Type: application/json
 }
 ```
 
-**16. PUT - Actualizar solo Email**
+**17. PUT - Actualizar solo Email**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -153,7 +166,7 @@ Content-Type: application/json
 }
 ```
 
-**17. PUT - Actualizar solo Status (suspender usuario)**
+**18. PUT - Actualizar solo Status (suspender usuario)**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -164,7 +177,7 @@ Content-Type: application/json
 }
 ```
 
-**18. PUT - Actualizar solo Status (activar usuario)**
+**19. PUT - Actualizar solo Status (activar usuario)**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -175,7 +188,7 @@ Content-Type: application/json
 }
 ```
 
-**19. PUT - Cambiar Posición Estructural**
+**20. PUT - Cambiar Posición Estructural**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -186,7 +199,7 @@ Content-Type: application/json
 }
 ```
 
-**20. PUT - Cambiar Unidad Orgánica**
+**21. PUT - Cambiar Unidad Orgánica**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -197,7 +210,7 @@ Content-Type: application/json
 }
 ```
 
-**21. PUT - Quitar Posición Estructural**
+**22. PUT - Quitar Posición Estructural**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -208,7 +221,7 @@ Content-Type: application/json
 }
 ```
 
-**22. PUT - Actualizar datos personales**
+**23. PUT - Actualizar datos personales**
 ```http
 PUT http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
@@ -221,19 +234,56 @@ Content-Type: application/json
 }
 ```
 
-**23. DELETE - Eliminar Usuario (Soft Delete)**
+**24. DELETE - Eliminar Usuario (Soft Delete)**
 ```http
 DELETE http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
 ```
 
-**24. PATCH - Restaurar Usuario**
+**25. PATCH - Restaurar Usuario**
 ```http
 PATCH http://localhost:8080/api/users/a54e954d-0c61-4861-ab94-d49eaf516672/restore
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
 ```
 
-**Respuestas esperadas:**
+**26. GET - Descargar Plantilla Excel para Carga Masiva**
+```http
+GET http://localhost:8080/api/users/template/download
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
+```
+
+**Respuesta:**
+- Archivo Excel (.xlsx) descargable
+- Nombre: `plantilla_usuarios_YYYYMMDD_HHMMSS.xlsx`
+
+**Contenido del archivo:**
+
+**Hoja 1 - "Usuarios":** Plantilla para llenar con los datos de usuarios
+- Columnas: email, dni, first_name, last_name, password, phone, status, cod_emp_sgd, structural_position_id, organic_unit_id, ubigeo_id
+- Incluye una fila de ejemplo
+
+**Hoja 2 - "Posiciones":** Listado de todas las posiciones estructurales disponibles
+- Columnas: ID, Código, Nombre, Nivel
+- Filtrado: Solo posiciones activas y no eliminadas
+
+**Hoja 3 - "Unidades Orgánicas":** Listado de todas las unidades orgánicas disponibles
+- Columnas: ID, Nombre, Acrónimo, ID Padre
+- Filtrado: Solo unidades activas y no eliminadas
+
+**Hoja 4 - "Ubigeos":** Listado de todos los ubigeos (ubicaciones geográficas)
+- Columnas: ID, Código Ubigeo, Departamento, Provincia, Distrito
+- Ordenado por departamento, provincia, distrito
+
+**Uso:**
+1. Descargar la plantilla
+2. Revisar las hojas 2, 3 y 4 para conocer los IDs disponibles
+3. Llenar la hoja 1 con los datos de usuarios
+4. Usar los IDs de las hojas de referencia en las columnas correspondientes
+5. Subir el archivo completado usando el endpoint POST /api/users/bulk
+
+---
+
+## Respuestas esperadas:
 
 **GET /api/users (200 OK):**
 ```json
@@ -371,6 +421,37 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 }
 ```
 
+**POST /api/users/bulk (200 OK):**
+```json
+{
+  "success_count": 48,
+  "failure_count": 2,
+  "results": [
+    {
+      "dni": "12345678",
+      "email": "juan.perez@regionayacucho.gob.pe",
+      "success": true,
+      "user": {
+        "id": "b54e954d-0c61-4861-ab94-d49eaf516673",
+        "email": "juan.perez@regionayacucho.gob.pe",
+        "dni": "12345678",
+        "status": "active",
+        "first_name": "Juan",
+        "last_name": "Pérez García",
+        "created_at": "2024-12-23T10:00:00Z",
+        "updated_at": "2024-12-23T10:00:00Z"
+      }
+    },
+    {
+      "dni": "87654321",
+      "email": "duplicado@regionayacucho.gob.pe",
+      "success": false,
+      "error": "ya existe un usuario con este email"
+    }
+  ]
+}
+```
+
 **DELETE /api/users/:id (200 OK):**
 ```json
 {
@@ -385,7 +466,16 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 }
 ```
 
-**Errores comunes:**
+---
+
+## Errores comunes:
+
+**400 Bad Request (datos inválidos):**
+```json
+{
+  "error": "Datos inválidos"
+}
+```
 
 **400 Bad Request (posición no encontrada):**
 ```json
@@ -398,6 +488,20 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 ```json
 {
   "error": "unidad orgánica no encontrada"
+}
+```
+
+**401 Unauthorized (token inválido):**
+```json
+{
+  "error": "Token no proporcionado"
+}
+```
+
+**401 Unauthorized (usuario no autenticado):**
+```json
+{
+  "error": "Usuario no autenticado"
 }
 ```
 
@@ -422,9 +526,41 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 }
 ```
 
-**Notas importantes:**
-- **Status válidos**: `active`, `suspended`, `inactive`
+**502 Bad Gateway (error de Keycloak):**
+```json
+{
+  "error": "Error de comunicación con el sistema de autenticación"
+}
+```
+
+---
+
+## Notas importantes:
+
+### Creación de Usuarios
+- **Password**: Es **REQUERIDO** en todas las creaciones
 - **DNI**: Debe ser exactamente 8 dígitos numéricos
+- **Username en Keycloak**: Se usa el DNI como username
+- **Email verificado**: Todos los usuarios se crean con email verificado
+- **Contraseña permanente**: Las contraseñas NO son temporales
+- **UUID**: El ID del usuario es el UUID generado por Keycloak
+- **Status válidos**: `active`, `suspended`, `inactive`
 - **Email**: Debe ser un email válido
 - **Phone**: Formato internacional recomendado (ej: +51987654321)
-- **Ubigeo**: Código de ubicación geográfica peruano (departamento-provincia-distrito)
+
+### Carga Masiva desde Excel
+**Formato del archivo Excel (.xlsx o .xls):**
+
+| Columna | Nombre | Requerido | Descripción | Ejemplo |
+|---------|--------|-----------|-------------|---------|
+| A | email | Sí | Email del usuario | juan@regionayacucho.gob.pe |
+| B | dni | Sí | DNI de 8 dígitos | 12345678 |
+| C | first_name | Sí | Nombres | Juan |
+| D | last_name | Sí | Apellidos | Pérez García |
+| E | password | No | Contraseña (si vacío usa DNI) | MiClave123 |
+| F | phone | No | Teléfono | +51987654321 |
+| G | status | No | Estado: active/suspended/inactive | active |
+| H | cod_emp_sgd | No | Código empleado SGD (max 5) | EMP01 |
+| I | structural_position_id | No | ID posición estructural | 3 |
+| J | organic_unit_id | No | ID unidad orgánica | 5 |
+| K | ubigeo_id | No | ID ubicación geográfica | 1 |

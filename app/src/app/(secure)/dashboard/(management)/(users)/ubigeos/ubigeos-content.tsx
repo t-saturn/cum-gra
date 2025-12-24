@@ -10,13 +10,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, Download, MoreHorizontal, Edit, Trash2, Eye, MapPin, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search, Plus, Download, MoreHorizontal, Edit, Trash2, Eye, MapPin, ChevronLeft, ChevronRight, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { fn_get_ubigeos } from '@/actions/ubigeos/fn_get_ubigeos';
 import { fn_delete_ubigeo } from '@/actions/ubigeos/fn_delete_ubigeo';
 import type { UbigeoItem } from '@/types/ubigeos';
 import { UbigeosStatsCards } from '@/components/custom/card/ubigeos-stats-card';
 import UbigeoModal from './ubigeo-modal';
+import BulkUploadUbigeosModal from './bulk-upload-modal';
 
 export default function UbigeosContent() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function UbigeosContent() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUbigeo, setSelectedUbigeo] = useState<UbigeoItem | null>(null);
+  const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
 
   const loadUbigeos = async () => {
     try {
@@ -152,9 +154,9 @@ export default function UbigeosContent() {
           <p className="mt-1 text-muted-foreground">Gestiona los códigos de ubicación geográfica del Perú</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
-            <Download className="mr-2 w-4 h-4" />
-            Exportar
+          <Button variant="outline" onClick={() => setIsBulkUploadModalOpen(true)}>
+            <Upload className="mr-2 w-4 h-4" />
+            Carga Masiva
           </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
@@ -329,6 +331,13 @@ export default function UbigeosContent() {
 
       {/* Modal Editar */}
       <UbigeoModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} ubigeo={selectedUbigeo} onSuccess={loadUbigeos} />
+
+      {/* Modal Subir Masivo */}
+      <BulkUploadUbigeosModal
+        open={isBulkUploadModalOpen}
+        onOpenChange={setIsBulkUploadModalOpen}
+        onSuccess={loadUbigeos}
+      />
 
       {/* Modal Detalles */}
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>

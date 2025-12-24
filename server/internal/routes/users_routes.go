@@ -21,6 +21,8 @@ func RegisterUserRoutes(router fiber.Router) {
 	protected.Get("/stats", handlers.GetUsersStatsHandler)
 	protected.Get("/:id", handlers.GetUserByIDHandler)
 	protected.Post("/", handlers.CreateUserHandler)
+	protected.Post("/bulk", handlers.BulkCreateUsersHandler)
+	protected.Get("/template/download", handlers.DownloadUsersTemplateHandler)
 	protected.Put("/:id", handlers.UpdateUserHandler)
 	protected.Delete("/:id", handlers.DeleteUserHandler)
 	protected.Patch("/:id/restore", handlers.RestoreUserHandler)
