@@ -9,20 +9,21 @@ import (
 
 func RegisterUbigeosRoutes(router fiber.Router) {
 	app := router.Group("/ubigeos")
-	
-	// Aplicar KeycloakAuth a todas las rutas
 	app.Use(middlewares.KeycloakAuth())
 
-	// Rutas protegidas
 	protected := app.Group("")
 	protected.Use(middlewares.RequireResourceRole("realm-management", "manage-users"))
-	
-	// Endpoints para selects (sin paginación)
+
+	// Endpoints para selects
 	protected.Get("/departments", handlers.GetDepartmentsHandler)
 	protected.Get("/provinces", handlers.GetProvincesByDepartmentHandler)
 	protected.Get("/districts", handlers.GetDistrictsByProvinceHandler)
-	
-	// Endpoints CRUD regulares
+
+	// Plantilla y carga masiva
+	protected.Get("/template", handlers.DownloadUbigeosTemplateHandler)
+	protected.Post("/bulk", handlers.BulkCreateUbigeosHandler)
+
+	// CRUD
 	protected.Get("/", handlers.GetUbigeosHandler)
 	protected.Get("/stats", handlers.GetUbigeosStatsHandler)
 	protected.Get("/:id", handlers.GetUbigeoByIDHandler)

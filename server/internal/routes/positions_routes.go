@@ -9,14 +9,16 @@ import (
 
 func RegisterPositionRoutes(router fiber.Router) {
 	app := router.Group("/positions")
-	
-	// Aplicar KeycloakAuth a todas las rutas
 	app.Use(middlewares.KeycloakAuth())
 
-	// Rutas protegidas
 	protected := app.Group("")
 	protected.Use(middlewares.RequireResourceRole("realm-management", "manage-users"))
-	
+
+	// Plantilla y carga masiva
+	protected.Get("/template", handlers.DownloadPositionsTemplateHandler)
+	protected.Post("/bulk", handlers.BulkCreatePositionsHandler)
+
+	// CRUD
 	protected.Get("/", handlers.GetStructuralPositionsHandler)
 	protected.Get("/stats", handlers.GetStructuralPositionsStatsHandler)
 	protected.Get("/:id", handlers.GetStructuralPositionByIDHandler)
