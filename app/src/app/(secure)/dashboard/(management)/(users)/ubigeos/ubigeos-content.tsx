@@ -152,10 +152,6 @@ export default function UbigeosContent() {
           <p className="mt-1 text-muted-foreground">Gestiona los códigos de ubicación geográfica del Perú</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
-            <Download className="mr-2 w-4 h-4" />
-            Exportar
-          </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
             Nuevo Ubigeo

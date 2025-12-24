@@ -173,10 +173,6 @@ export default function StructuralPositionsContent() {
           <p className="mt-1 text-muted-foreground">Gestiona los cargos y posiciones de la estructura organizacional</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
-            <Download className="mr-2 w-4 h-4" />
-            Exportar
-          </Button>
           <Button className="bg-linear-to-r from-primary to-chart-1" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="mr-2 w-4 h-4" />
             Nueva Posición

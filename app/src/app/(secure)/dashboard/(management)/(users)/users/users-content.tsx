@@ -244,7 +244,7 @@ export default function UsersContent() {
           <h1 className="font-bold text-foreground text-3xl">Usuarios</h1>
           <p className="mt-1 text-muted-foreground">Gestiona los usuarios del sistema y sincronización con Keycloak</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {!showDeleted && unsyncedUsers.length > 0 && (
             <Button variant="outline" className="relative" onClick={() => setIsSyncModalOpen(true)}>
               <RefreshCw className="mr-2 w-4 h-4" />
