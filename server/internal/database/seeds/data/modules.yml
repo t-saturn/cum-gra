@@ -1,7 +1,7 @@
 # CENTRAL USER MANAGER (cum)
 
 # Grupo: Menú
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Menú"
   name: "Dashboard"
   route: "/dashboard"
@@ -14,7 +14,7 @@
 
 # Grupo: Gestión
 # Módulo padre: Usuarios
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Usuarios"
   route: "/dashboard/users"
@@ -25,7 +25,7 @@
     - "admin"
 
 # Submódulos de Usuarios
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Usuarios"
   route: "/dashboard/users"
@@ -36,7 +36,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Posiciones Estructurales"
   route: "/dashboard/structural-positions"
@@ -47,7 +47,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Unidades Orgánicas"
   route: "/dashboard/organic-units"
@@ -58,7 +58,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Ubigeos"
   route: "/dashboard/ubigeos"
@@ -70,7 +70,7 @@
     - "admin"
 
 # Módulo padre: Aplicaciones
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Aplicaciones"
   route: "/dashboard/applications"
@@ -81,7 +81,7 @@
     - "admin"
 
 # Submódulos de Aplicaciones
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Aplicaciones"
   route: "/dashboard/applications"
@@ -92,7 +92,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Gestión"
   name: "Módulos"
   route: "/dashboard/modules"
@@ -105,7 +105,7 @@
 
 # Grupo: Seguridad
 # Módulo padre: Seguridad
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Seguridad"
   route: "/dashboard/security"
@@ -116,7 +116,7 @@
     - "admin"
 
 # Submódulos de Seguridad
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Sesiones Activas"
   route: "/dashboard/security/active-sessions"
@@ -128,7 +128,7 @@
     - "admin"
 
 # Módulo padre: Roles y Permisos
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Roles y Permisos"
   route: "/dashboard/security/roles-permissions"
@@ -139,7 +139,7 @@
     - "admin"
 
 # Submódulos de Roles y Permisos
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Roles de Aplicación"
   route: "/dashboard/security/application-roles"
@@ -150,7 +150,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Roles por módulo"
   route: "/dashboard/security/module-roles"
@@ -161,7 +161,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Asignación de Roles"
   route: "/dashboard/security/user-roles"
@@ -172,7 +172,7 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
+- application_client_id: "cum-gra"
   item: "Seguridad"
   name: "Restricción de Usuario"
   route: "/dashboard/security/user-restrictions"

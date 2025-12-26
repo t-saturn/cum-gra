@@ -7,7 +7,7 @@
   status: "active"
 
 - name: "central user manager"
-  client_id: "cum-app"
+  client_id: "cum-gra"
   client_secret: "nix-os-by-tsaturn-team-sponsored-by-otic"
   domain: "https://cum.regionayacucho.gob.pe"
   logo: "https://files.regionayacucho.gob.pe/apps/central-user-manager-logo.svg"

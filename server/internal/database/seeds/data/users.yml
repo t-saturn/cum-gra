@@ -8,7 +8,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "admin"
     - application_client_id: "res-app"
       role_name: "admin"
@@ -24,7 +24,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "default"
     - application_client_id: "res-app"
       role_name: "default"
@@ -40,7 +40,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "default"
     - application_client_id: "res-app"
       role_name: "designer"
@@ -56,7 +56,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "default"
     - application_client_id: "res-app"
       role_name: "approval"
@@ -72,7 +72,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "default"
     - application_client_id: "res-app"
       role_name: "sign"
@@ -88,7 +88,7 @@
   roles:
     - application_client_id: "intranet-app"
       role_name: "default"
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "default"
     - application_client_id: "res-app"
       role_name: "citizen"
@@ -110,7 +110,7 @@
     - application_client_id: "intranet-app"
       role_name: "default"
 
-    - application_client_id: "cum-app"
+    - application_client_id: "cum-gra"
       role_name: "admin"
 
     - application_client_id: "res-app"
