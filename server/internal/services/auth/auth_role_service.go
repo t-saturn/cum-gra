@@ -5,7 +5,6 @@ import (
 
 	"server/internal/config"
 	"server/internal/dto"
-	"server/internal/mapper"
 	"server/internal/models"
 	"server/pkg/logger"
 
@@ -54,21 +53,24 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 		return nil, err
 	}
 
-	restricted := make(map[uuid.UUID]bool, len(restrictions))
+	// Mapa de restricciones por módulo
+	restrictionMap := make(map[uuid.UUID]models.UserModuleRestriction, len(restrictions))
 	for _, r := range restrictions {
-		restricted[r.ModuleID] = true
+		restrictionMap[r.ModuleID] = r
 	}
 
-	modulesMap := make(map[uuid.UUID]dto.ModuleDTO)
+	// Construir módulos con permisos y restricciones
+	modulesMap := make(map[uuid.UUID]dto.ModuleWithPerms)
 	for _, mp := range modulePerms {
-		if mp.Module == nil || restricted[mp.ModuleID] {
+		if mp.Module == nil {
 			continue
 		}
-		mod := mapper.ToModuleDTO(mp.Module)
-		modulesMap[mod.ID] = mod
+
+		mod := toModuleWithPerms(mp.Module, mp.PermissionType, restrictionMap)
+		modulesMap[mp.ModuleID] = mod
 	}
 
-	modules := make([]dto.ModuleDTO, 0, len(modulesMap))
+	modules := make([]dto.ModuleWithPerms, 0, len(modulesMap))
 	for _, m := range modulesMap {
 		modules = append(modules, m)
 	}
@@ -78,4 +80,47 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 		RoleName: role.Name,
 		Modules:  modules,
 	}, nil
+}
+
+func toModuleWithPerms(m *models.Module, permType string, restrictions map[uuid.UUID]models.UserModuleRestriction) dto.ModuleWithPerms {
+	mod := dto.ModuleWithPerms{
+		ID:             m.ID.String(),
+		Item:           m.Item,
+		Name:           m.Name,
+		Route:          m.Route,
+		Icon:           m.Icon,
+		SortOrder:      m.SortOrder,
+		Status:         m.Status,
+		PermissionType: permType,
+	}
+
+	if m.ParentID != nil {
+		parentStr := m.ParentID.String()
+		mod.ParentID = &parentStr
+	}
+
+	// Agregar restricción si existe
+	if r, exists := restrictions[m.ID]; exists {
+		mod.Restriction = &dto.ModuleRestriction{
+			RestrictionType:    r.RestrictionType,
+			MaxPermissionLevel: r.MaxPermissionLevel,
+			Reason:             r.Reason,
+		}
+		if r.ExpiresAt != nil {
+			exp := r.ExpiresAt.Format(time.RFC3339)
+			mod.Restriction.ExpiresAt = &exp
+		}
+	}
+
+	// Procesar hijos si existen
+	if len(m.Children) > 0 {
+		mod.Children = make([]dto.ModuleWithPerms, 0, len(m.Children))
+		for _, child := range m.Children {
+			// Los hijos heredan el permiso del padre (o podrías buscar su permiso específico)
+			childMod := toModuleWithPerms(&child, permType, restrictions)
+			mod.Children = append(mod.Children, childMod)
+		}
+	}
+
+	return mod
 }

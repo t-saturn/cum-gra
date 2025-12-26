@@ -55,7 +55,7 @@ export const fn_get_user_role = async (clientId?: string): Promise<UserRoleRespo
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ 
-        client_id: appClientId,  // Ya no enviamos user_id, se extrae del token
+        client_id: appClientId,
       }),
       cache: 'no-store',
     });
@@ -66,6 +66,8 @@ export const fn_get_user_role = async (clientId?: string): Promise<UserRoleRespo
     }
 
     const data = await res.json();
+
+    console.log('Rol y módulos:', data);
 
     return {
       id: data.role_id,
