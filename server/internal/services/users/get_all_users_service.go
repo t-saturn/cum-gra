@@ -9,21 +9,21 @@ func GetAllUsers(onlyActive bool) ([]dto.UserSelectDTO, error) {
 	db := config.DB
 
 	query := db.Table("users").
-		Select("users.id, users.email, users.dni, user_details.first_name, user_details.last_name, user_details.status").
+		Select("users.id, users.email, users.dni, users.status, user_details.first_name, user_details.last_name").
 		Joins("LEFT JOIN user_details ON users.id = user_details.user_id").
 		Where("users.is_deleted = ?", false)
 
 	if onlyActive {
-		query = query.Where("user_details.status = ?", "active")
+		query = query.Where("users.status = ?", "active")
 	}
 
 	var results []struct {
 		ID        string  `gorm:"column:id"`
 		Email     string  `gorm:"column:email"`
 		DNI       string  `gorm:"column:dni"`
+		Status    string  `gorm:"column:status"`
 		FirstName *string `gorm:"column:first_name"`
 		LastName  *string `gorm:"column:last_name"`
-		Status    string  `gorm:"column:status"`
 	}
 
 	if err := query.Order("user_details.first_name ASC, user_details.last_name ASC").

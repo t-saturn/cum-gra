@@ -1,7 +1,7 @@
 'use server';
 
 import { fn_get_applications } from '@/actions/applications/fn_get_applications';
-import { fn_get_users } from '@/actions/users/fn_get_users';
+import { fn_get_all_users } from '@/actions/users/fn_get_all_users';
 
 export interface RestrictionFormOptions {
   applications: Array<{ id: string; name: string }>;
@@ -11,7 +11,7 @@ export interface RestrictionFormOptions {
 export const fn_get_restriction_form_options = async (): Promise<RestrictionFormOptions> => {
   const [apps, users] = await Promise.all([
     fn_get_applications(1, 100, false),
-    fn_get_users(1, 200, { status: 'active', is_deleted: false }),
+    fn_get_all_users(true), // solo activos
   ]);
   
   return {
@@ -19,9 +19,9 @@ export const fn_get_restriction_form_options = async (): Promise<RestrictionForm
       id: a.id,
       name: a.name,
     })),
-    users: users.data.map((u) => ({
+    users: users.map((u) => ({
       id: u.id,
-      full_name: `${u.first_name} ${u.last_name}`.trim(), 
+      full_name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email,
       email: u.email,
       dni: u.dni,
     })),
