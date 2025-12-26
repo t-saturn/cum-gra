@@ -12,18 +12,24 @@ import (
 )
 
 func AuthRoleHandler(c fiber.Ctx) error {
-	var input dto.AuthRoleRequest
-
-	if err := c.Bind().Body(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Datos mal formateados"})
-	}
-	if err := validator.Validate.Struct(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{Errors: validator.FormatValidationError(err)})
+	// Obtener user_id del middleware (extraído del JWT)
+	userIDStr, ok := c.Locals("user_id").(string)
+	if !ok || userIDStr == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(dto.ErrorResponse{Error: "Usuario no autenticado"})
 	}
 
-	userID, err := uuid.Parse(input.UserID)
+	userID, err := uuid.Parse(userIDStr)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "UserID inválido"})
+	}
+
+	// Solo recibir client_id del body
+	var input dto.AuthRoleRequest
+	if bindErr := c.Bind().Body(&input); bindErr != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{Error: "Datos mal formateados"})
+	}
+	if err = validator.Validate.Struct(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(dto.ValidationErrorResponse{Errors: validator.FormatValidationError(err)})
 	}
 
 	resp, err := services.GetUserRoleAndModules(userID, input.ClientID)

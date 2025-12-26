@@ -4,14 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RoleProvider, type RoleValue } from '@/providers/role';
 import { toast } from 'sonner';
-
-const APP_CLIENT_ID = process.env.NEXT_PUBLIC_APP_CLIENT_ID!;
-
-type RoleApiResponse = {
-  id: string;
-  role?: string;
-  modules?: any[];
-};
+import { fn_get_user_role } from '@/actions/auth/fn_get_user_role';
 
 const RoleGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -22,52 +15,48 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
 
     const fetchRole = async () => {
       try {
-        if (!APP_CLIENT_ID) {
-          toast.error('Falta env NEXT_PUBLIC_APP_CLIENT_ID');
-          if (!stop) setRole(null);
-          return;
-        }
+        const data = await fn_get_user_role();
 
-        const res = await fetch(`/api/me/role?client_id=${encodeURIComponent(APP_CLIENT_ID)}`, {
-          method: 'GET',
-          cache: 'no-store',
-        });
+        console.log('Role data:', data);
 
-        // CASO 1: No autenticado (Sin sesión Keycloak) -> Dejar que SessionGuard maneje o poner null
-        if (res.status === 401) {
-          if (!stop) setRole(null);
-          return;
-        }
-
-        // CASO 2: Autenticado, pero SIN ACCESO a esta App (Backend devuelve 404)
-        if (res.status === 404) {
-          console.warn('Usuario autenticado pero sin rol asignado para este cliente.');
-          router.replace('/unauthorized');
-          return; // IMPORTANTE: Detener ejecución para no hacer setRole(null) y causar bucle
-        }
-
-        if (!res.ok) throw new Error('role fetch failed');
-
-        const data = (await res.json()) as RoleApiResponse;
-
-        // CASO 3: Respuesta 200, pero array de módulos vacío (Defensa en profundidad)
+        // CASO: Respuesta OK, pero array de módulos vacío
         if (!data.modules || data.modules.length === 0) {
           router.replace('/unauthorized');
           return;
         }
 
         if (!stop) {
-          setRole(
-            data?.role
-              ? { id: data.id, name: data.role, modules: data.modules || [] }
-              : null
-          );
+          setRole({
+            id: data.id,
+            name: data.role,
+            modules: data.modules,
+          });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching role:', error);
-        // Si hay un error de red o desconocido, podrías mandar a unauthorized o null
-        // Para evitar bucles en dashboard, mejor mandamos a unauthorized si falla drásticamente
-        if (!stop) setRole(null); 
+        const message = error?.message || '';
+
+        // CASO: No autenticado
+        if (message.includes('No autenticado')) {
+          if (!stop) setRole(null);
+          return;
+        }
+
+        // CASO: Sin rol asignado (404 del backend)
+        if (message.includes('404') || message.includes('no tiene rol')) {
+          router.replace('/unauthorized');
+          return;
+        }
+
+        // CASO: Falta client_id
+        if (message.includes('client_id')) {
+          toast.error('Falta configuración de la aplicación (client_id)');
+          if (!stop) setRole(null);
+          return;
+        }
+
+        // Otros errores
+        if (!stop) setRole(null);
       }
     };
 
@@ -78,8 +67,6 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
   }, [router]);
 
   useEffect(() => {
-    // Si role es null (ej. 401), intentamos ir a dashboard (que probablemente redirija a login por el SessionGuard)
-    // Pero si fue 404, el return temprano de arriba evitó que lleguemos aquí con null, ya que redirigió a unauthorized.
     if (role === null) router.replace('/dashboard');
   }, [role, router]);
 

@@ -13,8 +13,7 @@ type AuthSinginResponse struct {
 }
 
 type AuthRoleRequest struct {
-	UserID   string `json:"user_id"`
-	ClientID string `json:"client_id"`
+	ClientID string `json:"client_id" validate:"required"`
 }
 
 type AuthRoleResponse struct {
