@@ -21,6 +21,7 @@ func RegisterPositionRoutes(router fiber.Router) {
 	// CRUD
 	protected.Get("/", handlers.GetStructuralPositionsHandler)
 	protected.Get("/stats", handlers.GetStructuralPositionsStatsHandler)
+	protected.Get("/all", handlers.GetAllPositionsHandler)
 	protected.Get("/:id", handlers.GetStructuralPositionByIDHandler)
 	protected.Post("/", handlers.CreateStructuralPositionHandler)
 	protected.Put("/:id", handlers.UpdateStructuralPositionHandler)

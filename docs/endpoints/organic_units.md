@@ -4,6 +4,13 @@ GET http://localhost:8080/api/organic-units?page=1&page_size=10
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
 ```
 
+### Unidades Orgánicas - Listado completo para Selects
+```http
+GET http://localhost:8080/api/organic-units/all
+GET http://localhost:8080/api/organic-units/all?only_active=false
+Authorization: Bearer TOKEN
+```
+
 **2. GET - Listar Unidades Orgánicas raíz (sin padre)**
 ```http
 GET http://localhost:8080/api/organic-units?page=1&page_size=10&parent_id=null

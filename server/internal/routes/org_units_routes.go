@@ -21,6 +21,7 @@ func RegisterOrganicUnitsRoutes(router fiber.Router) {
 	// CRUD
 	protected.Get("/", handlers.GetOrganicUnitsHandler)
 	protected.Get("/stats", handlers.GetOrganicUnitsStatsHandler)
+	protected.Get("/all", handlers.GetAllOrganicUnitsHandler)
 	protected.Get("/:id", handlers.GetOrganicUnitByIDHandler)
 	protected.Post("/", handlers.CreateOrganicUnitHandler)
 	protected.Put("/:id", handlers.UpdateOrganicUnitHandler)

@@ -4,6 +4,14 @@ GET http://localhost:8080/api/positions?page=1&page_size=10
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
 ```
 
+### Posiciones Estructurales - Listado completo para Selects
+
+```http
+GET http://localhost:8080/api/positions/all
+GET http://localhost:8080/api/positions/all?only_active=false
+Authorization: Bearer TOKEN
+```
+
 **2. GET - Listar Posiciones por Nivel**
 ```http
 GET http://localhost:8080/api/positions?page=1&page_size=10&level=1

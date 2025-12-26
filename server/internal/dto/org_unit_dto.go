@@ -62,3 +62,11 @@ type UpdateOrganicUnitRequest struct {
 	IsActive    *bool   `json:"is_active"`
 	CodDepSGD   *string `json:"cod_dep_sgd" validate:"omitempty,max=5"`
 }
+
+type OrganicUnitSelectDTO struct {
+	ID       string  `json:"id"`
+	Name     string  `json:"name"`
+	Acronym  string  `json:"acronym"`
+	ParentID *string `json:"parent_id,omitempty"`
+	IsActive bool    `json:"is_active"`
+}
