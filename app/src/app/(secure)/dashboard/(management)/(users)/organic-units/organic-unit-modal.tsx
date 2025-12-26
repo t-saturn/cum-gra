@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { fn_create_organic_unit, CreateOrganicUnitInput } from '@/actions/units/fn_create_organic_unit';
 import { fn_update_organic_unit, UpdateOrganicUnitInput } from '@/actions/units/fn_update_organic_unit';
-import { fn_get_organic_units } from '@/actions/units/fn_get_organic_units';
+import { fn_get_all_organic_units, OrganicUnitSelectItem } from '@/actions/units/fn_get_all_organic_units';
 import type { OrganicUnitItemDTO } from '@/types/units';
 
 interface OrganicUnitModalProps {
@@ -24,7 +24,7 @@ interface OrganicUnitModalProps {
 export default function OrganicUnitModal({ open, onOpenChange, unit, onSuccess }: OrganicUnitModalProps) {
   const [loading, setLoading] = useState(false);
   const [loadingParents, setLoadingParents] = useState(false);
-  const [parentUnits, setParentUnits] = useState<OrganicUnitItemDTO[]>([]);
+  const [parentUnits, setParentUnits] = useState<OrganicUnitSelectItem[]>([]);
   const [formData, setFormData] = useState<CreateOrganicUnitInput>({
     name: '',
     acronym: '',
@@ -40,9 +40,9 @@ export default function OrganicUnitModal({ open, onOpenChange, unit, onSuccess }
     const loadParentUnits = async () => {
       try {
         setLoadingParents(true);
-        const response = await fn_get_organic_units(1, 100, false);
+        const units = await fn_get_all_organic_units(false);
         // Filtrar la unidad actual si estamos editando
-        const filtered = unit ? response.data.filter((u) => u.id !== unit.id) : response.data;
+        const filtered = unit ? units.filter((u) => u.id !== unit.id) : units;
         setParentUnits(filtered);
       } catch (err) {
         console.error('Error al cargar unidades padre:', err);
@@ -174,7 +174,7 @@ export default function OrganicUnitModal({ open, onOpenChange, unit, onSuccess }
           <div className="space-y-2">
             <Label htmlFor="parent_id">Unidad Padre (Opcional)</Label>
             <Select
-              value={formData.parent_id}
+              value={formData.parent_id || 'none'}
               onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
               disabled={loadingParents}
             >
