@@ -36,8 +36,9 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 
 	var modulePerms []models.ModuleRolePermission
 	if err := db.
-		Preload("Module.Children").
-		Preload("Module.Parent").
+		Preload("Module", "deleted_at IS NULL").
+		Preload("Module.Children", "deleted_at IS NULL").
+		Preload("Module.Parent", "deleted_at IS NULL").
 		Where("application_role_id = ? AND is_deleted = false", role.ID).
 		Find(&modulePerms).Error; err != nil {
 		logger.Log.Error("Error obteniendo módulos del rol:", err)
