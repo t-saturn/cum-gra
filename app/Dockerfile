@@ -1,46 +1,46 @@
-# ============ Deps ============
-FROM node:20-bookworm-slim AS deps
-WORKDIR /app
-ENV NEXT_TELEMETRY_DISABLED=1
-COPY package*.json ./
-# Usa ci si hay lockfile; si no, instala normal
-RUN if [ -f package-lock.json ]; then \
-  npm ci --legacy-peer-deps; \
-  else \
-  npm install --legacy-peer-deps; \
-  fi
-
 # ============ Build ============
-FROM node:20-bookworm-slim AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
+
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Reutiliza deps ya resueltas
-COPY --from=deps /app/node_modules ./node_modules
-# Copia el código
+# Instalar dependencias del sistema necesarias
+RUN apk add --no-cache openssl python3 make g++ build-base
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar dependencias
+RUN npm install --legacy-peer-deps
+
+# Copiar todo el proyecto
 COPY . .
-# Compila (genera .next)
+
+# Build de la app
 RUN npm run build
 
 # ============ Runtime ============
-FROM node:20-bookworm-slim AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=6161
 ENV HOSTNAME=0.0.0.0
 
-# Instala dependencias en modo producción
-COPY package*.json ./
-RUN if [ -f package-lock.json ]; then \
-  npm ci --omit=dev --legacy-peer-deps; \
-  else \
-  npm install --omit=dev --legacy-peer-deps; \
-  fi
+# Instalar utilitarios del sistema
+RUN apk add --no-cache openssl curl tzdata
 
-# Copia artefactos de build y estáticos
-COPY --from=builder /app/.next ./.next
+# Configurar zona horaria
+RUN cp /usr/share/zoneinfo/America/Lima /etc/localtime && \
+    echo "America/Lima" > /etc/timezone
+
+# Copiar desde builder
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
 
 EXPOSE 6161
+
 CMD ["npm", "start", "--", "-p", "6161"]
