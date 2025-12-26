@@ -70,7 +70,6 @@ docker-compose.override.yml
 docker-data/
 .docker/
 .dockerignore
-docker-compose*.yml
 .env.docker
 .env.production
 .env.development
