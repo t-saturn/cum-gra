@@ -67,14 +67,10 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
         modulesRef.current = data.modules;
 
         const allowedRoutes = extractRoutes(data.modules);
-        console.log('Rutas permitidas:', allowedRoutes);
-        console.log('Ruta actual:', pathname);
 
         const allowed = isRouteAllowed(pathname, allowedRoutes);
-        console.log('¿Ruta permitida?:', allowed);
 
         if (!allowed) {
-          console.log('Redirigiendo a /unauthorized');
           router.replace('/unauthorized');
           setIsAuthorized(false);
           return;
@@ -93,7 +89,6 @@ const RoleGuard = ({ children }: { children: React.ReactNode }) => {
       } catch (error: any) {
         if (!isMounted) return;
 
-        console.error('Error fetching role:', error);
         const message = error?.message || '';
 
         // Usuario no autenticado -> login

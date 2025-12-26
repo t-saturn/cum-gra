@@ -15,10 +15,6 @@ FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Env públicas usadas en build (lado cliente)
-ARG NEXT_PUBLIC_API_BASE
-ENV NEXT_PUBLIC_API_BASE=${NEXT_PUBLIC_API_BASE}
-
 # Reutiliza deps ya resueltas
 COPY --from=deps /app/node_modules ./node_modules
 # Copia el código
@@ -33,10 +29,6 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=6161
 ENV HOSTNAME=0.0.0.0
-
-# Reinyecta públicas si las necesitas para SSR/Route Handlers
-ARG NEXT_PUBLIC_API_BASE
-ENV NEXT_PUBLIC_API_BASE=${NEXT_PUBLIC_API_BASE}
 
 # Instala dependencias en modo producción
 COPY package*.json ./

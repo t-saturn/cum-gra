@@ -42,7 +42,7 @@ export const fn_get_user_role = async (clientId?: string): Promise<UserRoleRespo
     }
 
     // Usar clientId proporcionado o el de la variable de entorno
-    const appClientId = clientId || process.env.NEXT_PUBLIC_APP_CLIENT_ID || '';
+    const appClientId = clientId || process.env.APP_CLIENT_ID || '';
 
     if (!appClientId) {
       throw new Error('Falta el client_id de la aplicación');
