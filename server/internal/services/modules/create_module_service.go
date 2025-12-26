@@ -54,22 +54,25 @@ func CreateModule(req dto.CreateModuleRequest, createdBy uuid.UUID) (*dto.Module
 		parentID = &parsedParentID
 	}
 
-	// Verificar nombre único en la misma aplicación
-	var exists int64
-	query := db.Model(&models.Module{}).Where("name = ? AND deleted_at IS NULL", req.Name)
-	
-	if appID != nil {
-		query = query.Where("application_id = ?", *appID)
-	} else {
-		query = query.Where("application_id IS NULL")
-	}
-	
-	if err := query.Count(&exists).Error; err != nil {
-		return nil, err
-	}
+	// Verificar nombre único SOLO para módulos raíz (sin padre) en la misma aplicación
+	if parentID == nil {
+		var exists int64
+		query := db.Model(&models.Module{}).
+			Where("name = ? AND deleted_at IS NULL AND parent_id IS NULL", req.Name)
+		
+		if appID != nil {
+			query = query.Where("application_id = ?", *appID)
+		} else {
+			query = query.Where("application_id IS NULL")
+		}
+		
+		if err := query.Count(&exists).Error; err != nil {
+			return nil, err
+		}
 
-	if exists > 0 {
-		return nil, errors.New("ya existe un módulo con este nombre en esta aplicación")
+		if exists > 0 {
+			return nil, errors.New("ya existe un módulo raíz con este nombre en esta aplicación")
+		}
 	}
 
 	status := "active"
