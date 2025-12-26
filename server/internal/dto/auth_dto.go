@@ -23,17 +23,16 @@ type AuthRoleResponse struct {
 }
 
 type ModuleWithPerms struct {
-	ID             string              `json:"id"`
-	Item           *string             `json:"item"`
-	Name           string              `json:"name"`
-	Route          *string             `json:"route"`
-	Icon           *string             `json:"icon"`
-	ParentID       *string             `json:"parent_id"`
-	SortOrder      int                 `json:"sort_order"`
-	Status         string              `json:"status"`
-	PermissionType string              `json:"permission_type"`
-	Restriction    *ModuleRestriction  `json:"restriction,omitempty"`
-	Children       []ModuleWithPerms   `json:"children,omitempty"`
+	ID             string             `json:"id"`
+	Item           *string            `json:"item"`
+	Name           string             `json:"name"`
+	Route          *string            `json:"route"`
+	Icon           *string            `json:"icon"`
+	ParentID       *string            `json:"parent_id"`
+	SortOrder      int                `json:"sort_order"`
+	Status         string             `json:"status"`
+	PermissionType string             `json:"permission_type"`
+	Restriction    *ModuleRestriction `json:"restriction,omitempty"`
 }
 
 type ModuleRestriction struct {

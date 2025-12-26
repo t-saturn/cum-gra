@@ -33,17 +33,17 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 		return nil, gorm.ErrRecordNotFound
 	}
 
+	// Obtener permisos SIN preload de children
 	var modulePerms []models.ModuleRolePermission
 	if err := db.
 		Preload("Module", "deleted_at IS NULL").
-		Preload("Module.Children", "deleted_at IS NULL").
-		Preload("Module.Parent", "deleted_at IS NULL").
 		Where("application_role_id = ? AND is_deleted = false", role.ID).
 		Find(&modulePerms).Error; err != nil {
 		logger.Log.Error("Error obteniendo módulos del rol:", err)
 		return nil, err
 	}
 
+	// Obtener restricciones activas del usuario
 	now := time.Now()
 	var restrictions []models.UserModuleRestriction
 	if err := db.
@@ -59,14 +59,48 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 		restrictionMap[r.ModuleID] = r
 	}
 
-	// Construir módulos con permisos y restricciones
+	// Construir lista de módulos SIN duplicados y SIN children automáticos
 	modulesMap := make(map[uuid.UUID]dto.ModuleWithPerms)
 	for _, mp := range modulePerms {
 		if mp.Module == nil {
 			continue
 		}
 
-		mod := toModuleWithPerms(mp.Module, mp.PermissionType, restrictionMap)
+		// Si ya existe, saltar (evitar duplicados)
+		if _, exists := modulesMap[mp.ModuleID]; exists {
+			continue
+		}
+
+		mod := dto.ModuleWithPerms{
+			ID:             mp.Module.ID.String(),
+			Item:           mp.Module.Item,
+			Name:           mp.Module.Name,
+			Route:          mp.Module.Route,
+			Icon:           mp.Module.Icon,
+			SortOrder:      mp.Module.SortOrder,
+			Status:         mp.Module.Status,
+			PermissionType: mp.PermissionType,
+			// NO incluir children aquí
+		}
+
+		if mp.Module.ParentID != nil {
+			parentStr := mp.Module.ParentID.String()
+			mod.ParentID = &parentStr
+		}
+
+		// Agregar restricción si existe
+		if r, exists := restrictionMap[mp.Module.ID]; exists {
+			mod.Restriction = &dto.ModuleRestriction{
+				RestrictionType:    r.RestrictionType,
+				MaxPermissionLevel: r.MaxPermissionLevel,
+				Reason:             r.Reason,
+			}
+			if r.ExpiresAt != nil {
+				exp := r.ExpiresAt.Format(time.RFC3339)
+				mod.Restriction.ExpiresAt = &exp
+			}
+		}
+
 		modulesMap[mp.ModuleID] = mod
 	}
 
@@ -80,47 +114,4 @@ func GetUserRoleAndModules(userID uuid.UUID, clientID string) (*dto.AuthRoleResp
 		RoleName: role.Name,
 		Modules:  modules,
 	}, nil
-}
-
-func toModuleWithPerms(m *models.Module, permType string, restrictions map[uuid.UUID]models.UserModuleRestriction) dto.ModuleWithPerms {
-	mod := dto.ModuleWithPerms{
-		ID:             m.ID.String(),
-		Item:           m.Item,
-		Name:           m.Name,
-		Route:          m.Route,
-		Icon:           m.Icon,
-		SortOrder:      m.SortOrder,
-		Status:         m.Status,
-		PermissionType: permType,
-	}
-
-	if m.ParentID != nil {
-		parentStr := m.ParentID.String()
-		mod.ParentID = &parentStr
-	}
-
-	// Agregar restricción si existe
-	if r, exists := restrictions[m.ID]; exists {
-		mod.Restriction = &dto.ModuleRestriction{
-			RestrictionType:    r.RestrictionType,
-			MaxPermissionLevel: r.MaxPermissionLevel,
-			Reason:             r.Reason,
-		}
-		if r.ExpiresAt != nil {
-			exp := r.ExpiresAt.Format(time.RFC3339)
-			mod.Restriction.ExpiresAt = &exp
-		}
-	}
-
-	// Procesar hijos si existen
-	if len(m.Children) > 0 {
-		mod.Children = make([]dto.ModuleWithPerms, 0, len(m.Children))
-		for _, child := range m.Children {
-			// Los hijos heredan el permiso del padre (o podrías buscar su permiso específico)
-			childMod := toModuleWithPerms(&child, permType, restrictions)
-			mod.Children = append(mod.Children, childMod)
-		}
-	}
-
-	return mod
 }
