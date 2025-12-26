@@ -1,4 +1,3 @@
-// src/hooks/use-route-guard.ts
 'use client';
 
 import { useEffect, useState } from 'react';
