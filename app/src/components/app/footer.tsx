@@ -7,7 +7,7 @@ const ORG_NAME = 'Gobierno Regional de Ayacucho';
 const ORG_SUBTITLE = 'Sistema de Gestion Unica';
 const ORG_ADDRESS = 'Jr. Callao N 122, Ayacucho, Huamanga, Ayacucho';
 const ORG_PHONE = '066-303195';
-const ORG_EMAIL = 'kcalle@regionayacucho.gob.pe';
+const ORG_EMAIL = 'soporte@regionayacucho.gob.pe';
 
 const LINKS = {
   portalPrincipal: 'https://www.gob.pe/regionayacucho',
@@ -96,7 +96,7 @@ export const Footer: React.FC = () => {
 
                   return (
                     <div key={contact.label} className="flex items-start space-x-2">
-                      <IconComponent className="flex-shrink-0 mt-0.5 w-4 h-4 text-muted-foreground" />
+                      <IconComponent className="shrink-0 mt-0.5 w-4 h-4 text-muted-foreground" />
                       <div>
                         <p className="text-muted-foreground text-xs">{contact.label}</p>
                         {content}
