@@ -564,3 +564,21 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 | I | structural_position_id | No | ID posición estructural | 3 |
 | J | organic_unit_id | No | ID unidad orgánica | 5 |
 | K | ubigeo_id | No | ID ubicación geográfica | 1 |
+
+
+### Usuarios - Listado completo para Selects
+GET http://localhost:8080/api/users/all
+GET http://localhost:8080/api/users/all?only_active=false
+Authorization: Bearer TOKEN
+
+### Respuesta (200 OK):
+[
+  {
+    "id": "a54e954d-0c61-4861-ab94-d49eaf516672",
+    "email": "juan.perez@regionayacucho.gob.pe",
+    "dni": "12345678",
+    "first_name": "Juan",
+    "last_name": "Pérez García",
+    "status": "active"
+  }
+]

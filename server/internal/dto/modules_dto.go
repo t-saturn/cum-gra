@@ -81,3 +81,13 @@ type UpdateModuleRequest struct {
 	SortOrder *int    `json:"sort_order" validate:"omitempty,min=0"`
 	Status    *string `json:"status" validate:"omitempty,oneof=active inactive"`
 }
+
+type ModuleSelectDTO struct {
+	ID            string  `json:"id"`
+	Name          string  `json:"name"`
+	Item          *string `json:"item,omitempty"`
+	Icon          *string `json:"icon,omitempty"`
+	ParentID      *string `json:"parent_id,omitempty"`
+	ApplicationID *string `json:"application_id,omitempty"`
+	Status        string  `json:"status"`
+}

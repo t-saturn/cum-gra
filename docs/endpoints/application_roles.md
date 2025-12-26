@@ -199,3 +199,18 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
   "error": "ya existe un rol con este nombre en esta aplicación"
 }
 ```
+
+### Application Roles - Listado completo para Selects
+GET http://localhost:8080/api/application-roles/all
+GET http://localhost:8080/api/application-roles/all?application_id=550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer TOKEN
+
+### Respuesta (200 OK):
+[
+  {
+    "id": "770e8400-e29b-41d4-a716-446655440001",
+    "name": "Administrator",
+    "description": "Administrador con acceso completo",
+    "application_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
+]

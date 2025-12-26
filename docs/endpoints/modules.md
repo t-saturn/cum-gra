@@ -276,3 +276,22 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
   "error": "ya existe un módulo con este nombre en esta aplicación"
 }
 ```
+
+### Módulos - Listado completo para Selects
+GET http://localhost:8080/api/modules/all
+GET http://localhost:8080/api/modules/all?only_active=false
+GET http://localhost:8080/api/modules/all?application_id=550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer TOKEN
+
+### Respuesta (200 OK):
+[
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "name": "Dashboard",
+    "item": "1",
+    "icon": "LayoutDashboard",
+    "parent_id": null,
+    "application_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "active"
+  }
+]

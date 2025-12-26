@@ -130,3 +130,12 @@ type BulkCreateUserResult struct {
 	User    *UserDetailDTO  `json:"user,omitempty"`
 	Error   string          `json:"error,omitempty"`
 }
+
+type UserSelectDTO struct {
+	ID        string  `json:"id"`
+	Email     string  `json:"email"`
+	DNI       string  `json:"dni"`
+	FirstName *string `json:"first_name,omitempty"`
+	LastName  *string `json:"last_name,omitempty"`
+	Status    string  `json:"status"`
+}
