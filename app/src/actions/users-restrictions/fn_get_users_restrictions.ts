@@ -41,7 +41,6 @@ export const fn_get_user_restrictions = async (
     }
 
     const data: UserRestrictionsListResponse = await res.json();
-    console.log('Restricciones obtenidas:', data);
     return data;
   } catch (err) {
     console.error('Error en fn_get_modules:', err);
