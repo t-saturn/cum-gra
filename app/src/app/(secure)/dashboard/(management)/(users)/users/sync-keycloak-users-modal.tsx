@@ -32,7 +32,7 @@ export default function SyncKeycloakUsersModal({ open, onOpenChange, unsyncedUse
         first_name: kcUser.firstName || 'Usuario',
         last_name: kcUser.lastName || 'Keycloak',
         status: kcUser.enabled ? 'active' : 'inactive',
-        sync_to_keycloak: false, // No volver a crear en Keycloak
+        password: '12345678'
       });
 
       setSyncedUsers((prev) => new Set(prev).add(kcUser.username));
