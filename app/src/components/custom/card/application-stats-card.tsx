@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Boxes, UsersRound, CircleCheck, Trash, AlertCircle } from 'lucide-react';
+import { Loader2, Boxes, CircleCheck, Trash, AlertCircle } from 'lucide-react';
 import { fn_get_applications_stats } from '@/actions/applications/fn_get_applications_stats';
 import { ApplicationsStatsResponse } from '@/types/applications';
 
@@ -21,8 +21,6 @@ export const ApplicationsStatsCards: React.FC = () => {
     const fetchStats = async () => {
       try {
         const data = await fn_get_applications_stats();
-        console.log('Estadísticas de aplicaciones:', data);
-        
         setStats(data);
       } catch (err) {
         console.error('Error al obtener estadísticas de aplicaciones:', err);

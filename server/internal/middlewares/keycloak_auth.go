@@ -395,3 +395,39 @@ func HasAnyResourceRole(resource string, requiredRoles []string) fiber.Handler {
 		})
 	}
 }
+
+// KeycloakAuthOnly middleware que solo valida la sesión y extrae el user_id
+// No verifica roles, solo autenticación
+func KeycloakAuthOnly() fiber.Handler {
+	return func(c fiber.Ctx) error {
+		authHeader := c.Get("Authorization")
+
+		if authHeader == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Token de autorización requerido",
+			})
+		}
+
+		parts := strings.Split(authHeader, " ")
+
+		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Formato de token inválido",
+			})
+		}
+
+		tokenString := parts[1]
+
+		claims, err := keycloakMiddleware.ValidateToken(tokenString)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": fmt.Sprintf("Token inválido: %v", err),
+			})
+		}
+
+		// Solo guardar user_id (subject del JWT)
+		c.Locals("user_id", claims.Subject)
+
+		return c.Next()
+	}
+}

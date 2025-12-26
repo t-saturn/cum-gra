@@ -1,3 +1,4 @@
+
 export interface StructuralPositionItem {
   id: string;
   name: string;
@@ -20,3 +21,4 @@ export interface StructuralPositionsListResponse {
   page: number;
   page_size: number;
 }
+

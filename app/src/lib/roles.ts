@@ -3,9 +3,9 @@ import { query } from '@/lib/database';
 export type AppRole = { id: string; name: string };
 
 export async function getUserRoleForCurrentApp(userId: string): Promise<AppRole | null> {
-  const clientId = process.env.NEXT_PUBLIC_APP_CLIENT_ID;
+  const clientId = process.env.APP_CLIENT_ID;
   if (!clientId) {
-    console.error('NEXT_PUBLIC_APP_CLIENT_ID no configurado');
+    console.error('APP_CLIENT_ID no configurado');
     return null;
   }
 

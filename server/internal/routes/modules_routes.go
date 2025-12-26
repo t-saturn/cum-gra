@@ -19,6 +19,7 @@ func RegisterModulesRoutes(router fiber.Router) {
 	
 	protected.Get("/", handlers.GetModulesHandler)
 	protected.Get("/stats", handlers.GetModulesStatsHandler)
+	protected.Get("/all", handlers.GetAllModulesHandler)
 	protected.Get("/:id", handlers.GetModuleByIDHandler)
 	protected.Post("/", handlers.CreateModuleHandler)
 	protected.Put("/:id", handlers.UpdateModuleHandler)

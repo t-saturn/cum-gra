@@ -1,0 +1,80 @@
+services:
+  # Base de datos PostgreSQL
+  postgres_cum:
+    image: postgres:17-alpine
+    container_name: postgres_cum
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_cum_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cum_network
+
+  # Backend Go (Fiber)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: cum_server
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - ENV=${ENV}
+      - DB_HOST=postgres_cum
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_SSLMODE=${DB_SSLMODE}
+      - KEYCLOAK_SSO_URL=${KEYCLOAK_SSO_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      postgres_cum:
+        condition: service_healthy
+    networks:
+      - cum_network
+
+  # Frontend Next.js
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: cum_app
+    restart: unless-stopped
+    environment:
+      - AUTH_SECRET=${AUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - APP_CLIENT_ID=${APP_CLIENT_ID}
+      - API_BASE_URL=http://server:${SERVER_PORT}
+      - KEYCLOAK_BASE_URL=${KEYCLOAK_BASE_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - KEYCLOAK_ISSUER=${KEYCLOAK_ISSUER}
+    ports:
+      - "6161:6161"
+    depends_on:
+      - server
+    networks:
+      - cum_network
+
+volumes:
+  postgres_cum_data:
+    driver: local
+
+networks:
+  cum_network:
+    driver: bridge

@@ -85,3 +85,10 @@ type ApplicationRolesStatsResponse struct {
 	RolesWithModules int64 `json:"roles_with_modules"`
 	RolesWithUsers   int64 `json:"roles_with_users"`
 }
+
+type ApplicationRoleSelectDTO struct {
+	ID            string  `json:"id"`
+	Name          string  `json:"name"`
+	Description   *string `json:"description,omitempty"`
+	ApplicationID string  `json:"application_id"`
+}

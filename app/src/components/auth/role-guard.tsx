@@ -1,61 +1,140 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { RoleProvider, type RoleValue } from '@/providers/role';
 import { toast } from 'sonner';
+import { fn_get_user_role } from '@/actions/auth/fn_get_user_role';
+import { buildSidebarMenu } from '@/lib/build-sidebar-menu';
 
-const APP_CLIENT_ID = process.env.NEXT_PUBLIC_APP_CLIENT_ID!;
+function extractRoutes(modules: any[]): string[] {
+  const routes = new Set<string>();
+
+  const extract = (mods: any[]) => {
+    for (const mod of mods) {
+      if (mod.route) {
+        const normalizedRoute =
+          mod.route.endsWith('/') && mod.route !== '/' ? mod.route.slice(0, -1) : mod.route;
+        routes.add(normalizedRoute);
+      }
+      if (mod.children && mod.children.length > 0) {
+        extract(mod.children);
+      }
+    }
+  };
+
+  extract(modules);
+  return Array.from(routes);
+}
+
+function isRouteAllowed(pathname: string, allowedRoutes: string[]): boolean {
+  const normalizedPath = pathname.endsWith('/') && pathname !== '/' ? pathname.slice(0, -1) : pathname;
+
+  if (normalizedPath === '/dashboard') {
+    return allowedRoutes.includes('/dashboard');
+  }
+
+  for (const route of allowedRoutes) {
+    if (route === '/dashboard') continue;
+    if (normalizedPath === route) return true;
+    if (normalizedPath.startsWith(route + '/')) return true;
+  }
+
+  return false;
+}
 
 const RoleGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [role, setRole] = useState<RoleValue | null | 'loading'>('loading');
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  const modulesRef = useRef<any[] | null>(null);
 
   useEffect(() => {
-    let stop = false;
+    let isMounted = true;
 
     const fetchRole = async () => {
       try {
-        if (!APP_CLIENT_ID) {
-          toast.error('Falta env NEXT_PUBLIC_APP_CLIENT_ID');
-          if (!stop) setRole(null);
+        const data = await fn_get_user_role();
+
+        if (!isMounted) return;
+
+        if (!data.modules || data.modules.length === 0) {
+          router.replace('/unauthorized');
           return;
         }
 
-        const res = await fetch(`/api/me/role?client_id=${encodeURIComponent(APP_CLIENT_ID)}`, {
-          method: 'GET',
-          cache: 'no-store',
+        modulesRef.current = data.modules;
+
+        const allowedRoutes = extractRoutes(data.modules);
+
+        const allowed = isRouteAllowed(pathname, allowedRoutes);
+
+        if (!allowed) {
+          router.replace('/unauthorized');
+          setIsAuthorized(false);
+          return;
+        }
+
+        setIsAuthorized(true);
+
+        const sidebarMenu = buildSidebarMenu(data.modules);
+
+        setRole({
+          id: data.id,
+          name: data.role,
+          modules: data.modules,
+          sidebarMenu,
         });
+      } catch (error: any) {
+        if (!isMounted) return;
 
-        if (res.status === 401) {
-          // SessionGuard ya se encarga de mandar a login,
-          // acá solo dejamos nulo para no renderizar protegido.
-          if (!stop) setRole(null);
+        const message = error?.message || '';
+
+        // Usuario no autenticado -> login
+        if (message.includes('No autenticado')) {
+          router.replace('/');
           return;
         }
 
-        if (!res.ok) throw new Error('role fetch failed');
+        if (
+          message.includes('404') ||
+          message.includes('no tiene rol') ||
+          message.includes('No se encontraron datos')
+        ) {
+          router.replace('/unauthorized');
+          return;
+        }
 
-        const data = (await res.json()) as { id: string; role?: string; modules?: string[] };
+        if (message.includes('client_id')) {
+          toast.error('Falta configuración de la aplicación (client_id)');
+          router.replace('/unauthorized');
+          return;
+        }
 
-        if (!stop) setRole(data?.role ? { id: data.id, name: data.role, modules: data.modules || [] } : null);
-      } catch {
-        if (!stop) setRole(null);
+        router.replace('/unauthorized');
       }
     };
 
+    setIsAuthorized(false);
     fetchRole();
+
     return () => {
-      stop = true;
+      isMounted = false;
     };
-  }, [router]);
+  }, [pathname, router]);
 
-  useEffect(() => {
-    if (role === null) router.replace('/dashboard');
-  }, [role, router]);
+  if (role === 'loading' || !isAuthorized) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
-  if (role === 'loading') return null;
-  if (role === null) return null;
+  if (role === null) {
+    return null;
+  }
 
   return <RoleProvider value={role}>{children}</RoleProvider>;
 };

@@ -52,3 +52,11 @@ type UpdateStructuralPositionRequest struct {
 	IsActive    *bool   `json:"is_active"`
 	CodCarSGD   *string `json:"cod_car_sgd" validate:"omitempty,max=4"`
 }
+
+type PositionSelectDTO struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Code     string `json:"code"`
+	Level    *int   `json:"level,omitempty"`
+	IsActive bool   `json:"is_active"`
+}

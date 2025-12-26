@@ -19,6 +19,7 @@ func RegisterApplicationRolesRoutes(router fiber.Router) {
 	
 	protected.Get("/", handlers.GetApplicationRolesHandler)
 	protected.Get("/stats", handlers.GetApplicationRolesStatsHandler)
+	protected.Get("/all", handlers.GetAllApplicationRolesHandler)
 	protected.Get("/:id", handlers.GetApplicationRoleByIDHandler)
 	protected.Post("/", handlers.CreateApplicationRoleHandler)
 	protected.Put("/:id", handlers.UpdateApplicationRoleHandler)

@@ -2,7 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { fn_get_applications } from '@/actions/applications/fn_get_applications';
-import { fn_get_users } from '@/actions/users/fn_get_users';
+import { fn_get_all_users } from '@/actions/users/fn_get_all_users';
 import { fn_get_application_roles } from '@/actions/application-roles/fn_get_application_roles';
 
 export interface AssignmentFormOptions {
@@ -20,10 +20,10 @@ export const fn_get_assignment_form_options = async (
       throw new Error('No hay sesión activa');
     }
 
-    // Obtener aplicaciones y usuarios
-    const [applicationsRes, usersRes] = await Promise.all([
+    // Obtener aplicaciones (paginado por ahora) y usuarios (sin paginación)
+    const [applicationsRes, users] = await Promise.all([
       fn_get_applications(1, 100, false),
-      fn_get_users(1, 200),
+      fn_get_all_users(true), // solo activos
     ]);
 
     // Obtener roles filtrados por aplicación si se proporciona
@@ -36,10 +36,10 @@ export const fn_get_assignment_form_options = async (
         name: a.name,
         client_id: a.client_id,
       })),
-      users: usersRes.data.map((u) => ({
+      users: users.map((u) => ({
         id: u.id,
         email: u.email,
-        full_name: `${u.first_name} ${u.last_name}`,
+        full_name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email,
       })),
       roles: rolesRes.data.map((r) => ({
         id: r.id,

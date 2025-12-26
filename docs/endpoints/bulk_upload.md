@@ -13,44 +13,19 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 
 ---
 
-### 2. POST - Carga Masiva de Ubigeos
+### 2. POST - Carga Masiva de Ubigeos (Excel)
 ```http
 POST http://localhost:8080/api/ubigeos/bulk
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
-Content-Type: application/json
+Content-Type: multipart/form-data
 
-{
-  "ubigeos": [
-    {
-      "ubigeo_code": "050101",
-      "inei_code": "050101",
-      "department": "AYACUCHO",
-      "province": "HUAMANGA",
-      "district": "AYACUCHO"
-    },
-    {
-      "ubigeo_code": "050102",
-      "inei_code": "050102",
-      "department": "AYACUCHO",
-      "province": "HUAMANGA",
-      "district": "ACOCRO"
-    },
-    {
-      "ubigeo_code": "050103",
-      "inei_code": "050103",
-      "department": "AYACUCHO",
-      "province": "HUAMANGA",
-      "district": "ACOS VINCHOS"
-    }
-  ]
-}
+file: [archivo.xlsx]
 ```
 
-**Respuesta (201 Created):**
+**Respuesta (200 OK):**
 ```json
 {
   "created": 2,
-  "updated": 0,
   "skipped": 1,
   "failed": 0,
   "errors": [
@@ -77,10 +52,24 @@ Content-Type: application/json
 
 **Errores comunes:**
 
+**400 Bad Request (sin archivo):**
+```json
+{
+  "error": "No se proporcionó archivo Excel"
+}
+```
+
+**400 Bad Request (formato inválido):**
+```json
+{
+  "error": "El archivo debe ser formato Excel (.xlsx o .xls)"
+}
+```
+
 **400 Bad Request (sin datos):**
 ```json
 {
-  "error": "No se proporcionaron ubigeos"
+  "error": "El archivo debe contener al menos una fila de datos"
 }
 ```
 
@@ -110,44 +99,19 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 
 ---
 
-### 4. POST - Carga Masiva de Unidades Orgánicas
+### 4. POST - Carga Masiva de Unidades Orgánicas (Excel)
 ```http
 POST http://localhost:8080/api/organic-units/bulk
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
-Content-Type: application/json
+Content-Type: multipart/form-data
 
-{
-  "organic_units": [
-    {
-      "name": "Gerencia Regional de Desarrollo Social",
-      "acronym": "GRDS",
-      "description": "Gerencia encargada de políticas sociales",
-      "is_active": true,
-      "cod_dep_sgd": "001"
-    },
-    {
-      "name": "Sub Gerencia de Programas Sociales",
-      "acronym": "SGPS",
-      "description": "Sub gerencia dependiente de GRDS",
-      "parent_id": 1,
-      "is_active": true,
-      "cod_dep_sgd": "002"
-    },
-    {
-      "name": "Gerencia Regional de Infraestructura",
-      "acronym": "GRI",
-      "brand": "Obras Ayacucho",
-      "is_active": true
-    }
-  ]
-}
+file: [archivo.xlsx]
 ```
 
-**Respuesta (201 Created):**
+**Respuesta (200 OK):**
 ```json
 {
   "created": 3,
-  "updated": 0,
   "skipped": 0,
   "failed": 0,
   "errors": [],
@@ -171,11 +135,10 @@ Content-Type: application/json
 }
 ```
 
-**Respuesta con errores (201 Created):**
+**Respuesta con errores (200 OK):**
 ```json
 {
   "created": 1,
-  "updated": 0,
   "skipped": 1,
   "failed": 1,
   "errors": [
@@ -202,10 +165,24 @@ Content-Type: application/json
 
 **Errores comunes:**
 
+**400 Bad Request (sin archivo):**
+```json
+{
+  "error": "No se proporcionó archivo Excel"
+}
+```
+
+**400 Bad Request (formato inválido):**
+```json
+{
+  "error": "El archivo debe ser formato Excel (.xlsx o .xls)"
+}
+```
+
 **400 Bad Request (sin datos):**
 ```json
 {
-  "error": "No se proporcionaron unidades"
+  "error": "No se encontraron unidades válidas en el archivo"
 }
 ```
 
@@ -233,53 +210,19 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3
 
 ---
 
-### 6. POST - Carga Masiva de Posiciones Estructurales
+### 6. POST - Carga Masiva de Posiciones Estructurales (Excel)
 ```http
 POST http://localhost:8080/api/positions/bulk
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpVTRFY3NZMUxtVkdMYmg2MHhzSWJHMEtQUTVhRGpqN2w3YVhwbWJxS0ljIn0...
-Content-Type: application/json
+Content-Type: multipart/form-data
 
-{
-  "positions": [
-    {
-      "name": "Director General",
-      "code": "DG-001",
-      "level": 1,
-      "description": "Cargo directivo de mayor jerarquía",
-      "is_active": true,
-      "cod_car_sgd": "0001"
-    },
-    {
-      "name": "Gerente Regional",
-      "code": "GR-001",
-      "level": 2,
-      "description": "Cargo gerencial regional",
-      "is_active": true,
-      "cod_car_sgd": "0002"
-    },
-    {
-      "name": "Sub Gerente",
-      "code": "SG-001",
-      "level": 3,
-      "is_active": true
-    },
-    {
-      "name": "Especialista Administrativo",
-      "code": "EA-001",
-      "level": 4,
-      "description": "Profesional especializado",
-      "is_active": true,
-      "cod_car_sgd": "0004"
-    }
-  ]
-}
+file: [archivo.xlsx]
 ```
 
-**Respuesta (201 Created):**
+**Respuesta (200 OK):**
 ```json
 {
   "created": 4,
-  "updated": 0,
   "skipped": 0,
   "failed": 0,
   "errors": [],
@@ -308,11 +251,10 @@ Content-Type: application/json
 }
 ```
 
-**Respuesta con errores (201 Created):**
+**Respuesta con errores (200 OK):**
 ```json
 {
   "created": 2,
-  "updated": 0,
   "skipped": 2,
   "failed": 0,
   "errors": [
@@ -344,10 +286,24 @@ Content-Type: application/json
 
 **Errores comunes:**
 
+**400 Bad Request (sin archivo):**
+```json
+{
+  "error": "No se proporcionó archivo Excel"
+}
+```
+
+**400 Bad Request (formato inválido):**
+```json
+{
+  "error": "El archivo debe ser formato Excel (.xlsx o .xls)"
+}
+```
+
 **400 Bad Request (sin datos):**
 ```json
 {
-  "error": "No se proporcionaron posiciones"
+  "error": "No se encontraron posiciones válidas en el archivo"
 }
 ```
 
@@ -358,25 +314,52 @@ Content-Type: application/json
 }
 ```
 
-**400 Bad Request (campos obligatorios):**
-```json
-{
-  "error": "Datos inválidos"
-}
-```
-
 ---
 
 ## Resumen de Endpoints
 
-| Recurso | Método | Endpoint | Descripción | Límite |
-|---------|--------|----------|-------------|--------|
-| Ubigeos | GET | `/api/ubigeos/template` | Descargar plantilla Excel | - |
-| Ubigeos | POST | `/api/ubigeos/bulk` | Carga masiva JSON | 1000 |
-| Unidades Orgánicas | GET | `/api/organic-units/template` | Descargar plantilla Excel | - |
-| Unidades Orgánicas | POST | `/api/organic-units/bulk` | Carga masiva JSON | 500 |
-| Posiciones | GET | `/api/positions/template` | Descargar plantilla Excel | - |
-| Posiciones | POST | `/api/positions/bulk` | Carga masiva JSON | 500 |
+| Recurso | Método | Endpoint | Content-Type | Descripción | Límite |
+|---------|--------|----------|--------------|-------------|--------|
+| Ubigeos | GET | `/api/ubigeos/template` | - | Descargar plantilla Excel | - |
+| Ubigeos | POST | `/api/ubigeos/bulk` | `multipart/form-data` | Carga masiva Excel | 1000 |
+| Unidades Orgánicas | GET | `/api/organic-units/template` | - | Descargar plantilla Excel | - |
+| Unidades Orgánicas | POST | `/api/organic-units/bulk` | `multipart/form-data` | Carga masiva Excel | 500 |
+| Posiciones | GET | `/api/positions/template` | - | Descargar plantilla Excel | - |
+| Posiciones | POST | `/api/positions/bulk` | `multipart/form-data` | Carga masiva Excel | 500 |
+
+---
+
+## Estructura del Archivo Excel
+
+### Ubigeos
+| Columna | Campo | Obligatorio | Descripción |
+|---------|-------|-------------|-------------|
+| A | ubigeo_code | Sí | Código ubigeo (6 dígitos) |
+| B | inei_code | No | Código INEI |
+| C | department | Sí | Nombre del departamento |
+| D | province | Sí | Nombre de la provincia |
+| E | district | Sí | Nombre del distrito |
+
+### Unidades Orgánicas
+| Columna | Campo | Obligatorio | Descripción |
+|---------|-------|-------------|-------------|
+| A | name | Sí | Nombre de la unidad |
+| B | acronym | Sí | Acrónimo (ej: GTI) |
+| C | brand | No | Marca o imagen |
+| D | description | No | Descripción |
+| E | parent_id | No | ID de unidad padre |
+| F | is_active | No | true/false (default: true) |
+| G | cod_dep_sgd | No | Código SGD |
+
+### Posiciones Estructurales
+| Columna | Campo | Obligatorio | Descripción |
+|---------|-------|-------------|-------------|
+| A | name | Sí | Nombre de la posición |
+| B | code | Sí | Código único |
+| C | level | No | Nivel jerárquico (1-10) |
+| D | description | No | Descripción |
+| E | is_active | No | true/false (default: true) |
+| F | cod_car_sgd | No | Código SGD |
 
 ---
 
@@ -385,12 +368,11 @@ Content-Type: application/json
 ```json
 {
   "created": 0,      // Registros creados exitosamente
-  "updated": 0,      // Registros actualizados (si aplica)
   "skipped": 0,      // Registros omitidos (duplicados)
-  "failed": 0,       // Registros con errores
-  "errors": [        // Detalle de errores
+  "failed": 0,       // Registros con errores de validación
+  "errors": [        // Detalle de errores y omisiones
     {
-      "row": 2,      // Fila del error (basado en Excel)
+      "row": 2,      // Número de fila en Excel (header = 1)
       "field": "",   // Campo con error (opcional)
       "message": ""  // Descripción del error
     }

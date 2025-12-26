@@ -27,7 +27,7 @@
 # Submódulos de Usuarios
 - application_client_id: "cum-app"
   item: "Gestión"
-  name: "Usuarios (lista)"
+  name: "Usuarios"
   route: "/dashboard/users"
   icon: "UsersRound"
   parent_route: "/dashboard/users"
@@ -58,6 +58,17 @@
   roles:
     - "admin"
 
+- application_client_id: "cum-app"
+  item: "Gestión"
+  name: "Ubigeos"
+  route: "/dashboard/ubigeos"
+  icon: "Hexagon"
+  parent_route: "/dashboard/users"
+  sort_order: 14
+  status: "active"
+  roles:
+    - "admin"
+
 # Módulo padre: Aplicaciones
 - application_client_id: "cum-app"
   item: "Gestión"
@@ -72,7 +83,7 @@
 # Submódulos de Aplicaciones
 - application_client_id: "cum-app"
   item: "Gestión"
-  name: "Aplicaciones (lista)"
+  name: "Aplicaciones"
   route: "/dashboard/applications"
   icon: "Boxes"
   parent_route: "/dashboard/applications"
@@ -116,17 +127,6 @@
   roles:
     - "admin"
 
-- application_client_id: "cum-app"
-  item: "Seguridad"
-  name: "Logs de Auditoría"
-  route: "/dashboard/security/audit-logs"
-  icon: "ScrollText"
-  parent_route: "/dashboard/security"
-  sort_order: 32
-  status: "active"
-  roles:
-    - "admin"
-
 # Módulo padre: Roles y Permisos
 - application_client_id: "cum-app"
   item: "Seguridad"
@@ -152,11 +152,22 @@
 
 - application_client_id: "cum-app"
   item: "Seguridad"
+  name: "Roles por módulo"
+  route: "/dashboard/security/module-roles"
+  icon: "Layers"
+  parent_route: "/dashboard/security/roles-permissions"
+  sort_order: 42
+  status: "active"
+  roles:
+    - "admin"
+
+- application_client_id: "cum-app"
+  item: "Seguridad"
   name: "Asignación de Roles"
   route: "/dashboard/security/user-roles"
   icon: "UserCog"
   parent_route: "/dashboard/security/roles-permissions"
-  sort_order: 42
+  sort_order: 43
   status: "active"
   roles:
     - "admin"
@@ -167,28 +178,7 @@
   route: "/dashboard/security/user-restrictions"
   icon: "Ban"
   parent_route: "/dashboard/security/roles-permissions"
-  sort_order: 43
-  status: "active"
-  roles:
-    - "admin"
-
-# Grupo: Configuración
-- application_client_id: "cum-app"
-  item: "Configuración"
-  name: "Ajustes"
-  route: "/dashboard/settings"
-  icon: "Settings2"
-  sort_order: 50
-  status: "active"
-  roles:
-    - "admin"
-
-- application_client_id: "cum-app"
-  item: "Configuración"
-  name: "Cuenta"
-  route: "/dashboard/account"
-  icon: "UserCircle"
-  sort_order: 51
+  sort_order: 44
   status: "active"
   roles:
     - "admin"
