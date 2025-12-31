@@ -6,11 +6,11 @@
 # Roles para central user manager (cum)
 - name: "default"
   description: "Rol por defecto para usuarios del Central User Manager."
-  application_client_id: "cum-app"
+  application_client_id: "cum-gra"
 
 - name: "admin"
   description: "Rol administrativo con permisos avanzados en Central User Manager."
-  application_client_id: "cum-app"
+  application_client_id: "cum-gra"
 
 # Roles para resoluciones
 - name: "default"
